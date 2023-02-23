@@ -1,4 +1,5 @@
 import 'package:bye_bye_cry_new/start_page.dart';
+import 'package:bye_bye_cry_new/test_page/test_page.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Bye Bye Cry',
       theme: ThemeData(fontFamily: 'Neue Einstellung'),
-      home:  const InitialHomePage(),
+      home:  const TestPage(),
       //home: const SignIn(),
     );
   }
