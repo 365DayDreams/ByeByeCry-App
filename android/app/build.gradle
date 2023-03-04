@@ -15,12 +15,12 @@ if (flutterRoot == null) {
 
 def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
 if (flutterVersionCode == null) {
-    flutterVersionCode = '1'
+    flutterVersionCode = '2'
 }
 
 def flutterVersionName = localProperties.getProperty('flutter.versionName')
 if (flutterVersionName == null) {
-    flutterVersionName = '1.0'
+    flutterVersionName = '1.0.2'
 }
 
 apply plugin: 'com.android.application'
@@ -47,7 +47,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.example.bye_bye_cry_new"
+        applicationId "com.byebyecry.app"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-build-configuration.
         minSdkVersion 24
@@ -59,67 +59,83 @@ android {
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
+    signingConfigs{
+        release{
+            keyAlias 'upload'
+            keyPassword 'byebyecry123'
+            storeFile file('upload-keystore.jks')
+            storePassword 'byebyecry123'
 
-    signingConfigs {
-        release {
-
-
-/*            keyAlias keystoreProperties['keyAlias']
-
-            keyAlias "byebyebabycry"
-            keyPassword "@ByeByeCry@Key"
-            storeFile file('byebabycry.jks')
-            storePassword "@ByeByeCry@Key"
-
- /*           keyAlias keystoreProperties['keyAlias']
-
- keyPassword keystoreProperties['keyPassword']
- storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
- storePassword keystoreProperties['storePassword']*/
-
-/*            keyAlias "byebyebabycry"
-keyPassword "@ByeByeCry@Key"
-storeFile file('byebabycry.jks')
-storePassword "@ByeByeCry@Key"*/
-
-            keyAlias "byebyebabycry"
-            keyPassword "@ByeByeCry@Key"
-            storeFile file('byebabycry.jks')
-            storePassword "@ByeByeCry@Key"
-
-        }
-        debug {
-            keyAlias "byebyebabycry"
-            keyPassword "@ByeByeCry@Key"
-            storeFile file('byebabycry.jks')
-            storePassword "@ByeByeCry@Key"
-
-
-
-           /* keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
-            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
-            storePassword keystoreProperties['storePassword']*/
-
-            /* keyAlias keystoreProperties['keyAlias']
-             keyPassword keystoreProperties['keyPassword']
-             storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
-             storePassword keystoreProperties['storePassword']*/
-
-           /* keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
-            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
-            storePassword keystoreProperties['storePassword']*/
         }
     }
+
     buildTypes {
         release {
             signingConfig signingConfigs.release
-        }
-        debug {
-            signingConfig signingConfigs.debug
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
         }
     }
+//    signingConfigs {
+//        release {
+//
+//
+///*            keyAlias keystoreProperties['keyAlias']
+//
+//            keyAlias "byebyebabycry"
+//            keyPassword "@ByeByeCry@Key"
+//            storeFile file('byebabycry.jks')
+//            storePassword "@ByeByeCry@Key"
+//
+// /*           keyAlias keystoreProperties['keyAlias']
+//
+// keyPassword keystoreProperties['keyPassword']
+// storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+// storePassword keystoreProperties['storePassword']*/
+//
+///*            keyAlias "byebyebabycry"
+//keyPassword "@ByeByeCry@Key"
+//storeFile file('byebabycry.jks')
+//storePassword "@ByeByeCry@Key"*/
+//
+//            keyAlias "byebabycry"
+//            keyPassword "@ByeByeCry@Key"
+//            storeFile file('byebabycry.jks')
+//            storePassword "@ByeByeCry@Key"
+//
+//        }
+////        debug {
+////            keyAlias "byebyebabycry"
+////            keyPassword "@ByeByeCry@Key"
+////            storeFile file('byebabycry.jks')
+////            storePassword "@ByeByeCry@Key"
+////
+////
+////
+////           /* keyAlias keystoreProperties['keyAlias']
+////            keyPassword keystoreProperties['keyPassword']
+////            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+////            storePassword keystoreProperties['storePassword']*/
+////
+////            /* keyAlias keystoreProperties['keyAlias']
+////             keyPassword keystoreProperties['keyPassword']
+////             storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+////             storePassword keystoreProperties['storePassword']*/
+////
+////           /* keyAlias keystoreProperties['keyAlias']
+////            keyPassword keystoreProperties['keyPassword']
+////            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+////            storePassword keystoreProperties['storePassword']*/
+////        }
+//    }
+//    buildTypes {
+//        release {
+//            signingConfig signingConfigs.release
+//        }
+////        debug {
+////            signingConfig signingConfigs.debug
+////        }
+//    }
 
     /*buildTypes {
         release {

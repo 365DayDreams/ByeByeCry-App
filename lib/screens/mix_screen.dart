@@ -32,8 +32,8 @@ class _MixScreenState extends ConsumerState<MixScreen> {
   bool playPause1 = false;
   bool playPause2 = false;
   int index = 0;
-  double currentVolume = 0.0;
-  double currentVolume1 = 0.0;
+  double currentVolume = 50.0;
+  double currentVolume1 = 50.0;
   AudioPlayer audioPlayer1 = AudioPlayer();
   AudioPlayer audioPlayer2 = AudioPlayer();
 
@@ -49,13 +49,16 @@ class _MixScreenState extends ConsumerState<MixScreen> {
   }
   getVolume()async{
     Future.delayed(Duration.zero, () async {
-      currentVolume = await PerfectVolumeControl.getVolume();
-      currentVolume1 = await PerfectVolumeControl.getVolume();
+      /*currentVolume = await PerfectVolumeControl.getVolume();
+      currentVolume1 = await PerfectVolumeControl.getVolume();*/
+
+
+
       setState(() {});
     });
   }
   changeVolume1(){
-    PerfectVolumeControl.hideUI = true;
+    PerfectVolumeControl.hideUI = false;
     PerfectVolumeControl.stream.listen((volume) {
       currentVolume = volume;
       if(mounted){
@@ -64,7 +67,7 @@ class _MixScreenState extends ConsumerState<MixScreen> {
     });
   }
   changeVolume2(){
-    PerfectVolumeControl.hideUI = true;
+    PerfectVolumeControl.hideUI = false;
     Future.delayed(Duration.zero, () async {
       currentVolume1 = await PerfectVolumeControl.getVolume();
       setState(() {});
@@ -77,6 +80,7 @@ class _MixScreenState extends ConsumerState<MixScreen> {
     });
   }
   startPlayer1()async{
+    audioPlayer1.setVolume(0.50);
     audioPlayer1.onPlayerStateChanged.listen((state) {
       playPause1 = state == PlayerState.playing;
       /*if(mounted){
@@ -116,6 +120,7 @@ class _MixScreenState extends ConsumerState<MixScreen> {
     }
   }
   startPlayer2()async{
+    audioPlayer2.setVolume(0.50);
     audioPlayer2.onPlayerStateChanged.listen((state) {
       playPause2 = state == PlayerState.playing;
       /*if(mounted){
@@ -189,244 +194,249 @@ class _MixScreenState extends ConsumerState<MixScreen> {
       appBar: const CustomAppBar(
         title: 'My Mix',
       ),
-      body: Column(
-       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Center(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(
-                  height: width * .1,
-                ),
-                const CustomText(
-                  text: 'Create Your Own Sound',
-                  fontSize: 26,
-                  fontWeight: FontWeight.w700,
-                ),
-                SizedBox(
-                  height: height * .03,
-                ),
-              ],
-            ),
-          ),
-          Column(
-            children: [
-              Column(
+      body: SingleChildScrollView(
+        child: Column(
+         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Center(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      GestureDetector(
-                        onTap: (){
-                          ref.read(addProvider).showPlusPlaylist(playlistPlusBottom:true);
-                          ref.read(addProvider).changePage(1);
-                          ref.read(mixMusicProvider).selectedMixSound(selectSound: true);
-                        },
-                        child: Column(
-                          children: [
-                            ref.watch(mixMusicProvider).musicModelFirst == null?Container(
-                              height: width * .3,
-                              width: width * .3,
-                              decoration: BoxDecoration(
-                                  color: secondaryPickColor,
-                                  borderRadius: BorderRadius.circular(10)
-                              ),
-                              child: const Padding(
-                                padding: EdgeInsets.all(25.0),
-                                child: CustomSvg(
-                                  svg: musicJust,
-                                ),
-                              ),
-                            ):CustomImage(
-                              imageUrl: "${ref.watch(mixMusicProvider).musicModelFirst?.image}",
-                              height: width * .35,
-                              width: width * .35,
-                              boxFit: BoxFit.cover,
-                            ),
-                            SizedBox(height: width * 0.04),
-                            Center(
-                              child: CustomText(
-                                text: ref.watch(mixMusicProvider).musicModelFirst?.musicName ?? "Add a Sound",
-                                textAlign: TextAlign.center,
-                                fontSize: 20,
-                                fontWeight: FontWeight.w400,
-                                color: primaryGreyColor,
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                      Icon(
-                        Icons.add,
-                        size: height * .05,
-                        color: primaryPinkColor,
-                      ),
-                      GestureDetector(
-                        onTap:(){
-                            ref.read(addProvider).showPlusPlaylist(playlistPlusBottom:true,);
+                  SizedBox(
+                    height: width * .1,
+                  ),
+                  const CustomText(
+                    text: 'Create Your Own Sound',
+                    fontSize: 26,
+                    fontWeight: FontWeight.w700,
+                  ),
+                  SizedBox(
+                    height: height * .03,
+                  ),
+                ],
+              ),
+            ),
+            Column(
+              children: [
+                Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        GestureDetector(
+                          onTap: (){
+                            ref.read(addProvider).showPlusPlaylist(playlistPlusBottom:true);
                             ref.read(addProvider).changePage(1);
-                            ref.read(mixMusicProvider).selectedMixSound(selectSound: false);
-                        },
-                        child: Column(
-                          children: [
-                            ref.watch(mixMusicProvider).musicModelSecond == null?Container(
-                              height: width * .3,
-                              width: width * .3,
-                              decoration: BoxDecoration(
-                                color: secondaryPickColor,
-                                borderRadius: BorderRadius.circular(10)
-                              ),
-                              child: const Padding(
-                                padding: EdgeInsets.all(25.0),
-                                child: CustomSvg(
-                                  svg: musicJust,
+                            ref.read(mixMusicProvider).selectedMixSound(selectSound: true);
+                          },
+                          child: Column(
+                            children: [
+                              ref.watch(mixMusicProvider).musicModelFirst == null?Container(
+                                height: width * .3,
+                                width: width * .3,
+                                decoration: BoxDecoration(
+                                    color: secondaryPickColor,
+                                    borderRadius: BorderRadius.circular(10)
                                 ),
+                                child: const Padding(
+                                  padding: EdgeInsets.all(25.0),
+                                  child: CustomSvg(
+                                    svg: musicJust,
+                                  ),
+                                ),
+                              ):CustomImage(
+                                imageUrl: "${ref.watch(mixMusicProvider).musicModelFirst?.image}",
+                                height: width * .35,
+                                width: width * .35,
+                                boxFit: BoxFit.cover,
                               ),
-                            ):CustomImage(
-                              imageUrl: ref.watch(mixMusicProvider).musicModelSecond!.image,
-                              height: width * .35,
-                              width: width * .35,
-                              boxFit: BoxFit.cover,
-                            ),
-                            SizedBox(height: width * 0.04),
-                            Center(
-                              child: Container(
-                                color: Colors.transparent,
+                              SizedBox(height: width * 0.04),
+                              Center(
                                 child: CustomText(
-                                  text: ref.watch(mixMusicProvider).musicModelSecond?.musicName??"Add a Sound",
+                                  text: ref.watch(mixMusicProvider).musicModelFirst?.musicName ?? "Add a Sound",
+                                  textAlign: TextAlign.center,
                                   fontSize: 20,
                                   fontWeight: FontWeight.w400,
                                   color: primaryGreyColor,
                                 ),
+                              )
+                            ],
+                          ),
+                        ),
+                        Icon(
+                          Icons.add,
+                          size: height * .05,
+                          color: primaryPinkColor,
+                        ),
+                        GestureDetector(
+                          onTap:(){
+                              ref.read(addProvider).showPlusPlaylist(playlistPlusBottom:true,);
+                              ref.read(addProvider).changePage(1);
+                              ref.read(mixMusicProvider).selectedMixSound(selectSound: false);
+                          },
+                          child: Column(
+                            children: [
+                              ref.watch(mixMusicProvider).musicModelSecond == null?Container(
+                                height: width * .3,
+                                width: width * .3,
+                                decoration: BoxDecoration(
+                                  color: secondaryPickColor,
+                                  borderRadius: BorderRadius.circular(10)
+                                ),
+                                child: const Padding(
+                                  padding: EdgeInsets.all(25.0),
+                                  child: CustomSvg(
+                                    svg: musicJust,
+                                  ),
+                                ),
+                              ):CustomImage(
+                                imageUrl: ref.watch(mixMusicProvider).musicModelSecond!.image,
+                                height: width * .35,
+                                width: width * .35,
+                                boxFit: BoxFit.cover,
                               ),
-                            ),
-                          ],
+                              SizedBox(height: width * 0.04),
+                              Center(
+                                child: Container(
+                                  color: Colors.transparent,
+                                  child: CustomText(
+                                    text: ref.watch(mixMusicProvider).musicModelSecond?.musicName??"Add a Sound",
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w400,
+                                    color: primaryGreyColor,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          width: width * .45,
+                          child: Slider(
+                            value: currentVolume,
+                            min: 0.0,
+                            max: 100.0,
+                            divisions: 100,
+                            activeColor: primaryPinkColor,
+                            inactiveColor: primaryGreyColor2,
+                            onChanged: (double newValue) async{
+                              setState(() {
+                                currentVolume = newValue;
+                                print("volume $currentVolume");
+                              });
+                              audioPlayer1.setVolume(currentVolume*0.01);
+                             // await PerfectVolumeControl.setVolume(currentVolume);
+                            },
+                          ),
                         ),
-                      )
-                    ],
-                  ),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        width: width * .45,
-                        child: Slider(
-                          value: currentVolume,
-                          min: 0.0,
-                          max: 1.0,
-                          divisions: 100,
-                          activeColor: primaryPinkColor,
-                          inactiveColor: primaryGreyColor2,
-                          onChanged: (double newValue) async{
-                            setState(() {
-                              currentVolume = newValue;
-                              print("volume $currentVolume");
-                            });
-                            await PerfectVolumeControl.setVolume(currentVolume);
-                          },
+                         Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                          child: CustomText(
+                            text: 'Set sound ${(currentVolume).toInt().toString().padLeft(2,"0")} volume',
+                            fontWeight: FontWeight.w400,
+                            fontSize: 16,
+                          ),
+                        )
+                      ],
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          width: width * .45,
+                          child: Slider(
+                            value: currentVolume1,
+                            min: 0.0,
+                            max: 100.0,
+                            divisions: 100,
+                            activeColor: primaryPinkColor,
+                            inactiveColor: primaryGreyColor2,
+                            onChanged: (double newValue) async{
+                              setState(() {
+                                currentVolume1 = newValue;
+                                print("volume $currentVolume1");
+
+                              });
+                              audioPlayer2.setVolume(currentVolume1*0.01);
+                             // await PerfectVolumeControl.setVolume(currentVolume1);
+                            },
+                          ),
                         ),
-                      ),
-                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                        child: CustomText(
-                          text: 'Set sound ${(currentVolume * 100).toInt().toString().padLeft(2,"0")} volume',
-                          fontWeight: FontWeight.w400,
-                          fontSize: 16,
-                        ),
-                      )
-                    ],
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        width: width * .45,
-                        child: Slider(
-                          value: currentVolume1,
-                          min: 0.0,
-                          max: 1.0,
-                          divisions: 100,
-                          activeColor: primaryPinkColor,
-                          inactiveColor: primaryGreyColor2,
-                          onChanged: (double newValue) async{
-                            setState(() {
-                              currentVolume1 = newValue;
-                              print("volume $currentVolume1");
-                            });
-                            await PerfectVolumeControl.setVolume(currentVolume1);
-                          },
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                        child: CustomText(
-                          text: 'Set sound ${(currentVolume1 * 100).toInt().toString().padLeft(2,"0")} volume',
-                          fontWeight: FontWeight.w400,
-                          fontSize: 16,
-                        ),
-                      )
-                    ],
-                  ),
-                ],
-              ),
-            ],
-          ),
-          Column(
-           children: [
-             Container(
-               // color: Colors.red,
-               height: width * 0.18,
-               width: width * 0.18,
-               clipBehavior: Clip.hardEdge,
-               decoration: BoxDecoration(
-                   color: secondaryWhiteColor2,
-                   shape: BoxShape.circle,
-                   border: Border.all(color: Colors.transparent,width:0),
-                   boxShadow: [
-                     BoxShadow(
-                         blurRadius: 2,
-                         spreadRadius: 2,
-                         color:primaryPinkColor.withOpacity(0.2),
-                          offset: const Offset(0,3)
-                     )
-                   ]
-               ),
-               child: Padding(
-                 padding: const EdgeInsets.all(22),
-                 child:  GestureDetector(
-                   onTap: ()async{
-                     pausePlayMethod();
-                   },
-                   child: CustomSvg(
-                     //color: Colors.blue,
-                     svg:(playPause1 || playPause2)?pouseButton:playButtonSvg,
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                          child: CustomText(
+                            text: 'Set sound ${(currentVolume1).toInt().toString().padLeft(2,"0")} volume',
+                            fontWeight: FontWeight.w400,
+                            fontSize: 16,
+                          ),
+                        )
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            Column(
+             children: [
+               Container(
+                 // color: Colors.red,
+                 height: width * 0.18,
+                 width: width * 0.18,
+                 clipBehavior: Clip.hardEdge,
+                 decoration: BoxDecoration(
+                     color: secondaryWhiteColor2,
+                     shape: BoxShape.circle,
+                     border: Border.all(color: Colors.transparent,width:0),
+                     boxShadow: [
+                       BoxShadow(
+                           blurRadius: 2,
+                           spreadRadius: 2,
+                           color:primaryPinkColor.withOpacity(0.2),
+                            offset: const Offset(0,3)
+                       )
+                     ]
+                 ),
+                 child: Padding(
+                   padding: const EdgeInsets.all(22),
+                   child:  GestureDetector(
+                     onTap: ()async{
+                       pausePlayMethod();
+                     },
+                     child: CustomSvg(
+                       //color: Colors.blue,
+                       svg:(playPause1 || playPause2)?pouseButton:playButtonSvg,
+                     ),
                    ),
                  ),
                ),
-             ),
-             SizedBox(height: width * 0.15),
-             OutLineButton(
-               height: height * .06,
-               text: 'Save To My Sounds ',
-               textColor: secondaryBlackColor,
-               textFontSize: 22,
-               textFontWeight: FontWeight.w600,
-               borderRadius: 50,
-               onPressed: () {
-                 _showDialog(context,firstMusicName: ref.watch(mixMusicProvider).musicModelFirst?.musicName??"", secondMusicName: ref.watch(mixMusicProvider).musicModelSecond?.musicName ?? "");
-               },
-             ),
-             SizedBox(height: width * 0.15),
-           ],
-         )
-        ],
+               SizedBox(height: width * 0.15),
+               OutLineButton(
+                 height: height * .06,
+                 text: 'Save To My Sounds ',
+                 textColor: secondaryBlackColor,
+                 textFontSize: 22,
+                 textFontWeight: FontWeight.w600,
+                 borderRadius: 50,
+                 onPressed: () {
+                   _showDialog(context,firstMusicName: ref.watch(mixMusicProvider).musicModelFirst?.musicName??"", secondMusicName: ref.watch(mixMusicProvider).musicModelSecond?.musicName ?? "");
+                 },
+               ),
+               SizedBox(height: width * 0.15),
+             ],
+           )
+          ],
+        ),
       ),
     );
   }

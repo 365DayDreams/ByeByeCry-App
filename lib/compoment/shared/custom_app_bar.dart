@@ -32,6 +32,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       elevation: 0.0,
       toolbarHeight: preferredSize.height,
+      automaticallyImplyLeading: false,
       leading: Padding(
         padding: const EdgeInsets.only(left: 15.0),
         child: Container(

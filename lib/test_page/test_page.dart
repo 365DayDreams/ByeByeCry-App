@@ -1,7 +1,10 @@
+
 import 'dart:io';
 
+import 'package:bye_bye_cry_new/purchase/purchas_listner.dart';
 import 'package:flutter/material.dart';
 import 'package:pay/pay.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
 
 import '../compoment/utils/color_utils.dart';
 
@@ -13,29 +16,22 @@ class TestPage extends StatefulWidget {
 }
 
 class _TestPageState extends State<TestPage> {
-  final  _paymentItems = [
-    PaymentItem(
-      label: 'Total',
-      amount: '1.99',
-      status: PaymentItemStatus.final_price,
-    )
-  ];
 
-   Pay ? _payClient;
 
 @override
   void initState() {
-  if(Platform.isIOS){
-    getPayApple();
-  }else{
-    getPay();
-  }
-
-   // getPayApple();
+  getOffring();
     super.initState();
   }
+Offerings? offerings;
+getOffring(){
+  Purchases.getOfferings().then((value) {
 
+    offerings = value;
 
+    setState(() {});
+  });
+}
 
 
   @override
@@ -71,15 +67,7 @@ class _TestPageState extends State<TestPage> {
 
             InkWell(
               onTap: (){
-                if(Platform.isIOS){
-                  onApplePayPressed();
 
-                }else if (Platform.isAndroid){
-                  onGooglePayPressed();
-                }
-                setState(() {
-
-                });
               },
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -127,16 +115,37 @@ class _TestPageState extends State<TestPage> {
 
 
             InkWell(
-              onTap: (){
-                if(Platform.isIOS){
-                  onApplePayPressed();
+              onTap: () async {
+                 print("offerings");
+                 print(offerings!.all["premium"]!
+                     .availablePackages);
+                Package product= offerings!.all["premium"]!
+                   .availablePackages
+                    .firstWhere(
+                        (element) =>
+                    element.storeProduct.identifier == "premium");
 
-                }else if (Platform.isAndroid){
-                  onGooglePayPressed();
-                }
-                setState(() {
+                print('product====');
+                print(product);
+               CustomerInfo customerInfo=
+               await Purchases.purchasePackage(
+                 product,
 
-                });
+               );
+               try {
+                 if (customerInfo.entitlements.all["premium"] != null &&
+                     customerInfo.entitlements.all["premium"]!.isActive ==
+                         true) {
+                   PurchasListener.isSubscribe=true;
+                   //success purchas
+                 }else{
+                   //subscription failed
+                 }
+
+               } catch (e) {
+                 //any error
+               }
+
               },
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -178,192 +187,58 @@ class _TestPageState extends State<TestPage> {
                   ),
                 ),
               ),
+            ),
+            if(Platform.isIOS)
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: 30),
+              child: Text(
+                "ByeByeCry subscriptions will automatically renew within 24"
+                    " hours before the subscription period ends, and you "
+                    "will be charged through your iTunes account. You can manage and cancel your subscription"
+                    " in your iTunes Account Settings at any time.",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.black54,
+                  fontSize: 12,
+                ),
+              ),
+            ),
+
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  TextButton(onPressed: () async {
+
+                  }, child: Text("Terms & Conditions")),
+                  TextButton(onPressed: () async {
+                    try {
+                     await PurchasListener.init();
+                     //restore success message
+                    }  catch (e) {
+                      //restore any error
+                    }
+                  }, child: Text("Restore Purchases")),
+                  TextButton(onPressed: () async {
+
+                  }, child: Text("Privecy Policy")),
+                ],
+              ),
             )
 
 
           ],
         ),
       )
-      // Center(
-      //   child: Column(
-      //     mainAxisAlignment: MainAxisAlignment.center,
-      //     crossAxisAlignment: CrossAxisAlignment.center,
-      //     children: [
-      //
-      //       GooglePayButton(
-      //         onError: (val){},
-      //         onPressed: (){
-      //
-      //         },
-      //
-      //         paymentConfigurationAsset: "json/default_payment_profile_google_pay.json",
-      //         paymentItems: _paymentItems,
-      //         type: GooglePayButtonType.pay,
-      //         margin: const EdgeInsets.only(top: 15.0),
-      //         onPaymentResult: (val){
-      //           print("RES__${val}");
-      //         },
-      //         loadingIndicator: const Center(
-      //           child: CircularProgressIndicator(),
-      //         ),
-      //       ),
-      //       ElevatedButton(onPressed: () {
-      //
-      //         onGooglePayPressed();
-      //
-      //
-      //
-      //       }, child: Text("Google Pay"))
-      //     ],
-      //   ),
-      // ),
+
     );
   }
 
-  void onApplePayPressed() async {
-    final result = await _payClient!.showPaymentSelector(
-      PayProvider.apple_pay,
-      _paymentItems,
-    );
-    // Send the resulting Google Pay token to your server / PSP
-  }
-  void onGooglePayPressed() async {
-    final result = await _payClient!.showPaymentSelector(
-      PayProvider.google_pay,
-      _paymentItems,
-    );
-    // Send the resulting Google Pay token to your server / PSP
-  }
 
 
 
-// When you are ready to load your configuration
-getPay(){
-  _payClient = Pay({
-    PayProvider.google_pay: PaymentConfiguration.fromJsonString(
-        defaultGooglePay
-    ),
 
 
-  });
-}
-getPayApple(){
-  _payClient = Pay({
-  PayProvider.apple_pay: PaymentConfiguration.fromJsonString(
-  defaultApplePay
-
-    ),
-
-
-  });
-}
-  final String defaultApplePay = '''{
-  "provider": "apple_pay",
-  "data": {
-    "merchantIdentifier": "merchant.com.sams.fish",
-    "displayName": "Sam's Fish",
-    "merchantCapabilities": ["3DS", "debit", "credit"],
-    "supportedNetworks": ["amex", "visa", "discover", "masterCard"],
-    "countryCode": "US",
-    "currencyCode": "USD",
-    "requiredBillingContactFields": ["emailAddress", "name", "phoneNumber", "postalAddress"],
-    "requiredShippingContactFields": [],
-    "shippingMethods": [
-      {
-        "amount": "0.00",
-        "detail": "Available within an hour",
-        "identifier": "in_store_pickup",
-        "label": "In-Store Pickup"
-      },
-      {
-        "amount": "4.99",
-        "detail": "5-8 Business Days",
-        "identifier": "flat_rate_shipping_id_2",
-        "label": "UPS Ground"
-      },
-      {
-        "amount": "29.99",
-        "detail": "1-3 Business Days",
-        "identifier": "flat_rate_shipping_id_1",
-        "label": "FedEx Priority Mail"
-      }
-    ]
-  }
-}''';
-  final String defaultGooglePay = '''{
-  "provider": "google_pay",
-  "data": {
-    "environment": "TEST",
-    "apiVersion": 2,
-    "apiVersionMinor": 0,
-    "allowedPaymentMethods": [
-      {
-        "type": "CARD",
-        "tokenizationSpecification": {
-          "type": "PAYMENT_GATEWAY",
-          "parameters": {
-            "gateway": "example",
-            "gatewayMerchantId": "gatewayMerchantId"
-          }
-        },
-        "parameters": {
-          "allowedCardNetworks": ["VISA", "MASTERCARD"],
-          "allowedAuthMethods": ["PAN_ONLY", "CRYPTOGRAM_3DS"],
-          "billingAddressRequired": true,
-          "billingAddressParameters": {
-            "format": "FULL",
-            "phoneNumberRequired": true
-          }
-        }
-      }
-    ],
-    "merchantInfo": {
-      "merchantId": "01234567890123456789",
-      "merchantName": "Example Merchant Name"
-    },
-    "transactionInfo": {
-      "countryCode": "US",
-      "currencyCode": "USD"
-    }
-  }
-}''';
-// final String defaultGooglePay = '''{
-//   "provider": "google_pay",
-//   "data": {
-//     "environment": "TEST",
-//     "apiVersion": 2,
-//     "apiVersionMinor": 0,
-//     "allowedPaymentMethods": [
-//       {
-//         "type": "CARD",
-//         "tokenizationSpecification": {
-//           "type": "PAYMENT_GATEWAY",
-//           "parameters": {
-//             "gateway": "gateway",
-//             "gatewayMerchantId": "gatewayMerchantId"
-//           }
-//         },
-//         "parameters": {
-//           "allowedCardNetworks": ["VISA", "MASTERCARD"],
-//           "allowedAuthMethods": ["PAN_ONLY", "CRYPTOGRAM_3DS"],
-//           "billingAddressRequired": true,
-//           "billingAddressParameters": {
-//             "format": "FULL",
-//             "phoneNumberRequired": true
-//           }
-//         }
-//       }
-//     ],
-//     "merchantInfo": {
-//       "merchantId": "",
-//       "merchantName": ""
-//     },
-//     "transactionInfo": {
-//       "countryCode": "US",
-//       "currencyCode": "USD"
-//     }
-//   }
-// }''';
 
 
 }

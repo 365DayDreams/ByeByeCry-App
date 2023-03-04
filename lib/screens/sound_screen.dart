@@ -182,7 +182,8 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
   }
   @override
   Widget build(BuildContext context) {
-    return changeToPlayNow?NowPlayingScreen(
+    return changeToPlayNow?
+    NowPlayingScreen(
         musicId: musicId,
         onPressed: (){
           if(ref.watch(addProvider).playFromPlayList){
@@ -200,7 +201,9 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
           }
 
         },
-    ):changeToMixPlayNow?ListenMixSound(mixMusicModelId: mixMusicId,onPressed: (){
+    ):
+    changeToMixPlayNow?
+    ListenMixSound(mixMusicModelId: mixMusicId,onPressed: (){
       if(ref.watch(mixMusicProvider).playFromPlayList){
         changeToMixPlayNow = false;
         if(mounted){
@@ -221,9 +224,12 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
       if(mounted){
         ref.read(addProvider).changePage(3);
       }
-    },):Scaffold(
+    },):
+    Scaffold(
         appBar: CustomAppBar(
+
             title: deleteShow?'Edit My Sounds':'My Sounds',
+
             actionTitle: deleteShow?"":'Edit',
             onPressedButton: (){
               deleteShow = true;
@@ -334,7 +340,8 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
               )
             ],
           ),
-        ));
+        ),
+    );
   }
 
   Widget imageList({required MusicModel musicModel,required BuildContext context,}) {
@@ -356,9 +363,13 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
           Row(
             children: [
               Padding(
-                padding: const EdgeInsets.only(top: 5.0),
-                child: CustomImage(imageUrl: musicModel.image),
+                padding: const EdgeInsets.all(8.0),
+                child: Image.asset("${musicModel.image}",height: 60,fit: BoxFit.contain,),
               ),
+              // Padding(
+              //   padding: const EdgeInsets.only(top: 5.0),
+              //   child: CustomImage(imageUrl: musicModel.image),
+              // ),
               const SizedBox(
                 width: 10,
               ),

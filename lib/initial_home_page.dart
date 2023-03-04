@@ -358,41 +358,43 @@ class _InitialHomePageState extends ConsumerState<InitialHomePage> {
                         spreadRadius: 1,
                       )
                     ]),
-                child: Column(
-                  children: [
-                    Image.asset(
-                      'asset/images/bby_cry2.png',
-                      fit: BoxFit.cover,
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
-                        CustomText(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700,
-                            text: 'We’re Here To Help'),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        CustomText(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w400,
-                            text:
-                                '3 in 10 babies will be diagnosed with colic. You are not alone!'),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        CustomText(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w400,
-                            text:
-                                'Join our community of moms, parents and caregivers on Instagram!'),
-                      ],
-                    ),
-                  ],
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Image.asset(
+                        'asset/images/bby_cry2.png',
+                        fit: BoxFit.cover,
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: const [
+                          CustomText(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w700,
+                              text: 'We’re Here To Help'),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          CustomText(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w400,
+                              text:
+                                  '3 in 10 babies will be diagnosed with colic. You are not alone!'),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          CustomText(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w400,
+                              text:
+                                  'Join our community of moms, parents and caregivers on Instagram!'),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

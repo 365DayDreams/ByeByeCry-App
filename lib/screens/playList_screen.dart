@@ -35,7 +35,18 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
           setState(() {});
         }
       },
-    ):Scaffold(
+    ):
+    Scaffold(
+      // appBar: AppBar(
+      //   elevation: 0,
+      //   automaticallyImplyLeading: false,
+      //   centerTitle: true,
+      //   backgroundColor: primaryPinkColor,
+      //   title: Text("My Playlist",style: TextStyle(
+      //     fontSize: 22,color: Colors.black,
+      //     fontWeight: FontWeight.w700
+      //   ),),
+      // ),
       appBar: const CustomAppBar(
         title: 'My Playlist',
         //actionTitle: 'Edit',
