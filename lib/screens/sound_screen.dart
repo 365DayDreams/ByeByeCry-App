@@ -228,6 +228,7 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
     Scaffold(
         appBar: CustomAppBar(
 
+
             title: deleteShow?'Edit My Sounds':'My Sounds',
 
             actionTitle: deleteShow?"":'Edit',

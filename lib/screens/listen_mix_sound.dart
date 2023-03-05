@@ -669,7 +669,8 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound> with TickerProv
                                     currentVolume = newValue;
                                     print("volume $currentVolume");
                                   });
-                                  await PerfectVolumeControl.setVolume(currentVolume);
+                                  audioPlayer1.setVolume(currentVolume * 0.001);
+                                  // await PerfectVolumeControl.setVolume(currentVolume);
                                 },
                               ),
                             ),

@@ -1,7 +1,6 @@
 import 'package:bye_bye_cry_new/confiq/store_config.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:intl/intl.dart';
-
 class PurchasListener{
   static final PurchasListener _singleton = PurchasListener._internal();
 

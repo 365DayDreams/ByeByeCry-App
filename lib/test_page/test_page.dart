@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:bye_bye_cry_new/purchase/purchas_listner.dart';
 import 'package:flutter/material.dart';
-import 'package:pay/pay.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 
 import '../compoment/utils/color_utils.dart';
