@@ -69,6 +69,8 @@ class _NowPlayingScreenState extends ConsumerState<NowPlayingScreen> with Ticker
     startPlayer();
     changeVolume();
     initPlatformState();
+    setSongDuration(60 *2,initValue: 0);
+
     super.initState();
   }
 
@@ -128,13 +130,17 @@ class _NowPlayingScreenState extends ConsumerState<NowPlayingScreen> with Ticker
   startPlayer()async{
     _position = _slider;
     audioCache.prefix = "asset";
-    audioPlayer.onPlayerStateChanged.listen((state) {
+    audioPlayer.onPlayerStateChanged.listen((state) async {
       issongplaying = state == PlayerState.playing;
       if(mounted){
         setState((){});
       }
       if(_duration.inSeconds.toInt() == _position.inSeconds.toInt() || (_duration.inSeconds.toInt() - 1 == _position.inSeconds.toInt())) {
-        if(mounted){
+
+       await audioPlayer.stop();
+        pausePlayMethod();
+
+       /* if(mounted){
           setState(() {
             if(setDuration > 0){
               setDuration -= _duration.inSeconds.toInt();
@@ -152,7 +158,7 @@ class _NowPlayingScreenState extends ConsumerState<NowPlayingScreen> with Ticker
               }
             }
           });
-        }
+        }*/
       }
       if(mounted){
         if(playPouse){
@@ -177,6 +183,7 @@ class _NowPlayingScreenState extends ConsumerState<NowPlayingScreen> with Ticker
    }
   }
   pausePlayMethod()async{
+   setSongDuration(sliderEnd.toInt(),initValue: sliderInitial);
     if(issongplaying){
       await audioPlayer.pause();
       print("pause");
@@ -324,13 +331,13 @@ class _NowPlayingScreenState extends ConsumerState<NowPlayingScreen> with Ticker
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   CustomText(
-                    text: '${_position.inSeconds ~/ 60} : ${(_position.inSeconds % 60).toInt()}',
+                    text: '${sliderInitial}',
                     fontSize: 10,
                     color: blackColor2,
                     fontWeight: FontWeight.w700,
                   ),
                   CustomText(
-                    text: '${_duration.inSeconds ~/ 60} : ${(_duration.inSeconds % 60).toInt()}',
+                    text: '${sliderEnd}',
                     fontSize: 10,
                     color: blackColor2,
                     fontWeight: FontWeight.w700,
@@ -346,25 +353,15 @@ class _NowPlayingScreenState extends ConsumerState<NowPlayingScreen> with Ticker
                     trackShape: RectangularSliderTrackShape(),
                     thumbShape: RoundSliderThumbShape(enabledThumbRadius: 10)),
                 child: Slider(
-                    value: _position.inSeconds.toDouble(),
+                    value: sliderInitial,
                     min: 0,
-                    max: _duration.inSeconds.toDouble(),
-                    divisions: 100,
+                    max: sliderEnd,
+                    divisions: 1000,
                     activeColor: primaryPinkColor,
                     inactiveColor: primaryGreyColor2,
                     onChanged: (double newValue) async{
                       print("slider");
-                      if(_position.inSeconds.toInt()>=_duration.inSeconds.toInt()){
-                        String url = ref.watch(addProvider).musicList[index].musicFile;
-                        await audioPlayer.play(AssetSource(url));
-                      }
-                      await audioPlayer.seek(Duration(seconds: newValue.toInt()));
-                      await audioPlayer.resume();
-                      if(_position.inSeconds.toInt()<_duration.inSeconds.toInt()){
-                        String url = ref.watch(addProvider).musicList[index].musicFile;
-                        await audioPlayer.play(AssetSource(url));
-                        print("play less");
-                      }
+                     updateSlider(newValue);
                       setState(() {});
                     },
                     semanticFormatterCallback: (double newValue) {
@@ -713,8 +710,11 @@ class _NowPlayingScreenState extends ConsumerState<NowPlayingScreen> with Ticker
                                   setDuration = 1;
                                   selectedTime = check?0:newValue.toInt();
                                   setDuration = selectedTimes[selectedTime];
-                                  setDuration *= 60;
+
+                                  setDuration *=60;
+                                  setSongDuration(setDuration);
                                   print("index $selectedTime");
+
                                 });
                                 setState(() {});
                               },
@@ -776,6 +776,37 @@ class _NowPlayingScreenState extends ConsumerState<NowPlayingScreen> with Ticker
           });
         }
       }
+    });
+  }
+
+  var sliderInitial =0.0;
+  var sliderEnd =2.0;
+
+  Timer? sliderTimer;
+
+  void setSongDuration(int setDuration, {double initValue=0}) {
+    sliderInitial=initValue;
+    sliderEnd=setDuration.toDouble();
+    if(sliderTimer!=null){
+      sliderTimer!.cancel();
+    }
+    sliderTimer= Timer.periodic(Duration(seconds: 1), (timer) {
+      sliderInitial++;
+      if(sliderEnd==sliderInitial){
+        timer.cancel();
+        sliderInitial=0.0;
+        audioPlayer.stop();
+      }
+      setState(() {
+
+      });
+    });
+  }
+
+  void updateSlider(double newValue) {
+    sliderInitial=newValue;
+    setState(() {
+
     });
   }
 }

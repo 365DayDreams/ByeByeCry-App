@@ -1,6 +1,7 @@
 
 import 'dart:io';
 
+import 'package:bye_bye_cry_new/initial_home_page.dart';
 import 'package:bye_bye_cry_new/purchase/purchas_listner.dart';
 import 'package:flutter/material.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
@@ -27,11 +28,26 @@ getOffring(){
   Purchases.getOfferings().then((value) {
 
     offerings = value;
+    Package product= offerings!.all["premium"]!
+        .availablePackages
+        .firstWhere(
+            (element) =>
+        element.storeProduct.identifier == "annual_sub_1");
+
+    annul=product.storeProduct.priceString;
+
+     product= offerings!.all["premium"]!
+        .availablePackages
+        .firstWhere(
+            (element) =>
+        element.storeProduct.identifier == "premium");
+    month=product.storeProduct.priceString;
 
     setState(() {});
   });
 }
-
+var annul="";
+var month="";
 
   @override
   Widget build(BuildContext context) {
@@ -65,8 +81,38 @@ getOffring(){
 
 
             InkWell(
-              onTap: (){
+              onTap: () async {
 
+                print("offerings");
+                print(offerings!.all["premium"]!
+                    .availablePackages);
+                Package product= offerings!.all["premium"]!
+                    .availablePackages
+                    .firstWhere(
+                        (element) =>
+                    element.storeProduct.identifier == "annual_sub_1");
+
+                print('product====');
+                print(product);
+                CustomerInfo customerInfo=
+                    await Purchases.purchasePackage(
+                  product,
+
+                );
+                try {
+                  if (customerInfo.entitlements.all["premium"] != null &&
+                      customerInfo.entitlements.all["premium"]!.isActive ==
+                          true) {
+                    PurchasListener.isSubscribe=true;
+                    //success purchas
+                    Navigator.push(context, MaterialPageRoute(builder: (_)=> InitialHomePage()));
+                  }else{
+                    //subscription failed
+                  }
+
+                } catch (e) {
+                  //any error
+                }
               },
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -83,7 +129,7 @@ getOffring(){
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      children: const [
+                      children:  [
                         Padding(
                           padding: EdgeInsets.all(8.0),
                           child: Text("Annual",style: TextStyle(
@@ -98,7 +144,7 @@ getOffring(){
                         ),
                         Padding(
                           padding: EdgeInsets.only(top: 4.0,bottom: 10),
-                          child: Text("Then bdt 5000 per month bill annulay ",style: TextStyle(
+                          child: Text("Then bdt $annul bill annulay ",style: TextStyle(
                               fontSize: 14,color: Colors.grey
                           ),),
                         ),
@@ -161,7 +207,7 @@ getOffring(){
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      children: const [
+                      children:  [
                         Padding(
                           padding: EdgeInsets.all(8.0),
                           child: Text("Monthy",style: TextStyle(
@@ -176,7 +222,7 @@ getOffring(){
                         ),
                         Padding(
                           padding: EdgeInsets.only(top: 4.0,bottom: 10),
-                          child: Text("Then bdt 5000 per month bill annulay ",style: TextStyle(
+                          child: Text("Then bdt $month per month bill annulay ",style: TextStyle(
                               fontSize: 14,color: Colors.grey
                           ),),
                         ),

@@ -395,7 +395,8 @@ class _PlaylistMixSoundState extends ConsumerState<PlaylistMixSound>
         onPressedButton: null,
         onPressed: widget.onPressed,
       ),
-      body: PageView.builder(
+      body:
+      PageView.builder(
        padEnds: false,
         controller: pageController,
         onPageChanged: (value) async {

@@ -247,7 +247,8 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
                 setState(() {});
               }
             }),
-        body: SingleChildScrollView(
+        body:
+        SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
