@@ -99,6 +99,7 @@ var month="";
                   product,
 
                 );
+
                 try {
                   if (customerInfo.entitlements.all["premium"] != null &&
                       customerInfo.entitlements.all["premium"]!.isActive ==
