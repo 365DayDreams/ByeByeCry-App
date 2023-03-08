@@ -13,13 +13,11 @@ class PurchasListener{
   static bool isSubscribe=false;
 
   static init() async {
+
     Purchases.configure( PurchasesConfiguration(
         StoreConfig.instance.apiKey));
 
     await Purchases.setLogLevel(LogLevel.debug);
-    await Purchases.enableAdServicesAttributionTokenCollection();
-
-
 
     CustomerInfo customerInfo = await Purchases.getCustomerInfo();
 
