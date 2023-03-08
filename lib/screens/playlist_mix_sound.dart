@@ -269,6 +269,7 @@ class _PlaylistMixSoundState extends ConsumerState<PlaylistMixSound>
     if (issongplaying1 || issongplaying2) {
       await audioPlayer1.pause();
       await audioPlayer2.pause();
+      pauseSliderTimmer();
     } else {
       String url1 = ref
               .watch(playlistProvider)
@@ -286,6 +287,7 @@ class _PlaylistMixSoundState extends ConsumerState<PlaylistMixSound>
           "";
       await audioPlayer1.play(AssetSource(url1));
       await audioPlayer2.play(AssetSource(url2));
+      resumeSliderTimmer();
     }
     if (mounted) {
       setState(() {});
@@ -309,6 +311,7 @@ class _PlaylistMixSoundState extends ConsumerState<PlaylistMixSound>
         "";
     await audioPlayer1.play(AssetSource(url1));
     await audioPlayer2.play(AssetSource(url2));
+    pauseSliderTimmer();
     if (mounted) {
       setState(() {});
     }
@@ -508,15 +511,13 @@ class _PlaylistMixSoundState extends ConsumerState<PlaylistMixSound>
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       CustomText(
-                        text:
-                            '${_position.inSeconds ~/ 60} : ${(_position.inSeconds % 60).toInt()}',
+                        text: '${getHumanTimeBySecond(sliderInitial.toInt())}',
                         fontSize: 10,
                         color: blackColor2,
                         fontWeight: FontWeight.w700,
                       ),
                       CustomText(
-                        text:
-                            '${_duration.inSeconds ~/ 60} : ${(_duration.inSeconds % 60).toInt()}',
+                        text: '${getHumanTimeBySecond(sliderEnd.toInt())}',
                         fontSize: 10,
                         color: blackColor2,
                         fontWeight: FontWeight.w700,
@@ -530,43 +531,67 @@ class _PlaylistMixSoundState extends ConsumerState<PlaylistMixSound>
                   child: SliderTheme(
                     data: const SliderThemeData(
                         trackShape: RectangularSliderTrackShape(),
-                        thumbShape:
-                            RoundSliderThumbShape(enabledThumbRadius: 10)),
+                        thumbShape: RoundSliderThumbShape(enabledThumbRadius: 10)),
                     child: Slider(
-                        value: _position.inSeconds.toDouble() >
-                                _position2.inSeconds.toDouble()
-                            ? _position.inSeconds.toDouble()
-                            : _position2.inSeconds.toDouble(),
+                        value: sliderInitial,
                         min: 0,
-                        max: _duration.inSeconds.toDouble() >
-                                _duration2.inSeconds.toDouble()
-                            ? _duration.inSeconds.toDouble()
-                            : _duration2.inSeconds.toDouble(),
-                        divisions: 100,
+                        max: sliderEnd,
+                        divisions: 350,
                         activeColor: primaryPinkColor,
                         inactiveColor: primaryGreyColor2,
-                        onChanged: (double newValue) async {
-                          print("aaaa${_duration.inSeconds}");
-                          print("nnnnn${_position.inSeconds}");
-                          if (newValue.toInt() <= _duration.inSeconds) {
-                            await audioPlayer1
-                                .seek(Duration(seconds: newValue.toInt()));
-                          }
-                          if (newValue.toInt() <= _duration2.inSeconds) {
-                            await audioPlayer2
-                                .seek(Duration(seconds: newValue.toInt()));
-                          }
-                          await audioPlayer1.resume();
-                          await audioPlayer2.resume();
-                          if (mounted) {
-                            setState(() {});
-                          }
+                        onChanged: (double newValue) async{
+                          print("slider");
+                          updateSlider(newValue);
+                          setState(() {});
                         },
                         semanticFormatterCallback: (double newValue) {
                           return '${newValue.round()} dollars';
                         }),
                   ),
                 ),
+                // SizedBox(
+                //   //color: Colors.green,
+                //   width: width * .95,
+                //   child: SliderTheme(
+                //     data: const SliderThemeData(
+                //         trackShape: RectangularSliderTrackShape(),
+                //         thumbShape:
+                //             RoundSliderThumbShape(enabledThumbRadius: 10)),
+                //     child: Slider(
+                //         value: _position.inSeconds.toDouble() >
+                //                 _position2.inSeconds.toDouble()
+                //             ? _position.inSeconds.toDouble()
+                //             : _position2.inSeconds.toDouble(),
+                //         min: 0,
+                //         max: _duration.inSeconds.toDouble() >
+                //                 _duration2.inSeconds.toDouble()
+                //             ? _duration.inSeconds.toDouble()
+                //             : _duration2.inSeconds.toDouble(),
+                //         divisions: 100,
+                //         activeColor: primaryPinkColor,
+                //         inactiveColor: primaryGreyColor2,
+                //         onChanged: (double newValue) async {
+                //           print("aaaa${_duration.inSeconds}");
+                //           print("nnnnn${_position.inSeconds}");
+                //           if (newValue.toInt() <= _duration.inSeconds) {
+                //             await audioPlayer1
+                //                 .seek(Duration(seconds: newValue.toInt()));
+                //           }
+                //           if (newValue.toInt() <= _duration2.inSeconds) {
+                //             await audioPlayer2
+                //                 .seek(Duration(seconds: newValue.toInt()));
+                //           }
+                //           await audioPlayer1.resume();
+                //           await audioPlayer2.resume();
+                //           if (mounted) {
+                //             setState(() {});
+                //           }
+                //         },
+                //         semanticFormatterCallback: (double newValue) {
+                //           return '${newValue.round()} dollars';
+                //         }),
+                //   ),
+                // ),
                 Container(
                   color: Colors.transparent,
                   child: Padding(
@@ -635,6 +660,8 @@ class _PlaylistMixSoundState extends ConsumerState<PlaylistMixSound>
                                 await audioPlayer2.play(AssetSource(url2));
                               }
                               playPouse = !playPouse;
+                              resumeSliderTimmer();
+                              pauseSliderTimmer();
                               if (mounted) {
                                 setState(() {});
                               }
@@ -932,11 +959,36 @@ class _PlaylistMixSoundState extends ConsumerState<PlaylistMixSound>
                                   text:
                                       "${(selectedTimes[selectedTime] ~/ 60).toString().padLeft(2, "0")} : ${(selectedTimes[selectedTime] % 60).toString().padLeft(2, "0")}")),
                         ),
+                        // SliderTheme(
+                        //   data: const SliderThemeData(
+                        //       trackShape: RectangularSliderTrackShape(),
+                        //       thumbShape: RoundSliderThumbShape(
+                        //           enabledThumbRadius: 10)),
+                        //   child: Slider.adaptive(
+                        //       value: selectedTime.toDouble(),
+                        //       min: 0,
+                        //       max: 7,
+                        //       divisions: 7,
+                        //       activeColor: primaryPinkColor,
+                        //       inactiveColor: primaryGreyColor2,
+                        //       onChanged: (double newValue) async {
+                        //         state(() {
+                        //           setDuration = 1;
+                        //           selectedTime = check ? 0 : newValue.toInt();
+                        //           setDuration = selectedTimes[selectedTime];
+                        //           setDuration *= 60;
+                        //           print("index $selectedTime");
+                        //         });
+                        //         setState(() {});
+                        //       },
+                        //       semanticFormatterCallback: (double newValue) {
+                        //         return '${newValue.round()} dollars';
+                        //       }),
+                        // ),
                         SliderTheme(
                           data: const SliderThemeData(
                               trackShape: RectangularSliderTrackShape(),
-                              thumbShape: RoundSliderThumbShape(
-                                  enabledThumbRadius: 10)),
+                              thumbShape: RoundSliderThumbShape(enabledThumbRadius: 10)),
                           child: Slider.adaptive(
                               value: selectedTime.toDouble(),
                               min: 0,
@@ -944,13 +996,16 @@ class _PlaylistMixSoundState extends ConsumerState<PlaylistMixSound>
                               divisions: 7,
                               activeColor: primaryPinkColor,
                               inactiveColor: primaryGreyColor2,
-                              onChanged: (double newValue) async {
+                              onChanged: (double newValue) async{
                                 state(() {
                                   setDuration = 1;
-                                  selectedTime = check ? 0 : newValue.toInt();
+                                  selectedTime = check?0:newValue.toInt();
                                   setDuration = selectedTimes[selectedTime];
-                                  setDuration *= 60;
+
+                                  setDuration *=60;
+                                  setSongDuration(setDuration);
                                   print("index $selectedTime");
+
                                 });
                                 setState(() {});
                               },
@@ -1411,5 +1466,64 @@ class _PlaylistMixSoundState extends ConsumerState<PlaylistMixSound>
         },
       ),
     );
+  }
+  String getHumanTimeBySecond(int seconds){
+    int hours = (seconds / 3600).floor();
+    int minutes = ((seconds - (hours * 3600)) / 60).floor();
+    int secs = seconds - (hours * 3600) - (minutes * 60);
+
+    String hoursStr = (hours < 10) ? "0$hours" : hours.toString();
+    String minutesStr = (minutes < 10) ? "0$minutes" : minutes.toString();
+    String secondsStr = (secs < 10) ? "0$secs" : secs.toString();
+
+    return "$hoursStr:$minutesStr:$secondsStr";
+  }
+
+  var sliderInitial =0.0;
+  var sliderEnd =120.0;
+
+  Timer? sliderTimer;
+
+  void setSongDuration(int setDuration, {double initValue=0}) {
+    sliderInitial=initValue;
+    sliderEnd=setDuration.toDouble();
+    if(sliderTimer!=null){
+      sliderTimer!.cancel();
+    }
+    sliderTimer=Timer.periodic(Duration(seconds: 1), (timer) {
+      if(!mounted){
+        timer.cancel();
+      }
+
+
+      if(sliderEnd<=sliderInitial){
+        timer.cancel();
+        sliderInitial=0.0;
+        audioPlayer1.stop();
+        audioPlayer2.stop();
+      }
+      sliderInitial++;
+      setState(() {
+
+      });
+    });
+  }
+
+  void updateSlider(double newValue) {
+    sliderInitial=newValue;
+    setState(() {
+
+    });
+  }
+
+  void pauseSliderTimmer() {
+    print("=========${sliderTimer!.isActive}");
+    print("=========");
+    sliderTimer!.cancel();
+
+  }
+
+  void resumeSliderTimmer() {
+    setSongDuration(sliderEnd.toInt(), initValue: sliderInitial);
   }
 }

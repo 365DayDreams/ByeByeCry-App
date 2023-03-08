@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:bye_bye_cry_new/initial_home_page.dart';
 import 'package:bye_bye_cry_new/purchase/purchas_listner.dart';
+import 'package:bye_bye_cry_new/start_page.dart';
 import 'package:flutter/material.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 
@@ -106,8 +107,10 @@ var month="";
                           true) {
                     PurchasListener.isSubscribe=true;
                     //success purchas
-                    Navigator.push(context, MaterialPageRoute(builder: (_)=> InitialHomePage()));
+                    Navigator.push(context, MaterialPageRoute(builder: (_)=> StartPage()));
                   }else{
+                    Navigator.push(context, MaterialPageRoute(builder: (_)=> StartPage()));
+
                     //subscription failed
                   }
 
@@ -183,8 +186,12 @@ var month="";
                      customerInfo.entitlements.all["premium"]!.isActive ==
                          true) {
                    PurchasListener.isSubscribe=true;
+                   Navigator.push(context, MaterialPageRoute(builder: (_)=> StartPage()));
+
                    //success purchas
                  }else{
+                   Navigator.push(context, MaterialPageRoute(builder: (_)=> StartPage()));
+
                    //subscription failed
                  }
 
