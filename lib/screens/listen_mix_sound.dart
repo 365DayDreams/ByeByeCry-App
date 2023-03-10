@@ -5,13 +5,11 @@ import 'package:bye_bye_cry_new/compoment/shared/custom_image.dart';
 import 'package:bye_bye_cry_new/compoment/shared/custom_svg.dart';
 import 'package:bye_bye_cry_new/screens/models/music_models.dart';
 import 'package:bye_bye_cry_new/screens/provider/mix_music_provider.dart';
-import 'package:bye_bye_cry_new/screens/provider/playlistProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screen_wake/flutter_screen_wake.dart';
 import 'package:perfect_volume_control/perfect_volume_control.dart';
-import '../compoment/bottom_sheet.dart';
 import '../compoment/shared/custom_app_bar.dart';
 import '../compoment/shared/custom_text.dart';
 import '../compoment/shared/screen_size.dart';
@@ -225,12 +223,14 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound> with TickerProv
     if(issongplaying1 || issongplaying2){
       await audioPlayer1.pause();
       await audioPlayer2.pause();
+      pauseSliderTimmer();
     }else{
       String url1 = ref.watch(mixMusicProvider).combinationList[musicIndex].first?.musicFile??"";
       String url2 = ref.watch(mixMusicProvider).combinationList[musicIndex].second?.musicFile??"";
       print("${audioPlayer1.getDuration().then((value) => print("duration value$value"))}");
       await audioPlayer1.play(AssetSource(url1));
       await audioPlayer2.play(AssetSource(url2));
+      resumeSliderTimmer();
     }
     if(mounted){
       setState(() {});
@@ -252,46 +252,7 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound> with TickerProv
     }
     print("duration2 ${_duration2.inSeconds}  duration${_duration.inSeconds}");
   }
-/*if(_duration.inSeconds.toInt() == _position.inSeconds.toInt() || (_duration.inSeconds.toInt() - 1 == _position.inSeconds.toInt())) {
-        if(mounted){
-          setState(() {
-            if(setDuration>0){
-              setDuration -= _duration.inSeconds.toInt();
-            }
-          });
-        }
-      }*/
-  /* if(!issongplaying){
-          if(_duration.inSeconds.toInt() == _position.inSeconds.toInt() || (_duration.inSeconds.toInt() - 1 == _position.inSeconds.toInt())){
-            if(mounted){
-              if(index < 1){
-                index = 1;
-                print("index++ $index");
-                pausePlayMethod();
-              }else{
-                index = 0;
-              }
-              setState(() {});
-            }
-          }else{
-            print("else duration ${_duration.inSeconds.toInt()}");
-          }
-      }
-      if(mounted){
-        if(playPouse){
-          if(_duration.inSeconds.toInt() == _position.inSeconds.toInt() || (_duration.inSeconds.toInt() - 1 == _position.inSeconds.toInt())){
-            if(!issongplaying){
-              print("not stop");
-              if(mounted){
-                setState((){});
-              }
-              if(setDuration > 0){
-                pausePlayMethod();
-              }
-            }
-          }
-        }
-      }*/
+
   @override
   Widget build(BuildContext context) {
     final height = ScreenSize(context).height;
@@ -391,17 +352,29 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound> with TickerProv
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   CustomText(
-                    text: '${_position.inSeconds ~/ 60} : ${(_position.inSeconds % 60).toInt()}',
+                    text: '${getHumanTimeBySecond(sliderInitial.toInt())}',
                     fontSize: 10,
                     color: blackColor2,
                     fontWeight: FontWeight.w700,
                   ),
                   CustomText(
-                    text: '${_duration.inSeconds ~/ 60} : ${(_duration.inSeconds % 60).toInt()}',
+                    text: '${getHumanTimeBySecond(sliderEnd.toInt())}',
                     fontSize: 10,
                     color: blackColor2,
                     fontWeight: FontWeight.w700,
                   ),
+                  // CustomText(
+                  //   text: '${_position.inSeconds ~/ 60} : ${(_position.inSeconds % 60).toInt()}',
+                  //   fontSize: 10,
+                  //   color: blackColor2,
+                  //   fontWeight: FontWeight.w700,
+                  // ),
+                  // CustomText(
+                  //   text: '${_duration.inSeconds ~/ 60} : ${(_duration.inSeconds % 60).toInt()}',
+                  //   fontSize: 10,
+                  //   color: blackColor2,
+                  //   fontWeight: FontWeight.w700,
+                  // ),
                 ],
               ),
             ),
@@ -413,30 +386,54 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound> with TickerProv
                     trackShape: RectangularSliderTrackShape(),
                     thumbShape: RoundSliderThumbShape(enabledThumbRadius: 10)),
                 child: Slider(
-                    value: position.inSeconds.toDouble() < _position2.inSeconds.toDouble()?_position.inSeconds.toDouble():_position2.inSeconds.toDouble(),
+                    value: sliderInitial,
                     min: 0,
-                    max: _duration.inSeconds.toDouble() < _duration2.inSeconds.toDouble()?_duration.inSeconds.toDouble():_duration2.inSeconds.toDouble(),
-                    divisions: 100,
+                    max: sliderEnd,
+                    divisions: 350,
                     activeColor: primaryPinkColor,
                     inactiveColor: primaryGreyColor2,
                     onChanged: (double newValue) async{
-                      if(newValue.toInt() <= _duration.inSeconds){
-                        await audioPlayer1.seek(Duration(seconds: newValue.toInt()));
-                      }
-                      if(newValue.toInt() <= _duration2.inSeconds){
-                        await audioPlayer2.seek(Duration(seconds: newValue.toInt()));
-                      }
-                      await audioPlayer1.resume();
-                      await audioPlayer2.resume();
-                      if(mounted){
-                        setState(() {});
-                      }
+                      print("slider");
+                      updateSlider(newValue);
+                      setState(() {});
                     },
                     semanticFormatterCallback: (double newValue) {
                       return '${newValue.round()} dollars';
                     }),
               ),
             ),
+            // SizedBox(
+            //   //color: Colors.green,
+            //   width: width * .95,
+            //   child: SliderTheme(
+            //     data: const SliderThemeData(
+            //         trackShape: RectangularSliderTrackShape(),
+            //         thumbShape: RoundSliderThumbShape(enabledThumbRadius: 10)),
+            //     child: Slider(
+            //         value: position.inSeconds.toDouble() < _position2.inSeconds.toDouble()?_position.inSeconds.toDouble():_position2.inSeconds.toDouble(),
+            //         min: 0,
+            //         max: _duration.inSeconds.toDouble() < _duration2.inSeconds.toDouble()?_duration.inSeconds.toDouble():_duration2.inSeconds.toDouble(),
+            //         divisions: 100,
+            //         activeColor: primaryPinkColor,
+            //         inactiveColor: primaryGreyColor2,
+            //         onChanged: (double newValue) async{
+            //           if(newValue.toInt() <= _duration.inSeconds){
+            //             await audioPlayer1.seek(Duration(seconds: newValue.toInt()));
+            //           }
+            //           if(newValue.toInt() <= _duration2.inSeconds){
+            //             await audioPlayer2.seek(Duration(seconds: newValue.toInt()));
+            //           }
+            //           await audioPlayer1.resume();
+            //           await audioPlayer2.resume();
+            //           if(mounted){
+            //             setState(() {});
+            //           }
+            //         },
+            //         semanticFormatterCallback: (double newValue) {
+            //           return '${newValue.round()} dollars';
+            //         }),
+            //   ),
+            // ),
             Container(
               color: Colors.transparent,
               child: Padding(
@@ -486,11 +483,13 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound> with TickerProv
                           if(playPouse){
                             await audioPlayer1.pause();
                             await audioPlayer2.pause();
+                            pauseSliderTimmer();
                           }else{
                             String url1 = ref.watch(mixMusicProvider).combinationList[musicIndex].first?.musicFile??"";
                             String url2 = ref.watch(mixMusicProvider).combinationList[musicIndex].second?.musicFile??"";
                             await audioPlayer1.play(AssetSource(url1));
                             await audioPlayer2.play(AssetSource(url2));
+                            resumeSliderTimmer();
                           }
                           playPouse = !playPouse;
                           if(mounted){setState(() {});}
@@ -773,8 +772,11 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound> with TickerProv
                                 setDuration = 1;
                                 selectedTime = check?0:newValue.toInt();
                                 setDuration = selectedTimes[selectedTime];
-                                setDuration *= 60;
+
+                                setDuration *=60;
+                                setSongDuration(setDuration);
                                 print("index $selectedTime");
+
                               });
                               setState(() {});
                             },
@@ -782,6 +784,31 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound> with TickerProv
                               return '${newValue.round()} dollars';
                             }),
                       ),
+                      // SliderTheme(
+                      //   data: const SliderThemeData(
+                      //       trackShape: RectangularSliderTrackShape(),
+                      //       thumbShape: RoundSliderThumbShape(enabledThumbRadius: 10)),
+                      //   child: Slider.adaptive(
+                      //       value: selectedTime.toDouble(),
+                      //       min: 0,
+                      //       max: 7,
+                      //       divisions: 7,
+                      //       activeColor: primaryPinkColor,
+                      //       inactiveColor: primaryGreyColor2,
+                      //       onChanged: (double newValue) async{
+                      //         state(() {
+                      //           setDuration = 1;
+                      //           selectedTime = check?0:newValue.toInt();
+                      //           setDuration = selectedTimes[selectedTime];
+                      //           setDuration *= 60;
+                      //           print("index $selectedTime");
+                      //         });
+                      //         setState(() {});
+                      //       },
+                      //       semanticFormatterCallback: (double newValue) {
+                      //         return '${newValue.round()} dollars';
+                      //       }),
+                      // ),
                       SizedBox(
                         width: width * 0.59,
                         child: Row(
@@ -840,4 +867,66 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound> with TickerProv
       }
     });
   }
+
+
+  String getHumanTimeBySecond(int seconds){
+    int hours = (seconds / 3600).floor();
+    int minutes = ((seconds - (hours * 3600)) / 60).floor();
+    int secs = seconds - (hours * 3600) - (minutes * 60);
+
+    String hoursStr = (hours < 10) ? "0$hours" : hours.toString();
+    String minutesStr = (minutes < 10) ? "0$minutes" : minutes.toString();
+    String secondsStr = (secs < 10) ? "0$secs" : secs.toString();
+
+    return "$hoursStr:$minutesStr:$secondsStr";
+  }
+
+  var sliderInitial =0.0;
+  var sliderEnd =120.0;
+
+  Timer? sliderTimer;
+
+  void setSongDuration(int setDuration, {double initValue=0}) {
+    sliderInitial=initValue;
+    sliderEnd=setDuration.toDouble();
+    if(sliderTimer!=null){
+      sliderTimer!.cancel();
+    }
+    sliderTimer=Timer.periodic(Duration(seconds: 1), (timer) {
+      if(!mounted){
+        timer.cancel();
+      }
+
+
+      if(sliderEnd<=sliderInitial){
+        timer.cancel();
+        sliderInitial=0.0;
+        audioPlayer1.stop();
+        audioPlayer2.stop();
+      }
+      sliderInitial++;
+      setState(() {
+
+      });
+    });
+  }
+
+  void updateSlider(double newValue) {
+    sliderInitial=newValue;
+    setState(() {
+
+    });
+  }
+
+  void pauseSliderTimmer() {
+    print("=========${sliderTimer!.isActive}");
+    print("=========");
+    sliderTimer!.cancel();
+
+  }
+
+  void resumeSliderTimmer() {
+    setSongDuration(sliderEnd.toInt(), initValue: sliderInitial);
+  }
+
 }

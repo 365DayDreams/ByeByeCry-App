@@ -4,6 +4,9 @@ import 'package:bye_bye_cry_new/compoment/shared/custom_image.dart';
 import 'package:bye_bye_cry_new/compoment/shared/custom_svg.dart';
 import 'package:bye_bye_cry_new/compoment/shared/custom_text.dart';
 import 'package:bye_bye_cry_new/compoment/shared/screen_size.dart';
+import 'package:bye_bye_cry_new/screens/listen_mix_sound.dart';
+import 'package:bye_bye_cry_new/screens/models/music_models.dart';
+import 'package:bye_bye_cry_new/screens/now_palying_screen.dart';
 import 'package:bye_bye_cry_new/screens/playlist_mix_sound.dart';
 import 'package:bye_bye_cry_new/screens/provider/add_music_provider.dart';
 import 'package:bye_bye_cry_new/screens/provider/mix_music_provider.dart';
@@ -14,18 +17,16 @@ import '../compoment/shared/custom_app_bar.dart';
 import '../compoment/shared/outline_button.dart';
 import '../compoment/utils/color_utils.dart';
 import '../compoment/utils/image_link.dart';
-import 'listen_mix_sound.dart';
-import 'models/music_models.dart';
-import 'now_palying_screen.dart';
 
-class SoundScreen extends ConsumerStatefulWidget {
-  const SoundScreen({Key? key}) : super(key: key);
+
+class SoundDetailsScreen extends ConsumerStatefulWidget {
+  const SoundDetailsScreen({Key? key}) : super(key: key);
 
   @override
-  ConsumerState<SoundScreen> createState() => _SoundScreenState();
+  ConsumerState<SoundDetailsScreen> createState() => _SoundDetailsScreenState();
 }
 
-class _SoundScreenState extends ConsumerState<SoundScreen> {
+class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen> {
 
   TextEditingController searchController = TextEditingController();
   bool changeToPlayNow = false;
@@ -101,34 +102,34 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
     }
   }
   playMusic({required String id}) async{
-      print("playlist play button click");
-      int _index = ref.watch(addProvider).musicList.indexWhere((element) => element.id == id);
-      if(_index >= 0){
-        if(_index == index){
-          if(issongplaying){
-            await audioPlayer.pause();
-          }else{
-            String url = ref.watch(addProvider).musicList[index].musicFile;
-            await audioPlayer.play(AssetSource(url));
-          }
+    print("playlist play button click");
+    int _index = ref.watch(addProvider).musicList.indexWhere((element) => element.id == id);
+    if(_index >= 0){
+      if(_index == index){
+        if(issongplaying){
+          await audioPlayer.pause();
         }else{
-          index = _index;
           String url = ref.watch(addProvider).musicList[index].musicFile;
           await audioPlayer.play(AssetSource(url));
         }
+      }else{
+        index = _index;
+        String url = ref.watch(addProvider).musicList[index].musicFile;
+        await audioPlayer.play(AssetSource(url));
       }
-      if(mounted){
-        setState(() {});
-      }
+    }
+    if(mounted){
+      setState(() {});
+    }
   }
   initialized(){
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       if(mounted){
         if(ref.watch(mixMusicProvider).changeToMixPlayNow){
-            mixMusicId = ref.watch(mixMusicProvider).musicId;
-            if(mounted){
-              ref.read(mixMusicProvider).setMusicId();
-            }
+          mixMusicId = ref.watch(mixMusicProvider).musicId;
+          if(mounted){
+            ref.read(mixMusicProvider).setMusicId();
+          }
         }
       }
       if(mounted){
@@ -184,23 +185,23 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
   Widget build(BuildContext context) {
     return changeToPlayNow?
     NowPlayingScreen(
-        musicId: musicId,
-        onPressed: (){
-          if(ref.watch(addProvider).playFromPlayList){
-            if(mounted){
-              ref.read(addProvider).changePage(3);
-            }
-            if(mounted){
-              changeToPlayNow = false;
-              setState(() {});
-            }
-          } else{
-            setState(() {
-              changeToPlayNow = false;
-            });
+      musicId: musicId,
+      onPressed: (){
+        if(ref.watch(addProvider).playFromPlayList){
+          if(mounted){
+            ref.read(addProvider).changePage(3);
           }
+          if(mounted){
+            changeToPlayNow = false;
+            setState(() {});
+          }
+        } else{
+          setState(() {
+            changeToPlayNow = false;
+          });
+        }
 
-        },
+      },
     ):
     changeToMixPlayNow?
     ListenMixSound(mixMusicModelId: mixMusicId,onPressed: (){
@@ -226,123 +227,123 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
       }
     },):
     Scaffold(
-        appBar: CustomAppBar(
+      appBar: CustomAppBar(
 
 
-            title: deleteShow?'Edit My Sounds':'My Sounds',
+          title: deleteShow?'Edit My Sounds':'My Sounds',
 
-            actionTitle: deleteShow?"":'Edit',
-            onPressedButton: (){
-              deleteShow = true;
-              if(mounted){
-                setState(() {});
-              }
-            },
-            onPressed: () {
-              deleteShow = false;
-              if(ref.watch(addProvider).showAddPlaylist){
-                ref.read(addProvider).showPlusPlaylist();
-              }
-              if(mounted){
-                setState(() {});
-              }
-            }),
-        body:
-        SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: Container(
-                  margin: const EdgeInsets.all(8),
-                  color: secondaryWhiteColor2,
-                  child: ListTile(
-                    dense: true,
-                    title: TextField(
-                      controller: searchController,
-                      decoration: const InputDecoration(
-                          hintStyle: TextStyle(color: blackColorA0,fontSize: 14,fontWeight: FontWeight.w400),
-                          hintText: 'Search music', border: InputBorder.none
-                      ),
+          actionTitle: deleteShow?"":'Edit',
+          onPressedButton: (){
+            deleteShow = true;
+            if(mounted){
+              setState(() {});
+            }
+          },
+          onPressed: () {
+            deleteShow = false;
+            if(ref.watch(addProvider).showAddPlaylist){
+              ref.read(addProvider).showPlusPlaylist();
+            }
+            if(mounted){
+              setState(() {});
+            }
+          }),
+      body:
+      SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Container(
+                margin: const EdgeInsets.all(8),
+                color: secondaryWhiteColor2,
+                child: ListTile(
+                  dense: true,
+                  title: TextField(
+                    controller: searchController,
+                    decoration: const InputDecoration(
+                        hintStyle: TextStyle(color: blackColorA0,fontSize: 14,fontWeight: FontWeight.w400),
+                        hintText: 'Search music', border: InputBorder.none
                     ),
-                    trailing: GestureDetector(onTap:(){},child: const CustomSvg(svg: "asset/images/search_icon.svg",)),
                   ),
+                  trailing: GestureDetector(onTap:(){},child: const CustomSvg(svg: "asset/images/search_icon.svg",)),
                 ),
-              ),//combinationList
-              Column(
-                  children: List.generate(
-                ref.watch(addProvider).musicList.isEmpty?0:ref.watch(addProvider).musicList.length,
-                (index) => Column(
-                  children: [
-                    Container(
-                      color: index % 2 == 0?Colors.transparent:pinkLightColor,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                        child: imageList(
-                          context: context,musicModel: ref.watch(addProvider).musicList[index]),
-                      ),
-                    ),// const SizedBox(height: 5,)
-                  ],
-                ),
-              )),// ref.watch(addProvider).showAddPlaylist?
-              ref.watch(addProvider).showAddPlaylist?const SizedBox(height: 15,):Column(
-                children: [
-                  Column(
-                      children: List.generate(
-                        ref.watch(mixMusicProvider).combinationList.isEmpty?0:ref.watch(mixMusicProvider).combinationList.length,
-                            (index) => Column(
-                          children: [
-                            Container(
-                              color: index % 2 == 0?Colors.transparent:pinkLightColor,
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                                child: mixImageList(
-                                    context: context,mixMusicModel: ref.watch(mixMusicProvider).combinationList[index]),
-                              ),
-                            ),// const SizedBox(height: 5,)
-                          ],
+              ),
+            ),//combinationList
+            Column(
+                children: List.generate(
+                  ref.watch(addProvider).musicList.isEmpty?0:ref.watch(addProvider).musicList.length,
+                      (index) => Column(
+                    children: [
+                      Container(
+                        color: index % 2 == 0?Colors.transparent:pinkLightColor,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                          child: imageList(
+                              context: context,musicModel: ref.watch(addProvider).musicList[index]),
                         ),
-                      )),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 25.0,vertical: 5),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Container(
-                          width: 60,
-                          // height: 50,
-                          padding: const EdgeInsets.all(10.0),
-                          decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(10),
+                      ),// const SizedBox(height: 5,)
+                    ],
+                  ),
+                )),// ref.watch(addProvider).showAddPlaylist?
+            ref.watch(addProvider).showAddPlaylist?const SizedBox(height: 15,):Column(
+              children: [
+                Column(
+                    children: List.generate(
+                      ref.watch(mixMusicProvider).combinationList.isEmpty?0:ref.watch(mixMusicProvider).combinationList.length,
+                          (index) => Column(
+                        children: [
+                          Container(
+                            color: index % 2 == 0?Colors.transparent:pinkLightColor,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                              child: mixImageList(
+                                  context: context,mixMusicModel: ref.watch(mixMusicProvider).combinationList[index]),
                             ),
-                            color: primaryPinkColor,
+                          ),// const SizedBox(height: 5,)
+                        ],
+                      ),
+                    )),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25.0,vertical: 5),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: 60,
+                        // height: 50,
+                        padding: const EdgeInsets.all(10.0),
+                        decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10),
                           ),
-                          child: const CustomImage(
-                            boxFit: BoxFit.fill,
-                            imageUrl: whitePlus,
-                            scale: 1,
-                          ),
+                          color: primaryPinkColor,
                         ),
-                        const SizedBox(
-                          width: 10,
+                        child: const CustomImage(
+                          boxFit: BoxFit.fill,
+                          imageUrl: whitePlus,
+                          scale: 1,
                         ),
-                        const CustomText(
-                          text: 'Mix Two Sounds',
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                          color: blackColor50,
-                        )
-                      ],
-                    ),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      const CustomText(
+                        text: 'Mix Two Sounds',
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: blackColor50,
+                      )
+                    ],
                   ),
-                  const SizedBox(height: 15,)
-                ],
-              )
-            ],
-          ),
+                ),
+                const SizedBox(height: 15,)
+              ],
+            )
+          ],
         ),
+      ),
     );
   }
 
@@ -384,8 +385,8 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
               children: [
                 Container(
                   decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.black.withOpacity(0.05)
+                      shape: BoxShape.circle,
+                      color: Colors.black.withOpacity(0.05)
                   ),
                   child: ref.read(addProvider).showAddPlaylist?GestureDetector(
                     onTap:()async {
@@ -393,7 +394,6 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
                       if(mounted){
                         playMusic(id: musicId);
                       }
-                      print("OK");
                     },
                     child: musicId == musicModel.id?Padding(
                       padding: const EdgeInsets.all(15.0),
@@ -415,9 +415,6 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
                     ),
                   ),
                 ),
-
-
-
                 ref.read(addProvider).showAddPlaylist?Padding(
                   padding: const EdgeInsets.only(left: 20.0),
                   child: Container(
@@ -505,8 +502,8 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
               children: [
                 ref.watch(addProvider).showAddPlaylist?const SizedBox():deleteShow?const SizedBox():Container(
                   decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.black.withOpacity(0.1)
+                      shape: BoxShape.circle,
+                      color: Colors.black.withOpacity(0.1)
                   ),
                   child: const Padding(
                     padding: EdgeInsets.all(5.0),
@@ -517,7 +514,7 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
                     ),
                   ),
                 ),
-               deleteShow?Padding(
+                deleteShow?Padding(
                   padding: const EdgeInsets.only(left: 20.0),
                   child: Container(
                     decoration: BoxDecoration(

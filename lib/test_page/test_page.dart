@@ -1,12 +1,8 @@
-
 import 'dart:io';
-
-import 'package:bye_bye_cry_new/initial_home_page.dart';
 import 'package:bye_bye_cry_new/purchase/purchas_listner.dart';
 import 'package:bye_bye_cry_new/start_page.dart';
 import 'package:flutter/material.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
-
 import '../compoment/utils/color_utils.dart';
 
 class TestPage extends StatefulWidget {

@@ -24,16 +24,14 @@ PODS:
   - path_provider_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
-  - pay_ios (0.0.1):
-    - Flutter
   - perfect_volume_control (0.0.1):
     - Flutter
-  - purchases_flutter (4.10.2):
+  - purchases_flutter (4.10.4):
     - Flutter
-    - PurchasesHybridCommon (= 4.13.3)
-  - PurchasesHybridCommon (4.13.3):
-    - RevenueCat (= 4.17.6)
-  - RevenueCat (4.17.6)
+    - PurchasesHybridCommon (= 4.13.5)
+  - PurchasesHybridCommon (4.13.5):
+    - RevenueCat (= 4.17.7)
+  - RevenueCat (4.17.7)
   - shared_preferences_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
@@ -44,7 +42,6 @@ DEPENDENCIES:
   - flutter_screen_wake (from `.symlinks/plugins/flutter_screen_wake/ios`)
   - google_sign_in_ios (from `.symlinks/plugins/google_sign_in_ios/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/ios`)
-  - pay_ios (from `.symlinks/plugins/pay_ios/ios`)
   - perfect_volume_control (from `.symlinks/plugins/perfect_volume_control/ios`)
   - purchases_flutter (from `.symlinks/plugins/purchases_flutter/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/ios`)
@@ -69,8 +66,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/google_sign_in_ios/ios"
   path_provider_foundation:
     :path: ".symlinks/plugins/path_provider_foundation/ios"
-  pay_ios:
-    :path: ".symlinks/plugins/pay_ios/ios"
   perfect_volume_control:
     :path: ".symlinks/plugins/perfect_volume_control/ios"
   purchases_flutter:
@@ -83,17 +78,16 @@ SPEC CHECKSUMS:
   audioplayers_darwin: 877d9a4d06331c5c374595e46e16453ac7eafa40
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   flutter_screen_wake: 4d3c2b43943ea81bd5e591fd4e639ea537f4ca5e
-  google_sign_in_ios: 4f85eb9f937450765c8573bb85fd8cd6a5af675c
+  google_sign_in_ios: 1256ff9d941db546373826966720b0c24804bcdd
   GoogleSignIn: 5651ce3a61e56ca864160e79b484cd9ed3f49b7a
   GTMAppAuth: 0ff230db599948a9ad7470ca667337803b3fc4dd
   GTMSessionFetcher: 3a63d75eecd6aa32c2fc79f578064e1214dfdec2
-  path_provider_foundation: 37748e03f12783f9de2cb2c4eadfaa25fe6d4852
-  pay_ios: 8c7beb9c61d885f3f51b61f75f8793023fc8843a
+  path_provider_foundation: c68054786f1b4f3343858c1e1d0caaded73f0be9
   perfect_volume_control: 79b165ecd79d6ee20e60bf15534de61ebf3bb5f3
-  purchases_flutter: 264f0e993038cbe15cd8dfd36348bf274d333ceb
-  PurchasesHybridCommon: 8c93a3cb3f8fe62e366212f6e21f13a2b32c3044
-  RevenueCat: 42769d9dcc26c1294ec8e2e0d58320ab69974f75
-  shared_preferences_foundation: 297b3ebca31b34ec92be11acd7fb0ba932c822ca
+  purchases_flutter: 9199c400588e3489b9c69ef03c717bf28d629a92
+  PurchasesHybridCommon: 0643624116307c643fae1aff767c0e8d0ce64a37
+  RevenueCat: 15a06dbce1021474e6dc9b31b1fce43fe55fcaf2
+  shared_preferences_foundation: 986fc17f3d3251412d18b0265f9c64113a8c2472
 
 PODFILE CHECKSUM: 7368163408c647b7eb699d0d788ba6718e18fb8d
 
