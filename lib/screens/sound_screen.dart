@@ -8,6 +8,7 @@ import 'package:bye_bye_cry_new/screens/playlist_mix_sound.dart';
 import 'package:bye_bye_cry_new/screens/provider/add_music_provider.dart';
 import 'package:bye_bye_cry_new/screens/provider/mix_music_provider.dart';
 import 'package:bye_bye_cry_new/screens/provider/playlistProvider.dart';
+import 'package:bye_bye_cry_new/sounds_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../compoment/shared/custom_app_bar.dart';
@@ -408,10 +409,32 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
                         imageUrl:playButton,
                       ),
                     ),
-                  ):deleteShow?const SizedBox():const Padding(
-                    padding: EdgeInsets.all(15.0),
-                    child:  CustomImage(
-                      imageUrl:playButton,
+                  ):deleteShow?const SizedBox():InkWell(
+                    onTap: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (_)=> SoundDetailsScreen(
+                        musicId: musicModel.id,
+                      onPressed: ()async{
+                        if(ref.watch(addProvider).playFromPlayList){
+                          if(mounted){
+                            ref.read(addProvider).changePage(3);
+                          }
+                          if(mounted){
+                            changeToPlayNow = false;
+                            setState(() {});
+                          }
+                        } else{
+                          setState(() {
+                            changeToPlayNow = false;
+                          });
+                        }
+                      },
+                      )));
+                    },
+                    child: const Padding(
+                      padding: EdgeInsets.all(15.0),
+                      child:  CustomImage(
+                        imageUrl:playButton,
+                      ),
                     ),
                   ),
                 ),

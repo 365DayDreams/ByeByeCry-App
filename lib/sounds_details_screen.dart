@@ -1,85 +1,179 @@
+import 'dart:async';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:bye_bye_cry_new/compoment/shared/custom_image.dart';
 import 'package:bye_bye_cry_new/compoment/shared/custom_svg.dart';
-import 'package:bye_bye_cry_new/compoment/shared/custom_text.dart';
-import 'package:bye_bye_cry_new/compoment/shared/screen_size.dart';
-import 'package:bye_bye_cry_new/screens/listen_mix_sound.dart';
-import 'package:bye_bye_cry_new/screens/models/music_models.dart';
-import 'package:bye_bye_cry_new/screens/now_palying_screen.dart';
-import 'package:bye_bye_cry_new/screens/playlist_mix_sound.dart';
 import 'package:bye_bye_cry_new/screens/provider/add_music_provider.dart';
 import 'package:bye_bye_cry_new/screens/provider/mix_music_provider.dart';
-import 'package:bye_bye_cry_new/screens/provider/playlistProvider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screen_wake/flutter_screen_wake.dart';
+import 'package:perfect_volume_control/perfect_volume_control.dart';
 import '../compoment/shared/custom_app_bar.dart';
-import '../compoment/shared/outline_button.dart';
+import '../compoment/shared/custom_text.dart';
+import '../compoment/shared/screen_size.dart';
 import '../compoment/utils/color_utils.dart';
 import '../compoment/utils/image_link.dart';
 
-
 class SoundDetailsScreen extends ConsumerStatefulWidget {
-  const SoundDetailsScreen({Key? key}) : super(key: key);
+  final String musicId;
+  final VoidCallback? onPressed;
+  const SoundDetailsScreen({Key? key,required this.musicId,this.onPressed}) : super(key: key);
 
   @override
   ConsumerState<SoundDetailsScreen> createState() => _SoundDetailsScreenState();
 }
 
-class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen> {
+class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen> with TickerProviderStateMixin{
 
-  TextEditingController searchController = TextEditingController();
-  bool changeToPlayNow = false;
-  bool changeToMixPlayNow = false;
-  bool changeToMixPlayListNow = false;
-  MusicModel? music;
-  String mixMusicId = '';
-  String mixPlaylistMixMusicId = '';
+
+  List<String> times = [
+    "0",
+    "5 min",
+    "10 min",
+    "30 min",
+    "60 min",
+    "90 min",
+    "120 min",
+    "150 min",
+  ];
+  List<int> selectedTimes = [
+    0,
+    5,
+    10,
+    30,
+    60,
+    90,
+    120,
+    150
+  ];
   AudioCache audioCache = AudioCache();
   AudioPlayer audioPlayer = AudioPlayer();
+  Duration _duration = Duration.zero;
+  Duration _position = Duration.zero;
+  Duration _slider = Duration(seconds: 0);
+  double currentVolume = 0.0;
   bool issongplaying = false;
+  double brightness = 0.5;
+  late StreamSubscription<double> _subscription;
   int index = 0;
-  String musicId = "";
-  bool deleteShow = false;
+  int selectedTime = 0;
+  int setDuration = 0;
+  bool check = false;
+  bool playPouse = true;
 
-  List<String> imageUrl = [
-    chainsaw,
-    vaccum,
-    jackhammer,
-    blowdryer,
-    lawnmower,
-    washer,
-    ocean,
-    dummy,
-    dummy,
-    dummy,
-  ];
-  List<String> textUrl = [
-    'Chainshaw',
-    'Vaccum',
-    'Jackhammer',
-    'Blowdryer',
-    'Lawnmower',
-    'Washer',
-    'Ocean',
-    'Ocean + Rain',
-    'Lawnmower + Ocean',
-    'Mix Two Sounds'
-  ];
+  @override
+  void initState() {
+    initialization();
+    startPlayer();
+    changeVolume();
+    initPlatformState();
+    //setSongDuration(60 *2,initValue: 0);
 
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    audioPlayer.dispose();
+    _subscription.cancel();
+    super.dispose();
+  }
+
+  initialization(){
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      int _index = ref.watch(addProvider).musicList.indexWhere((element) => element.id == widget.musicId);
+      if(_index >= 0){
+        index = _index;
+        if(mounted){
+          setState(() {});
+          pausePlayMethod();
+        }
+      }
+    });
+  }
+  changeVolume(){
+    PerfectVolumeControl.hideUI = true;
+    Future.delayed(Duration.zero, () async {
+      currentVolume = await PerfectVolumeControl.getVolume();
+      setState(() {
+        //refresh UI
+      });
+    });
+    _subscription = PerfectVolumeControl.stream.listen((volume) {
+      currentVolume = volume;
+      if(mounted){
+        print('sound $currentVolume');
+        setState((){});
+      }
+    });
+  }
+  Future<void> initPlatformState()async{
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    try {
+      brightness = await FlutterScreenWake.brightness; //get the current screen brightness
+      if(brightness > 1){
+        brightness = brightness / 10;
+      }
+      print(brightness);
+      setState(() {
+        brightness = brightness;
+        //change the variable value and update screen UI
+      });
+    } on PlatformException {
+      brightness = 0.0;
+    }
+
+    if (!mounted) return;
+  }
   startPlayer()async{
-    audioPlayer.onPlayerStateChanged.listen((state) {
+    _position = _slider;
+    audioCache.prefix = "asset";
+    audioPlayer.onPlayerStateChanged.listen((state) async {
       issongplaying = state == PlayerState.playing;
       if(mounted){
         setState((){});
       }
+      if(_duration.inSeconds.toInt() == _position.inSeconds.toInt() || (_duration.inSeconds.toInt() - 1 == _position.inSeconds.toInt())) {
+
+        await audioPlayer.stop();
+        pausePlayMethod();
+
+        /* if(mounted){
+          setState(() {
+            if(setDuration > 0){
+              setDuration -= _duration.inSeconds.toInt();
+            }
+            print("set duration change $setDuration");
+            print("playe or not $playPouse");
+            if(!issongplaying){
+              if(playPouse) {
+                if (mounted) {
+                  if (setDuration > 0) {
+                    pausePlayMethod();
+                  }
+                  setState(() {});
+                }
+              }
+            }
+          });
+        }*/
+      }
+      if(mounted){
+        if(playPouse){
+
+        }
+      }
     });
     audioPlayer.onDurationChanged.listen((newDuration) {
+      _duration = newDuration;
       if(mounted){
         setState(() {});
       }
     });
     audioPlayer.onPositionChanged.listen((newPositions) {
+      _position = newPositions;
       if(mounted){
         setState(() {});
       }
@@ -91,516 +185,689 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen> {
   pausePlayMethod()async{
     if(issongplaying){
       await audioPlayer.pause();
+      pauseSliderTimmer();
       print("pause");
     }else{
       String url = ref.watch(addProvider).musicList[index].musicFile;
       await audioPlayer.play(AssetSource(url));
+      resumeSliderTimmer();
       print("play");
     }
     if(mounted){
       setState(() {});
     }
   }
-  playMusic({required String id}) async{
-    print("playlist play button click");
-    int _index = ref.watch(addProvider).musicList.indexWhere((element) => element.id == id);
-    if(_index >= 0){
-      if(_index == index){
-        if(issongplaying){
-          await audioPlayer.pause();
-        }else{
-          String url = ref.watch(addProvider).musicList[index].musicFile;
-          await audioPlayer.play(AssetSource(url));
-        }
-      }else{
-        index = _index;
-        String url = ref.watch(addProvider).musicList[index].musicFile;
-        await audioPlayer.play(AssetSource(url));
+  changeIndex({bool changeIndex = false}){
+    print("change index");
+    if(changeIndex){
+      index = (index + 1) % ref.watch(addProvider).musicList.length;
+    }else{
+      index = (index - 1);
+      if(index < 0){
+        index = ref.watch(addProvider).musicList.length-1;
       }
     }
+    print('new index $index');
     if(mounted){
       setState(() {});
     }
   }
-  initialized(){
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      if(mounted){
-        if(ref.watch(mixMusicProvider).changeToMixPlayNow){
-          mixMusicId = ref.watch(mixMusicProvider).musicId;
-          if(mounted){
-            ref.read(mixMusicProvider).setMusicId();
-          }
-        }
-      }
-      if(mounted){
-        if(ref.read(addProvider).changeToPlayNow){
-          musicId = ref.watch(addProvider).musicId;
-          if(mounted){
-            ref.read(addProvider).setMusicId();
-          }
-        }
-      }
-      if(mounted){
-        if(ref.read(playlistProvider).changeToMixPlayListNow){
-          mixPlaylistMixMusicId = ref.watch(playlistProvider).musicId;
-          if(mounted){
-            ref.read(playlistProvider).setMixPlaylistMusicId();
-          }
-        }
-      }
-      if(mounted){
-        changeToMixPlayNow = ref.read(mixMusicProvider).changeToMixPlayNow;
-      }
-      if(mounted){
-        changeToPlayNow = ref.read(addProvider).changeToPlayNow;
-      }
-      if(mounted){
-        changeToMixPlayListNow = ref.read(playlistProvider).changeToMixPlayListNow;
-      }
-      if(mounted){
-        ref.read(addProvider).changePlay(change: false);
-      }
-      if(mounted){
-        ref.read(mixMusicProvider).changeMixPlay(change: false);
-      }
-      if(mounted){
-        ref.read(playlistProvider).changePlaying(change: false);
-      }
-      if(mounted){setState((){});}
-    });
-  }
 
-  @override
-  void dispose() {
-    audioPlayer.dispose();
-    super.dispose();
-  }
-  @override
-  void initState() {
-    initialized();
-    startPlayer();
-    super.initState();
-  }
   @override
   Widget build(BuildContext context) {
-    return changeToPlayNow?
-    NowPlayingScreen(
-      musicId: musicId,
-      onPressed: (){
-        if(ref.watch(addProvider).playFromPlayList){
-          if(mounted){
-            ref.read(addProvider).changePage(3);
-          }
-          if(mounted){
-            changeToPlayNow = false;
-            setState(() {});
-          }
-        } else{
-          setState(() {
-            changeToPlayNow = false;
-          });
-        }
+    final height = ScreenSize(context).height;
+    final width = ScreenSize(context).width;
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: primaryPinkColor,
+        title: const Text(
+          "Now Playing",
 
-      },
-    ):
-    changeToMixPlayNow?
-    ListenMixSound(mixMusicModelId: mixMusicId,onPressed: (){
-      if(ref.watch(mixMusicProvider).playFromPlayList){
-        changeToMixPlayNow = false;
-        if(mounted){
-          ref.read(addProvider).changePage(3);
-        }
-        if(mounted){
-          setState(() {});
-        }
-      } else{
-        setState(() {
-          changeToMixPlayNow = false;
-        });
-      }
-    }):changeToMixPlayListNow?PlaylistMixSound(playlistMixMusicId: mixPlaylistMixMusicId,onPressed: (){
-      setState(() {
-        changeToMixPlayListNow = false;
-      });
-      if(mounted){
-        ref.read(addProvider).changePage(3);
-      }
-    },):
-    Scaffold(
-      appBar: CustomAppBar(
+        ),
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 15.0),
+          child: Container(
+            height: 20,
+            width: 20,
+            margin: const EdgeInsets.all(5.0),
+            padding: const EdgeInsets.all(2.0),
+            decoration: const BoxDecoration(
+                color: Colors.white, shape: BoxShape.circle),
+            child: IconButton(
+              iconSize: 15,
+              icon: const Icon(
+                Icons.arrow_back_ios,
+                color: secondaryBlackColor,
+              ),
+              onPressed: (){
+                Navigator.pop(context);
 
-
-          title: deleteShow?'Edit My Sounds':'My Sounds',
-
-          actionTitle: deleteShow?"":'Edit',
-          onPressedButton: (){
-            deleteShow = true;
-            if(mounted){
-              setState(() {});
-            }
-          },
-          onPressed: () {
-            deleteShow = false;
-            if(ref.watch(addProvider).showAddPlaylist){
-              ref.read(addProvider).showPlusPlaylist();
-            }
-            if(mounted){
-              setState(() {});
-            }
-          }),
-      body:
-      SingleChildScrollView(
+              },
+            ),
+          ),
+        ),
+      ),
+      // appBar: CustomAppBar(
+      //
+      //   title: 'Now Playing',
+      //   iconButton: false,
+      //   onPressedButton: null,
+      //   onPressed: widget.onPressed,
+      // ),
+      body: SingleChildScrollView(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Container(
-                margin: const EdgeInsets.all(8),
-                color: secondaryWhiteColor2,
-                child: ListTile(
-                  dense: true,
-                  title: TextField(
-                    controller: searchController,
-                    decoration: const InputDecoration(
-                        hintStyle: TextStyle(color: blackColorA0,fontSize: 14,fontWeight: FontWeight.w400),
-                        hintText: 'Search music', border: InputBorder.none
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Container(
+                  color: Colors.transparent,
+                  child: GestureDetector(
+                    onTap: (){
+                      _showDialogBrightNess(context);
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.only(right: width * .07),
+                      child:  CustomImage(
+                        imageUrl: 'asset/images/icon_png/now_playing_icon/Sun.png',
+                        color: Colors.orangeAccent.shade100,
+                      ),
                     ),
                   ),
-                  trailing: GestureDetector(onTap:(){},child: const CustomSvg(svg: "asset/images/search_icon.svg",)),
+                ),
+              ],
+            ),
+            CustomImage(
+              imageUrl: ref.watch(addProvider).musicList[index].image,
+              height: width * .7,
+              width: width * .9,
+              boxFit: BoxFit.fill,
+            ),
+            Container(
+              color: Colors.transparent,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CustomText(
+                      text: ref.watch(addProvider).musicList[index].musicName,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w400,
+                      color: secondaryBlackColor,
+                    ),
+                  ],
                 ),
               ),
-            ),//combinationList
-            Column(
-                children: List.generate(
-                  ref.watch(addProvider).musicList.isEmpty?0:ref.watch(addProvider).musicList.length,
-                      (index) => Column(
-                    children: [
-                      Container(
-                        color: index % 2 == 0?Colors.transparent:pinkLightColor,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                          child: imageList(
-                              context: context,musicModel: ref.watch(addProvider).musicList[index]),
-                        ),
-                      ),// const SizedBox(height: 5,)
-                    ],
-                  ),
-                )),// ref.watch(addProvider).showAddPlaylist?
-            ref.watch(addProvider).showAddPlaylist?const SizedBox(height: 15,):Column(
-              children: [
-                Column(
-                    children: List.generate(
-                      ref.watch(mixMusicProvider).combinationList.isEmpty?0:ref.watch(mixMusicProvider).combinationList.length,
-                          (index) => Column(
-                        children: [
-                          Container(
-                            color: index % 2 == 0?Colors.transparent:pinkLightColor,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                              child: mixImageList(
-                                  context: context,mixMusicModel: ref.watch(mixMusicProvider).combinationList[index]),
-                            ),
-                          ),// const SizedBox(height: 5,)
-                        ],
-                      ),
-                    )),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25.0,vertical: 5),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Container(
-                        width: 60,
-                        // height: 50,
-                        padding: const EdgeInsets.all(10.0),
-                        decoration: const BoxDecoration(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(10),
-                          ),
-                          color: primaryPinkColor,
-                        ),
-                        child: const CustomImage(
-                          boxFit: BoxFit.fill,
-                          imageUrl: whitePlus,
-                          scale: 1,
-                        ),
-                      ),
+            ),
+            SizedBox(height: width * 0.06),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 30.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children:  [
+                      GestureDetector(
+                          onTap: (){
+                            ref.read(addProvider).addOrRemovePlayList(id:  ref.watch(addProvider).musicList[index].id);
+                          },
+                          child: CustomImage(imageUrl: 'asset/images/icon_png/love.png',color: ref.watch(addProvider).playListIds.contains(ref.watch(addProvider).musicList[index].id)? Colors.red:blackColorA0,)),
                       const SizedBox(
                         width: 10,
                       ),
                       const CustomText(
-                        text: 'Mix Two Sounds',
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: blackColor50,
-                      )
+                        text: 'Add To Playlist',
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                      ),
                     ],
                   ),
+                  Row(
+                    children: [
+                      const CustomImage(
+                        imageUrl: 'asset/images/icon_png/another_sound.png',
+                        color: blackColorA0,
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Container(
+                        color: Colors.transparent,
+                        child: GestureDetector(
+                          onTap: (){
+                            ref.read(addProvider).changePage(2);
+                            ref.read(mixMusicProvider).clearMixMusics();
+                            ref.read(mixMusicProvider).mixFirstMusic(ref.watch(addProvider).musicList[index]);
+                            // Navigator.push(context, MaterialPageRoute(builder: (context) => const StartPage()));
+                          },
+                          child: const CustomText(
+                            text: 'Mix Another\n Sound',
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: width * 0.1),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 30.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  CustomText(
+                    text: '${getHumanTimeBySecond(sliderInitial.toInt())}',
+                    fontSize: 10,
+                    color: blackColor2,
+                    fontWeight: FontWeight.w700,
+                  ),
+                  CustomText(
+                    text: '${getHumanTimeBySecond(sliderEnd.toInt())}',
+                    fontSize: 10,
+                    color: blackColor2,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              //color: Colors.green,
+              width: width * .95,
+              child: SliderTheme(
+                data: const SliderThemeData(
+                    trackShape: RectangularSliderTrackShape(),
+                    thumbShape: RoundSliderThumbShape(enabledThumbRadius: 10)),
+                child: Slider(
+                    value: sliderInitial,
+                    min: 0,
+                    max: sliderEnd,
+                    divisions: 350,
+                    activeColor: primaryPinkColor,
+                    inactiveColor: primaryGreyColor2,
+                    onChanged: (double newValue) async{
+                      print("slider");
+                      updateSlider(newValue);
+                      setState(() {});
+                    },
+                    semanticFormatterCallback: (double newValue) {
+                      return '${newValue.round()} dollars';
+                    }),
+              ),
+            ),
+            Container(
+              color: Colors.transparent,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 20.0,right: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children:  [
+                    IconButton(
+                        padding: const EdgeInsets.only(left: 10),
+                        onPressed: (){
+                          _showDialogVolume(context);
+                        },
+                        icon: Container(
+                            color: Colors.transparent,
+                            child: const CustomSvg(svg: volume,color: blackColor2))),
+                    IconButton(
+                        padding: EdgeInsets.zero,
+                        onPressed: ()async{
+                          changeIndex(changeIndex: false);
+                          if(mounted){
+                            String url = ref.watch(addProvider).musicList[index].musicFile;
+                            await audioPlayer.seek(const Duration(seconds:0));
+                            await audioPlayer.play(AssetSource(url));
+                          }
+                          if(_position.inSeconds.toInt()>=_duration.inSeconds.toInt()-1){
+                            await audioPlayer.pause();
+                          }
+                          if(mounted){
+                            setState(() {});
+                          }
+                        },
+                        icon: const CustomSvg(svg: left_shift,color: primaryPinkColor)),
+                    Container(
+                      // color: Colors.red,
+                      height: width * 0.18,
+                      width: width * 0.18,
+                      clipBehavior: Clip.hardEdge,
+                      decoration: BoxDecoration(
+                          color: secondaryWhiteColor2,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.transparent,width:0),
+                          boxShadow: const [
+                            BoxShadow(
+                                blurRadius: 10,
+                                color:secondaryWhiteColor2
+                            )
+                          ]
+                      ),
+                      child: GestureDetector(
+                        onTap: ()async {
+                          if (issongplaying) {
+                            if(mounted){
+                              playPouse = false;
+                            }
+                            await audioPlayer.pause();
+                            pauseSliderTimmer();
+                            print("pause solution");
+                          } else {
+                            if(mounted){
+                              playPouse = true;
+                            }
+                            String url = ref.watch(addProvider).musicList[index].musicFile;
+                            await audioPlayer.play(AssetSource(url));
+                            print("play");
+                            resumeSliderTimmer();
+                          }
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(22),
+                          child:  CustomSvg(
+                            color: primaryPinkColor,
+                            svg:issongplaying?pouseButton:playButtonSvg,
+                          ),
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                        padding: EdgeInsets.zero,
+                        onPressed: ()async{
+                          changeIndex(changeIndex: true);
+                          if(mounted){
+                            String url = ref.watch(addProvider).musicList[index].musicFile;
+                            await audioPlayer.seek(const Duration(seconds:0));
+                            await audioPlayer.play(AssetSource(url));
+                          }
+                          if(_position.inSeconds.toInt()>=_duration.inSeconds.toInt()-1){
+                            await audioPlayer.pause();
+                          }
+                          if(mounted){
+                            setState(() {});
+                          }
+                        },
+                        icon: const CustomSvg(svg: right_shift,color: primaryPinkColor)),
+                    IconButton(
+                        padding: EdgeInsets.zero,
+                        onPressed: (){
+                          _showDialog(context);
+                        },
+                        icon: Container(
+                            color: Colors.transparent,
+                            child: const Padding(
+                              padding:  EdgeInsets.symmetric(vertical: 8.0),
+                              child: CustomSvg(svg: timer,color: blackColor2,),
+                            ))),
+                  ],
                 ),
-                const SizedBox(height: 15,)
-              ],
-            )
+              ),
+            ),
           ],
         ),
       ),
     );
   }
-
-  Widget imageList({required MusicModel musicModel,required BuildContext context,}) {
-    return GestureDetector(
-      onTap: ref.watch(addProvider).showAddPlaylist?null:(){
-        if(mounted){
-          ref.read(addProvider).playFromPlaylistActive(change: false);
-        }
-        setState(() {
-          music = musicModel;
-          musicId = musicModel.id;
-          changeToPlayNow = ref.watch(addProvider).showAddPlaylist?false:deleteShow?false:true;
-          print("change");
-        });
-      },
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Image.asset("${musicModel.image}",height: 60,fit: BoxFit.contain,),
-              ),
-              // Padding(
-              //   padding: const EdgeInsets.only(top: 5.0),
-              //   child: CustomImage(imageUrl: musicModel.image),
-              // ),
-              const SizedBox(
-                width: 10,
-              ),
-              CustomText(text: musicModel.musicName,color: blackColor50,fontWeight: FontWeight.w600,fontSize: 20,),
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Row(
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.black.withOpacity(0.05)
-                  ),
-                  child: ref.read(addProvider).showAddPlaylist?GestureDetector(
-                    onTap:()async {
-                      musicId = musicModel.id;
-                      if(mounted){
-                        playMusic(id: musicId);
-                      }
-                    },
-                    child: musicId == musicModel.id?Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: issongplaying? const CustomSvg(svg:pouseButton,color: blackColor97,height: 12,width: 12,):const CustomImage(
-                        imageUrl:playButton,
-                        scale: 0.8,
-                      ),
-                    ):const Padding(
-                      padding: EdgeInsets.all(15.0),
-                      child: CustomImage(
-                        scale: 0.8,
-                        imageUrl:playButton,
-                      ),
-                    ),
-                  ):deleteShow?const SizedBox():const Padding(
-                    padding: EdgeInsets.all(15.0),
-                    child:  CustomImage(
-                      imageUrl:playButton,
-                    ),
-                  ),
-                ),
-                ref.read(addProvider).showAddPlaylist?Padding(
-                  padding: const EdgeInsets.only(left: 20.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.black.withOpacity(0.1)
-                    ),
-                    child: GestureDetector(
-                      onTap: (){
-                        ref.read(addProvider).changePage(3);
-                        if(ref.watch(playlistProvider).addInPlayListTrueFalse){
-                          if(mounted){
-                            ref.read(playlistProvider).showMixPlayList(goMixPlaylist: true);
-                          }
-                          if(mounted){
-                            ref.read(playlistProvider).setMusic(setMusicModel: musicModel);
-                          }
-                          if(mounted){
-                            ref.read(playlistProvider).addInPlaylistFalse();
-                          }
-                        }else{
-                          ref.read(addProvider).changePage(2);
-                          if(ref.read(mixMusicProvider).selectMixSound){
-                            ref.read(mixMusicProvider).mixFirstMusic(musicModel);
-                          }else{
-                            ref.read(mixMusicProvider).mixSecondMusic(musicModel);
-                          }
-                          ref.read(addProvider).showPlusPlaylist(playlistPlusBottom: false);
-                        }
-                      },
-                      child: const Padding(
-                        padding: EdgeInsets.all(5.0),
-                        child: Icon(Icons.add,color: blackColorA0,),
-                      ),
-                    ),
-                  ),
-                ):const SizedBox(),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-  Widget mixImageList({required MixMusicModel mixMusicModel,required BuildContext context}) {
-    return GestureDetector(
-      onTap: (){
-        if(mounted){
-          ref.read(mixMusicProvider).playFromPlayListActive(change: false);
-        }
-        if(mounted){
-          setState(() {
-            mixMusicId = mixMusicModel.id;
-            changeToMixPlayNow = ref.watch(addProvider).showAddPlaylist?false:deleteShow?false:true;
-          });
-        }
-      },
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Flexible(
-            fit: FlexFit.loose,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.only(top: 5.0),
-                  child: CustomImage(imageUrl: dummy),
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                Flexible(
-                    fit: FlexFit.loose,
-                    child: Container(
-                        color: Colors.transparent,
-                        //width: ScreenSize(context).width * 0.55,
-                        child: CustomText(text: "${mixMusicModel.first?.musicName} + ${mixMusicModel.second?.musicName}",color: blackColor50,fontWeight: FontWeight.w600,fontSize: 20,))),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Row(
-              children: [
-                ref.watch(addProvider).showAddPlaylist?const SizedBox():deleteShow?const SizedBox():Container(
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.black.withOpacity(0.1)
-                  ),
-                  child: const Padding(
-                    padding: EdgeInsets.all(5.0),
-                    child: CustomImage(
-                      imageUrl: playButton,
-                      height: 30,
-                      width: 30,
-                    ),
-                  ),
-                ),
-                deleteShow?Padding(
-                  padding: const EdgeInsets.only(left: 20.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.black.withOpacity(0.1)
-                    ),
-                    child: GestureDetector(
-                      onTap: (){
-                        _showDialog(firstMusicName: mixMusicModel.first?.musicName??"", secondMusicName: mixMusicModel.second?.musicName??'',context,mixId:mixMusicModel.id);
-                      },
-                      child: const Padding(
-                        padding: EdgeInsets.all(10.0),
-                        child: CustomSvg(svg: deleteSvg),
-                      ),
-                    ),
-                  ),
-                ):const SizedBox(),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-  void _showDialog(BuildContext context,{required String firstMusicName,required String secondMusicName,required String mixId}) {
+  void _showDialogBrightNess(BuildContext context) {
+    final height = ScreenSize(context).height;
     final width = ScreenSize(context).width;
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return Align(
-          alignment: Alignment.center,
-          child: Wrap(
-            children: [
-              AlertDialog(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15)
-                ),
-                backgroundColor: Colors.white,
-                title: const CustomText(
-                  text: 'You ave removed',
-                  textAlign: TextAlign.center,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w400,
-                  color: secondaryBlackColor,
-                ),
-                content: Column(
-                  children: [
-                    CustomText(
-                      text: '$firstMusicName + $secondMusicName',
-                      fontSize: 18,
-                      color: primaryGreyColor,
-                      fontWeight: FontWeight.w600,
+        return StatefulBuilder(
+          builder: (BuildContext context, void Function(void Function()) updateState) { return Align(
+            alignment: Alignment.topCenter,
+            child: Wrap(
+              children: [
+                Container(
+                  color: Colors.transparent,
+                  height: width * 0.23,
+                  child: AlertDialog(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15)
                     ),
-                    const SizedBox(height: 13,),
-                    const CustomText(
-                      text: 'from Sound List',
-                      fontSize: 20,
-                      color: secondaryBlackColor,
-                      fontWeight: FontWeight.w400,
+                    backgroundColor: Colors.white,
+                    contentPadding: EdgeInsets.zero,
+                    content: SizedBox(
+                      height: width * 0.25,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: SliderTheme(
+                              data: const SliderThemeData(
+                                  trackShape: RectangularSliderTrackShape(),
+                                  thumbShape: RoundSliderThumbShape(enabledThumbRadius: 10)),
+                              child: Slider(
+                                  value: brightness,
+                                  min: 0.0,
+                                  max: 1.0,
+                                  divisions: 100,
+                                  activeColor: primaryPinkColor,
+                                  inactiveColor: primaryGreyColor2,
+                                  onChanged: (double newValue) async{
+                                    updateState(() {
+                                      // Screen.setBrightness(newValue);
+                                      brightness = newValue;
+                                      print("$brightness");
+                                    });
+                                    await FlutterScreenWake.setBrightness(brightness);
+                                  },
+                                  semanticFormatterCallback: (double newValue) {
+                                    return '${newValue.round()} dollars';
+                                  }
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(right: 10),
+                            child: Container(
+                              color: Colors.transparent,
+                              height: width * 0.1,
+                              child: const CustomImage(
+                                boxFit: BoxFit.fill,
+                                imageUrl: 'asset/images/icon_png/now_playing_icon/Sun.png',
+                                color: primaryPinkColor,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ],
-                ),
-                actionsAlignment: MainAxisAlignment.center,
-                actionsPadding: const EdgeInsets.only(bottom: 20),
-                actions: <Widget>[
-                  OutLineButton(
-                    height: width * .08,
-                    width: width * .16,
-                    text: 'Ok',
-                    textColor: primaryGreyColor,
-                    textFontSize: 20,
-                    textFontWeight: FontWeight.w600,
-                    borderRadius: 48,
-                    onPressed:(){
-                      ref.read(mixMusicProvider).deleteMix(mixId: mixId);
-                      if(mounted){
-                        Navigator.pop(context);
-                      }
-                    },
                   ),
-                ],
-              ),
-            ],
-          ),
+                ),
+              ],
+            ),
+          );  },
         );
       },
     );
+  }
+  void _showDialogVolume(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        final width = ScreenSize(context).width;
+        return StatefulBuilder(
+          builder: (BuildContext context, void Function(void Function()) updateState) { return Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Transform(
+                transform:  Matrix4.identity()..rotateZ(-90 * 3.1415927 / 180),
+                child: AlertDialog(
+                  alignment: Alignment.centerLeft,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15)
+                  ),
+                  backgroundColor: Colors.white,
+                  contentPadding: EdgeInsets.zero,
+                  content: Container(
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10)
+                    ),
+                    child: Stack(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(left: 20.0,top:15,right: 0,bottom: 0),
+                              child: Transform(
+                                alignment: Alignment.topCenter,
+                                transform:  Matrix4.identity()..rotateZ(90 * 3.1415927 / 180),
+                                child: const CustomSvg(svg: volume,color: Colors.red,),
+                              ),
+                            ),
+                            Expanded(
+                              child: Slider(
+                                value: currentVolume,
+                                min: 0.0,
+                                max: 1.0,
+                                divisions: 100,
+                                activeColor: primaryPinkColor,
+                                inactiveColor: primaryGreyColor2,
+                                onChanged: (double newValue) async{
+                                  updateState(() {
+                                    // Screen.setBrightness(newValue);
+                                    currentVolume = newValue;
+                                    print("volume $currentVolume");
+                                  });
+                                  await PerfectVolumeControl.setVolume(currentVolume);
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                        Positioned(
+                            right: width * 0.25,
+                            top: 10,
+                            child: Transform(
+                                transform:  Matrix4.identity()..rotateZ(90 * 3.1415927 / 180),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(2),
+                                      boxShadow: [
+                                        BoxShadow(
+                                            color: secondaryBlackColor.withOpacity(0.2),
+                                            blurRadius: 0.2,
+                                            spreadRadius: 0.5
+                                        )
+                                      ]
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 4.0,vertical: 5),
+                                    child: Center(child: CustomText(text: "${(currentVolume * 100).toInt().toString().padLeft(2,"0")}%",fontSize: 10,color: secondaryBlackColor,fontWeight: FontWeight.w600,)),
+                                  ),
+                                )))
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          );  },
+        );
+      },
+    );
+  }
+  void _showDialog(BuildContext context) {
+    final height = ScreenSize(context).height;
+    final width = ScreenSize(context).width;
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, void Function(void Function()) state) {
+            /* if(mounted) {
+              //startTimer(state);
+              if(mounted){
+                state((){});
+              }
+            }*/
+            return  Align(
+              alignment: Alignment.center,
+              child: Wrap(
+                children: [
+                  AlertDialog(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15)
+                    ),
+                    backgroundColor: Colors.white,
+                    title: Column(
+                      children: const [
+                        CustomText(
+                          text: 'Select Duration',
+                          textAlign: TextAlign.center,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                          color: primaryGreyColor,
+                        ),
+                        SizedBox(height: 20),
+                      ],
+                    ),
+                    contentPadding: EdgeInsets.zero,
+                    content: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          width: width * 0.17,
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            color: greyEC,
+                          ),
+                          child: Center(child: CustomText(text: "${(selectedTimes[selectedTime] ~/ 60).toString().padLeft(2,"0")} : ${(selectedTimes[selectedTime] % 60).toString().padLeft(2,"0")}")),
+                        ),
+                        SliderTheme(
+                          data: const SliderThemeData(
+                              trackShape: RectangularSliderTrackShape(),
+                              thumbShape: RoundSliderThumbShape(enabledThumbRadius: 10)),
+                          child: Slider.adaptive(
+                              value: selectedTime.toDouble(),
+                              min: 0,
+                              max: 7,
+                              divisions: 7,
+                              activeColor: primaryPinkColor,
+                              inactiveColor: primaryGreyColor2,
+                              onChanged: (double newValue) async{
+                                state(() {
+                                  setDuration = 1;
+                                  selectedTime = check?0:newValue.toInt();
+                                  setDuration = selectedTimes[selectedTime];
+
+                                  setDuration *=60;
+                                  setSongDuration(setDuration);
+                                  print("index $selectedTime");
+
+                                });
+                                setState(() {});
+                              },
+                              semanticFormatterCallback: (double newValue) {
+                                return '${newValue.round()} dollars';
+                              }),
+                        ),
+                        SizedBox(
+                          width: width * 0.59,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: List.generate(times.length, (index) => CustomText(text: times[index],fontWeight: FontWeight.w400,fontSize: 8,color: secondaryBlackColor) ),
+                          ),
+                        ),
+                        const SizedBox(height: 15),
+                      ],
+                    ),
+                    actionsAlignment: MainAxisAlignment.start,
+                    actionsPadding: const EdgeInsets.only(left: 48,bottom: 30),
+                    actions: <Widget>[
+                      Row(
+                        children: [
+                          Checkbox(
+                              side: const BorderSide(color: blackColorA0),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              activeColor: primaryPinkColor,
+                              value: check,
+                              onChanged: (newValue){
+                                state(() {
+                                  check = newValue!;
+                                  if(check){
+                                    selectedTime = 0;
+                                  }
+                                });
+                              }),
+                          TextButton(onPressed: check?() async{
+                            if(mounted){
+                              Navigator.pop(context);
+                            }
+                          }:null,
+                              child: const CustomText(text: "continuous play",fontSize: 16,fontWeight: FontWeight.w400,color: primaryGreyColor,))
+                        ],
+                      )
+                    ],
+                  ),
+                ],
+              ),
+            );  },
+        );
+      },
+    ).then((value) {
+      if(mounted){
+        ref.read(mixMusicProvider).alertDialogStop();
+        if(mounted){
+          setState(() {
+            print("asche");
+          });
+        }
+      }
+    });
+  }
+  String getHumanTimeBySecond(int seconds){
+    int hours = (seconds / 3600).floor();
+    int minutes = ((seconds - (hours * 3600)) / 60).floor();
+    int secs = seconds - (hours * 3600) - (minutes * 60);
+
+    String hoursStr = (hours < 10) ? "0$hours" : hours.toString();
+    String minutesStr = (minutes < 10) ? "0$minutes" : minutes.toString();
+    String secondsStr = (secs < 10) ? "0$secs" : secs.toString();
+
+    return "$hoursStr:$minutesStr:$secondsStr";
+  }
+
+  var sliderInitial =0.0;
+  var sliderEnd =120.0;
+
+  Timer? sliderTimer;
+
+  void setSongDuration(int setDuration, {double initValue=0}) {
+    sliderInitial=initValue;
+    sliderEnd=setDuration.toDouble();
+    if(sliderTimer!=null){
+      sliderTimer!.cancel();
+    }
+    sliderTimer=Timer.periodic(Duration(seconds: 1), (timer) {
+      if(!mounted){
+        timer.cancel();
+      }
+
+
+      if(sliderEnd<=sliderInitial){
+        timer.cancel();
+        sliderInitial=0.0;
+        audioPlayer.stop();
+      }
+      sliderInitial++;
+      setState(() {
+
+      });
+    });
+  }
+
+  void updateSlider(double newValue) {
+    sliderInitial=newValue;
+    setState(() {
+
+    });
+  }
+
+  void pauseSliderTimmer() {
+    print("=========${sliderTimer!.isActive}");
+    print("=========");
+    sliderTimer!.cancel();
+
+  }
+
+  void resumeSliderTimmer() {
+    setSongDuration(sliderEnd.toInt(), initValue: sliderInitial);
   }
 }
