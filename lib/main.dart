@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Bye Bye Cry',
       theme: ThemeData(fontFamily: 'Neue Einstellung'),
-      home:   const InitialHomePage(),
+      home:   const TestPage(),
     );
   }
 }
