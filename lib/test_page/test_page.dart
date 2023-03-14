@@ -15,12 +15,14 @@ class TestPage extends StatefulWidget {
 class _TestPageState extends State<TestPage> {
   @override
   void initState() {
-    getOffring();
+
+    getOffringIos();
+
     super.initState();
   }
 
   Offerings? offerings;
-  getOffring() {
+  getOffringIos() {
     Purchases.getOfferings().then((value) {
       offerings = value;
       print("====");

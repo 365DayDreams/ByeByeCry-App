@@ -10,6 +10,9 @@ PODS:
   - Flutter (1.0.0)
   - flutter_screen_wake (0.0.1):
     - Flutter
+  - fluttertoast (0.0.2):
+    - Flutter
+    - Toast
   - google_sign_in_ios (0.0.1):
     - Flutter
     - GoogleSignIn (~> 6.2)
@@ -26,23 +29,29 @@ PODS:
     - FlutterMacOS
   - perfect_volume_control (0.0.1):
     - Flutter
+  - Purchases (3.14.3):
+    - PurchasesCoreSwift (= 3.14.3)
   - purchases_flutter (4.10.4):
     - Flutter
     - PurchasesHybridCommon (= 4.13.5)
+  - PurchasesCoreSwift (3.14.3)
   - PurchasesHybridCommon (4.13.5):
     - RevenueCat (= 4.17.7)
   - RevenueCat (4.17.7)
   - shared_preferences_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
+  - Toast (4.0.0)
 
 DEPENDENCIES:
   - audioplayers_darwin (from `.symlinks/plugins/audioplayers_darwin/ios`)
   - Flutter (from `Flutter`)
   - flutter_screen_wake (from `.symlinks/plugins/flutter_screen_wake/ios`)
+  - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - google_sign_in_ios (from `.symlinks/plugins/google_sign_in_ios/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/ios`)
   - perfect_volume_control (from `.symlinks/plugins/perfect_volume_control/ios`)
+  - Purchases
   - purchases_flutter (from `.symlinks/plugins/purchases_flutter/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/ios`)
 
@@ -52,8 +61,11 @@ SPEC REPOS:
     - GoogleSignIn
     - GTMAppAuth
     - GTMSessionFetcher
+    - Purchases
+    - PurchasesCoreSwift
     - PurchasesHybridCommon
     - RevenueCat
+    - Toast
 
 EXTERNAL SOURCES:
   audioplayers_darwin:
@@ -62,6 +74,8 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_screen_wake:
     :path: ".symlinks/plugins/flutter_screen_wake/ios"
+  fluttertoast:
+    :path: ".symlinks/plugins/fluttertoast/ios"
   google_sign_in_ios:
     :path: ".symlinks/plugins/google_sign_in_ios/ios"
   path_provider_foundation:
@@ -78,17 +92,21 @@ SPEC CHECKSUMS:
   audioplayers_darwin: 877d9a4d06331c5c374595e46e16453ac7eafa40
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   flutter_screen_wake: 4d3c2b43943ea81bd5e591fd4e639ea537f4ca5e
+  fluttertoast: eb263d302cc92e04176c053d2385237e9f43fad0
   google_sign_in_ios: 1256ff9d941db546373826966720b0c24804bcdd
   GoogleSignIn: 5651ce3a61e56ca864160e79b484cd9ed3f49b7a
   GTMAppAuth: 0ff230db599948a9ad7470ca667337803b3fc4dd
   GTMSessionFetcher: 3a63d75eecd6aa32c2fc79f578064e1214dfdec2
   path_provider_foundation: c68054786f1b4f3343858c1e1d0caaded73f0be9
   perfect_volume_control: 79b165ecd79d6ee20e60bf15534de61ebf3bb5f3
+  Purchases: ba5a570357564da5d5447281190b5ac5ab9b8f3e
   purchases_flutter: 9199c400588e3489b9c69ef03c717bf28d629a92
+  PurchasesCoreSwift: 78a2001158d7fed44f9796ea50b89152ba727520
   PurchasesHybridCommon: 0643624116307c643fae1aff767c0e8d0ce64a37
   RevenueCat: 15a06dbce1021474e6dc9b31b1fce43fe55fcaf2
   shared_preferences_foundation: 986fc17f3d3251412d18b0265f9c64113a8c2472
+  Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
 
-PODFILE CHECKSUM: 7368163408c647b7eb699d0d788ba6718e18fb8d
+PODFILE CHECKSUM: f5fec59f4118055d17aa5048e87e9439dce56f05
 
 COCOAPODS: 1.11.3
