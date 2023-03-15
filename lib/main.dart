@@ -8,6 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'confiq/store_config.dart';
 
+
+
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   if (Platform.isIOS || Platform.isMacOS) {
