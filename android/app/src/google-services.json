@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "61423724117",
+    "project_id": "byebyecry-eea2a",
+    "storage_bucket": "byebyecry-eea2a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:61423724117:android:6efeb00a2894b3047356dc",
+        "android_client_info": {
+          "package_name": "com.byebyecry.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "61423724117-a34lvavcb9305pasvlmk6b3c38hnff71.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAiW8CywRk8pKqeJ7JlRV1UeU-inXCINCM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "61423724117-a34lvavcb9305pasvlmk6b3c38hnff71.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
