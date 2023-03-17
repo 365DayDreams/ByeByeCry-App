@@ -99,18 +99,7 @@ class _PlaylistMixSoundState extends ConsumerState<PlaylistMixSound>
     //   // }
     //
     // });
-    // Timer.periodic(Duration(seconds: 1), (Timer timer) {
-    //   if (musicIndex < 2) {
-    //     musicIndex++;
-    //     pageController.animateToPage(
-    //       musicIndex,
-    //       duration: Duration(minutes: 2),
-    //       curve: Curves.easeIn,
-    //     );
-    //   } else {
-    //     musicIndex = 2;
-    //   }
-    // });
+
   }
 
   @override
@@ -427,7 +416,8 @@ class _PlaylistMixSoundState extends ConsumerState<PlaylistMixSound>
             .playListList!
             .length,
         itemBuilder: (context, index) {
-          return SingleChildScrollView(
+          return
+            SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [

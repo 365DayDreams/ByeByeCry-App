@@ -24,77 +24,15 @@ class StartPage extends ConsumerStatefulWidget {
 class _StartPageState extends ConsumerState<StartPage> {
   var selectedIndex = 0;
   List<Widget> pageList = [];
-  late Future<ListResult> futureFile;
 
-  double downloadData =0.0;
-  Future downLoadFile (Reference reference)async{
-    final url = await reference.getDownloadURL();
-    final dir = await getApplicationDocumentsDirectory();
-    final path = "${dir.path}/ ${reference.name}";
-    //await reference.writeToFile(file);
-    await Dio().download(url, path,
-        onReceiveProgress: (receive,total){
-          double progress = receive/ total;
-          setState(() {
-            downloadData = progress;
-          });
-        }
-
-    );
-ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Downloade${reference.name}")));
-
-    // showDialog(context: context, builder: (_){
-    //   return AlertDialog(
-    //     title: Text("Bye Bye Cry",),
-    //     content: SingleChildScrollView(
-    //       child: Column(
-    //         mainAxisAlignment: MainAxisAlignment.center,
-    //         crossAxisAlignment: CrossAxisAlignment.center,
-    //         children: [
-    //
-    //           Padding(
-    //             padding: const EdgeInsets.all(8.0),
-    //             child: Center(child: Text("Downloaded Audio File",style: TextStyle(
-    //               fontSize: 20,
-    //             ),)),
-    //           ),
-    //
-    //           downloadData!=null ? Center(
-    //             child: CircularProgressIndicator(
-    //               color: Colors.blue,
-    //             ),
-    //           ) : Container(),
-    //
-    //           // downloadData!=null ? Padding(
-    //           //   padding: const EdgeInsets.all(8.0),
-    //           //   child: Center(
-    //           //     child: Text("$downloadData",style: TextStyle(
-    //           //         fontSize: 22
-    //           //     ),),
-    //           //   ),
-    //           // ) : Container(),
-    //
-    //         ],
-    //
-    //       ),
-    //     ),
-    //   );
-    // });
-
-
-  }
   @override
   void initState() {
     addMusic();
     initialized();
     super.initState();
-    futureFile =   FirebaseStorage.instance.ref("/musicFile").listAll();
-    futureFile.then((value) {
-      value.items.forEach((element) {
-        downLoadFile(element);
-      });
 
-    });
+
+
   }
 
   addMusic(){

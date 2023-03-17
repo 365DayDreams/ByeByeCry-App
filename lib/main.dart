@@ -3,6 +3,7 @@ import 'package:bye_bye_cry_new/android_subscription.dart';
 import 'package:bye_bye_cry_new/local_db/local_db.dart';
 import 'package:bye_bye_cry_new/purchase/purchas_listner.dart';
 import 'package:bye_bye_cry_new/purchase/purchase_api.dart';
+import 'package:bye_bye_cry_new/screens/song_download/song_download.dart';
 import 'package:bye_bye_cry_new/start_page.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -67,7 +68,7 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       title: 'Bye Bye Cry',
       theme: ThemeData(fontFamily: 'Neue Einstellung'),
-      home: isLoggedIn != true ? StartPage() : const SubscriptionPage(),
+      home: isLoggedIn != true ? DownLoadScreen() : const SubscriptionPage(),
     );
   }
 }

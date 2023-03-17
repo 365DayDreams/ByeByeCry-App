@@ -218,7 +218,9 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
           changeToMixPlayNow = false;
         });
       }
-    }):changeToMixPlayListNow?PlaylistMixSound(playlistMixMusicId: mixPlaylistMixMusicId,onPressed: (){
+    }):changeToMixPlayListNow?
+    PlaylistMixSound(
+      playlistMixMusicId: mixPlaylistMixMusicId,onPressed: (){
       setState(() {
         changeToMixPlayListNow = false;
       });
