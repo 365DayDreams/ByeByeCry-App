@@ -4,6 +4,7 @@ import 'package:bye_bye_cry_new/compoment/shared/custom_image.dart';
 import 'package:bye_bye_cry_new/compoment/shared/custom_svg.dart';
 import 'package:bye_bye_cry_new/compoment/shared/custom_text.dart';
 import 'package:bye_bye_cry_new/compoment/shared/screen_size.dart';
+import 'package:bye_bye_cry_new/screens/mix_screen.dart';
 import 'package:bye_bye_cry_new/screens/playlist_mix_sound.dart';
 import 'package:bye_bye_cry_new/screens/provider/add_music_provider.dart';
 import 'package:bye_bye_cry_new/screens/provider/mix_music_provider.dart';
@@ -307,37 +308,42 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
                           ],
                         ),
                       )),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 25.0,vertical: 5),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Container(
-                          width: 60,
-                          // height: 50,
-                          padding: const EdgeInsets.all(10.0),
-                          decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(10),
+                  InkWell(
+                    onTap: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (_)=> MixScreen(type: "1",) ));
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 25.0,vertical: 5),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: 60,
+                            // height: 50,
+                            padding: const EdgeInsets.all(10.0),
+                            decoration: const BoxDecoration(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10),
+                              ),
+                              color: primaryPinkColor,
                             ),
-                            color: primaryPinkColor,
+                            child: const CustomImage(
+                              boxFit: BoxFit.fill,
+                              imageUrl: whitePlus,
+                              scale: 1,
+                            ),
                           ),
-                          child: const CustomImage(
-                            boxFit: BoxFit.fill,
-                            imageUrl: whitePlus,
-                            scale: 1,
+                          const SizedBox(
+                            width: 10,
                           ),
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        const CustomText(
-                          text: 'Mix Two Sounds',
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                          color: blackColor50,
-                        )
-                      ],
+                          const CustomText(
+                            text: 'Mix Two Sounds',
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                            color: blackColor50,
+                          )
+                        ],
+                      ),
                     ),
                   ),
                   const SizedBox(height: 15,)

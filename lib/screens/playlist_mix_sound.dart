@@ -74,31 +74,33 @@ class _PlaylistMixSoundState extends ConsumerState<PlaylistMixSound>
     changeVolume();
     brightNess();
     super.initState();
-    // Timer.periodic(Duration(
-    //   seconds: 1
-    // ), (timer) {
-    //   print(position);
-    //   print(_position);
-    //   if(_position.inSeconds== Duration(seconds: 119).inSeconds){
-    //     pageController.nextPage(duration: Duration(seconds: 1), curve: Curves.easeInOut);
-    //
-    //   }
-    //   if(!mounted){
-    //     timer.cancel();
-    //     return;
-    //   }
-    //   // if(ref
-    //   //     .watch(playlistProvider)
-    //   //     .mixMixPlaylist[mixPlaylistIndex]
-    //   //     .playListList!
-    //   //     .length-1 == musicIndex){
-    //   //   pageController.animateToPage(0, duration: Duration(seconds: 1), curve: Curves.easeInOut);
-    //   //
-    //   // }else{
-    //   //
-    //   // }
-    //
-    // });
+    Timer.periodic(Duration(
+      seconds: 1
+    ), (timer) {
+      print(position);
+      print(_position);
+      if(sliderInitial.toInt()==
+          (sliderEnd-1).toInt()){
+        sliderInitial=0.0;
+        pageController.nextPage(duration: Duration(milliseconds: 100), curve: Curves.linear);
+
+      }
+      if(!mounted){
+        timer.cancel();
+        return;
+      }
+      // if(ref
+      //     .watch(playlistProvider)
+      //     .mixMixPlaylist[mixPlaylistIndex]
+      //     .playListList!
+      //     .length-1 == musicIndex){
+      //   pageController.animateToPage(0, duration: Duration(seconds: 1), curve: Curves.easeInOut);
+      //
+      // }else{
+      //
+      // }
+
+    });
 
   }
 
@@ -525,7 +527,7 @@ class _PlaylistMixSoundState extends ConsumerState<PlaylistMixSound>
                         trackShape: RectangularSliderTrackShape(),
                         thumbShape: RoundSliderThumbShape(enabledThumbRadius: 10)),
                     child: Slider(
-                        value: sliderInitial,
+                        value: sliderInitial.floorToDouble(),
                         min: 0,
                         max: sliderEnd,
                         divisions: 350,

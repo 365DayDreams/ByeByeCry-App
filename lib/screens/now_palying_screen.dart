@@ -354,7 +354,8 @@ class _NowPlayingScreenState extends ConsumerState<NowPlayingScreen> with Ticker
                     trackShape: RectangularSliderTrackShape(),
                     thumbShape: RoundSliderThumbShape(enabledThumbRadius: 10)),
                 child: Slider(
-                    value: sliderInitial,
+                    value: sliderInitial<=sliderEnd?
+                    sliderInitial:sliderEnd,
                     min: 0,
                     max: sliderEnd,
                     divisions: 350,

@@ -15,7 +15,9 @@ import 'confiq/store_config.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  if(Platform.isAndroid){
+    await Firebase.initializeApp();
+  }
 
   if (Platform.isIOS || Platform.isMacOS) {
     StoreConfig(
@@ -68,7 +70,7 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       title: 'Bye Bye Cry',
       theme: ThemeData(fontFamily: 'Neue Einstellung'),
-      home: isLoggedIn != true ? DownLoadScreen() : const SubscriptionPage(),
+      home: isLoggedIn == true ? StartPage() : const SubscriptionPage(),
     );
   }
 }

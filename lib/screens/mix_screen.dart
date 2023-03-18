@@ -22,7 +22,8 @@ import 'models/music_models.dart';
 
 class MixScreen extends ConsumerStatefulWidget {
   final VoidCallback? onPressed;
-  const MixScreen({Key? key,this.onPressed}) : super(key: key);
+  final String ? type;
+  const MixScreen( {Key? key,this.onPressed,this.type}) : super(key: key);
 
   @override
   ConsumerState<MixScreen> createState() => _MixScreenState();
@@ -191,8 +192,15 @@ class _MixScreenState extends ConsumerState<MixScreen> {
     final height = ScreenSize(context).height;
 
     return Scaffold(
-      appBar: const CustomAppBar(
+      appBar:  CustomAppBar(
         title: 'My Mix',
+        onPressed: (){
+          if(widget.type == "1"){
+            Navigator.pop(context);
+          }
+
+
+        },
       ),
       body: SingleChildScrollView(
         child: Column(

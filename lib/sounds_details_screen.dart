@@ -385,7 +385,7 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen> with Ti
                     trackShape: RectangularSliderTrackShape(),
                     thumbShape: RoundSliderThumbShape(enabledThumbRadius: 10)),
                 child: Slider(
-                    value: sliderInitial,
+                    value: sliderInitial<=sliderEnd?sliderInitial:sliderEnd,
                     min: 0,
                     max: sliderEnd,
                     divisions: 350,
