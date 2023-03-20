@@ -13,6 +13,7 @@ import '../compoment/shared/screen_size.dart';
 import '../compoment/utils/color_utils.dart';
 import '../compoment/utils/image_link.dart';
 import 'add_to_playlist.dart';
+import 'my_playList_details_screen.dart';
 
 class PlayListScreen extends ConsumerStatefulWidget {
   const PlayListScreen({Key? key}) : super(key: key);
@@ -47,7 +48,7 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
       //     fontWeight: FontWeight.w700
       //   ),),
       // ),
-      appBar: const CustomAppBar(
+      appBar:  CustomAppBar(
         title: 'My Playlist',
         //actionTitle: 'Edit',
       ),
@@ -283,15 +284,25 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
           ),
           GestureDetector(
             onTap: (){
-              if(mounted){
-                ref.read(playlistProvider).setMixPlaylistMusicId(setMixPlaylistId: musicId);
+              setFuck(){
+                if(mounted){
+                  ref.read(playlistProvider).setMixPlaylistMusicId(setMixPlaylistId: musicId);
+                }
+                if(mounted){
+                  ref.read(addProvider).changePage(1);
+                }
+                if(mounted){
+                  ref.read(playlistProvider).changePlaying(change: true);
+                }
               }
-              if(mounted){
-                ref.read(addProvider).changePage(1);
-              }
-              if(mounted){
-                ref.read(playlistProvider).changePlaying(change: true);
-              }
+
+              Navigator.push(context, MaterialPageRoute(builder: (_)=> PlaylistMixSound2(
+                playlistMixMusicId: musicId,
+                onPressed: setFuck,
+
+              )));
+
+
             },
             child: Container(
               decoration: BoxDecoration(

@@ -1,3 +1,4 @@
+import 'package:bye_bye_cry_new/android_subscription.dart';
 import 'package:bye_bye_cry_new/start_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,6 +11,7 @@ import 'compoment/shared/outline_button.dart';
 import 'compoment/shared/screen_size.dart';
 import 'compoment/utils/color_utils.dart';
 import 'compoment/utils/image_link.dart';
+import 'local_db/local_db.dart';
 
 class InitialHomePage extends ConsumerStatefulWidget {
   const InitialHomePage({Key? key}) : super(key: key);
@@ -27,7 +29,15 @@ class _InitialHomePageState extends ConsumerState<InitialHomePage> {
     'asset/images/vaccum.png',
     'asset/images/washer.png'
   ];
+  bool isLoggedIn = false;
 
+  getlogin() async {
+    await LocalDB().getAccessToken().then((value) {
+      setState(() {
+        isLoggedIn = value;
+      });
+    });
+  }
   List<String> textUrl = [
     'Jackhammer',
     'Chainshaw',
@@ -42,6 +52,12 @@ class _InitialHomePageState extends ConsumerState<InitialHomePage> {
     'asset/images/icon_png/linkedIn.png',
     'asset/images/icon_png/insta.png',
   ];
+
+  @override
+  void initState() {
+   getlogin();
+    super.initState();
+  }
 
   bool subscription = true;
   @override
@@ -237,8 +253,20 @@ class _InitialHomePageState extends ConsumerState<InitialHomePage> {
               textFontSize: 22,
               textFontWeight: FontWeight.w700,
               borderRadius: 50,
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const StartPage()));
+              onPressed: () async{
+                bool isLoggedIn = false;
+                await LocalDB().getAccessToken().then((value) {
+                  setState(() {
+                    isLoggedIn = value;
+                  });
+                });
+                if(isLoggedIn ==true){
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const StartPage()));
+
+                }else{
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const SubscriptionPage()));
+
+                }
               },
             ),
             SizedBox(height: width * 0.1),

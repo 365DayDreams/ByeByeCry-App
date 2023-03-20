@@ -20,6 +20,10 @@ class HomePageAgain extends ConsumerStatefulWidget {
 
 class _HomePageAgainPageState extends ConsumerState<HomePageAgain> {
   CarouselController buttonCarouselController = CarouselController();
+
+
+  final List<bool> fav = [false];
+
   @override
   Widget build(BuildContext context) {
     final width = ScreenSize(context).width;
@@ -68,13 +72,12 @@ class _HomePageAgainPageState extends ConsumerState<HomePageAgain> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                     CustomText(
+                    CustomText(
                       text: "Cue the ",
                       fontSize: 36,
                       fontWeight: FontWeight.w600,
                       color: secondaryBlackColor,
                     ),
-
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),
                       child: Text("calm",
@@ -88,23 +91,23 @@ class _HomePageAgainPageState extends ConsumerState<HomePageAgain> {
               ),
 
               Padding(
-                padding: const EdgeInsets.only(left: 28.0,right: 28),
+                padding: const EdgeInsets.only(left: 28.0, right: 28),
                 child: Container(
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20.0),
-                      boxShadow:  [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
-                          spreadRadius: 2,
-                          blurRadius: 4,
-                          offset: Offset(0, 3), // changes position of shadow
-                        ),
-                      ]
-                    ),
+                        borderRadius: BorderRadius.circular(20.0),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 2,
+                            blurRadius: 4,
+                            offset: Offset(0, 3), // changes position of shadow
+                          ),
+                        ]),
                     child: Image.asset(
                       "asset/images/homeslwwp_baby.jpg",
                       fit: BoxFit.fill,
-                    )),
+                    ),
+                ),
               ),
               // Container(
               //     color: Colors.transparent,
@@ -161,19 +164,50 @@ class _HomePageAgainPageState extends ConsumerState<HomePageAgain> {
                                         buttonCarouselController,
                                     itemCount: 3,
                                     itemBuilder: (BuildContext context,
-                                            int itemIndex, int pageViewIndex) =>
+                                            int itemIndex, int pageViewIndex) {
+                                      fav.add(false);
+
+                                      return Stack(
+                                        clipBehavior: Clip.none,
+                                       fit: StackFit.loose,
+                                       // alignment: Alignme,
+                                      children: [
                                         Container(
-                                      color: Colors.transparent,
-                                      child: const CustomText(
-                                        text:
-                                            "Does baby have gas? Try This :\nLay baby on their back and bring their knees to their chest. Move baby’s leg in a bicycle motion and apply each time their knees reach their chest ",
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 18,
-                                        color: secondaryBlackColor,
-                                        textAlign: TextAlign.center,
-                                        height: 1.3,
-                                      ),
-                                    ),
+                                          color: Colors.transparent,
+                                          child: const CustomText(
+                                            text:
+                                                "Does baby have gas? Try This :\nLay baby on their back and bring their knees to their chest. Move baby’s leg in a bicycle motion and apply each time their knees reach their chest ",
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 18,
+                                            color: secondaryBlackColor,
+                                            textAlign: TextAlign.center,
+                                            height: 1.3,
+                                          ),
+                                        ),
+                                        Positioned(
+                                            right: 0,
+                                            top: 0,
+
+
+                                            child: IconButton(
+                                                onPressed: () {
+                                                  fav[itemIndex]= !fav[itemIndex];
+                                                  setState(() {
+
+                                                  });
+                                                },
+                                                icon:  !fav[itemIndex] ? Icon(
+                                                  Icons.favorite_border,
+                                                  size: 35,
+                                                  color: primaryPinkColor,
+                                                ) :  Icon(
+                                                  Icons.favorite,
+                                                  size: 35,
+                                                  color: primaryPinkColor,
+                                                )))
+                                      ],
+                                    );
+                                    },
                                     options: CarouselOptions(
                                         aspectRatio: 2.6,
                                         viewportFraction: 1,

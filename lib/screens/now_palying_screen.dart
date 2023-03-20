@@ -30,7 +30,6 @@ class _NowPlayingScreenState extends ConsumerState<NowPlayingScreen> with Ticker
 
   List<String> times = [
     "0",
-    "5 min",
     "10 min",
     "30 min",
     "60 min",
@@ -40,7 +39,6 @@ class _NowPlayingScreenState extends ConsumerState<NowPlayingScreen> with Ticker
   ];
   List<int> selectedTimes = [
     0,
-    5,
     10,
     30,
     60,
@@ -222,7 +220,7 @@ class _NowPlayingScreenState extends ConsumerState<NowPlayingScreen> with Ticker
       appBar: CustomAppBar(
         title: 'Now Playing',
         iconButton: false,
-        onPressedButton: null,
+        // onPressedButton: null,
         onPressed: widget.onPressed,
       ),
       body: SingleChildScrollView(

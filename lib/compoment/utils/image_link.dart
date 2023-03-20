@@ -41,6 +41,7 @@ const FAN = "asset/images/sounds_image/Fan.jpg";
 const Garbage = "asset/images/sounds_image/GarbageDisposal.jpg";
 const HAirDryer = "asset/images/sounds_image/Hairdryer.jpg";
 const LawnMower = "asset/images/sounds_image/Lawnmower.jpg";
+const LeafBlower = "asset/images/sounds_image/leaf-blower.jpg";
 const LeafBower = "asset/images/sounds_image/Lawnmower.jpg";
 const Ocean = "asset/images/sounds_image/Ocean.jpg";
 const PinkNoise = "asset/images/sounds_image/PinkNoise.jpg";
