@@ -856,7 +856,9 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                       currentVolume = newValue;
                                       print("volume $currentVolume");
                                     });
-                                    await PerfectVolumeControl.setVolume(
+                                    await audioPlayer1.setVolume(
+                                        currentVolume);
+                                    await audioPlayer2.setVolume(
                                         currentVolume);
                                   },
                                 ),

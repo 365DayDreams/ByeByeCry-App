@@ -688,87 +688,91 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
               mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                AlertDialog(
-                  alignment: Alignment.centerLeft,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15)),
-                  backgroundColor: Colors.white,
-                  contentPadding: EdgeInsets.zero,
-                  content: Container(
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10)),
-                    child: Stack(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 20.0, top: 15, right: 0, bottom: 0),
-                              child: Transform(
-                                alignment: Alignment.topCenter,
-                                transform: Matrix4.identity()
-                                  ..rotateZ(90 * 3.1415927 / 180),
-                                child: const CustomSvg(
-                                  svg: volume,
-                                  color: Colors.red,
+                Transform(
+                  transform: Matrix4.identity()..rotateZ(-90 * 3.1415927 / 180),
+                  child: AlertDialog(
+                    alignment: Alignment.centerLeft,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15)),
+                    backgroundColor: Colors.white,
+                    contentPadding: EdgeInsets.zero,
+                    content: Container(
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10)),
+                      child: Stack(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 20.0, top: 15, right: 0, bottom: 0),
+                                child: Transform(
+                                  alignment: Alignment.topCenter,
+                                  transform: Matrix4.identity()
+                                    ..rotateZ(90 * 3.1415927 / 180),
+                                  child: const CustomSvg(
+                                    svg: volume,
+                                    color: Colors.red,
+                                  ),
                                 ),
                               ),
-                            ),
-                            Expanded(
-                              child: Slider(
-                                value: currentVolume,
-                                min: 0.0,
-                                max: 1.0,
-                                divisions: 100,
-                                activeColor: primaryPinkColor,
-                                inactiveColor: primaryGreyColor2,
-                                onChanged: (double newValue) async {
-                                  updateState(() {
-                                    // Screen.setBrightness(newValue);
-                                    currentVolume = newValue;
-                                    print("volume $currentVolume");
-                                  });
-                                  await PerfectVolumeControl.setVolume(
-                                      currentVolume);
-                                },
+                              Expanded(
+                                child: Slider(
+                                  value: currentVolume,
+                                  min: 0.0,
+                                  max: 1.0,
+                                  divisions: 100,
+                                  activeColor: primaryPinkColor,
+                                  inactiveColor: primaryGreyColor2,
+                                  onChanged: (double newValue) async {
+                                    updateState(() {
+                                      // Screen.setBrightness(newValue);
+                                      currentVolume = newValue;
+                                      print("volume $currentVolume");
+                                    });
+                                    await audioPlayer.setVolume(
+                                        currentVolume);
+
+                                  },
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                        Positioned(
-                            right: width * 0.25,
-                            top: 10,
-                            child: Transform(
-                                transform: Matrix4.identity()
-                                  ..rotateZ(90 * 3.1415927 / 180),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(2),
-                                      boxShadow: [
-                                        BoxShadow(
-                                            color: secondaryBlackColor
-                                                .withOpacity(0.2),
-                                            blurRadius: 0.2,
-                                            spreadRadius: 0.5)
-                                      ]),
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 4.0, vertical: 5),
-                                    child: Center(
-                                        child: CustomText(
-                                      text:
-                                          "${(currentVolume * 100).toInt().toString().padLeft(2, "0")}%",
-                                      fontSize: 10,
-                                      color: secondaryBlackColor,
-                                      fontWeight: FontWeight.w600,
-                                    )),
-                                  ),
-                                )))
-                      ],
+                            ],
+                          ),
+                          Positioned(
+                              right: width * 0.25,
+                              top: 10,
+                              child: Transform(
+                                  transform: Matrix4.identity()
+                                    ..rotateZ(90 * 3.1415927 / 180),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(2),
+                                        boxShadow: [
+                                          BoxShadow(
+                                              color: secondaryBlackColor
+                                                  .withOpacity(0.2),
+                                              blurRadius: 0.2,
+                                              spreadRadius: 0.5)
+                                        ]),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 4.0, vertical: 5),
+                                      child: Center(
+                                          child: CustomText(
+                                        text:
+                                            "${(currentVolume * 100).toInt().toString().padLeft(2, "0")}%",
+                                        fontSize: 10,
+                                        color: secondaryBlackColor,
+                                        fontWeight: FontWeight.w600,
+                                      )),
+                                    ),
+                                  )))
+                        ],
+                      ),
                     ),
                   ),
                 ),

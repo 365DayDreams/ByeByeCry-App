@@ -119,27 +119,29 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                   SizedBox(height: 15,),
                   InkWell(
                     onTap: () async {
+
+
                       if(Platform.isIOS){
                         print("offerings");
                         print(offerings!.all["premium"]!.availablePackages);
                         Package product = offerings!.all["premium"]!.availablePackages
                             .firstWhere((element) =>
-                        element.identifier == "\$rc_annual");
+                        element.identifier == "\$rc_monthly");
 
                         print('product====');
                         print(product);
                         CustomerInfo customerInfo = await Purchases.purchasePackage(
                           product,
                         );
-
                         try {
                           if (customerInfo.entitlements.all["premium"] != null &&
                               customerInfo.entitlements.all["premium"]!.isActive ==
                                   true) {
                             PurchasListener.isSubscribe = true;
-                            //success purchas
                             Navigator.push(context, MaterialPageRoute(builder: (_)=> StartPage()));
                             LocalDB().setAccessToken(PurchasListener.isSubscribe);
+
+                            //success purchas
                           } else {
                             Fluttertoast.showToast(
                                 msg: "Subscription failed",
@@ -150,6 +152,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                                 textColor: Colors.white,
                                 fontSize: 16.0
                             );
+                            Navigator.push(context, MaterialPageRoute(builder: (_)=> StartPage()));
 
                             //subscription failed
                           }
@@ -163,35 +166,35 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                               textColor: Colors.white,
                               fontSize: 16.0
                           );
-                          //any e
                         }
-                      }else {
+                      }else{
                         print("offerings");
                         print(offerings!.all["premium"]!
                             .availablePackages);
-                        Package product = offerings!.all["premium"]!
+                        Package product= offerings!.all["premium"]!
                             .availablePackages
                             .firstWhere(
                                 (element) =>
-                            element.storeProduct.identifier == "premium");
+                            element.storeProduct.identifier == "annual_sub_1");
 
                         print('product====');
                         print(product);
-                        CustomerInfo customerInfo =
+                        CustomerInfo customerInfo=
                         await Purchases.purchasePackage(
                           product,
 
                         );
+
                         try {
                           if (customerInfo.entitlements.all["premium"] != null &&
                               customerInfo.entitlements.all["premium"]!.isActive ==
                                   true) {
-                            PurchasListener.isSubscribe = true;
+                            PurchasListener.isSubscribe=true;
+                            //success purchas
                             Navigator.push(context, MaterialPageRoute(builder: (_)=> StartPage()));
                             LocalDB().setAccessToken(PurchasListener.isSubscribe);
 
-                            //success purchas
-                          } else {
+                          }else{
                             Fluttertoast.showToast(
                                 msg: "Subscription failed",
                                 toastLength: Toast.LENGTH_SHORT,
@@ -201,9 +204,13 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                                 textColor: Colors.white,
                                 fontSize: 16.0
                             );
+                            Navigator.push(context, MaterialPageRoute(builder: (_)=> StartPage()));
+
+                            // Navigator.push(context, MaterialPageRoute(builder: (_)=> StartPage()));
 
                             //subscription failed
                           }
+
                         } catch (e) {
                           Fluttertoast.showToast(
                               msg: "Something Went Wrong.",
@@ -214,9 +221,11 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                               textColor: Colors.white,
                               fontSize: 16.0
                           );
-                          //any e
+                          //any error
                         }
                       }
+
+
                     },
                     child: Padding(
                       padding: const EdgeInsets.only(left: 28.0,right: 28),
@@ -279,17 +288,70 @@ SizedBox(height: 20,),
                   SizedBox(height: 15,),
                   InkWell(
                     onTap: () async {
+
                       if(Platform.isIOS){
                         print("offerings");
                         print(offerings!.all["premium"]!.availablePackages);
                         Package product = offerings!.all["premium"]!.availablePackages
                             .firstWhere((element) =>
-                        element.identifier == "\$rc_monthly");
+                        element.identifier == "\$rc_annual");
 
                         print('product====');
                         print(product);
                         CustomerInfo customerInfo = await Purchases.purchasePackage(
                           product,
+                        );
+
+                        try {
+                          if (customerInfo.entitlements.all["premium"] != null &&
+                              customerInfo.entitlements.all["premium"]!.isActive ==
+                                  true) {
+                            PurchasListener.isSubscribe = true;
+                            //success purchas
+                            Navigator.push(context, MaterialPageRoute(builder: (_)=> StartPage()));
+                            LocalDB().setAccessToken(PurchasListener.isSubscribe);
+                          } else {
+                            Fluttertoast.showToast(
+                                msg: "Subscription failed",
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.CENTER,
+                                timeInSecForIosWeb: 1,
+                                backgroundColor: Colors.red,
+                                textColor: Colors.white,
+                                fontSize: 16.0
+                            );
+                            Navigator.push(context, MaterialPageRoute(builder: (_)=> StartPage()));
+
+                            //subscription failed
+                          }
+                        } catch (e) {
+                          Fluttertoast.showToast(
+                              msg: "Something Went Wrong.",
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.CENTER,
+                              timeInSecForIosWeb: 1,
+                              backgroundColor: Colors.red,
+                              textColor: Colors.white,
+                              fontSize: 16.0
+                          );
+                          //any e
+                        }
+                      }else {
+                        print("offerings");
+                        print(offerings!.all["premium"]!
+                            .availablePackages);
+                        Package product = offerings!.all["premium"]!
+                            .availablePackages
+                            .firstWhere(
+                                (element) =>
+                            element.storeProduct.identifier == "premium");
+
+                        print('product====');
+                        print(product);
+                        CustomerInfo customerInfo =
+                        await Purchases.purchasePackage(
+                          product,
+
                         );
                         try {
                           if (customerInfo.entitlements.all["premium"] != null &&
@@ -310,62 +372,10 @@ SizedBox(height: 20,),
                                 textColor: Colors.white,
                                 fontSize: 16.0
                             );
-
-                            //subscription failed
-                          }
-                        } catch (e) {
-                          Fluttertoast.showToast(
-                              msg: "Something Went Wrong.",
-                              toastLength: Toast.LENGTH_SHORT,
-                              gravity: ToastGravity.CENTER,
-                              timeInSecForIosWeb: 1,
-                              backgroundColor: Colors.red,
-                              textColor: Colors.white,
-                              fontSize: 16.0
-                          );
-                        }
-                      }else{
-                        print("offerings");
-                        print(offerings!.all["premium"]!
-                            .availablePackages);
-                        Package product= offerings!.all["premium"]!
-                            .availablePackages
-                            .firstWhere(
-                                (element) =>
-                            element.storeProduct.identifier == "annual_sub_1");
-
-                        print('product====');
-                        print(product);
-                        CustomerInfo customerInfo=
-                        await Purchases.purchasePackage(
-                          product,
-
-                        );
-
-                        try {
-                          if (customerInfo.entitlements.all["premium"] != null &&
-                              customerInfo.entitlements.all["premium"]!.isActive ==
-                                  true) {
-                            PurchasListener.isSubscribe=true;
-                            //success purchas
                             Navigator.push(context, MaterialPageRoute(builder: (_)=> StartPage()));
-                            LocalDB().setAccessToken(PurchasListener.isSubscribe);
-
-                          }else{
-                            Fluttertoast.showToast(
-                                msg: "Subscription failed",
-                                toastLength: Toast.LENGTH_SHORT,
-                                gravity: ToastGravity.CENTER,
-                                timeInSecForIosWeb: 1,
-                                backgroundColor: Colors.red,
-                                textColor: Colors.white,
-                                fontSize: 16.0
-                            );
-                            // Navigator.push(context, MaterialPageRoute(builder: (_)=> StartPage()));
 
                             //subscription failed
                           }
-
                         } catch (e) {
                           Fluttertoast.showToast(
                               msg: "Something Went Wrong.",
@@ -376,7 +386,7 @@ SizedBox(height: 20,),
                               textColor: Colors.white,
                               fontSize: 16.0
                           );
-                          //any error
+                          //any e
                         }
                       }
 
