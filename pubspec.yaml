@@ -39,6 +39,7 @@ dependencies:
   dio: ^5.0.2
   hexcolor: ^3.0.1
   flutter_inappwebview: ^5.7.2+3
+  screen_brightness: ^0.2.2
 
 
 dev_dependencies:

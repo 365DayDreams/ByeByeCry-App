@@ -1,3 +1,4 @@
+import 'package:bye_bye_cry_new/compoment/product_webview_screen.dart';
 import 'package:bye_bye_cry_new/compoment/shared/custom_text.dart';
 import 'package:bye_bye_cry_new/screens/webview_screen.dart';
 import 'package:flutter/material.dart';
@@ -56,10 +57,11 @@ class BlogScreen extends StatelessWidget {
 
               SizedBox(height: 20,),
               OutLineButton(
-                height: 55,
+                height: 50,
+                width: 300,
                 text: 'GO TO BLOG SCREEN'.toUpperCase(),
                 textColor: secondaryBlackColor,
-                textFontSize: 22,
+                textFontSize: 16,
                 textFontWeight: FontWeight.w600,
                 borderRadius: 40,
                 onPressed: () {
@@ -69,8 +71,28 @@ class BlogScreen extends StatelessWidget {
                           builder: (_) => WebviewPaymentScreen()));
 
                 },
-                textPaddingVerticalTop: 5,
-                textPaddingHorizontal: 57,
+                // textPaddingVerticalTop: 5,
+                // textPaddingHorizontal: 47,
+              ),
+              SizedBox(height: 30,),
+
+              OutLineButton(
+                height: 50,
+                width: 300,
+                text: 'SHOP NOW'.toUpperCase(),
+                textColor: secondaryBlackColor,
+                textFontSize: 16,
+                textFontWeight: FontWeight.w600,
+                borderRadius: 40,
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => WebviewPaymentScreen2()));
+
+                },
+                // textPaddingVerticalTop: 5,
+                // textPaddingHorizontal: 47,
               ),
 
             ],

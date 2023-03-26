@@ -351,7 +351,7 @@ class _MixScreenState extends ConsumerState<MixScreen> {
                          Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 15.0),
                           child: CustomText(
-                            text: 'Set sound ${(currentVolume).toInt().toString().padLeft(2,"0")} volume',
+                            text: 'Set sound ${(currentVolume).toInt().toString().padLeft(2,"0")} level',
                             fontWeight: FontWeight.w400,
                             fontSize: 16,
                           ),
@@ -384,7 +384,7 @@ class _MixScreenState extends ConsumerState<MixScreen> {
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 15.0),
                           child: CustomText(
-                            text: 'Set sound ${(currentVolume1).toInt().toString().padLeft(2,"0")} volume',
+                            text: 'Set sound ${(currentVolume1).toInt().toString().padLeft(2,"0")} level',
                             fontWeight: FontWeight.w400,
                             fontSize: 16,
                           ),

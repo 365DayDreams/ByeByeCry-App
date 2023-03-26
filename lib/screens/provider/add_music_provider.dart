@@ -46,12 +46,12 @@ class AddMusicProvider extends ChangeNotifier {
     musicList.add(MusicModel(musicName: 'Hair dryer', musicFile: "babyCry/Hairdryer.wav", id: '8', image: HAirDryer));
     musicList.add(MusicModel(musicName: "Jackhammer", musicFile: "babyCry/Jackhammer.wav", id: "9", image: JackMmer));
     musicList.add(MusicModel(musicName: "Lawn Mower", musicFile: "babyCry/LawnMower.wav", id: "10", image: LawnMower));
-    musicList.add(MusicModel(musicName: "Leaf Blowerr", musicFile: "babyCry/LeafBlower.wav", id: "11", image: LeafBlower));
+    musicList.add(MusicModel(musicName: "Leaf Blower", musicFile: "babyCry/LeafBlower.wav", id: "11", image: LeafBlower));
     musicList.add(MusicModel(musicName: "Ocean", musicFile: "babyCry/Ocean.wav", id: "12", image: Ocean));
     musicList.add(MusicModel(musicName: "Pink noise", musicFile: "babyCry/Pinknoise.wav", id: "13", image: PinkNoise));
     musicList.add(MusicModel(musicName: "Rain", musicFile: "babyCry/Rain.wav", id: "14", image: Rain));
     musicList.add(MusicModel(musicName: "Shop vac", musicFile: "babyCry/Shopvac.wav", id: "15", image: ShopVac));
-    musicList.add(MusicModel(musicName: "Sushing", musicFile: "babyCry/Sushing.wav", id: "16", image: SuShing));
+    musicList.add(MusicModel(musicName: "Shushing", musicFile: "babyCry/Sushing.wav", id: "16", image: SuShing));
     musicList.add(MusicModel(musicName: "Vacuum", musicFile: "babyCry/Vacuum.wav", id: "17", image: Vaccum));
     musicList.add(MusicModel(musicName: "Vacuum Moving", musicFile: "babyCry/VacuumMoving.wav", id: "18", image: VacuumMoving));
     musicList.add(MusicModel(musicName: "Washer", musicFile: "babyCry/Washer.wav", id: "19", image: Washer));

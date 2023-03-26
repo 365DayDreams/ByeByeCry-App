@@ -26,6 +26,7 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
 
   TextEditingController searchController = TextEditingController();
   bool goMixPlayList = false;
+  List<bool> fav = [false];
   @override
   Widget build(BuildContext context) {
     final height = ScreenSize(context).height;
@@ -80,7 +81,7 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
                 ref.watch(playlistProvider).mixMixPlaylist.length,
                     (index) => Container(
                     color: index % 2 == 0?Colors.transparent:pinkLightColor,
-                    child: mixMixMusicList(musicName: "${ref.watch(playlistProvider).mixMixPlaylist[index].title}",musicId: ref.watch(playlistProvider).mixMixPlaylist[index].id)),
+                    child: mixMixMusicList(musicName: "${ref.watch(playlistProvider).mixMixPlaylist[index].title}",musicId: ref.watch(playlistProvider).mixMixPlaylist[index].id,musicIndex: index),),
               ),
             ),
             Column(
@@ -258,68 +259,84 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
       ),
     );
   }
-  Widget mixMixMusicList({required String musicName,required String musicId}) {
+  Widget mixMixMusicList({required String musicName,required String musicId,required int musicIndex}) {
+    fav.add(false);
     final height = ScreenSize(context).height;
-    return Padding(
-      padding: const EdgeInsets.only(left: 20.0, right: 20, top: 5, bottom: 5),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              Container(
-                height: height * .07,
-                width: height * .07,
-                decoration: const BoxDecoration(
+    return InkWell(
+      onTap: (){
+        setFuck(){
+          if(mounted){
+            ref.read(playlistProvider).setMixPlaylistMusicId(setMixPlaylistId: musicId);
+          }
+          if(mounted){
+            ref.read(addProvider).changePage(1);
+          }
+          if(mounted){
+            ref.read(playlistProvider).changePlaying(change: true);
+          }
+        }
+
+        Navigator.push(context, MaterialPageRoute(builder: (_)=> PlaylistMixSound2(
+          playlistMixMusicId: musicId,
+          onPressed: setFuck,
+
+        )));
+      },
+      child: Padding(
+        padding: const EdgeInsets.only(left: 20.0, right: 20, top: 5, bottom: 5),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                Container(
+                  height: height * .07,
+                  width: height * .07,
+                  decoration: const BoxDecoration(
+                      color: primaryPinkColor,
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                ),
+                const SizedBox(width: 20),
+                CustomText(
+                  text: musicName,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                ),
+              ],
+            ),
+            GestureDetector(
+              onTap: (){
+
+                setState(() {
+                  fav[musicIndex] = !fav[musicIndex];
+                });
+
+
+
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.black.withOpacity(0.1)
+                ),
+                child:  Padding(
+                  padding: EdgeInsets.all(10.0),
+                  child: !fav[musicIndex]
+                      ? Icon(
+                    Icons.favorite_border,
+                    size: 35,
                     color: primaryPinkColor,
-                    borderRadius: BorderRadius.all(Radius.circular(10))),
-              ),
-              const SizedBox(width: 20),
-              CustomText(
-                text: musicName,
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-              ),
-            ],
-          ),
-          GestureDetector(
-            onTap: (){
-              setFuck(){
-                if(mounted){
-                  ref.read(playlistProvider).setMixPlaylistMusicId(setMixPlaylistId: musicId);
-                }
-                if(mounted){
-                  ref.read(addProvider).changePage(1);
-                }
-                if(mounted){
-                  ref.read(playlistProvider).changePlaying(change: true);
-                }
-              }
-
-              Navigator.push(context, MaterialPageRoute(builder: (_)=> PlaylistMixSound2(
-                playlistMixMusicId: musicId,
-                onPressed: setFuck,
-
-              )));
-
-
-            },
-            child: Container(
-              decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.black.withOpacity(0.1)
-              ),
-              child: const Padding(
-                padding: EdgeInsets.all(1.0),
-                child: CustomImage(
-                  imageUrl: playButton,
-                  height: 30,
-                  width: 30,
+                  )
+                      : Icon(
+                    Icons.favorite,
+                    size: 35,
+                    color: primaryPinkColor,
+                  )
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

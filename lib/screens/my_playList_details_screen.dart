@@ -11,6 +11,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screen_wake/flutter_screen_wake.dart';
 import 'package:perfect_volume_control/perfect_volume_control.dart';
+import 'package:screen_brightness/screen_brightness.dart';
 import '../compoment/bottom_sheet.dart';
 import '../compoment/shared/custom_app_bar.dart';
 import '../compoment/shared/custom_text.dart';
@@ -763,8 +764,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                         brightness = newValue;
                                         print("$brightness");
                                       });
-                                      await FlutterScreenWake.setBrightness(
-                                          brightness);
+                                      await ScreenBrightness().setScreenBrightness(brightness);
                                     },
                                     semanticFormatterCallback:
                                         (double newValue) {
@@ -957,7 +957,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                           child: Center(
                               child: CustomText(
                                   text:
-                                  "${(selectedTimes[selectedTime] ~/ 60).toString().padLeft(2, "0")} : ${(selectedTimes[selectedTime] % 60).toString().padLeft(2, "0")}")),
+                                  "${(selectedTimes[selectedTime] ~/ 60).toString().padLeft(2, "0")} : ${(selectedTimes[selectedTime] % 60).toString().padLeft(2, "0")} min")),
                         ),
                         // SliderTheme(
                         //   data: const SliderThemeData(
@@ -1064,6 +1064,30 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                 color: primaryGreyColor,
                               ))
                         ],
+                      ),
+
+                      SizedBox(height: 6,),
+                      InkWell(
+                        onTap: (){
+                          Navigator.pop(context);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 38.0),
+                          child: Center(
+                            child: Container(
+                              alignment: Alignment.center,
+                              height: 50,
+                              width: 200,
+                              decoration: BoxDecoration(
+                                  color: primaryPinkColor,
+                                  borderRadius: BorderRadius.circular(30)
+                              ),
+                              child: Text("OK",style: TextStyle(
+                                  fontSize: 18,fontWeight: FontWeight.bold
+                              ),),
+                            ),
+                          ),
+                        ),
                       )
                     ],
                   ),

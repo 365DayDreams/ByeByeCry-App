@@ -361,29 +361,39 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
-                        children: [
-                          GestureDetector(
-                              onTap: () {
-                                ref.read(addProvider).addOrRemovePlayList(
-                                    id: ref.watch(addProvider).musicList[index].id);
-                              },
-                              child: CustomImage(
-                                imageUrl: 'asset/images/icon_png/love.png',
-                                color: ref.watch(addProvider).playListIds.contains(
-                                    ref.watch(addProvider).musicList[index].id)
-                                    ? Colors.red
-                                    : blackColorA0,
-                              )),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          const CustomText(
-                            text: 'Add To Playlist',
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ],
+                      InkWell(
+                        onTap: (){
+                          ref.read(addProvider).addOrRemovePlayList(
+                              id: ref.watch(addProvider).musicList[index].id);
+                        },
+                        child: Row(
+                          children: [
+                            Icon(Icons.add_outlined,size: 30,),
+                            // GestureDetector(
+                            //     onTap: () {
+                            //       ref.read(addProvider).addOrRemovePlayList(
+                            //           id: ref.watch(addProvider).musicList[index].id);
+                            //     },
+                            //     child: CustomImage(
+                            //       imageUrl: 'asset/images/icon_png/love.png',
+                            //       color: ref.watch(addProvider).playListIds.contains(
+                            //           ref.watch(addProvider).musicList[index].id)
+                            //           ? Colors.red
+                            //           : blackColorA0,
+                            //     )),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 5.0),
+                              child: const CustomText(
+                                text: 'Add To Playlist',
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                       Row(
                         children: [
@@ -557,6 +567,7 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                                     .musicFile;
                                 await audioPlayer.seek(const Duration(seconds: 0));
                                 await audioPlayer.play(AssetSource(url));
+                                sliderInitial=0.0;
                               }
                               if (_position.inSeconds.toInt() >=
                                   _duration.inSeconds.toInt() - 1) {
@@ -829,7 +840,7 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Container(
-                            width: width * 0.17,
+                            width: width * 0.27,
                             padding: const EdgeInsets.symmetric(vertical: 8),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(5),
@@ -838,7 +849,7 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                             child: Center(
                                 child: CustomText(
                                     text:
-                                        "${(selectedTimes[selectedTime] ~/ 60).toString().padLeft(2, "0")} : ${(selectedTimes[selectedTime] % 60).toString().padLeft(2, "0")}")),
+                                        "${(selectedTimes[selectedTime] ~/ 60).toString().padLeft(2, "0")} : ${(selectedTimes[selectedTime] % 60).toString().padLeft(2, "0")} min")),
                           ),
                           SliderTheme(
                             data: const SliderThemeData(
@@ -919,8 +930,34 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                                 fontSize: 16,
                                 fontWeight: FontWeight.w400,
                                 color: primaryGreyColor,
-                              ))
+                              )),
+
+
+
                         ],
+                      ),
+                      SizedBox(height: 6,),
+                      InkWell(
+                        onTap: (){
+                          Navigator.pop(context);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 38.0),
+                          child: Center(
+                            child: Container(
+                              alignment: Alignment.center,
+                              height: 50,
+                              width: 200,
+                              decoration: BoxDecoration(
+                                  color: primaryPinkColor,
+                                borderRadius: BorderRadius.circular(30)
+                              ),
+                              child: Text("OK",style: TextStyle(
+                                fontSize: 18,fontWeight: FontWeight.bold
+                              ),),
+                            ),
+                          ),
+                        ),
                       )
                     ],
                   ),

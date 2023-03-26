@@ -90,9 +90,7 @@ class _InitialHomePageState extends ConsumerState<InitialHomePage> {
               color: primaryPinkColor,
               height: 2,
             ),
-            const SizedBox(
-              height: 15,
-            ),
+           
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: Container(
@@ -125,7 +123,7 @@ class _InitialHomePageState extends ConsumerState<InitialHomePage> {
                         fontWeight: FontWeight.w400,
                         fontSize: 16,
                       ),
-                      SizedBox(height: width * 0.1),
+                    //  SizedBox(height: width * 0.1),
                       Container(
                         color: Colors.transparent,
                         child: Row(
@@ -145,7 +143,7 @@ class _InitialHomePageState extends ConsumerState<InitialHomePage> {
                           ],
                         ),
                       ),
-                      SizedBox(height: width * 0.1),
+                   //   SizedBox(height: width * 0.1),
                       OutLineButton(
                         height: height * .09,
                         text: 'Mom Made',
@@ -159,18 +157,16 @@ class _InitialHomePageState extends ConsumerState<InitialHomePage> {
                         otherTextPaddingHorizontal: 15,
                         otherTextPaddingVerticalTop: 5,
                       ),
-                      SizedBox(height: width * 0.04),
+                      SizedBox(height: width * 0.01),
                     ],
                   ),
                 ),
               ),
             ),
-            const SizedBox(
-              height: 40,
-            ),
+
             Container(
               // height: height * .21,
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(10),
               color: secondaryGreenColor,
               child: Column(
                 children: [
@@ -184,7 +180,7 @@ class _InitialHomePageState extends ConsumerState<InitialHomePage> {
                       text:
                           '“ByeByeCry completely changed our lives. It turned nap time/feeding time from a dearded activity into one that my sin and I can finally enjoy together. I am so happy he’s happy!” '),
                   const SizedBox(
-                    height: 20,
+                    height: 10,
                   ),
                   const CustomText(
                       color: blackColor57,
@@ -196,7 +192,7 @@ class _InitialHomePageState extends ConsumerState<InitialHomePage> {
               ),
             ),
             const SizedBox(
-              height: 40,
+              height: 10,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15.0),
@@ -225,9 +221,10 @@ class _InitialHomePageState extends ConsumerState<InitialHomePage> {
                 ],
               ),
             ),
-            SizedBox(height: width * 0.15),
+          SizedBox(height: 11,),
+          //  SizedBox(height: width * 0.15),
             SizedBox(
-              height: width * 0.8,
+              height: width * 0.7,
               width: width * 0.93,
               child: GridView.builder(
                   padding: const EdgeInsets.all(2.0),
@@ -269,9 +266,10 @@ class _InitialHomePageState extends ConsumerState<InitialHomePage> {
                 }
               },
             ),
-            SizedBox(height: width * 0.1),
+         SizedBox(height: 11,),
+         //   SizedBox(height: width * 0.1),
             Container(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(10),
               color: secondaryGreenColor,
               child: Column(
                 children: [
@@ -283,9 +281,11 @@ class _InitialHomePageState extends ConsumerState<InitialHomePage> {
                       height: 1.5,
                       text:
                           '“The app is a saved us. We would not be surviving without it. We sleep better. Baby sleeps better. Even our dog sleeps better” '),
-                  SizedBox(
-                    height: width * 0.1,
-                  ),
+                  // SizedBox(
+                  //   height: width * 0.1,
+                  // ),
+                  SizedBox(height: 11,),
+
                   const CustomText(
                       color: blackColor57,
                       textAlign: TextAlign.center,
@@ -295,7 +295,8 @@ class _InitialHomePageState extends ConsumerState<InitialHomePage> {
                 ],
               ),
             ),
-            SizedBox(height: width * 0.15),
+            SizedBox(height: 13,),
+          //  SizedBox(height: width * 0.15),
             const CustomText(
                 textAlign: TextAlign.center,
                 fontSize: 23,
@@ -303,7 +304,7 @@ class _InitialHomePageState extends ConsumerState<InitialHomePage> {
                 color: secondaryBlackColor,
                 text: '7 Unique features'),
             SizedBox(
-              height: width * 0.06,
+              height: width * 0.01,
             ),
             textCol(
                 firstText: 'Never miss a song',
@@ -334,10 +335,10 @@ class _InitialHomePageState extends ConsumerState<InitialHomePage> {
                 secondText:
                     'Save your favorite sounds and sleep programs (remember, you are the DJ) for quick, easy access when needed most. Help is only one click way!'),
             const SizedBox(
-              height: 20,
+              height: 10,
             ),
             Container(
-              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
               color: secondaryGreenColor,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -353,7 +354,7 @@ class _InitialHomePageState extends ConsumerState<InitialHomePage> {
                         text:
                             '“This app is my favorite because I don’t miss calls or texts when the sounds are playing and they don’t wake up my daughter! My parents downloaded it on their phones too for when they babysit!” '),
                   ),
-                  SizedBox(height: width * 0.05),
+                  SizedBox(height: width * 0.01),
                   const CustomText(
                       color: blackColor57,
                       textAlign: TextAlign.center,
@@ -363,14 +364,12 @@ class _InitialHomePageState extends ConsumerState<InitialHomePage> {
                 ],
               ),
             ),
-            SizedBox(
-              height: width * 0.1,
-            ),
+
             Padding(
               padding:
                   const EdgeInsets.symmetric(horizontal: 28.0, vertical: 20),
               child: Container(
-                height: height * .53,
+                height: height * .43,
                 padding: const EdgeInsets.all(15),
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15),
@@ -426,7 +425,7 @@ class _InitialHomePageState extends ConsumerState<InitialHomePage> {
                 ),
               ),
             ),
-            SizedBox(height: width * 0.1),
+        //    SizedBox(height: width * 0.1),
             OutLineButton(
               height: height * .09,
               text: 'Tap to join us on IG',
@@ -440,7 +439,8 @@ class _InitialHomePageState extends ConsumerState<InitialHomePage> {
               otherTextPaddingHorizontal: 10,
               otherTextPaddingVerticalBottom: 05,
             ),
-            SizedBox(height: width * 0.5),
+            SizedBox(height: 10,),
+
             Container(
               height: height * .25,
               padding: const EdgeInsets.all(20),
@@ -449,7 +449,7 @@ class _InitialHomePageState extends ConsumerState<InitialHomePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: const [
                   CustomText(
-                      height: 1.5,
+                      height: 1.9,
                       color: secondaryBlackColor,
                       textAlign: TextAlign.center,
                       fontSize: 18,
@@ -465,7 +465,8 @@ class _InitialHomePageState extends ConsumerState<InitialHomePage> {
                 ],
               ),
             ),
-            SizedBox(height: width * 0.1),
+            SizedBox(height: 10,),
+         //   SizedBox(height: width * 0.1),
             const CustomText(
                 color: secondaryBlackColor,
                 height: 1.1,
@@ -485,16 +486,14 @@ class _InitialHomePageState extends ConsumerState<InitialHomePage> {
                 text:
                     'All of the sounds you love. in a portable adorable sound machine'),
             const SizedBox(
-              height: 30,
+              height: 10,
             ),
             CustomImage(
               imageUrl: 'asset/images/head_phone.png',
               height: height * .45,
               width: width * .8,
             ),
-            const SizedBox(
-              height: 30,
-            ),
+
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: OutLineButton(
@@ -535,7 +534,7 @@ class _InitialHomePageState extends ConsumerState<InitialHomePage> {
               ),
             ),
             const SizedBox(
-              height: 30,
+              height: 10,
             ),
             Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -547,7 +546,7 @@ class _InitialHomePageState extends ConsumerState<InitialHomePage> {
                           width: width * .15,
                         ))),
             const SizedBox(
-              height: 200,
+              height: 20,
             ),
           ],
         ),
