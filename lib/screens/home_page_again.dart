@@ -33,9 +33,7 @@ class _HomePageAgainPageState extends ConsumerState<HomePageAgain> {
       body: SafeArea(
         child: Column(
           children: [
-            SizedBox(
-              height: height * .01,
-            ),
+
             Container(
               color: Colors.white,
               child: Column(
@@ -53,9 +51,7 @@ class _HomePageAgainPageState extends ConsumerState<HomePageAgain> {
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    height: 10,
-                  ),
+
                   Container(
                     width: width,
                     color: primaryPinkColor,
