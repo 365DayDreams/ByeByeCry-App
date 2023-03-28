@@ -10,6 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screen_wake/flutter_screen_wake.dart';
 import 'package:perfect_volume_control/perfect_volume_control.dart';
+import 'package:screen_brightness/screen_brightness.dart';
 import '../compoment/shared/custom_app_bar.dart';
 import '../compoment/shared/custom_text.dart';
 import '../compoment/shared/screen_size.dart';
@@ -584,7 +585,8 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound> with TickerProv
                                       brightness = newValue;
                                       print("$brightness");
                                     });
-                                    await FlutterScreenWake.setBrightness(brightness);
+                                    await ScreenBrightness().setScreenBrightness(brightness);
+
                                   },
                                   semanticFormatterCallback: (double newValue) {
                                     return '${newValue.round()} dollars';

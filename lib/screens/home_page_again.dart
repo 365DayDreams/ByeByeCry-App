@@ -46,7 +46,7 @@ class _HomePageAgainPageState extends ConsumerState<HomePageAgain> {
                       child: CustomImage(
                         boxFit: BoxFit.fill,
                         imageUrl: logo,
-                        height: height * .12,
+                        height: height * .08,
                         width: 350,
                       ),
                     ),
