@@ -212,7 +212,7 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
                                 const Padding(
                                   padding:  EdgeInsets.symmetric(horizontal: 15.0),
                                   child: CustomText(
-                                    text: 'Set sound 1 volume',
+                                    text: 'Set sound 1 level',
                                     fontWeight: FontWeight.w400,
                                     fontSize: 16,
                                   ),
@@ -243,7 +243,7 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
                                 const Padding(
                                   padding: EdgeInsets.symmetric(horizontal: 15.0),
                                   child: CustomText(
-                                    text: 'Set sound 1 volume',
+                                    text: 'Set sound 1 level',
                                     fontWeight: FontWeight.w400,
                                     fontSize: 16,
                                   ),

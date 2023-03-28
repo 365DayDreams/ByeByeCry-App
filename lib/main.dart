@@ -27,7 +27,7 @@ void main() async {
       apiKey: googleAPIKey,
     );
   }
-
+if(Platform.isIOS){
   final AudioContext audioContext = AudioContext(
     iOS: AudioContextIOS(
       category: AVAudioSessionCategory.playAndRecord,
@@ -45,6 +45,8 @@ void main() async {
     ),
   );
   AudioPlayer.global.setGlobalAudioContext(audioContext);
+}
+
 
   print(StoreConfig.instance.apiKey);
 
@@ -69,7 +71,7 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       title: 'Bye Bye Cry',
       theme: ThemeData(fontFamily: 'Neue Einstellung'),
-      home: InitialHomePage(),
+      home: StartPage(),
     );
   }
 }

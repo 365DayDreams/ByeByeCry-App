@@ -51,6 +51,7 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
       // ),
       appBar:  CustomAppBar(
         title: 'My Playlist',
+
         //actionTitle: 'Edit',
       ),
       body: SingleChildScrollView(

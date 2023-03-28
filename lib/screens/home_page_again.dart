@@ -37,7 +37,7 @@ class _HomePageAgainPageState extends ConsumerState<HomePageAgain> {
             Container(
               color: Colors.white,
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   GestureDetector(
                     onTap: () {},
@@ -46,8 +46,8 @@ class _HomePageAgainPageState extends ConsumerState<HomePageAgain> {
                       child: CustomImage(
                         boxFit: BoxFit.fill,
                         imageUrl: logo,
-                        height: height * .14,
-                        width: double.infinity,
+                        height: height * .12,
+                        width: 350,
                       ),
                     ),
                   ),
@@ -102,7 +102,7 @@ class _HomePageAgainPageState extends ConsumerState<HomePageAgain> {
                   child: Image.asset(
                     "asset/images/homeslwwp_baby.jpg",
                     fit: BoxFit.fill,
-                    height: 170,
+                 //   height: 200,
                     width: double.infinity,
                   ),
               ),
@@ -112,9 +112,9 @@ class _HomePageAgainPageState extends ConsumerState<HomePageAgain> {
             //     width: width * 0.85,
             //     child: const CustomImage(imageUrl: homesleep_baby)),
 
-            SizedBox(height: width * 0.05),
+            SizedBox(height: 31),
             OutLineButton(
-              height: height * .09,
+              height: height * .08,
               text: 'Start Playing'.toUpperCase(),
               textColor: secondaryBlackColor,
               textFontSize: 24,
