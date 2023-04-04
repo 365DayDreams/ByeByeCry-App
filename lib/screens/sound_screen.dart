@@ -3,6 +3,7 @@ import 'package:bye_bye_cry_new/compoment/shared/custom_image.dart';
 import 'package:bye_bye_cry_new/compoment/shared/custom_svg.dart';
 import 'package:bye_bye_cry_new/compoment/shared/custom_text.dart';
 import 'package:bye_bye_cry_new/compoment/shared/screen_size.dart';
+import 'package:bye_bye_cry_new/local_db/wishList_controller.dart';
 import 'package:bye_bye_cry_new/screens/mix_screen.dart';
 import 'package:bye_bye_cry_new/screens/playlist_mix_sound.dart';
 import 'package:bye_bye_cry_new/screens/provider/add_music_provider.dart';
@@ -15,10 +16,11 @@ import '../compoment/shared/custom_app_bar.dart';
 import '../compoment/shared/outline_button.dart';
 import '../compoment/utils/color_utils.dart';
 import '../compoment/utils/image_link.dart';
+import '../local_db/local_db.dart';
 import 'listen_mix_sound.dart';
 import 'models/music_models.dart';
 import 'now_palying_screen.dart';
-
+import 'package:get/get.dart';
 class SoundScreen extends ConsumerStatefulWidget {
   const SoundScreen({Key? key}) : super(key: key);
 
@@ -35,12 +37,14 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
   String mixMusicId = '';
   String mixPlaylistMixMusicId = '';
   AudioCache audioCache = AudioCache();
-  AudioPlayer audioPlayer = AudioPlayer();
-  bool issongplaying = false;
+  final WishListController wishListController = Get.put(WishListController());
+
+  // bool issongplaying = false;
   int index = 0;
   String musicId = "";
   bool deleteShow = false;
   List<bool> fav = [false];
+  bool fav2 = false;
 
   List<String> imageUrl = [
     chainsaw,
@@ -67,117 +71,7 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
     'Mix Two Sounds'
   ];
 
-  startPlayer() async {
-    audioPlayer.onPlayerStateChanged.listen((state) {
-      issongplaying = state == PlayerState.playing;
-      if (mounted) {
-        setState(() {});
-      }
-    });
-    audioPlayer.onDurationChanged.listen((newDuration) {
-      if (mounted) {
-        setState(() {});
-      }
-    });
-    audioPlayer.onPositionChanged.listen((newPositions) {
-      if (mounted) {
-        setState(() {});
-      }
-    });
-    if (mounted) {
-      setState(() {});
-    }
-  }
 
-  pausePlayMethod() async {
-    if (issongplaying) {
-      await audioPlayer.pause();
-      print("pause");
-    } else {
-      String url = ref.watch(addProvider).musicList[index].musicFile;
-      await audioPlayer.play(AssetSource(url));
-      print("play");
-    }
-    if (mounted) {
-      setState(() {});
-    }
-  }
-
-  playMusic({required String id}) async {
-    print("playlist play button click");
-    int _index = ref
-        .watch(addProvider)
-        .musicList
-        .indexWhere((element) => element.id == id);
-    if (_index >= 0) {
-      if (_index == index) {
-        if (issongplaying) {
-          await audioPlayer.pause();
-        } else {
-          String url = ref.watch(addProvider).musicList[index].musicFile;
-          await audioPlayer.play(AssetSource(url));
-        }
-      } else {
-        index = _index;
-        String url = ref.watch(addProvider).musicList[index].musicFile;
-        await audioPlayer.play(AssetSource(url));
-      }
-    }
-    if (mounted) {
-      setState(() {});
-    }
-  }
-
-  initialized() {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      if (mounted) {
-        if (ref.watch(mixMusicProvider).changeToMixPlayNow) {
-          mixMusicId = ref.watch(mixMusicProvider).musicId;
-          if (mounted) {
-            ref.read(mixMusicProvider).setMusicId();
-          }
-        }
-      }
-      if (mounted) {
-        if (ref.read(addProvider).changeToPlayNow) {
-          musicId = ref.watch(addProvider).musicId;
-          if (mounted) {
-            ref.read(addProvider).setMusicId();
-          }
-        }
-      }
-      if (mounted) {
-        if (ref.read(playlistProvider).changeToMixPlayListNow) {
-          mixPlaylistMixMusicId = ref.watch(playlistProvider).musicId;
-          if (mounted) {
-            ref.read(playlistProvider).setMixPlaylistMusicId();
-          }
-        }
-      }
-      if (mounted) {
-        changeToMixPlayNow = ref.read(mixMusicProvider).changeToMixPlayNow;
-      }
-      if (mounted) {
-        changeToPlayNow = ref.read(addProvider).changeToPlayNow;
-      }
-      if (mounted) {
-        changeToMixPlayListNow =
-            ref.read(playlistProvider).changeToMixPlayListNow;
-      }
-      if (mounted) {
-        ref.read(addProvider).changePlay(change: false);
-      }
-      if (mounted) {
-        ref.read(mixMusicProvider).changeMixPlay(change: false);
-      }
-      if (mounted) {
-        ref.read(playlistProvider).changePlaying(change: false);
-      }
-      if (mounted) {
-        setState(() {});
-      }
-    });
-  }
 
   @override
   void dispose() {
@@ -189,8 +83,8 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
 
   @override
   void initState() {
-    initialized();
-    startPlayer();
+    // initialized();
+    // startPlayer();
 
 
     // deleteShow = false;
@@ -362,7 +256,10 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
                                                   context: context,
                                                   mixMusicModel: ref
                                                       .watch(mixMusicProvider)
-                                                      .combinationList[index]),
+                                                       .combinationList[index],
+                                                index: index
+
+                                              ),
                                             ),
                                           ), // const SizedBox(height: 5,)
                                         ],
@@ -433,7 +330,10 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
     fav.add(false);
     if (searchval == null || searchval == "") {
       return GestureDetector(
-        onTap: () {
+        onTap: ()async {
+          if(issongplaying)
+          await audioPlayer.dispose();
+          await Future.delayed(Duration(seconds: 2));
           Navigator.push(
               context,
               MaterialPageRoute(
@@ -502,13 +402,14 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
                   Container(
                     decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Colors.black.withOpacity(0.05)),
+                        // color: Colors.black.withOpacity(0.05),
+                    ),
                     child: ref.read(addProvider).showAddPlaylist
                         ? GestureDetector(
                             onTap: () async {
                               musicId = musicModel.id;
                               if (mounted) {
-                                playMusic(id: musicId);
+                                //playMusic(id: musicId);
                               }
                               print("OK");
                             },
@@ -536,11 +437,17 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
                                   ),
                           )
                         : deleteShow
-                            ? const SizedBox()
+                            ?  SizedBox()
                             : InkWell(
                                 onTap: () {
+                                  
                                   setState(() {
-                                    fav[musicIndex] = !fav[musicIndex];
+
+
+                                   wishListController.addToCart(musicModel, musicIndex);
+                                    
+                                fav[musicIndex] = !fav[musicIndex];
+
                                   });
 
                                   // Navigator.push(context, MaterialPageRoute(builder: (_)=> SoundDetailsScreen(
@@ -594,7 +501,7 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
                                         .read(playlistProvider)
                                         .showMixPlayList(goMixPlaylist: true);
                                     //Change.
-                                    ref.read(addProvider).showAddPlaylist=false;
+                                 //   ref.read(addProvider).showAddPlaylist=false;
                                   }
                                   if (mounted) {
                                     ref
@@ -622,7 +529,7 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
                                   ref.read(addProvider).showPlusPlaylist(
                                       playlistPlusBottom: false);
                                   //Change...
-                                  ref.read(addProvider).showAddPlaylist=false;
+                                //  ref.read(addProvider).showAddPlaylist=false;
                                 }
                               },
                               child: const Padding(
@@ -645,7 +552,10 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
     } else {
       if (musicModel.musicName.toLowerCase().contains(search!.toLowerCase())) {
         return GestureDetector(
-          onTap: () {
+          onTap: () async{
+            if(issongplaying)
+              await audioPlayer.dispose();
+           // await Future.delayed(Duration(seconds: 2));
             Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -714,13 +624,13 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
                     Container(
                       decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: Colors.black.withOpacity(0.05)),
+                          color: Colors.black.withOpacity(0.05),),
                       child: ref.read(addProvider).showAddPlaylist
                           ? GestureDetector(
                               onTap: () async {
                                 musicId = musicModel.id;
                                 if (mounted) {
-                                  playMusic(id: musicId);
+                                  //playMusic(id: musicId);
                                 }
                                 print("OK");
                               },
@@ -856,7 +766,7 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
   }
 
   Widget mixImageList(
-      {required MixMusicModel mixMusicModel, required BuildContext context}) {
+      {required MixMusicModel mixMusicModel, required BuildContext context,required int index}) {
     return GestureDetector(
       onTap: () {
         if (mounted) {
@@ -911,19 +821,34 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
                     ? const SizedBox()
                     : deleteShow
                         ? const SizedBox()
-                        : Container(
-                            decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.black.withOpacity(0.1)),
-                            child: const Padding(
-                              padding: EdgeInsets.all(5.0),
-                              child: CustomImage(
-                                imageUrl: playButton,
-                                height: 30,
-                                width: 30,
+                        : InkWell(
+                  onTap: (){
+                    setState(() {
+                      fav[index]=!fav[index];
+                    });
+                  },
+                          child: Container(
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+
+                                  //color: Colors.black.withOpacity(0.1),
                               ),
+                              child:
+                              Padding(
+                                  padding: EdgeInsets.all(15.0),
+                                  child: !fav[index]
+                                      ? Icon(
+                                    Icons.favorite_border,
+                                    size: 35,
+                                    color: primaryPinkColor,
+                                  )
+                                      : Icon(
+                                    Icons.favorite,
+                                    size: 35,
+                                    color: primaryPinkColor,
+                                  )),
                             ),
-                          ),
+                        ),
                 deleteShow
                     ? Padding(
                         padding: const EdgeInsets.only(left: 20.0),

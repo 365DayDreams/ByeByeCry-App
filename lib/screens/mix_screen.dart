@@ -1,4 +1,3 @@
-
 import 'dart:async';
 
 import 'package:audioplayers/audioplayers.dart';
@@ -16,14 +15,13 @@ import '../compoment/shared/outline_button.dart';
 import '../compoment/shared/screen_size.dart';
 import '../compoment/utils/color_utils.dart';
 
-
 import '../compoment/utils/image_link.dart';
 import 'models/music_models.dart';
 
 class MixScreen extends ConsumerStatefulWidget {
   final VoidCallback? onPressed;
-  final String ? type;
-  const MixScreen( {Key? key,this.onPressed,this.type}) : super(key: key);
+  final String? type;
+  const MixScreen({Key? key, this.onPressed, this.type}) : super(key: key);
 
   @override
   ConsumerState<MixScreen> createState() => _MixScreenState();
@@ -48,26 +46,27 @@ class _MixScreenState extends ConsumerState<MixScreen> {
     getVolume();
     super.initState();
   }
-  getVolume()async{
+
+  getVolume() async {
     Future.delayed(Duration.zero, () async {
       /*currentVolume = await PerfectVolumeControl.getVolume();
       currentVolume1 = await PerfectVolumeControl.getVolume();*/
 
-
-
       setState(() {});
     });
   }
-  changeVolume1(){
+
+  changeVolume1() {
     PerfectVolumeControl.hideUI = false;
     PerfectVolumeControl.stream.listen((volume) {
       currentVolume = volume;
-      if(mounted){
-        setState((){});
+      if (mounted) {
+        setState(() {});
       }
     });
   }
-  changeVolume2(){
+
+  changeVolume2() {
     PerfectVolumeControl.hideUI = false;
     Future.delayed(Duration.zero, () async {
       currentVolume1 = await PerfectVolumeControl.getVolume();
@@ -75,12 +74,13 @@ class _MixScreenState extends ConsumerState<MixScreen> {
     });
     PerfectVolumeControl.stream.listen((volume) {
       currentVolume1 = volume;
-      if(mounted){
-        setState((){});
+      if (mounted) {
+        setState(() {});
       }
     });
   }
-  startPlayer1()async{
+
+  startPlayer1() async {
     audioPlayer1.setVolume(0.50);
     audioPlayer1.onPlayerStateChanged.listen((state) {
       playPause1 = state == PlayerState.playing;
@@ -111,16 +111,17 @@ class _MixScreenState extends ConsumerState<MixScreen> {
         }
         setState(() {});
       }*/
-      if(mounted){
+      if (mounted) {
         setState(() {});
       }
     });
 
-    if(mounted){
+    if (mounted) {
       setState(() {});
     }
   }
-  startPlayer2()async{
+
+  startPlayer2() async {
     audioPlayer2.setVolume(0.50);
     audioPlayer2.onPlayerStateChanged.listen((state) {
       playPause2 = state == PlayerState.playing;
@@ -151,31 +152,32 @@ class _MixScreenState extends ConsumerState<MixScreen> {
         }
         setState(() {});
       }*/
-      if(mounted){
+      if (mounted) {
         setState(() {});
       }
     });
-    if(mounted){
+    if (mounted) {
       setState(() {});
     }
   }
-  pausePlayMethod()async{
-    if(playPause1 || playPause2){
+
+  pausePlayMethod() async {
+    if (playPause1 || playPause2) {
       await audioPlayer1.pause();
       await audioPlayer2.pause();
       print("pause");
-    }else{
-      if(ref.watch(mixMusicProvider).musicModelFirst != null){
-        String url1  = ref.watch(mixMusicProvider).musicModelFirst!.musicFile;
+    } else {
+      if (ref.watch(mixMusicProvider).musicModelFirst != null) {
+        String url1 = ref.watch(mixMusicProvider).musicModelFirst!.musicFile;
         await audioPlayer1.play(AssetSource(url1));
       }
-      if(ref.watch(mixMusicProvider).musicModelSecond != null){
-        String url2  = ref.watch(mixMusicProvider).musicModelSecond!.musicFile;
+      if (ref.watch(mixMusicProvider).musicModelSecond != null) {
+        String url2 = ref.watch(mixMusicProvider).musicModelSecond!.musicFile;
         await audioPlayer2.play(AssetSource(url2));
       }
       print("play");
     }
-    if(mounted){
+    if (mounted) {
       setState(() {});
     }
   }
@@ -186,25 +188,24 @@ class _MixScreenState extends ConsumerState<MixScreen> {
     audioPlayer2.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     final width = ScreenSize(context).width;
     final height = ScreenSize(context).height;
 
     return Scaffold(
-      appBar:  CustomAppBar(
+      appBar: CustomAppBar(
         title: 'My Mix',
-        onPressed: (){
-          if(widget.type == "1"){
+        onPressed: () {
+          if (widget.type == "1") {
             Navigator.pop(context);
           }
-
-
         },
       ),
       body: SingleChildScrollView(
         child: Column(
-         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Center(
@@ -233,36 +234,48 @@ class _MixScreenState extends ConsumerState<MixScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         GestureDetector(
-                          onTap: (){
-                            ref.read(addProvider).showPlusPlaylist(playlistPlusBottom:true);
+                          onTap: () {
+                            ref
+                                .read(addProvider)
+                                .showPlusPlaylist(playlistPlusBottom: true);
                             ref.read(addProvider).changePage(1);
-                            ref.read(mixMusicProvider).selectedMixSound(selectSound: true);
+                            ref
+                                .read(mixMusicProvider)
+                                .selectedMixSound(selectSound: true);
                           },
                           child: Column(
                             children: [
-                              ref.watch(mixMusicProvider).musicModelFirst == null?Container(
-                                height: width * .3,
-                                width: width * .3,
-                                decoration: BoxDecoration(
-                                    color: secondaryPickColor,
-                                    borderRadius: BorderRadius.circular(10)
-                                ),
-                                child: const Padding(
-                                  padding: EdgeInsets.all(25.0),
-                                  child: CustomSvg(
-                                    svg: musicJust,
-                                  ),
-                                ),
-                              ):CustomImage(
-                                imageUrl: "${ref.watch(mixMusicProvider).musicModelFirst?.image}",
-                                height: width * .35,
-                                width: width * .35,
-                                boxFit: BoxFit.cover,
-                              ),
+                              ref.watch(mixMusicProvider).musicModelFirst ==
+                                      null
+                                  ? Container(
+                                      height: width * .3,
+                                      width: width * .3,
+                                      decoration: BoxDecoration(
+                                          color: secondaryPickColor,
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      child: const Padding(
+                                        padding: EdgeInsets.all(25.0),
+                                        child: CustomSvg(
+                                          svg: musicJust,
+                                        ),
+                                      ),
+                                    )
+                                  : CustomImage(
+                                      imageUrl:
+                                          "${ref.watch(mixMusicProvider).musicModelFirst?.image}",
+                                      height: width * .35,
+                                      width: width * .35,
+                                      boxFit: BoxFit.cover,
+                                    ),
                               SizedBox(height: width * 0.04),
                               Center(
                                 child: CustomText(
-                                  text: ref.watch(mixMusicProvider).musicModelFirst?.musicName ?? "Add a Sound",
+                                  text: ref
+                                          .watch(mixMusicProvider)
+                                          .musicModelFirst
+                                          ?.musicName ??
+                                      "Add a Sound",
                                   textAlign: TextAlign.center,
                                   fontSize: 20,
                                   fontWeight: FontWeight.w400,
@@ -278,38 +291,52 @@ class _MixScreenState extends ConsumerState<MixScreen> {
                           color: primaryPinkColor,
                         ),
                         GestureDetector(
-                          onTap:(){
-                              ref.read(addProvider).showPlusPlaylist(playlistPlusBottom:true,);
-                              ref.read(addProvider).changePage(1);
-                              ref.read(mixMusicProvider).selectedMixSound(selectSound: false);
+                          onTap: () {
+                            ref.read(addProvider).showPlusPlaylist(
+                                  playlistPlusBottom: true,
+                                );
+                            ref.read(addProvider).changePage(1);
+                            ref
+                                .read(mixMusicProvider)
+                                .selectedMixSound(selectSound: false);
                           },
                           child: Column(
                             children: [
-                              ref.watch(mixMusicProvider).musicModelSecond == null?Container(
-                                height: width * .3,
-                                width: width * .3,
-                                decoration: BoxDecoration(
-                                  color: secondaryPickColor,
-                                  borderRadius: BorderRadius.circular(10)
-                                ),
-                                child: const Padding(
-                                  padding: EdgeInsets.all(25.0),
-                                  child: CustomSvg(
-                                    svg: musicJust,
-                                  ),
-                                ),
-                              ):CustomImage(
-                                imageUrl: ref.watch(mixMusicProvider).musicModelSecond!.image,
-                                height: width * .35,
-                                width: width * .35,
-                                boxFit: BoxFit.cover,
-                              ),
+                              ref.watch(mixMusicProvider).musicModelSecond ==
+                                      null
+                                  ? Container(
+                                      height: width * .3,
+                                      width: width * .3,
+                                      decoration: BoxDecoration(
+                                          color: secondaryPickColor,
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      child: const Padding(
+                                        padding: EdgeInsets.all(25.0),
+                                        child: CustomSvg(
+                                          svg: musicJust,
+                                        ),
+                                      ),
+                                    )
+                                  : CustomImage(
+                                      imageUrl: ref
+                                          .watch(mixMusicProvider)
+                                          .musicModelSecond!
+                                          .image,
+                                      height: width * .35,
+                                      width: width * .35,
+                                      boxFit: BoxFit.cover,
+                                    ),
                               SizedBox(height: width * 0.04),
                               Center(
                                 child: Container(
                                   color: Colors.transparent,
                                   child: CustomText(
-                                    text: ref.watch(mixMusicProvider).musicModelSecond?.musicName??"Add a Sound",
+                                    text: ref
+                                            .watch(mixMusicProvider)
+                                            .musicModelSecond
+                                            ?.musicName ??
+                                        "Add a Sound",
                                     fontSize: 20,
                                     fontWeight: FontWeight.w400,
                                     color: primaryGreyColor,
@@ -338,20 +365,21 @@ class _MixScreenState extends ConsumerState<MixScreen> {
                             divisions: 100,
                             activeColor: primaryPinkColor,
                             inactiveColor: primaryGreyColor2,
-                            onChanged: (double newValue) async{
+                            onChanged: (double newValue) async {
                               setState(() {
                                 currentVolume = newValue;
                                 print("volume $currentVolume");
                               });
-                              audioPlayer1.setVolume(currentVolume*0.01);
-                             // await PerfectVolumeControl.setVolume(currentVolume);
+                              audioPlayer1.setVolume(currentVolume * 0.01);
+                              // await PerfectVolumeControl.setVolume(currentVolume);
                             },
                           ),
                         ),
-                         Padding(
+                        Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 15.0),
                           child: CustomText(
-                            text: 'Set sound ${(currentVolume).toInt().toString().padLeft(2,"0")} level',
+                            text:
+                                'Set sound ${(currentVolume).toInt().toString().padLeft(2, "0")} level',
                             fontWeight: FontWeight.w400,
                             fontSize: 16,
                           ),
@@ -370,21 +398,21 @@ class _MixScreenState extends ConsumerState<MixScreen> {
                             divisions: 100,
                             activeColor: primaryPinkColor,
                             inactiveColor: primaryGreyColor2,
-                            onChanged: (double newValue) async{
+                            onChanged: (double newValue) async {
                               setState(() {
                                 currentVolume1 = newValue;
                                 print("volume $currentVolume1");
-
                               });
-                              audioPlayer2.setVolume(currentVolume1*0.01);
-                             // await PerfectVolumeControl.setVolume(currentVolume1);
+                              audioPlayer2.setVolume(currentVolume1 * 0.01);
+                              // await PerfectVolumeControl.setVolume(currentVolume1);
                             },
                           ),
                         ),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 15.0),
                           child: CustomText(
-                            text: 'Set sound ${(currentVolume1).toInt().toString().padLeft(2,"0")} level',
+                            text:
+                                'Set sound ${(currentVolume1).toInt().toString().padLeft(2, "0")} level',
                             fontWeight: FontWeight.w400,
                             fontSize: 16,
                           ),
@@ -396,59 +424,71 @@ class _MixScreenState extends ConsumerState<MixScreen> {
               ],
             ),
             Column(
-             children: [
-               Container(
-                 // color: Colors.red,
-                 height: width * 0.18,
-                 width: width * 0.18,
-                 clipBehavior: Clip.hardEdge,
-                 decoration: BoxDecoration(
-                     color: secondaryWhiteColor2,
-                     shape: BoxShape.circle,
-                     border: Border.all(color: Colors.transparent,width:0),
-                     boxShadow: [
-                       BoxShadow(
-                           blurRadius: 2,
-                           spreadRadius: 2,
-                           color:primaryPinkColor.withOpacity(0.2),
-                            offset: const Offset(0,3)
-                       )
-                     ]
-                 ),
-                 child: Padding(
-                   padding: const EdgeInsets.all(22),
-                   child:  GestureDetector(
-                     onTap: ()async{
-                       pausePlayMethod();
-                     },
-                     child: CustomSvg(
-                       //color: Colors.blue,
-                       svg:(playPause1 || playPause2)?pouseButton:playButtonSvg,
-                     ),
-                   ),
-                 ),
-               ),
-               SizedBox(height: width * 0.15),
-               OutLineButton(
-                 height: height * .06,
-                 text: 'Save To My Sounds ',
-                 textColor: secondaryBlackColor,
-                 textFontSize: 22,
-                 textFontWeight: FontWeight.w600,
-                 borderRadius: 50,
-                 onPressed: () {
-                   _showDialog(context,firstMusicName: ref.watch(mixMusicProvider).musicModelFirst?.musicName??"", secondMusicName: ref.watch(mixMusicProvider).musicModelSecond?.musicName ?? "");
-                 },
-               ),
-               SizedBox(height: width * 0.15),
-             ],
-           )
+              children: [
+                Container(
+                  // color: Colors.red,
+                  height: width * 0.18,
+                  width: width * 0.18,
+                  clipBehavior: Clip.hardEdge,
+                  decoration: BoxDecoration(
+                      color: secondaryWhiteColor2,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.transparent, width: 0),
+                      boxShadow: [
+                        BoxShadow(
+                            blurRadius: 2,
+                            spreadRadius: 2,
+                            color: primaryPinkColor.withOpacity(0.2),
+                            offset: const Offset(0, 3))
+                      ]),
+                  child: Padding(
+                    padding: const EdgeInsets.all(22),
+                    child: GestureDetector(
+                      onTap: () async {
+                        pausePlayMethod();
+                      },
+                      child: CustomSvg(
+                        //color: Colors.blue,
+                        svg: (playPause1 || playPause2)
+                            ? pouseButton
+                            : playButtonSvg,
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: width * 0.15),
+                OutLineButton(
+                  height: height * .06,
+                  text: 'Save To My Sounds ',
+                  textColor: secondaryBlackColor,
+                  textFontSize: 22,
+                  textFontWeight: FontWeight.w600,
+                  borderRadius: 50,
+                  onPressed: () {
+                    _showDialog(context,
+                        firstMusicName: ref
+                                .watch(mixMusicProvider)
+                                .musicModelFirst
+                                ?.musicName ??
+                            "",
+                        secondMusicName: ref
+                                .watch(mixMusicProvider)
+                                .musicModelSecond
+                                ?.musicName ??
+                            "");
+                  },
+                ),
+                SizedBox(height: width * 0.15),
+              ],
+            )
           ],
         ),
       ),
     );
   }
-  void _showDialog(BuildContext context,{required String firstMusicName,required String secondMusicName}) {
+
+  void _showDialog(BuildContext context,
+      {required String firstMusicName, required String secondMusicName}) {
     final height = ScreenSize(context).height;
     showDialog(
       context: context,
@@ -459,8 +499,7 @@ class _MixScreenState extends ConsumerState<MixScreen> {
             children: [
               AlertDialog(
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15)
-                ),
+                    borderRadius: BorderRadius.circular(15)),
                 backgroundColor: secondaryPinkColor,
                 title: const CustomText(
                   text: 'Name Your Sound',
@@ -477,7 +516,8 @@ class _MixScreenState extends ConsumerState<MixScreen> {
                         color: Colors.white,
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 25.0,vertical: 20),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 25.0, vertical: 20),
                         child: CustomText(
                           text: '$firstMusicName + $secondMusicName',
                           fontSize: 18,
@@ -500,13 +540,43 @@ class _MixScreenState extends ConsumerState<MixScreen> {
                     textFontWeight: FontWeight.w600,
                     borderRadius: 48,
                     onPressed: () {
-                      if(ref.watch(mixMusicProvider).musicModelFirst != null && ref.watch(mixMusicProvider).musicModelSecond != null){
+                      if (ref.watch(mixMusicProvider).musicModelFirst != null &&
+                          ref.watch(mixMusicProvider).musicModelSecond !=
+                              null) {
                         print("mix add hocche");
-                        ref.read(mixMusicProvider).createMix(MixMusicModel(id: "${ref.watch(mixMusicProvider).musicModelFirst!.id}${ref.watch(mixMusicProvider).musicModelSecond!.id}",first: ref.watch(mixMusicProvider).musicModelFirst,second: ref.watch(mixMusicProvider).musicModelSecond));
-                        Navigator.pop(context);
-                      }else{
-                        ShowSnackBar.toastSnackBar(context: context, seconds: 2, text: "Add At least 2 music",color: Colors.white);
+                        ref.read(mixMusicProvider).createMix(MixMusicModel(
+                            id:
+                                "${ref.watch(mixMusicProvider).musicModelFirst!.id}${ref.watch(mixMusicProvider).musicModelSecond!.id}",
+                            first: ref.watch(mixMusicProvider).musicModelFirst,
+                            second:
+                                ref.watch(mixMusicProvider).musicModelSecond));
+
+
+                       setState(() {
+                         ref.watch(mixMusicProvider).musicModelSecond= null;
+                         ref.watch(mixMusicProvider).musicModelFirst= null;
+                         Navigator.pop(context);
+                         // Navigator.push(
+                         //     context,
+                         //     MaterialPageRoute(
+                         //         builder: (_) => MixScreen(
+                         //           onPressed: (){
+                         //             ref.watch(mixMusicProvider).musicModelSecond= null;
+                         //             ref.watch(mixMusicProvider).musicModelFirst= null;
+                         //           },
+                         //
+                         //         )));
+
+                       });
+                      } else {
+
+                        ShowSnackBar.toastSnackBar(
+                            context: context,
+                            seconds: 2,
+                            text: "Add At least 2 music",
+                            color: Colors.white);
                         print("add another music");
+
                       }
                     },
                   ),

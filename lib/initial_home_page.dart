@@ -658,7 +658,7 @@ class _InitialHomePageState extends ConsumerState<InitialHomePage> {
                 child: CustomImage(
                   boxFit: BoxFit.fill,
                   imageUrl: logo,
-                  height: height * .12,
+                 // height: height * .12,
                   width: double.infinity,
                 ),
               ),

@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../compoment/shared/custom_app_bar.dart';
-import '../compoment/shared/custom_navigation.dart';
 import '../compoment/shared/custom_svg.dart';
 import '../compoment/shared/screen_size.dart';
 import '../compoment/utils/color_utils.dart';
@@ -98,7 +97,7 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
                 ref.watch(mixMusicProvider).mixPlaylist.length,
                     (index) => Container(
                     color: index % 2 == 0?Colors.transparent:pinkLightColor,
-                    child: mixMusicList(musicName: "${ref.watch(mixMusicProvider).mixPlaylist[index].first?.musicName}+${ref.watch(mixMusicProvider).mixPlaylist[index].second?.musicName}",musicId:  ref.watch(mixMusicProvider).mixPlaylist[index].id)),
+                    child: mixMusicList(musicName: "${ref.watch(mixMusicProvider).mixPlaylist[index].first?.musicName}+${ref.watch(mixMusicProvider).mixPlaylist[index].second?.musicName}",musicId:  ref.watch(mixMusicProvider).mixPlaylist[index].id,index: index),),
               ),
             ),
             const SizedBox(
@@ -201,62 +200,75 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
       ),
     );
   }
-  Widget mixMusicList({required String musicName,required String musicId}) {
+  Widget mixMusicList({required String musicName,required String musicId,required int index}) {
     final height = ScreenSize(context).height;
-    return Padding(
-      padding: const EdgeInsets.only(left: 20.0, right: 20, top: 5, bottom: 5),
-      child: Row(
-        //  crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              Container(
-                height: height * .07,
-                width: height * .07,
-                decoration: const BoxDecoration(
-                    color: primaryPinkColor,
-                    borderRadius: BorderRadius.all(Radius.circular(10))),
-              ),
-              const SizedBox(width: 20),
-              CustomText(
-                text: musicName,
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-              ),
-            ],
-          ),
-          GestureDetector(
-            onTap: (){
-              if(mounted){
-                ref.read(mixMusicProvider).setMusicId(mixMusicId: musicId);
-              }
-              if(mounted){
-                ref.read(addProvider).changePage(1);
-              }
-              if(mounted){
-                ref.read(mixMusicProvider).changeMixPlay(change:true);
-              }
-              if(mounted){
-                ref.read(mixMusicProvider).playFromPlayListActive(change:true);
-              }
-            },
-            child: Container(
-              decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.black.withOpacity(0.1)
-              ),
-              child: const Padding(
-                padding: EdgeInsets.all(1.0),
-                child: CustomImage(
-                  imageUrl: playButton,
-                  height: 30,
-                  width: 30,
+    return InkWell(
+      onTap: (){
+        if(mounted){
+          ref.read(mixMusicProvider).setMusicId(mixMusicId: musicId);
+        }
+        if(mounted){
+          ref.read(addProvider).changePage(1);
+        }
+        if(mounted){
+          ref.read(mixMusicProvider).changeMixPlay(change:true);
+        }
+        if(mounted){
+          ref.read(mixMusicProvider).playFromPlayListActive(change:true);
+        }
+      },
+      child: Padding(
+        padding: const EdgeInsets.only(left: 20.0, right: 15, top: 5, bottom: 5),
+        child: Row(
+          //  crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                Container(
+                  height: height * .07,
+                  width: height * .07,
+                  decoration: const BoxDecoration(
+                      color: primaryPinkColor,
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
                 ),
+                const SizedBox(width: 20),
+                CustomText(
+                  text: musicName,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                ),
+              ],
+            ),
+            GestureDetector(
+              onTap: (){
+                setState(() {
+                  fav[index] = !fav[index];
+                });
+
+
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                ),
+                child:   Padding(
+                    padding: EdgeInsets.all(15.0),
+                    child: !fav[index]
+                        ? Icon(
+                      Icons.favorite_border,
+                      size: 35,
+                      color: primaryPinkColor,
+                    )
+                        : Icon(
+                      Icons.favorite,
+                      size: 35,
+                      color: primaryPinkColor,
+                    )),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -318,7 +330,7 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
               child: Container(
                 decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Colors.black.withOpacity(0.1)
+                  //  color: Colors.black.withOpacity(0.1)
                 ),
                 child:  Padding(
                   padding: EdgeInsets.all(10.0),

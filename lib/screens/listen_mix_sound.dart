@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'dart:math';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:bye_bye_cry_new/compoment/shared/custom_image.dart';
 import 'package:bye_bye_cry_new/compoment/shared/custom_svg.dart';
 import 'package:bye_bye_cry_new/screens/models/music_models.dart';
+import 'package:bye_bye_cry_new/screens/provider/add_music_provider.dart';
 import 'package:bye_bye_cry_new/screens/provider/mix_music_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -48,6 +48,8 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound> with TickerProv
     120,
     150
   ];
+  PageController pageController = PageController();
+
   int selectedTime = 0;
   bool playPouse = true;
   int setDuration = 0;
@@ -79,6 +81,35 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound> with TickerProv
     changeVolume();
     brightNess();
     super.initState();
+    Timer.periodic(Duration(
+        seconds: 1
+    ), (timer) {
+      print(_position);
+      if(sliderInitial.toInt()==
+          (sliderEnd-1).toInt()){
+
+        pageController.nextPage(duration: Duration(milliseconds: 100), curve: Curves.linear);
+        sliderInitial=0.0;
+
+      }
+      if(!mounted){
+        timer.cancel();
+        return;
+      }
+      // if(ref
+      //     .watch(playlistProvider)
+      //     .mixMixPlaylist[mixPlaylistIndex]
+      //     .playListList!
+      //     .length-1 == musicIndex){
+      //   pageController.animateToPage(0, duration: Duration(seconds: 1), curve: Curves.easeInOut);
+      //
+      // }else{
+      //
+      // }
+
+    });
+
+
   }
 
   @override
@@ -266,281 +297,308 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound> with TickerProv
         onPressedButton: null,
         onPressed: widget.onPressed,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+      body:  PageView.builder(
+        onPageChanged: (int index){
+          changeIndex(changeIndex: true);
+          if (mounted) {
+            // playMusic();
+          }
+          if (mounted) {
+            setState(() {});
+          }
+        },
+        controller: pageController,
+        itemCount: ref
+            .watch(addProvider)
+            .musicList.length,
+        itemBuilder: (_,index){
+          return   SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Container(
+                      color: Colors.transparent,
+                      child: GestureDetector(
+                        onTap: (){
+                          _showDialogBrightNess(context);
+                        },
+                        child: Padding(
+                          padding: EdgeInsets.only(right: width * .07),
+                          child:  CustomImage(
+                            imageUrl: 'asset/images/icon_png/now_playing_icon/Sun.png',
+                            color: Colors.orangeAccent.shade100,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                CustomImage(
+                  imageUrl: ref.watch(mixMusicProvider).combinationList[musicIndex].first?.image??"",
+                  height: width * .7,
+                  width: width * .9,
+                  boxFit: BoxFit.fill,
+                ),
                 Container(
                   color: Colors.transparent,
-                  child: GestureDetector(
-                    onTap: (){
-                      _showDialogBrightNess(context);
-                    },
-                    child: Padding(
-                      padding: EdgeInsets.only(right: width * .07),
-                      child:  CustomImage(
-                        imageUrl: 'asset/images/icon_png/now_playing_icon/Sun.png',
-                        color: Colors.orangeAccent.shade100,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              CustomText(
+                                text: "${ref.watch(mixMusicProvider).combinationList[musicIndex].first?.musicName}+${ref.watch(mixMusicProvider).combinationList[musicIndex].second?.musicName}",
+                                fontSize: 20,
+                                fontWeight: FontWeight.w400,
+                                color: secondaryBlackColor,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(height: width * 0.06),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children:  [
+                          IconButton(onPressed: (){
+                            ref.read(mixMusicProvider).addOrRemoveMixPlayList(id: ref.watch(mixMusicProvider).combinationList[musicIndex].id);
+
+                          }, icon: Icon(Icons.add,size: 30,),),
+                          // GestureDetector(
+                          //     onTap: (){
+                          //     },
+                          //     child: CustomImage(imageUrl: 'asset/images/icon_png/love.png',color: ref.watch(mixMusicProvider).mixPlayListIds.contains(ref.watch(mixMusicProvider).combinationList[musicIndex].id)? Colors.red:blackColorA0,)),
+                          const SizedBox(
+                            width: 5,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 4.0),
+                            child: const CustomText(
+                              text: 'Add To Playlist',
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ],
                       ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: width * 0.1),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CustomText(
+                        text: '${getHumanTimeBySecond(sliderInitial.toInt())}',
+                        fontSize: 10,
+                        color: blackColor2,
+                        fontWeight: FontWeight.w700,
+                      ),
+                      CustomText(
+                        text: '${getHumanTimeBySecond(sliderEnd.toInt())}',
+                        fontSize: 10,
+                        color: blackColor2,
+                        fontWeight: FontWeight.w700,
+                      ),
+                      // CustomText(
+                      //   text: '${_position.inSeconds ~/ 60} : ${(_position.inSeconds % 60).toInt()}',
+                      //   fontSize: 10,
+                      //   color: blackColor2,
+                      //   fontWeight: FontWeight.w700,
+                      // ),
+                      // CustomText(
+                      //   text: '${_duration.inSeconds ~/ 60} : ${(_duration.inSeconds % 60).toInt()}',
+                      //   fontSize: 10,
+                      //   color: blackColor2,
+                      //   fontWeight: FontWeight.w700,
+                      // ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  //color: Colors.green,
+                  width: width * .95,
+                  child: SliderTheme(
+                    data: const SliderThemeData(
+                        trackShape: RectangularSliderTrackShape(),
+                        thumbShape: RoundSliderThumbShape(enabledThumbRadius: 10)),
+                    child: Slider(
+                        value: sliderInitial,
+                        min: 0,
+                        max: sliderEnd,
+                        divisions: 350,
+                        activeColor: primaryPinkColor,
+                        inactiveColor: primaryGreyColor2,
+                        onChanged: (double newValue) async{
+                          print("slider");
+                          updateSlider(newValue);
+                          setState(() {});
+                        },
+                        semanticFormatterCallback: (double newValue) {
+                          return '${newValue.round()} dollars';
+                        }),
+                  ),
+                ),
+                // SizedBox(
+                //   //color: Colors.green,
+                //   width: width * .95,
+                //   child: SliderTheme(
+                //     data: const SliderThemeData(
+                //         trackShape: RectangularSliderTrackShape(),
+                //         thumbShape: RoundSliderThumbShape(enabledThumbRadius: 10)),
+                //     child: Slider(
+                //         value: position.inSeconds.toDouble() < _position2.inSeconds.toDouble()?_position.inSeconds.toDouble():_position2.inSeconds.toDouble(),
+                //         min: 0,
+                //         max: _duration.inSeconds.toDouble() < _duration2.inSeconds.toDouble()?_duration.inSeconds.toDouble():_duration2.inSeconds.toDouble(),
+                //         divisions: 100,
+                //         activeColor: primaryPinkColor,
+                //         inactiveColor: primaryGreyColor2,
+                //         onChanged: (double newValue) async{
+                //           if(newValue.toInt() <= _duration.inSeconds){
+                //             await audioPlayer1.seek(Duration(seconds: newValue.toInt()));
+                //           }
+                //           if(newValue.toInt() <= _duration2.inSeconds){
+                //             await audioPlayer2.seek(Duration(seconds: newValue.toInt()));
+                //           }
+                //           await audioPlayer1.resume();
+                //           await audioPlayer2.resume();
+                //           if(mounted){
+                //             setState(() {});
+                //           }
+                //         },
+                //         semanticFormatterCallback: (double newValue) {
+                //           return '${newValue.round()} dollars';
+                //         }),
+                //   ),
+                // ),
+                Container(
+                  color: Colors.transparent,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 20.0,right: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children:  [
+                        IconButton(
+                            padding: const EdgeInsets.only(left: 10),
+                            onPressed: (){
+                              _showDialogVolume(context);
+                            },
+                            icon: Container(
+                                color: Colors.transparent,
+                                child: const CustomSvg(svg: volume,color: blackColor2))),
+                        IconButton(
+                            padding: EdgeInsets.zero,
+                            onPressed: ()async{
+                              changeIndex(changeIndex: false);
+                              if(mounted){
+                                playMusic();
+                              }
+                              if(mounted){
+                                setState(() {});
+                              }
+                            },
+                            icon: const CustomSvg(svg: left_shift,color: primaryPinkColor)),
+                        Container(
+                          // color: Colors.red,
+                          height: width * 0.18,
+                          width: width * 0.18,
+                          clipBehavior: Clip.hardEdge,
+                          decoration: BoxDecoration(
+                              color: secondaryWhiteColor2,
+                              shape: BoxShape.circle,
+                              border: Border.all(color: Colors.transparent,width:0),
+                              boxShadow: const [
+                                BoxShadow(
+                                    blurRadius: 10,
+                                    color:secondaryWhiteColor2
+                                )
+                              ]
+                          ),
+                          child: GestureDetector(
+                            onTap: ()async {
+                              if(playPouse){
+                                await audioPlayer1.pause();
+                                await audioPlayer2.pause();
+                                pauseSliderTimmer();
+                              }else{
+                                String url1 = ref.watch(mixMusicProvider).combinationList[musicIndex].first?.musicFile??"";
+                                String url2 = ref.watch(mixMusicProvider).combinationList[musicIndex].second?.musicFile??"";
+                                await audioPlayer1.play(AssetSource(url1));
+                                await audioPlayer2.play(AssetSource(url2));
+                                resumeSliderTimmer();
+                              }
+                              playPouse = !playPouse;
+                              if(mounted){setState(() {});}
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(22),
+                              child:  CustomSvg(
+                                color: primaryPinkColor,
+                                svg:(issongplaying1 || issongplaying2)?pouseButton:playButtonSvg,
+                              ),
+                            ),
+                          ),
+                        ),
+                        IconButton(
+                            padding: EdgeInsets.zero,
+                            onPressed: ()async{
+                              changeIndex(changeIndex: true);
+                              sliderInitial=0.0;
+                              if(mounted){
+                                playMusic();
+
+                              }
+                              if(mounted){
+                                setState(() {});
+                              }
+                            },
+                            icon: const CustomSvg(svg: right_shift,color: primaryPinkColor)),
+                        IconButton(
+                            padding: EdgeInsets.zero,
+                            onPressed: (){
+                              ref.read(mixMusicProvider).alertDialogStart();
+                              if(mounted){
+                                setState(()  {
+                                  check = false;
+                                  selectedTime = 0;
+                                });
+                                _showDialog(context);
+                              }
+                            },
+                            icon: Container(
+                                color: Colors.transparent,
+                                child: const Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 8.0),
+                                  child: CustomSvg(svg: timer,color: blackColor2),
+                                ))),
+                      ],
                     ),
                   ),
                 ),
               ],
             ),
-            CustomImage(
-              imageUrl: ref.watch(mixMusicProvider).combinationList[musicIndex].first?.image??"",
-              height: width * .7,
-              width: width * .9,
-              boxFit: BoxFit.fill,
-            ),
-            Container(
-              color: Colors.transparent,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          CustomText(
-                            text: "${ref.watch(mixMusicProvider).combinationList[musicIndex].first?.musicName}+${ref.watch(mixMusicProvider).combinationList[musicIndex].second?.musicName}",
-                            fontSize: 20,
-                            fontWeight: FontWeight.w400,
-                            color: secondaryBlackColor,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            SizedBox(height: width * 0.06),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children:  [
-                      GestureDetector(
-                          onTap: (){
-                            ref.read(mixMusicProvider).addOrRemoveMixPlayList(id: ref.watch(mixMusicProvider).combinationList[musicIndex].id);
-                          },
-                          child: CustomImage(imageUrl: 'asset/images/icon_png/love.png',color: ref.watch(mixMusicProvider).mixPlayListIds.contains(ref.watch(mixMusicProvider).combinationList[musicIndex].id)? Colors.red:blackColorA0,)),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      const CustomText(
-                        text: 'Add To Playlist',
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: width * 0.1),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  CustomText(
-                    text: '${getHumanTimeBySecond(sliderInitial.toInt())}',
-                    fontSize: 10,
-                    color: blackColor2,
-                    fontWeight: FontWeight.w700,
-                  ),
-                  CustomText(
-                    text: '${getHumanTimeBySecond(sliderEnd.toInt())}',
-                    fontSize: 10,
-                    color: blackColor2,
-                    fontWeight: FontWeight.w700,
-                  ),
-                  // CustomText(
-                  //   text: '${_position.inSeconds ~/ 60} : ${(_position.inSeconds % 60).toInt()}',
-                  //   fontSize: 10,
-                  //   color: blackColor2,
-                  //   fontWeight: FontWeight.w700,
-                  // ),
-                  // CustomText(
-                  //   text: '${_duration.inSeconds ~/ 60} : ${(_duration.inSeconds % 60).toInt()}',
-                  //   fontSize: 10,
-                  //   color: blackColor2,
-                  //   fontWeight: FontWeight.w700,
-                  // ),
-                ],
-              ),
-            ),
-            SizedBox(
-              //color: Colors.green,
-              width: width * .95,
-              child: SliderTheme(
-                data: const SliderThemeData(
-                    trackShape: RectangularSliderTrackShape(),
-                    thumbShape: RoundSliderThumbShape(enabledThumbRadius: 10)),
-                child: Slider(
-                    value: sliderInitial,
-                    min: 0,
-                    max: sliderEnd,
-                    divisions: 350,
-                    activeColor: primaryPinkColor,
-                    inactiveColor: primaryGreyColor2,
-                    onChanged: (double newValue) async{
-                      print("slider");
-                      updateSlider(newValue);
-                      setState(() {});
-                    },
-                    semanticFormatterCallback: (double newValue) {
-                      return '${newValue.round()} dollars';
-                    }),
-              ),
-            ),
-            // SizedBox(
-            //   //color: Colors.green,
-            //   width: width * .95,
-            //   child: SliderTheme(
-            //     data: const SliderThemeData(
-            //         trackShape: RectangularSliderTrackShape(),
-            //         thumbShape: RoundSliderThumbShape(enabledThumbRadius: 10)),
-            //     child: Slider(
-            //         value: position.inSeconds.toDouble() < _position2.inSeconds.toDouble()?_position.inSeconds.toDouble():_position2.inSeconds.toDouble(),
-            //         min: 0,
-            //         max: _duration.inSeconds.toDouble() < _duration2.inSeconds.toDouble()?_duration.inSeconds.toDouble():_duration2.inSeconds.toDouble(),
-            //         divisions: 100,
-            //         activeColor: primaryPinkColor,
-            //         inactiveColor: primaryGreyColor2,
-            //         onChanged: (double newValue) async{
-            //           if(newValue.toInt() <= _duration.inSeconds){
-            //             await audioPlayer1.seek(Duration(seconds: newValue.toInt()));
-            //           }
-            //           if(newValue.toInt() <= _duration2.inSeconds){
-            //             await audioPlayer2.seek(Duration(seconds: newValue.toInt()));
-            //           }
-            //           await audioPlayer1.resume();
-            //           await audioPlayer2.resume();
-            //           if(mounted){
-            //             setState(() {});
-            //           }
-            //         },
-            //         semanticFormatterCallback: (double newValue) {
-            //           return '${newValue.round()} dollars';
-            //         }),
-            //   ),
-            // ),
-            Container(
-              color: Colors.transparent,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 20.0,right: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children:  [
-                    IconButton(
-                        padding: const EdgeInsets.only(left: 10),
-                        onPressed: (){
-                          _showDialogVolume(context);
-                        },
-                        icon: Container(
-                            color: Colors.transparent,
-                            child: const CustomSvg(svg: volume,color: blackColor2))),
-                    IconButton(
-                        padding: EdgeInsets.zero,
-                        onPressed: ()async{
-                          changeIndex(changeIndex: false);
-                          if(mounted){
-                            playMusic();
-                          }
-                          if(mounted){
-                            setState(() {});
-                          }
-                        },
-                        icon: const CustomSvg(svg: left_shift,color: primaryPinkColor)),
-                    Container(
-                      // color: Colors.red,
-                      height: width * 0.18,
-                      width: width * 0.18,
-                      clipBehavior: Clip.hardEdge,
-                      decoration: BoxDecoration(
-                          color: secondaryWhiteColor2,
-                          shape: BoxShape.circle,
-                          border: Border.all(color: Colors.transparent,width:0),
-                          boxShadow: const [
-                            BoxShadow(
-                                blurRadius: 10,
-                                color:secondaryWhiteColor2
-                            )
-                          ]
-                      ),
-                      child: GestureDetector(
-                        onTap: ()async {
-                          if(playPouse){
-                            await audioPlayer1.pause();
-                            await audioPlayer2.pause();
-                            pauseSliderTimmer();
-                          }else{
-                            String url1 = ref.watch(mixMusicProvider).combinationList[musicIndex].first?.musicFile??"";
-                            String url2 = ref.watch(mixMusicProvider).combinationList[musicIndex].second?.musicFile??"";
-                            await audioPlayer1.play(AssetSource(url1));
-                            await audioPlayer2.play(AssetSource(url2));
-                            resumeSliderTimmer();
-                          }
-                          playPouse = !playPouse;
-                          if(mounted){setState(() {});}
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(22),
-                          child:  CustomSvg(
-                            color: primaryPinkColor,
-                            svg:(issongplaying1 || issongplaying2)?pouseButton:playButtonSvg,
-                          ),
-                        ),
-                      ),
-                    ),
-                    IconButton(
-                        padding: EdgeInsets.zero,
-                        onPressed: ()async{
-                          changeIndex(changeIndex: true);
-                          if(mounted){
-                            playMusic();
-                          }
-                          if(mounted){
-                            setState(() {});
-                          }
-                        },
-                        icon: const CustomSvg(svg: right_shift,color: primaryPinkColor)),
-                    IconButton(
-                        padding: EdgeInsets.zero,
-                        onPressed: (){
-                          ref.read(mixMusicProvider).alertDialogStart();
-                          if(mounted){
-                            setState(()  {
-                              check = false;
-                              selectedTime = 0;
-                            });
-                            _showDialog(context);
-                          }
-                        },
-                        icon: Container(
-                            color: Colors.transparent,
-                            child: const Padding(
-                              padding: EdgeInsets.symmetric(vertical: 8.0),
-                              child: CustomSvg(svg: timer,color: blackColor2),
-                            ))),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
+          );
+        },
+      )
+
+
     );
   }
   void _showDialogBrightNess(BuildContext context) {
@@ -819,38 +877,72 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound> with TickerProv
                         ),
                       ),
                       const SizedBox(height: 15),
+
+
                     ],
                   ),
+
                   actionsAlignment: MainAxisAlignment.start,
                   actionsPadding: const EdgeInsets.only(left: 48,bottom: 30),
                   actions: <Widget>[
-                    Row(
+                    Column(
                       children: [
-                        Checkbox(
-                            side: const BorderSide(color: blackColorA0),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            activeColor: primaryPinkColor,
-                            value: check,
-                            onChanged: (newValue){
-                              state(() {
-                                check = newValue!;
-                                if(check){
-                                  selectedTime = 0;
-                                }
-                              });
-                        }),
-                        TextButton(onPressed: check?() async{
-                          if(mounted){
+                        Row(
+                          children: [
+                            Checkbox(
+                                side: const BorderSide(color: blackColorA0),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                activeColor: primaryPinkColor,
+                                value: check,
+                                onChanged: (newValue){
+                                  state(() {
+                                    check = newValue!;
+                                    if(check){
+                                      selectedTime = 0;
+                                    }
+                                  });
+                            }),
+                            TextButton(onPressed: check?() async{
+                              if(mounted){
+                                Navigator.pop(context);
+                              }
+                            }:null,
+                            child: const CustomText(text: "continuous play",fontSize: 16,fontWeight: FontWeight.w400,color: primaryGreyColor,))
+                          ],
+                        ),
+                        SizedBox(height: 6,),
+                        InkWell(
+                          onTap: (){
                             Navigator.pop(context);
-                          }
-                        }:null,
-                        child: const CustomText(text: "continuous play",fontSize: 16,fontWeight: FontWeight.w400,color: primaryGreyColor,))
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 38.0),
+                            child: Center(
+                              child: Container(
+                                alignment: Alignment.center,
+                                height: 50,
+                                width: 200,
+                                decoration: BoxDecoration(
+                                    color: primaryPinkColor,
+                                    borderRadius: BorderRadius.circular(30)
+                                ),
+                                child: Text("OK",style: TextStyle(
+                                    fontSize: 18,fontWeight: FontWeight.bold
+                                ),),
+                              ),
+                            ),
+                          ),
+                        )
+                        // Text("A")
                       ],
-                    )
+                    ),
+
+
                   ],
                 ),
+
               ],
             ),
           );  },

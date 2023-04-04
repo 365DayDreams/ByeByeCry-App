@@ -1,23 +1,22 @@
 import 'dart:async';
-
 import 'package:audioplayers/audioplayers.dart';
 import 'package:bye_bye_cry_new/compoment/shared/custom_image.dart';
 import 'package:bye_bye_cry_new/compoment/shared/custom_svg.dart';
 import 'package:bye_bye_cry_new/screens/provider/add_music_provider.dart';
 import 'package:bye_bye_cry_new/screens/provider/mix_music_provider.dart';
-import 'package:bye_bye_cry_new/screens/provider/playlistProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screen_wake/flutter_screen_wake.dart';
 import 'package:perfect_volume_control/perfect_volume_control.dart';
 import 'package:screen_brightness/screen_brightness.dart';
-import '../compoment/shared/custom_app_bar.dart';
 import '../compoment/shared/custom_text.dart';
 import '../compoment/shared/screen_size.dart';
 import '../compoment/utils/color_utils.dart';
 import '../compoment/utils/image_link.dart';
-
+AudioPlayer audioPlayer = AudioPlayer();
+bool issongplaying = false;
+Timer? sliderTimer;
 class SoundDetailsScreen extends ConsumerStatefulWidget {
   final String musicId;
   final VoidCallback? onPressed;
@@ -41,12 +40,10 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
   ];
   List<int> selectedTimes = [0, 10, 30, 60, 90, 120, 150];
   AudioCache audioCache = AudioCache();
-  AudioPlayer audioPlayer = AudioPlayer();
   Duration _duration = Duration.zero;
   Duration _position = Duration.zero;
   Duration _slider = Duration(seconds: 0);
   double currentVolume = 0.0;
-  bool issongplaying = false;
   double brightness = 0.5;
   late StreamSubscription<double> _subscription;
   int index = 0;
@@ -57,6 +54,9 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
 
   @override
   void initState() {
+    if(sliderTimer!=null){
+      sliderTimer!.cancel();
+    }
     initialization();
     startPlayer();
     changeVolume();
@@ -70,8 +70,9 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
       print(_position);
       if(sliderInitial.toInt()==
           (sliderEnd-1).toInt()){
-        sliderInitial=0.0;
+
         pageController.nextPage(duration: Duration(milliseconds: 100), curve: Curves.linear);
+        sliderInitial=0.0;
 
       }
       if(!mounted){
@@ -95,12 +96,13 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
 
   @override
   void dispose() {
-    audioPlayer.dispose();
+   // audioPlayer.dispose();
     _subscription.cancel();
     super.dispose();
   }
 
   initialization() {
+    audioPlayer.setReleaseMode(ReleaseMode.loop);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       int _index = ref
           .watch(addProvider)
@@ -120,9 +122,9 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
     PerfectVolumeControl.hideUI = true;
     Future.delayed(Duration.zero, () async {
       currentVolume = await PerfectVolumeControl.getVolume();
-      setState(() {
-        //refresh UI
-      });
+      if (mounted) {
+        setState(() {});
+      }
     });
     _subscription = PerfectVolumeControl.stream.listen((volume) {
       currentVolume = volume;
@@ -142,10 +144,10 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
         brightness = brightness / 10;
       }
       print(brightness);
-      setState(() {
-        brightness = brightness;
-        //change the variable value and update screen UI
-      });
+      if (mounted) {
+        setState(() {brightness = brightness;});
+      }
+
     } on PlatformException {
       brightness = 0.0;
     }
@@ -158,6 +160,7 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
     audioCache.prefix = "asset";
     audioPlayer.onPlayerStateChanged.listen((state) async {
       issongplaying = state == PlayerState.playing;
+
       if (mounted) {
         setState(() {});
       }
@@ -208,6 +211,8 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
   }
 
   pausePlayMethod() async {
+    print("issongplaying");
+    print(issongplaying);
     if (issongplaying) {
       await audioPlayer.pause();
       pauseSliderTimmer();
@@ -552,7 +557,8 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                               padding: const EdgeInsets.all(22),
                               child: CustomSvg(
                                 color: primaryPinkColor,
-                                svg: issongplaying ? pouseButton : playButtonSvg,
+                                svg: issongplaying
+                                    ? pouseButton : playButtonSvg,
                               ),
                             ),
                           ),
@@ -875,7 +881,9 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                                     setSongDuration(setDuration);
                                     print("index $selectedTime");
                                   });
-                                  setState(() {});
+                                  if (mounted) {
+                                    setState(() {});
+                                  }
                                 },
                                 semanticFormatterCallback: (double newValue) {
                                   return '${newValue.round()} dollars';
@@ -995,7 +1003,7 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
   var sliderInitial = 0.0;
   var sliderEnd = 120.0;
 
-  Timer? sliderTimer;
+
 
   void setSongDuration(int setDuration, {double initValue = 0}) {
     sliderInitial = initValue;
@@ -1014,18 +1022,23 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
         audioPlayer.stop();
       }
       sliderInitial++;
-      setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     });
   }
 
   void updateSlider(double newValue) {
     sliderInitial = newValue;
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   void pauseSliderTimmer() {
-    print("=========${sliderTimer!.isActive}");
+    //print("=========${sliderTimer!.isActive}");
     print("=========");
+    if(sliderTimer!=null)
     sliderTimer!.cancel();
   }
 

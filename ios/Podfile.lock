@@ -5,6 +5,10 @@ PODS:
   - AppAuth/Core (1.6.0)
   - AppAuth/ExternalUserAgent (1.6.0):
     - AppAuth/Core
+  - audio_service (0.0.1):
+    - Flutter
+  - audio_session (0.0.1):
+    - Flutter
   - audioplayers_darwin (0.0.1):
     - Flutter
   - Firebase/CoreOnly (10.3.0):
@@ -19,15 +23,15 @@ PODS:
     - Firebase/Storage (= 10.3.0)
     - firebase_core
     - Flutter
-  - FirebaseAppCheckInterop (10.6.0)
-  - FirebaseAuthInterop (10.6.0)
+  - FirebaseAppCheckInterop (10.7.0)
+  - FirebaseAuthInterop (10.7.0)
   - FirebaseCore (10.3.0):
     - FirebaseCoreInternal (~> 10.0)
     - GoogleUtilities/Environment (~> 7.8)
     - GoogleUtilities/Logger (~> 7.8)
-  - FirebaseCoreExtension (10.6.0):
+  - FirebaseCoreExtension (10.7.0):
     - FirebaseCore (~> 10.0)
-  - FirebaseCoreInternal (10.6.0):
+  - FirebaseCoreInternal (10.7.0):
     - "GoogleUtilities/NSData+zlib (~> 7.8)"
   - FirebaseStorage (10.3.0):
     - FirebaseAppCheckInterop (~> 10.0)
@@ -48,6 +52,9 @@ PODS:
   - fluttertoast (0.0.2):
     - Flutter
     - Toast
+  - FMDB (2.7.5):
+    - FMDB/standard (= 2.7.5)
+  - FMDB/standard (2.7.5)
   - google_sign_in_ios (0.0.1):
     - Flutter
     - GoogleSignIn (~> 6.2)
@@ -64,6 +71,8 @@ PODS:
     - AppAuth/Core (~> 1.6)
     - GTMSessionFetcher/Core (< 3.0, >= 1.5)
   - GTMSessionFetcher/Core (2.3.0)
+  - just_audio (0.0.1):
+    - Flutter
   - OrderedSet (5.0.0)
   - path_provider_foundation (0.0.1):
     - Flutter
@@ -85,9 +94,14 @@ PODS:
   - shared_preferences_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
+  - sqflite (0.0.2):
+    - Flutter
+    - FMDB (>= 2.7.5)
   - Toast (4.0.0)
 
 DEPENDENCIES:
+  - audio_service (from `.symlinks/plugins/audio_service/ios`)
+  - audio_session (from `.symlinks/plugins/audio_session/ios`)
   - audioplayers_darwin (from `.symlinks/plugins/audioplayers_darwin/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - firebase_storage (from `.symlinks/plugins/firebase_storage/ios`)
@@ -96,12 +110,14 @@ DEPENDENCIES:
   - flutter_screen_wake (from `.symlinks/plugins/flutter_screen_wake/ios`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - google_sign_in_ios (from `.symlinks/plugins/google_sign_in_ios/ios`)
+  - just_audio (from `.symlinks/plugins/just_audio/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/ios`)
   - perfect_volume_control (from `.symlinks/plugins/perfect_volume_control/ios`)
   - Purchases
   - purchases_flutter (from `.symlinks/plugins/purchases_flutter/ios`)
   - screen_brightness_ios (from `.symlinks/plugins/screen_brightness_ios/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/ios`)
+  - sqflite (from `.symlinks/plugins/sqflite/ios`)
 
 SPEC REPOS:
   trunk:
@@ -113,6 +129,7 @@ SPEC REPOS:
     - FirebaseCoreExtension
     - FirebaseCoreInternal
     - FirebaseStorage
+    - FMDB
     - GoogleSignIn
     - GoogleUtilities
     - GTMAppAuth
@@ -126,6 +143,10 @@ SPEC REPOS:
     - Toast
 
 EXTERNAL SOURCES:
+  audio_service:
+    :path: ".symlinks/plugins/audio_service/ios"
+  audio_session:
+    :path: ".symlinks/plugins/audio_session/ios"
   audioplayers_darwin:
     :path: ".symlinks/plugins/audioplayers_darwin/ios"
   firebase_core:
@@ -142,6 +163,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/fluttertoast/ios"
   google_sign_in_ios:
     :path: ".symlinks/plugins/google_sign_in_ios/ios"
+  just_audio:
+    :path: ".symlinks/plugins/just_audio/ios"
   path_provider_foundation:
     :path: ".symlinks/plugins/path_provider_foundation/ios"
   perfect_volume_control:
@@ -152,28 +175,34 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/screen_brightness_ios/ios"
   shared_preferences_foundation:
     :path: ".symlinks/plugins/shared_preferences_foundation/ios"
+  sqflite:
+    :path: ".symlinks/plugins/sqflite/ios"
 
 SPEC CHECKSUMS:
   AppAuth: 8fca6b5563a5baef2c04bee27538025e4ceb2add
+  audio_service: f509d65da41b9521a61f1c404dd58651f265a567
+  audio_session: 4f3e461722055d21515cf3261b64c973c062f345
   audioplayers_darwin: 877d9a4d06331c5c374595e46e16453ac7eafa40
   Firebase: f92fc551ead69c94168d36c2b26188263860acd9
   firebase_core: 1ae9f9aa76e6e1edc14fb181637ad466fd6c6fa4
   firebase_storage: 95642d09600371e3bcfeec7cb8e53940d84fa9d4
-  FirebaseAppCheckInterop: 13e5394346a811e7158cc136c01f10e3302a3514
-  FirebaseAuthInterop: e407335bca1938d65c58db8f4ad14b3c1f862a82
+  FirebaseAppCheckInterop: 8e907eea79958960a8bd2058e067f31e03a7914b
+  FirebaseAuthInterop: 46201190fe90ef1f581513eb0f9fa3d7820e7d6d
   FirebaseCore: 988754646ab3bd4bdcb740f1bfe26b9f6c0d5f2a
-  FirebaseCoreExtension: 318e5ee9ad4092b00423c2bddd51c3f5c3585973
-  FirebaseCoreInternal: c7cd505e2136811096b225ac388d6254a2622362
+  FirebaseCoreExtension: f17247ba8c61e4d3c8d136b5e2de3cb4ac6a85b6
+  FirebaseCoreInternal: 8845798510aae74703467480f71ac613788d0696
   FirebaseStorage: 0efbff0ac978981866d89804191688ae50d64033
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   flutter_inappwebview: bfd58618f49dc62f2676de690fc6dcda1d6c3721
   flutter_screen_wake: 4d3c2b43943ea81bd5e591fd4e639ea537f4ca5e
   fluttertoast: eb263d302cc92e04176c053d2385237e9f43fad0
+  FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   google_sign_in_ios: 1256ff9d941db546373826966720b0c24804bcdd
   GoogleSignIn: 5651ce3a61e56ca864160e79b484cd9ed3f49b7a
   GoogleUtilities: c2bdc4cf2ce786c4d2e6b3bcfd599a25ca78f06f
   GTMAppAuth: 0ff230db599948a9ad7470ca667337803b3fc4dd
   GTMSessionFetcher: 3a63d75eecd6aa32c2fc79f578064e1214dfdec2
+  just_audio: baa7252489dbcf47a4c7cc9ca663e9661c99aafa
   OrderedSet: aaeb196f7fef5a9edf55d89760da9176ad40b93c
   path_provider_foundation: c68054786f1b4f3343858c1e1d0caaded73f0be9
   perfect_volume_control: 79b165ecd79d6ee20e60bf15534de61ebf3bb5f3
@@ -185,8 +214,9 @@ SPEC CHECKSUMS:
   RevenueCat: 15a06dbce1021474e6dc9b31b1fce43fe55fcaf2
   screen_brightness_ios: 715ca807df953bf676d339f11464e438143ee625
   shared_preferences_foundation: 986fc17f3d3251412d18b0265f9c64113a8c2472
+  sqflite: 6d358c025f5b867b29ed92fc697fd34924e11904
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
 
-PODFILE CHECKSUM: f5fec59f4118055d17aa5048e87e9439dce56f05
+PODFILE CHECKSUM: 186693dd39a6b80090383be757dbfea93abb861c
 
 COCOAPODS: 1.11.3
