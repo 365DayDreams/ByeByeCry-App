@@ -56,26 +56,28 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.only(
-                  left: 20.0, right: 20, top: 10, bottom: 10),
-              child: Container(
-                height: 60,
-                margin: const EdgeInsets.all(16),
-                color: secondaryWhiteColor2,
-                child: ListTile(
-                  dense: true,
-                  title: TextField(
-                    controller: searchController,
-                    decoration: const InputDecoration(
-                        hintStyle: TextStyle(color: blackColorA0,fontSize: 14,fontWeight: FontWeight.w400),
-                        hintText: 'Search music', border: InputBorder.none
-                    ),
-                  ),
-                  trailing: GestureDetector(onTap:(){},child: const CustomSvg(svg: "asset/images/search_icon.svg",)),
-                ),
-              ),
-            ),
+            SizedBox(height: 20,),
+
+            // Padding(
+            //   padding: const EdgeInsets.only(
+            //       left: 20.0, right: 20, top: 10, bottom: 10),
+            //   child: Container(
+            //     height: 60,
+            //     margin: const EdgeInsets.all(16),
+            //     color: secondaryWhiteColor2,
+            //     child: ListTile(
+            //       dense: true,
+            //       title: TextField(
+            //         controller: searchController,
+            //         decoration: const InputDecoration(
+            //             hintStyle: TextStyle(color: blackColorA0,fontSize: 14,fontWeight: FontWeight.w400),
+            //             hintText: 'Search music', border: InputBorder.none
+            //         ),
+            //       ),
+            //       trailing: GestureDetector(onTap:(){},child: const CustomSvg(svg: "asset/images/search_icon.svg",)),
+            //     ),
+            //   ),
+            // ),
             Column(
               children: List.generate(
                 ref.watch(playlistProvider).mixMixPlaylist.length,

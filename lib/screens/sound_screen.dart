@@ -12,6 +12,8 @@ import 'package:bye_bye_cry_new/screens/provider/playlistProvider.dart';
 import 'package:bye_bye_cry_new/sounds_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/adapters.dart';
 import '../compoment/shared/custom_app_bar.dart';
 import '../compoment/shared/outline_button.dart';
 import '../compoment/utils/color_utils.dart';
@@ -21,6 +23,7 @@ import 'listen_mix_sound.dart';
 import 'models/music_models.dart';
 import 'now_palying_screen.dart';
 import 'package:get/get.dart';
+
 class SoundScreen extends ConsumerStatefulWidget {
   const SoundScreen({Key? key}) : super(key: key);
 
@@ -39,7 +42,7 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
   AudioCache audioCache = AudioCache();
   final WishListController wishListController = Get.put(WishListController());
 
-  // bool issongplaying = false;
+  bool issongplaying = false;
   int index = 0;
   String musicId = "";
   bool deleteShow = false;
@@ -71,11 +74,9 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
     'Mix Two Sounds'
   ];
 
-
-
   @override
   void dispose() {
-    audioPlayer.dispose();
+    //audioPlayer.dispose();
     super.dispose();
   }
 
@@ -83,9 +84,9 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
 
   @override
   void initState() {
+    // wishListController.getCartData();
     // initialized();
     // startPlayer();
-
 
     // deleteShow = false;
     // ref.read(addProvider).showAddPlaylist= false;
@@ -256,10 +257,8 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
                                                   context: context,
                                                   mixMusicModel: ref
                                                       .watch(mixMusicProvider)
-                                                       .combinationList[index],
-                                                index: index
-
-                                              ),
+                                                      .combinationList[index],
+                                                  index: index),
                                             ),
                                           ), // const SizedBox(height: 5,)
                                         ],
@@ -327,235 +326,239 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
       required BuildContext context,
       required int musicIndex,
       String? search}) {
-    fav.add(false);
+    /// fav.add(false);
+    // wishListController.getCartData();
     if (searchval == null || searchval == "") {
-      return GestureDetector(
-        onTap: ()async {
-          if(issongplaying)
-          await audioPlayer.dispose();
-          await Future.delayed(Duration(seconds: 2));
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (_) => SoundDetailsScreen(
-                        musicId: musicModel.id,
-                        onPressed: () async {
-                          if (ref.watch(addProvider).playFromPlayList) {
-                            if (mounted) {
-                              ref.read(addProvider).changePage(3);
-                            }
-                            if (mounted) {
-                              changeToPlayNow = false;
-                              setState(() {});
-                            }
-                          } else {
-                            setState(() {
-                              changeToPlayNow = false;
-                            });
-                          }
-                        },
-                      )));
-        },
-        // onTap: ref.watch(addProvider).showAddPlaylist?null:(){
-        //   if(mounted){
-        //     ref.read(addProvider).playFromPlaylistActive(change: false);
-        //   }
-        //   setState(() {
-        //     music = musicModel;
-        //     musicId = musicModel.id;
-        //     changeToPlayNow = ref.watch(addProvider).showAddPlaylist?false:deleteShow?false:true;
-        //     print("change");
-        //   });
-        // },
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Image.asset(
-                    "${musicModel.image}",
-                    height: 60,
-                    fit: BoxFit.contain,
-                  ),
-                ),
-                // Padding(
-                //   padding: const EdgeInsets.only(top: 5.0),
-                //   child: CustomImage(imageUrl: musicModel.image),
-                // ),
-                const SizedBox(
-                  width: 10,
-                ),
-                CustomText(
-                  text: musicModel.musicName,
-                  color: blackColor50,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 20,
-                ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Row(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        // color: Colors.black.withOpacity(0.05),
-                    ),
-                    child: ref.read(addProvider).showAddPlaylist
-                        ? GestureDetector(
-                            onTap: () async {
-                              musicId = musicModel.id;
-                              if (mounted) {
-                                //playMusic(id: musicId);
-                              }
-                              print("OK");
-                            },
-                            child: musicId == musicModel.id
-                                ? Padding(
-                                    padding: const EdgeInsets.all(15.0),
-                                    child: issongplaying
-                                        ? const CustomSvg(
-                                            svg: pouseButton,
-                                            color: blackColor97,
-                                            height: 12,
-                                            width: 12,
-                                          )
-                                        : const CustomImage(
-                                            imageUrl: playButton,
-                                            scale: 0.8,
-                                          ),
-                                  )
-                                : const Padding(
-                                    padding: EdgeInsets.all(15.0),
-                                    child: CustomImage(
-                                      scale: 0.8,
-                                      imageUrl: playButton,
-                                    ),
-                                  ),
-                          )
-                        : deleteShow
-                            ?  SizedBox()
-                            : InkWell(
-                                onTap: () {
-                                  
-                                  setState(() {
-
-
-                                   wishListController.addToCart(musicModel, musicIndex);
-                                    
-                                fav[musicIndex] = !fav[musicIndex];
-
-                                  });
-
-                                  // Navigator.push(context, MaterialPageRoute(builder: (_)=> SoundDetailsScreen(
-                                  //   musicId: musicModel.id,
-                                  // onPressed: ()async{
-                                  //   if(ref.watch(addProvider).playFromPlayList){
-                                  //     if(mounted){
-                                  //       ref.read(addProvider).changePage(3);
-                                  //     }
-                                  //     if(mounted){
-                                  //       changeToPlayNow = false;
-                                  //       setState(() {});
-                                  //     }
-                                  //   } else{
-                                  //     setState(() {
-                                  //       changeToPlayNow = false;
-                                  //     });
-                                  //   }
-                                  // },
-                                  // )));
-                                },
-                                child: Padding(
-                                    padding: EdgeInsets.all(10.0),
-                                    child: !fav[musicIndex]
-                                        ? Icon(
-                                            Icons.favorite_border,
-                                            size: 35,
-                                            color: primaryPinkColor,
-                                          )
-                                        : Icon(
-                                            Icons.favorite,
-                                            size: 35,
-                                            color: primaryPinkColor,
-                                          ))),
-                  ),
-                  ref.read(addProvider).showAddPlaylist
-                      ? Padding(
-                          padding: const EdgeInsets.only(left: 20.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.black.withOpacity(0.1)),
-                            child: GestureDetector(
-                              onTap: () {
-                                ref.read(addProvider).changePage(3);
-                                if (ref
-                                    .watch(playlistProvider)
-                                    .addInPlayListTrueFalse) {
+      return ValueListenableBuilder(
+          valueListenable: Hive.box("fav").listenable(),
+          builder: (context, box, _) {
+            return GestureDetector(
+              onTap: () async {
+                // if (issongplaying) await audioPlayer.dispose();
+                // await Future.delayed(Duration(seconds: 2));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => SoundDetailsScreen(
+                              musicId: musicModel.id,
+                              onPressed: () async {
+                                if (ref.watch(addProvider).playFromPlayList) {
                                   if (mounted) {
-                                    ref
-                                        .read(playlistProvider)
-                                        .showMixPlayList(goMixPlaylist: true);
-                                    //Change.
-                                 //   ref.read(addProvider).showAddPlaylist=false;
+                                    ref.read(addProvider).changePage(3);
                                   }
                                   if (mounted) {
-                                    ref
-                                        .read(playlistProvider)
-                                        .setMusic(setMusicModel: musicModel);
-                                  }
-                                  if (mounted) {
-                                    ref
-                                        .read(playlistProvider)
-                                        .addInPlaylistFalse();
+                                    changeToPlayNow = false;
+                                    setState(() {});
                                   }
                                 } else {
-                                  ref.read(addProvider).changePage(2);
-                                  if (ref
-                                      .read(mixMusicProvider)
-                                      .selectMixSound) {
-                                    ref
-                                        .read(mixMusicProvider)
-                                        .mixFirstMusic(musicModel);
-                                  } else {
-                                    ref
-                                        .read(mixMusicProvider)
-                                        .mixSecondMusic(musicModel);
-                                  }
-                                  ref.read(addProvider).showPlusPlaylist(
-                                      playlistPlusBottom: false);
-                                  //Change...
-                                //  ref.read(addProvider).showAddPlaylist=false;
+                                  setState(() {
+                                    changeToPlayNow = false;
+                                  });
                                 }
                               },
-                              child: const Padding(
-                                padding: EdgeInsets.all(5.0),
-                                child: Icon(
-                                  Icons.add,
-                                  color: blackColorA0,
-                                ),
-                              ),
-                            ),
+                            )));
+              },
+              // onTap: ref.watch(addProvider).showAddPlaylist?null:(){
+              //   if(mounted){
+              //     ref.read(addProvider).playFromPlaylistActive(change: false);
+              //   }
+              //   setState(() {
+              //     music = musicModel;
+              //     musicId = musicModel.id;
+              //     changeToPlayNow = ref.watch(addProvider).showAddPlaylist?false:deleteShow?false:true;
+              //     print("change");
+              //   });
+              // },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Image.asset(
+                          "${musicModel.image}",
+                          height: 60,
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                      // Padding(
+                      //   padding: const EdgeInsets.only(top: 5.0),
+                      //   child: CustomImage(imageUrl: musicModel.image),
+                      // ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      CustomText(
+                        text: musicModel.musicName,
+                        color: blackColor50,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 20,
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Row(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            // color: Colors.black.withOpacity(0.05),
                           ),
-                        )
-                      : const SizedBox(),
+                          child: ref.read(addProvider).showAddPlaylist
+                              ? GestureDetector(
+                                  onTap: () async {
+                                    musicId = musicModel.id;
+                                    if (mounted) {
+                                      //playMusic(id: musicId);
+                                    }
+                                    print("OK");
+                                  },
+                                  child: musicId == musicModel.id
+                                      ? Padding(
+                                          padding: const EdgeInsets.all(15.0),
+                                          child: issongplaying
+                                              ? const CustomSvg(
+                                                  svg: pouseButton,
+                                                  color: blackColor97,
+                                                  height: 12,
+                                                  width: 12,
+                                                )
+                                              : const CustomImage(
+                                                  imageUrl: playButton,
+                                                  scale: 0.8,
+                                                ),
+                                        )
+                                      : const Padding(
+                                          padding: EdgeInsets.all(15.0),
+                                          child: CustomImage(
+                                            scale: 0.8,
+                                            imageUrl: playButton,
+                                          ),
+                                        ),
+                                )
+                              : deleteShow
+                                  ? SizedBox()
+                                  : InkWell(
+                                      onTap: () {
+                                        setState(() {
+                                          if (box.containsKey(musicModel.id)) {
+                                            box.delete(musicModel.id);
+                                          } else {
+                                            box.put(musicModel.id, musicModel);
+                                          }
+
+                                          // wishListController.addToCart(musicModel);
+                                        });
+
+                                        // Navigator.push(context, MaterialPageRoute(builder: (_)=> SoundDetailsScreen(
+                                        //   musicId: musicModel.id,
+                                        // onPressed: ()async{
+                                        //   if(ref.watch(addProvider).playFromPlayList){
+                                        //     if(mounted){
+                                        //       ref.read(addProvider).changePage(3);
+                                        //     }
+                                        //     if(mounted){
+                                        //       changeToPlayNow = false;
+                                        //       setState(() {});
+                                        //     }
+                                        //   } else{
+                                        //     setState(() {
+                                        //       changeToPlayNow = false;
+                                        //     });
+                                        //   }
+                                        // },
+                                        // )));
+                                      },
+                                      child: Padding(
+                                          padding: EdgeInsets.all(10.0),
+                                          child: Hive.box("fav")
+                                                  .containsKey(musicModel.id)
+                                              ? Icon(
+                                                  Icons.favorite,
+                                                  size: 35,
+                                                  color: primaryPinkColor,
+                                                )
+                                              : Icon(
+                                                  Icons.favorite_border,
+                                                  size: 35,
+                                                  color: primaryPinkColor,
+                                                ))),
+                        ),
+                        ref.read(addProvider).showAddPlaylist
+                            ? Padding(
+                                padding: const EdgeInsets.only(left: 20.0),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.black.withOpacity(0.1)),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      ref.read(addProvider).changePage(3);
+                                      if (ref
+                                          .watch(playlistProvider)
+                                          .addInPlayListTrueFalse) {
+                                        if (mounted) {
+                                          ref
+                                              .read(playlistProvider)
+                                              .showMixPlayList(
+                                                  goMixPlaylist: true);
+                                          //Change.
+                                          //   ref.read(addProvider).showAddPlaylist=false;
+                                        }
+                                        if (mounted) {
+                                          ref.read(playlistProvider).setMusic(
+                                              setMusicModel: musicModel);
+                                        }
+                                        if (mounted) {
+                                          ref
+                                              .read(playlistProvider)
+                                              .addInPlaylistFalse();
+                                        }
+                                      } else {
+                                        ref.read(addProvider).changePage(2);
+                                        if (ref
+                                            .read(mixMusicProvider)
+                                            .selectMixSound) {
+                                          ref
+                                              .read(mixMusicProvider)
+                                              .mixFirstMusic(musicModel);
+                                        } else {
+                                          ref
+                                              .read(mixMusicProvider)
+                                              .mixSecondMusic(musicModel);
+                                        }
+                                        ref.read(addProvider).showPlusPlaylist(
+                                            playlistPlusBottom: false);
+                                        //Change...
+                                        //  ref.read(addProvider).showAddPlaylist=false;
+                                      }
+                                    },
+                                    child: const Padding(
+                                      padding: EdgeInsets.all(5.0),
+                                      child: Icon(
+                                        Icons.add,
+                                        color: blackColorA0,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : const SizedBox(),
+                      ],
+                    ),
+                  ),
                 ],
               ),
-            ),
-          ],
-        ),
-      );
+            );
+          });
     } else {
       if (musicModel.musicName.toLowerCase().contains(search!.toLowerCase())) {
         return GestureDetector(
-          onTap: () async{
-            if(issongplaying)
-              await audioPlayer.dispose();
-           // await Future.delayed(Duration(seconds: 2));
+          onTap: () async {
+           // if (issongplaying) await audioPlayer.dispose();
+            // await Future.delayed(Duration(seconds: 2));
             Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -623,8 +626,9 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
                   children: [
                     Container(
                       decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.black.withOpacity(0.05),),
+                        shape: BoxShape.circle,
+                        color: Colors.black.withOpacity(0.05),
+                      ),
                       child: ref.read(addProvider).showAddPlaylist
                           ? GestureDetector(
                               onTap: () async {
@@ -766,7 +770,9 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
   }
 
   Widget mixImageList(
-      {required MixMusicModel mixMusicModel, required BuildContext context,required int index}) {
+      {required MixMusicModel mixMusicModel,
+      required BuildContext context,
+      required int index}) {
     return GestureDetector(
       onTap: () {
         if (mounted) {
@@ -822,33 +828,32 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
                     : deleteShow
                         ? const SizedBox()
                         : InkWell(
-                  onTap: (){
-                    setState(() {
-                      fav[index]=!fav[index];
-                    });
-                  },
-                          child: Container(
+                            onTap: () {
+                              setState(() {
+                                fav[index] = !fav[index];
+                              });
+                            },
+                            child: Container(
                               decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
+                                shape: BoxShape.circle,
 
-                                  //color: Colors.black.withOpacity(0.1),
+                                //color: Colors.black.withOpacity(0.1),
                               ),
-                              child:
-                              Padding(
+                              child: Padding(
                                   padding: EdgeInsets.all(15.0),
                                   child: !fav[index]
                                       ? Icon(
-                                    Icons.favorite_border,
-                                    size: 35,
-                                    color: primaryPinkColor,
-                                  )
+                                          Icons.favorite_border,
+                                          size: 35,
+                                          color: primaryPinkColor,
+                                        )
                                       : Icon(
-                                    Icons.favorite,
-                                    size: 35,
-                                    color: primaryPinkColor,
-                                  )),
+                                          Icons.favorite,
+                                          size: 35,
+                                          color: primaryPinkColor,
+                                        )),
                             ),
-                        ),
+                          ),
                 deleteShow
                     ? Padding(
                         padding: const EdgeInsets.only(left: 20.0),

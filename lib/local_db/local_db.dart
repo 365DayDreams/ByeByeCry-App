@@ -99,23 +99,4 @@ class LocalDB {
   }
 }
 
-class CartRepo {
-  late final SharedPreferences? sharedPreferences;
 
-  List<MusicModel> getCartList() {
-    List<String>? carts = [];
-    if (sharedPreferences!.containsKey("Fav")) {
-      carts = sharedPreferences!.getStringList("Fav");
-    }
-    List<MusicModel> cartList = [];
-    carts!
-        .forEach((cart) => cartList.add(MusicModel.fromJson(jsonDecode(cart))));
-    return cartList;
-  }
-
-  void addToCartList(List<MusicModel> cartProductList) {
-    List<String> carts = [];
-    cartProductList.forEach((cartModel) => carts.add(jsonEncode(cartModel)));
-    sharedPreferences!.setStringList("Fav", carts);
-  }
-}

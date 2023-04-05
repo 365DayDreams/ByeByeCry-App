@@ -1,5 +1,8 @@
 
-class PlayListModel{
+import 'package:hive/hive.dart';
+part 'music_models.g.dart';
+
+class PlayListModel {
 
   String? title;
   String id;
@@ -41,10 +44,16 @@ class MixMusicModel{
     "second":second
   };
 }
-class MusicModel{
+
+@HiveType(typeId: 0)
+class MusicModel extends HiveObject{
+  @HiveField(0)
   final String musicName;
+  @HiveField(1)
   final String musicFile;
+  @HiveField(2)
   final String id;
+  @HiveField(3)
   final String image;
   MusicModel({required this.musicName, required this.musicFile,required this.id,required this.image});
 
