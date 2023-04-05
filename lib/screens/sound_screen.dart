@@ -36,17 +36,77 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
   bool changeToPlayNow = false;
   bool changeToMixPlayNow = false;
   bool changeToMixPlayListNow = false;
+  AudioPlayer audioPlayer = AudioPlayer();
+
+
   MusicModel? music;
   String mixMusicId = '';
   String mixPlaylistMixMusicId = '';
   AudioCache audioCache = AudioCache();
   final WishListController wishListController = Get.put(WishListController());
+  playMusic({required String id}) async{
+    print("playlist play button click");
+    int _index = ref.watch(addProvider).musicList.indexWhere((element) => element.id == id);
+    if(_index >= 0){
+      if(_index == index){
+        if(issongplaying){
+          await audioPlayer.pause();
+        }else{
+          String url = ref.watch(addProvider).musicList[index].musicFile;
+          await audioPlayer.play(AssetSource(url));
+        }
+      }else{
+        index = _index;
+        String url = ref.watch(addProvider).musicList[index].musicFile;
+        await audioPlayer.play(AssetSource(url));
+      }
+    }
+    if(mounted){
+      setState(() {});
+    }
+  }
+
+  startPlayer()async{
+    audioPlayer.onPlayerStateChanged.listen((state) {
+      issongplaying = state == PlayerState.playing;
+      if(mounted){
+        setState((){});
+      }
+    });
+    audioPlayer.onDurationChanged.listen((newDuration) {
+      if(mounted){
+        setState(() {});
+      }
+    });
+    audioPlayer.onPositionChanged.listen((newPositions) {
+      if(mounted){
+        setState(() {});
+      }
+    });
+    if(mounted){
+      setState(() {});
+    }
+  }
+  pausePlayMethod()async{
+    if(issongplaying){
+      await audioPlayer.pause();
+      print("pause");
+    }else{
+      String url = ref.watch(addProvider).musicList[index].musicFile;
+      await audioPlayer.play(AssetSource(url));
+      print("play");
+    }
+    if(mounted){
+      setState(() {});
+    }
+  }
+
 
   bool issongplaying = false;
   int index = 0;
   String musicId = "";
   bool deleteShow = false;
- // List<bool> fav = [false];
+ List<bool> fav = [false];
   bool fav2 = false;
 
   List<String> imageUrl = [
@@ -86,7 +146,7 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
   void initState() {
     // wishListController.getCartData();
     // initialized();
-    // startPlayer();
+    startPlayer();
 
     // deleteShow = false;
     // ref.read(addProvider).showAddPlaylist= false;
@@ -404,14 +464,14 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
                         Container(
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            // color: Colors.black.withOpacity(0.05),
+                            color:ref.read(addProvider).showAddPlaylist? Colors.black.withOpacity(0.05): null,
                           ),
                           child: ref.read(addProvider).showAddPlaylist
                               ? GestureDetector(
                                   onTap: () async {
                                     musicId = musicModel.id;
                                     if (mounted) {
-                                      //playMusic(id: musicId);
+                                    playMusic(id: musicId);
                                     }
                                     print("OK");
                                   },
@@ -997,6 +1057,7 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
       {required MixMusicModel mixMusicModel,
       required BuildContext context,
       required int index}) {
+    fav.add(false);
     return GestureDetector(
       onTap: () {
         if (mounted) {
@@ -1054,7 +1115,7 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
                         : InkWell(
                             onTap: () {
                               setState(() {
-                                //fav[index] = !fav[index];
+                                fav[index] = !fav[index];
                               });
                             },
                             child: Container(
@@ -1065,11 +1126,15 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
                               ),
                               child: Padding(
                                   padding: EdgeInsets.all(15.0),
-                                  child:  Icon(
-                                          Icons.favorite_border,
+                                  child: fav[index] ? Icon(
+                                          Icons.favorite,
                                           size: 35,
                                           color: primaryPinkColor,
-                                        )
+                                        ) : Icon(
+                                    Icons.favorite_border,
+                                    size: 35,
+                                    color: primaryPinkColor,
+                                  )
                                      ),
                             ),
                           ),

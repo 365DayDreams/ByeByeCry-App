@@ -590,6 +590,8 @@
 //     );
 //   }
 // }
+import 'dart:io';
+
 import 'package:bye_bye_cry_new/start_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -643,6 +645,64 @@ class _InitialHomePageState extends ConsumerState<InitialHomePage> {
     final width = ScreenSize(context).width;
     final height = ScreenSize(context).height;
     return Scaffold(
+      bottomNavigationBar: Platform.isIOS ?
+      Padding(
+        padding: const EdgeInsets.only(bottom: 8.0,left: 10,right: 10),
+        child: Container(
+           height: height * .08,
+
+          child:     OutLineButton(
+            text: 'Get Started',
+            anotherText: '(For better sleep for them and for you)',
+            textColor: secondaryBlackColor2,
+            textFontSize: 22,
+            textFontWeight: FontWeight.w700,
+            borderRadius: 50,
+            onPressed: () async {
+              bool isLoggedIn = false;
+              await LocalDB().getAccessToken().then((value) {
+                setState(() {
+                  isLoggedIn = value;
+                });
+              });
+              if(isLoggedIn ==true){
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const StartPage()));
+
+              }else{
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const SubscriptionPage()));
+
+              }
+            },
+          ),
+        ),
+      ) : Container(
+        height: height * .08,
+
+        child:     OutLineButton(
+         // height: height * .06,
+          text: 'Get Started',
+          anotherText: '(For better sleep for them and for you)',
+          textColor: secondaryBlackColor2,
+          textFontSize: 22,
+          textFontWeight: FontWeight.w700,
+          borderRadius: 50,
+          onPressed: () async {
+            bool isLoggedIn = false;
+            await LocalDB().getAccessToken().then((value) {
+              setState(() {
+                isLoggedIn = value;
+              });
+            });
+            if(isLoggedIn ==true){
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const StartPage()));
+
+            }else{
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const SubscriptionPage()));
+
+            }
+          },
+        ),
+      ),
       backgroundColor: backGroundColor,
       body: SingleChildScrollView(
         child: Column(
@@ -823,31 +883,8 @@ class _InitialHomePageState extends ConsumerState<InitialHomePage> {
                     );
                   }),
             ),
-            OutLineButton(
-              height: height * .09,
-              text: 'Get Started',
-              anotherText: '(For better sleep for them and for you)',
-              textColor: secondaryBlackColor2,
-              textFontSize: 22,
-              textFontWeight: FontWeight.w700,
-              borderRadius: 50,
-              onPressed: () async {
-                bool isLoggedIn = false;
-                await LocalDB().getAccessToken().then((value) {
-                  setState(() {
-                    isLoggedIn = value;
-                  });
-                });
-                if(isLoggedIn ==true){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const StartPage()));
 
-                }else{
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const SubscriptionPage()));
-
-                }
-              },
-            ),
-            SizedBox(height: width * 0.1),
+           // SizedBox(height: width * 0.1),
             Container(
               padding: const EdgeInsets.all(20),
               color: secondaryGreenColor,

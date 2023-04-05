@@ -1111,12 +1111,28 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
     super.initState();
     Timer.periodic(Duration(
         seconds: 1
-    ), (timer) {
+    ), (timer) async {
       print(_position);
       if(sliderInitial.toInt()==
           (sliderEnd-1).toInt()){
-        sliderInitial=0.0;
+
+
         pageController.nextPage(duration: Duration(milliseconds: 100), curve: Curves.linear);
+       sliderInitial=0.0;
+   changeIndex(changeIndex: true);
+
+        if (mounted) {
+          String url = ref
+              .watch(addProvider)
+              .musicList[index]
+              .musicFile;
+          await audioPlayer.play(AssetSource(url));
+         // sliderInitial=0.0;
+        }
+
+        if (mounted) {
+          setState(() {});
+        }
 
       }
       if(!mounted){

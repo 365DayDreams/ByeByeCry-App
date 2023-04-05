@@ -30,7 +30,6 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound> with TickerProv
 
   List<String> times = [
     "0",
-    "5 min",
     "10 min",
     "30 min",
     "60 min",
@@ -40,7 +39,6 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound> with TickerProv
   ];
   List<int> selectedTimes = [
     0,
-    5,
     10,
     30,
     60,
@@ -79,33 +77,41 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound> with TickerProv
     startPlayer1();
     startPlayer2();
     changeVolume();
-    brightNess();
+    //brightNess();
     super.initState();
     Timer.periodic(Duration(
         seconds: 1
-    ), (timer) {
+    ), (timer) async {
       print(_position);
       if(sliderInitial.toInt()==
           (sliderEnd-1).toInt()){
 
+
         pageController.nextPage(duration: Duration(milliseconds: 100), curve: Curves.linear);
         sliderInitial=0.0;
+        changeIndex(changeIndex: true);
+
+        if (mounted) {
+          String url = ref
+              .watch(addProvider)
+              .musicList[index]
+              .musicFile;
+          await audioPlayer1.play(AssetSource(url));
+          await audioPlayer2.play(AssetSource(url));
+          // sliderInitial=0.0;
+        }
+
+        if (mounted) {
+          setState(() {});
+        }
+
 
       }
       if(!mounted){
         timer.cancel();
         return;
       }
-      // if(ref
-      //     .watch(playlistProvider)
-      //     .mixMixPlaylist[mixPlaylistIndex]
-      //     .playListList!
-      //     .length-1 == musicIndex){
-      //   pageController.animateToPage(0, duration: Duration(seconds: 1), curve: Curves.easeInOut);
-      //
-      // }else{
-      //
-      // }
+
 
     });
 
@@ -308,9 +314,7 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound> with TickerProv
           }
         },
         controller: pageController,
-        itemCount: ref
-            .watch(addProvider)
-            .musicList.length,
+        itemCount: ref.watch(mixMusicProvider).combinationList.length,
         itemBuilder: (_,index){
           return   SingleChildScrollView(
             child: Column(
@@ -439,7 +443,8 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound> with TickerProv
                         trackShape: RectangularSliderTrackShape(),
                         thumbShape: RoundSliderThumbShape(enabledThumbRadius: 10)),
                     child: Slider(
-                        value: sliderInitial,
+                        value:
+                        sliderInitial <= sliderEnd ? sliderInitial : sliderEnd,
                         min: 0,
                         max: sliderEnd,
                         divisions: 350,
@@ -808,13 +813,13 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound> with TickerProv
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Container(
-                        width: width * 0.17,
+                        width: width * 0.25,
                         padding: const EdgeInsets.symmetric(vertical: 8),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(5),
                           color: greyEC,
                         ),
-                        child: Center(child: CustomText(text: "${(selectedTimes[selectedTime] ~/ 60).toString().padLeft(2,"0")} : ${(selectedTimes[selectedTime] % 60).toString().padLeft(2,"0")}")),
+                        child: Center(child: CustomText(text: "${(selectedTimes[selectedTime] ~/ 60).toString().padLeft(2,"0")} : ${(selectedTimes[selectedTime] % 60).toString().padLeft(2,"0")} Min")),
                       ),
                       SliderTheme(
                         data: const SliderThemeData(

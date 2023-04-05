@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:audioplayers/audioplayers.dart';
-import 'package:bye_bye_cry_new/compoment/shared/custom_image.dart';
 import 'package:bye_bye_cry_new/compoment/shared/custom_text.dart';
 import 'package:bye_bye_cry_new/screens/provider/add_music_provider.dart';
 import 'package:bye_bye_cry_new/screens/provider/mix_music_provider.dart';
@@ -145,8 +144,8 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
                 }
               },
               child: Container(
-              //  height: height * .07,
-                //color: pinkLightColor,
+                height: height * .07,
+                color: pinkLightColor,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0,vertical: 5),
                   child: Row(
@@ -160,7 +159,7 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
                       ),
                       //SizedBox(width: height * .05),
                       const CustomText(
-                        text: 'Add Another Sound',
+                        text: 'Add PlayList',
                         fontSize: 20,
                         fontWeight: FontWeight.w600,
                         color: blackColor2,
@@ -349,7 +348,8 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
 
         )));
       },
-      child: Padding(
+      child:
+      Padding(
         padding: const EdgeInsets.only(left: 20.0, right: 20, top: 5, bottom: 5),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
