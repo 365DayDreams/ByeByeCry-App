@@ -10,7 +10,6 @@ import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'confiq/store_config.dart';
-import 'package:flutter_system_ringtones/flutter_system_ringtones.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
