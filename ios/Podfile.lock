@@ -49,6 +49,8 @@ PODS:
     - OrderedSet (~> 5.0)
   - flutter_screen_wake (0.0.1):
     - Flutter
+  - flutter_system_ringtones (0.0.1):
+    - Flutter
   - fluttertoast (0.0.2):
     - Flutter
     - Toast
@@ -108,6 +110,7 @@ DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_inappwebview (from `.symlinks/plugins/flutter_inappwebview/ios`)
   - flutter_screen_wake (from `.symlinks/plugins/flutter_screen_wake/ios`)
+  - flutter_system_ringtones (from `.symlinks/plugins/flutter_system_ringtones/ios`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - google_sign_in_ios (from `.symlinks/plugins/google_sign_in_ios/ios`)
   - just_audio (from `.symlinks/plugins/just_audio/ios`)
@@ -159,6 +162,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_inappwebview/ios"
   flutter_screen_wake:
     :path: ".symlinks/plugins/flutter_screen_wake/ios"
+  flutter_system_ringtones:
+    :path: ".symlinks/plugins/flutter_system_ringtones/ios"
   fluttertoast:
     :path: ".symlinks/plugins/fluttertoast/ios"
   google_sign_in_ios:
@@ -195,6 +200,7 @@ SPEC CHECKSUMS:
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   flutter_inappwebview: bfd58618f49dc62f2676de690fc6dcda1d6c3721
   flutter_screen_wake: 4d3c2b43943ea81bd5e591fd4e639ea537f4ca5e
+  flutter_system_ringtones: 7cb7df0cd04da138fe63d849385b17d512f320c2
   fluttertoast: eb263d302cc92e04176c053d2385237e9f43fad0
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   google_sign_in_ios: 1256ff9d941db546373826966720b0c24804bcdd

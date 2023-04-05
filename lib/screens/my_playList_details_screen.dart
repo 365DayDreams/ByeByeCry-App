@@ -34,7 +34,6 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
     with TickerProviderStateMixin {
   List<String> times = [
     "0",
-    "5 min",
     "10 min",
     "30 min",
     "60 min",
@@ -73,7 +72,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
     startPlayer1();
     ///startPlayer2();
     changeVolume();
-    brightNess();
+  //  brightNess();
     super.initState();
     Timer.periodic(Duration(
         seconds: 1
@@ -136,22 +135,22 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
     });
   }
 
-  Future<void> brightNess() async {
-    try {
-      brightness = await FlutterScreenWake
-          .brightness; //get the current screen brightness
-      if (brightness > 1) {
-        brightness = brightness / 10;
-      }
-      print(brightness);
-      setState(() {
-        brightness = brightness;
-      });
-    } on PlatformException {
-      brightness = 0.0;
-    }
-    if (!mounted) return;
-  }
+  // Future<void> brightNess() async {
+  //   try {
+  //     brightness = await FlutterScreenWake
+  //         .brightness; //get the current screen brightness
+  //     if (brightness > 1) {
+  //       brightness = brightness / 10;
+  //     }
+  //     print(brightness);
+  //     setState(() {
+  //       brightness = brightness;
+  //     });
+  //   } on PlatformException {
+  //     brightness = 0.0;
+  //   }
+  //   if (!mounted) return;
+  // }
 
   startPlayer1() async {
     audioPlayer1.onPlayerStateChanged.listen((state) {
@@ -461,13 +460,13 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                   ),
                   GestureDetector(
                     onTap: () {
-                      CustomBottomSheet.bottomSheet(context, isDismiss: true,
-                          child: StatefulBuilder(
-                            builder: (BuildContext context,
-                                void Function(void Function()) updateState) {
-                              return bottomSheet(context: context);
-                            },
-                          ));
+                      // CustomBottomSheet.bottomSheet(context, isDismiss: true,
+                      //     child: StatefulBuilder(
+                      //       builder: (BuildContext context,
+                      //           void Function(void Function()) updateState) {
+                      //         return bottomSheet(context: context);
+                      //       },
+                      //     ));
                     },
                     child: Container(
                       color: Colors.transparent,
@@ -482,17 +481,17 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                 children: [
                                   CustomText(
                                     text:
-                                    "${ref.watch(playlistProvider).mixMixPlaylist[mixPlaylistIndex].playListList![musicIndex].first?.musicName}+${ref.watch(playlistProvider).mixMixPlaylist[mixPlaylistIndex].playListList![musicIndex].second?.musicName}",
+                                    "${ref.watch(playlistProvider).mixMixPlaylist[mixPlaylistIndex].playListList![musicIndex].first?.musicName}",
                                     fontSize: 20,
                                     fontWeight: FontWeight.w400,
                                     color: secondaryBlackColor,
                                   ),
-                                  const SizedBox(
-                                      height: 8,
-                                      child: CustomSvg(
-                                        svg: down_arrow,
-                                        color: blackColorA0,
-                                      )),
+                                  // const SizedBox(
+                                  //     height: 8,
+                                  //     child: CustomSvg(
+                                  //       svg: down_arrow,
+                                  //       color: blackColorA0,
+                                  //     )),
                                 ],
                               ),
                             ),
@@ -948,7 +947,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Container(
-                          width: width * 0.17,
+                          width: width * 0.27,
                           padding: const EdgeInsets.symmetric(vertical: 8),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(5),
@@ -1120,371 +1119,371 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
             (BuildContext context, void Function(void Function()) updateState) {
           return Wrap(
             children: [
-              Container(
-                color: Colors.transparent,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Container(
-                                decoration: const BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: primaryPinkColor),
-                                child: const Padding(
-                                  padding: EdgeInsets.all(1.0),
-                                  child: CustomImage(
-                                    imageUrl: playButton,
-                                    height: 30,
-                                    width: 30,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 15.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    CustomText(
-                                        text:
-                                        "${ref.watch(playlistProvider).mixMixPlaylist[mixPlaylistIndex].title}",
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 20,
-                                        color: blackColor50),
-                                    const SizedBox(height: 5),
-                                    Flexible(
-                                        fit: FlexFit.loose,
-                                        child: Container(
-                                            color: Colors.transparent,
-                                            width: width * 0.67,
-                                            child: CustomText(
-                                                text:
-                                                "${ref.watch(playlistProvider).mixMixPlaylist[mixPlaylistIndex].playListList![musicIndex].first?.musicName} + ${ref.watch(playlistProvider).mixMixPlaylist[mixPlaylistIndex].playListList![musicIndex].second?.musicName} is playing",
-                                                fontWeight: FontWeight.w400,
-                                                fontSize: 14,
-                                                color: blackColor50)))
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                          const CustomSvg(svg: arrow_foreword),
-                        ],
-                      ),
-                    ),
-                    Container(height: 2, color: blackColorD9),
-                    SingleChildScrollView(
-                      child: Padding(
-                        padding: const EdgeInsets.all(20.0),
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          primary: false,
-                          itemCount: ref
-                              .watch(playlistProvider)
-                              .mixMixPlaylist[mixPlaylistIndex]
-                              .playListList!
-                              .length,
-                          itemBuilder: (context, index) {
-                            return Container(
-                              color: Colors.white,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                    CrossAxisAlignment.start,
-                                    children: [
-                                      CustomText(
-                                          text: "Sound Set ${index + 1}",
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w600,
-                                          color: blackColor50),
-                                      SizedBox(height: width * 0.05),
-                                      Row(
-                                        mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Column(
-                                            crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                            children: [
-                                              Container(
-                                                color: Colors.transparent,
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                                  children: [
-                                                    SizedBox(
-                                                      width: width * 0.44,
-                                                      child: Row(
-                                                        mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .start,
-                                                        children: [
-                                                          SizedBox(
-                                                              height:
-                                                              width * 0.1,
-                                                              width:
-                                                              width * 0.1,
-                                                              child:
-                                                              CustomImage(
-                                                                imageUrl:
-                                                                "${ref.watch(playlistProvider).mixMixPlaylist[mixPlaylistIndex].playListList![index].first?.image}",
-                                                                boxFit:
-                                                                BoxFit.fill,
-                                                              )),
-                                                          Expanded(
-                                                            child: Padding(
-                                                              padding:
-                                                              const EdgeInsets
-                                                                  .all(
-                                                                  10.0),
-                                                              child: CustomText(
-                                                                  text:
-                                                                  "${ref.watch(playlistProvider).mixMixPlaylist[mixPlaylistIndex].playListList![index].first?.musicName}",
-                                                                  fontSize: 16,
-                                                                  fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
-                                                                  color:
-                                                                  blackColor50),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    Row(
-                                                      mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .start,
-                                                      children: [
-                                                        const CustomSvg(
-                                                            svg: volume),
-                                                        Padding(
-                                                          padding:
-                                                          const EdgeInsets
-                                                              .symmetric(
-                                                              horizontal:
-                                                              5.0),
-                                                          child: CustomText(
-                                                              text:
-                                                              "${(currentVolume * 100).toInt().toString().padLeft(2, "0")}%",
-                                                              fontSize: 12,
-                                                              fontWeight:
-                                                              FontWeight
-                                                                  .w600,
-                                                              color:
-                                                              blackColor50),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              SizedBox(height: width * 0.03),
-                                              Container(
-                                                color: Colors.transparent,
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                                  children: [
-                                                    SizedBox(
-                                                      width: width * 0.44,
-                                                      child: Row(
-                                                        mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .start,
-                                                        children: [
-                                                          SizedBox(
-                                                              height:
-                                                              width * 0.1,
-                                                              width:
-                                                              width * 0.1,
-                                                              child: CustomImage(
-                                                                  imageUrl:
-                                                                  "${ref.watch(playlistProvider).mixMixPlaylist[mixPlaylistIndex].playListList![index].second?.image}",
-                                                                  boxFit: BoxFit
-                                                                      .fill)),
-                                                          Padding(
-                                                            padding:
-                                                            const EdgeInsets
-                                                                .all(10.0),
-                                                            child: CustomText(
-                                                                text:
-                                                                "${ref.watch(playlistProvider).mixMixPlaylist[mixPlaylistIndex].playListList![index].second?.musicName}",
-                                                                fontSize: 16,
-                                                                fontWeight:
-                                                                FontWeight
-                                                                    .w600,
-                                                                color:
-                                                                blackColor50),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    Row(
-                                                      mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .start,
-                                                      children: [
-                                                        const CustomSvg(
-                                                            svg: volume),
-                                                        Padding(
-                                                          padding:
-                                                          const EdgeInsets
-                                                              .symmetric(
-                                                              horizontal:
-                                                              5.0),
-                                                          child: CustomText(
-                                                              text:
-                                                              "${(currentVolume * 100).toInt().toString().padLeft(2, "0")}%",
-                                                              fontSize: 12,
-                                                              fontWeight:
-                                                              FontWeight
-                                                                  .w600,
-                                                              color:
-                                                              blackColor50),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          Row(
-                                            children: const [
-                                              CustomSvg(svg: timer),
-                                              Padding(
-                                                padding: EdgeInsets.symmetric(
-                                                    horizontal: 8.0),
-                                                child: CustomText(
-                                                  text: "4 min",
-                                                  fontWeight: FontWeight.w600,
-                                                  fontSize: 12,
-                                                  color: primaryGreyColor,
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                          GestureDetector(
-                                            onTap: () async {
-                                              playMusicForBottomSheet(
-                                                id: ref
-                                                    .watch(playlistProvider)
-                                                    .mixMixPlaylist[
-                                                mixPlaylistIndex]
-                                                    .playListList![index]
-                                                    .id,
-                                                updateState: updateState,
-                                              );
-                                              if (mounted) {
-                                                updateState(() {});
-                                              }
-                                            },
-                                            child: Container(
-                                                clipBehavior: Clip.hardEdge,
-                                                decoration: BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                    color: Colors.black
-                                                        .withOpacity(0.1)),
-                                                child: Padding(
-                                                  padding:
-                                                  const EdgeInsets.all(1.0),
-                                                  child: ref
-                                                      .watch(
-                                                      playlistProvider)
-                                                      .mixMixPlaylist[
-                                                  mixPlaylistIndex]
-                                                      .playListList![
-                                                  index]
-                                                      .id !=
-                                                      ref
-                                                          .watch(
-                                                          playlistProvider)
-                                                          .mixMixPlaylist[
-                                                      mixPlaylistIndex]
-                                                          .playListList![
-                                                      musicIndex]
-                                                          .id
-                                                      ? const CustomImage(
-                                                    imageUrl: playButton,
-                                                    height: 30,
-                                                    width: 30,
-                                                    color: blackColor97,
-                                                  )
-                                                      : issongplaying1 ||
-                                                      issongplaying2
-                                                      ? const Padding(
-                                                    padding:
-                                                    EdgeInsets
-                                                        .all(
-                                                        10.0),
-                                                    child: CustomSvg(
-                                                        svg:
-                                                        pouseButton,
-                                                        height: 15,
-                                                        width: 15,
-                                                        color:
-                                                        blackColor97),
-                                                  )
-                                                      : const CustomImage(
-                                                    imageUrl:
-                                                    playButton,
-                                                    height: 30,
-                                                    width: 30,
-                                                    color:
-                                                    blackColor97,
-                                                  ),
-                                                )),
-                                          )
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                  index <
-                                      ref
-                                          .watch(playlistProvider)
-                                          .mixMixPlaylist[
-                                      mixPlaylistIndex]
-                                          .playListList!
-                                          .length -
-                                          1
-                                      ? const SizedBox(height: 10)
-                                      : const SizedBox(),
-                                  index <
-                                      ref
-                                          .watch(playlistProvider)
-                                          .mixMixPlaylist[
-                                      mixPlaylistIndex]
-                                          .playListList!
-                                          .length -
-                                          1
-                                      ? Container(
-                                    width: width,
-                                    height: 1.5,
-                                    color: blackColorD9,
-                                  )
-                                      : const SizedBox(),
-                                  const SizedBox(height: 20)
-                                ],
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              ),
+              // Container(
+              //   color: Colors.transparent,
+              //   child: Column(
+              //     crossAxisAlignment: CrossAxisAlignment.start,
+              //     children: [
+              //       Padding(
+              //         padding: const EdgeInsets.all(20.0),
+              //         child: Row(
+              //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //           children: [
+              //             Row(
+              //               children: [
+              //                 Container(
+              //                   decoration: const BoxDecoration(
+              //                       shape: BoxShape.circle,
+              //                       color: primaryPinkColor),
+              //                   child: const Padding(
+              //                     padding: EdgeInsets.all(1.0),
+              //                     child: CustomImage(
+              //                       imageUrl: playButton,
+              //                       height: 30,
+              //                       width: 30,
+              //                       color: Colors.white,
+              //                     ),
+              //                   ),
+              //                 ),
+              //                 Padding(
+              //                   padding: const EdgeInsets.symmetric(
+              //                       horizontal: 15.0),
+              //                   child: Column(
+              //                     crossAxisAlignment: CrossAxisAlignment.start,
+              //                     mainAxisSize: MainAxisSize.min,
+              //                     children: [
+              //                       CustomText(
+              //                           text:
+              //                           "${ref.watch(playlistProvider).mixMixPlaylist[mixPlaylistIndex].title}",
+              //                           fontWeight: FontWeight.w600,
+              //                           fontSize: 20,
+              //                           color: blackColor50),
+              //                       const SizedBox(height: 5),
+              //                       Flexible(
+              //                           fit: FlexFit.loose,
+              //                           child: Container(
+              //                               color: Colors.transparent,
+              //                               width: width * 0.67,
+              //                               child: CustomText(
+              //                                   text:
+              //                                   "${ref.watch(playlistProvider).mixMixPlaylist[mixPlaylistIndex].playListList![musicIndex].first?.musicName} is playing",
+              //                                   fontWeight: FontWeight.w400,
+              //                                   fontSize: 14,
+              //                                   color: blackColor50)))
+              //                     ],
+              //                   ),
+              //                 )
+              //               ],
+              //             ),
+              //           //  const CustomSvg(svg: arrow_foreword),
+              //           ],
+              //         ),
+              //       ),
+              //       // Container(height: 2, color: blackColorD9),
+              //       // SingleChildScrollView(
+              //       //   child: Padding(
+              //       //     padding: const EdgeInsets.all(20.0),
+              //       //     child: ListView.builder(
+              //       //       shrinkWrap: true,
+              //       //       primary: false,
+              //       //       itemCount: ref
+              //       //           .watch(playlistProvider)
+              //       //           .mixMixPlaylist[mixPlaylistIndex]
+              //       //           .playListList!
+              //       //           .length,
+              //       //       itemBuilder: (context, index) {
+              //       //         return Container(
+              //       //           color: Colors.white,
+              //       //           child: Column(
+              //       //             crossAxisAlignment: CrossAxisAlignment.start,
+              //       //             children: [
+              //       //               Column(
+              //       //                 crossAxisAlignment:
+              //       //                 CrossAxisAlignment.start,
+              //       //                 children: [
+              //       //                   CustomText(
+              //       //                       text: "Sound Set ${index + 1}",
+              //       //                       fontSize: 16,
+              //       //                       fontWeight: FontWeight.w600,
+              //       //                       color: blackColor50),
+              //       //                   SizedBox(height: width * 0.05),
+              //       //                   Row(
+              //       //                     mainAxisAlignment:
+              //       //                     MainAxisAlignment.spaceBetween,
+              //       //                     children: [
+              //       //                       Column(
+              //       //                         crossAxisAlignment:
+              //       //                         CrossAxisAlignment.start,
+              //       //                         children: [
+              //       //                           Container(
+              //       //                             color: Colors.transparent,
+              //       //                             child: Row(
+              //       //                               mainAxisAlignment:
+              //       //                               MainAxisAlignment.start,
+              //       //                               children: [
+              //       //                                 SizedBox(
+              //       //                                   width: width * 0.44,
+              //       //                                   child: Row(
+              //       //                                     mainAxisAlignment:
+              //       //                                     MainAxisAlignment
+              //       //                                         .start,
+              //       //                                     children: [
+              //       //                                       SizedBox(
+              //       //                                           height:
+              //       //                                           width * 0.1,
+              //       //                                           width:
+              //       //                                           width * 0.1,
+              //       //                                           child:
+              //       //                                           CustomImage(
+              //       //                                             imageUrl:
+              //       //                                             "${ref.watch(playlistProvider).mixMixPlaylist[mixPlaylistIndex].playListList![index].first?.image}",
+              //       //                                             boxFit:
+              //       //                                             BoxFit.fill,
+              //       //                                           )),
+              //       //                                       Expanded(
+              //       //                                         child: Padding(
+              //       //                                           padding:
+              //       //                                           const EdgeInsets
+              //       //                                               .all(
+              //       //                                               10.0),
+              //       //                                           child: CustomText(
+              //       //                                               text:
+              //       //                                               "${ref.watch(playlistProvider).mixMixPlaylist[mixPlaylistIndex].playListList![index].first?.musicName}",
+              //       //                                               fontSize: 16,
+              //       //                                               fontWeight:
+              //       //                                               FontWeight
+              //       //                                                   .w600,
+              //       //                                               color:
+              //       //                                               blackColor50),
+              //       //                                         ),
+              //       //                                       ),
+              //       //                                     ],
+              //       //                                   ),
+              //       //                                 ),
+              //       //                                 Row(
+              //       //                                   mainAxisAlignment:
+              //       //                                   MainAxisAlignment
+              //       //                                       .start,
+              //       //                                   children: [
+              //       //                                     const CustomSvg(
+              //       //                                         svg: volume),
+              //       //                                     Padding(
+              //       //                                       padding:
+              //       //                                       const EdgeInsets
+              //       //                                           .symmetric(
+              //       //                                           horizontal:
+              //       //                                           5.0),
+              //       //                                       child: CustomText(
+              //       //                                           text:
+              //       //                                           "${(currentVolume * 100).toInt().toString().padLeft(2, "0")}%",
+              //       //                                           fontSize: 12,
+              //       //                                           fontWeight:
+              //       //                                           FontWeight
+              //       //                                               .w600,
+              //       //                                           color:
+              //       //                                           blackColor50),
+              //       //                                     ),
+              //       //                                   ],
+              //       //                                 ),
+              //       //                               ],
+              //       //                             ),
+              //       //                           ),
+              //       //                           SizedBox(height: width * 0.03),
+              //       //                           Container(
+              //       //                             color: Colors.transparent,
+              //       //                             child: Row(
+              //       //                               mainAxisAlignment:
+              //       //                               MainAxisAlignment.start,
+              //       //                               children: [
+              //       //                                 SizedBox(
+              //       //                                   width: width * 0.44,
+              //       //                                   child: Row(
+              //       //                                     mainAxisAlignment:
+              //       //                                     MainAxisAlignment
+              //       //                                         .start,
+              //       //                                     children: [
+              //       //                                       SizedBox(
+              //       //                                           height:
+              //       //                                           width * 0.1,
+              //       //                                           width:
+              //       //                                           width * 0.1,
+              //       //                                           child: CustomImage(
+              //       //                                               imageUrl:
+              //       //                                               "${ref.watch(playlistProvider).mixMixPlaylist[mixPlaylistIndex].playListList![index].second?.image}",
+              //       //                                               boxFit: BoxFit
+              //       //                                                   .fill)),
+              //       //                                       Padding(
+              //       //                                         padding:
+              //       //                                         const EdgeInsets
+              //       //                                             .all(10.0),
+              //       //                                         child: CustomText(
+              //       //                                             text:
+              //       //                                             "${ref.watch(playlistProvider).mixMixPlaylist[mixPlaylistIndex].playListList![index].second?.musicName}",
+              //       //                                             fontSize: 16,
+              //       //                                             fontWeight:
+              //       //                                             FontWeight
+              //       //                                                 .w600,
+              //       //                                             color:
+              //       //                                             blackColor50),
+              //       //                                       ),
+              //       //                                     ],
+              //       //                                   ),
+              //       //                                 ),
+              //       //                                 Row(
+              //       //                                   mainAxisAlignment:
+              //       //                                   MainAxisAlignment
+              //       //                                       .start,
+              //       //                                   children: [
+              //       //                                     const CustomSvg(
+              //       //                                         svg: volume),
+              //       //                                     Padding(
+              //       //                                       padding:
+              //       //                                       const EdgeInsets
+              //       //                                           .symmetric(
+              //       //                                           horizontal:
+              //       //                                           5.0),
+              //       //                                       child: CustomText(
+              //       //                                           text:
+              //       //                                           "${(currentVolume * 100).toInt().toString().padLeft(2, "0")}%",
+              //       //                                           fontSize: 12,
+              //       //                                           fontWeight:
+              //       //                                           FontWeight
+              //       //                                               .w600,
+              //       //                                           color:
+              //       //                                           blackColor50),
+              //       //                                     ),
+              //       //                                   ],
+              //       //                                 ),
+              //       //                               ],
+              //       //                             ),
+              //       //                           ),
+              //       //                         ],
+              //       //                       ),
+              //       //                       Row(
+              //       //                         children: const [
+              //       //                           CustomSvg(svg: timer),
+              //       //                           Padding(
+              //       //                             padding: EdgeInsets.symmetric(
+              //       //                                 horizontal: 8.0),
+              //       //                             child: CustomText(
+              //       //                               text: "4 min",
+              //       //                               fontWeight: FontWeight.w600,
+              //       //                               fontSize: 12,
+              //       //                               color: primaryGreyColor,
+              //       //                             ),
+              //       //                           )
+              //       //                         ],
+              //       //                       ),
+              //       //                       GestureDetector(
+              //       //                         onTap: () async {
+              //       //                           playMusicForBottomSheet(
+              //       //                             id: ref
+              //       //                                 .watch(playlistProvider)
+              //       //                                 .mixMixPlaylist[
+              //       //                             mixPlaylistIndex]
+              //       //                                 .playListList![index]
+              //       //                                 .id,
+              //       //                             updateState: updateState,
+              //       //                           );
+              //       //                           if (mounted) {
+              //       //                             updateState(() {});
+              //       //                           }
+              //       //                         },
+              //       //                         child: Container(
+              //       //                             clipBehavior: Clip.hardEdge,
+              //       //                             decoration: BoxDecoration(
+              //       //                                 shape: BoxShape.circle,
+              //       //                                 color: Colors.black
+              //       //                                     .withOpacity(0.1)),
+              //       //                             child: Padding(
+              //       //                               padding:
+              //       //                               const EdgeInsets.all(1.0),
+              //       //                               child: ref
+              //       //                                   .watch(
+              //       //                                   playlistProvider)
+              //       //                                   .mixMixPlaylist[
+              //       //                               mixPlaylistIndex]
+              //       //                                   .playListList![
+              //       //                               index]
+              //       //                                   .id !=
+              //       //                                   ref
+              //       //                                       .watch(
+              //       //                                       playlistProvider)
+              //       //                                       .mixMixPlaylist[
+              //       //                                   mixPlaylistIndex]
+              //       //                                       .playListList![
+              //       //                                   musicIndex]
+              //       //                                       .id
+              //       //                                   ? const CustomImage(
+              //       //                                 imageUrl: playButton,
+              //       //                                 height: 30,
+              //       //                                 width: 30,
+              //       //                                 color: blackColor97,
+              //       //                               )
+              //       //                                   : issongplaying1 ||
+              //       //                                   issongplaying2
+              //       //                                   ? const Padding(
+              //       //                                 padding:
+              //       //                                 EdgeInsets
+              //       //                                     .all(
+              //       //                                     10.0),
+              //       //                                 child: CustomSvg(
+              //       //                                     svg:
+              //       //                                     pouseButton,
+              //       //                                     height: 15,
+              //       //                                     width: 15,
+              //       //                                     color:
+              //       //                                     blackColor97),
+              //       //                               )
+              //       //                                   : const CustomImage(
+              //       //                                 imageUrl:
+              //       //                                 playButton,
+              //       //                                 height: 30,
+              //       //                                 width: 30,
+              //       //                                 color:
+              //       //                                 blackColor97,
+              //       //                               ),
+              //       //                             )),
+              //       //                       )
+              //       //                     ],
+              //       //                   ),
+              //       //                 ],
+              //       //               ),
+              //       //               index <
+              //       //                   ref
+              //       //                       .watch(playlistProvider)
+              //       //                       .mixMixPlaylist[
+              //       //                   mixPlaylistIndex]
+              //       //                       .playListList!
+              //       //                       .length -
+              //       //                       1
+              //       //                   ? const SizedBox(height: 10)
+              //       //                   : const SizedBox(),
+              //       //               index <
+              //       //                   ref
+              //       //                       .watch(playlistProvider)
+              //       //                       .mixMixPlaylist[
+              //       //                   mixPlaylistIndex]
+              //       //                       .playListList!
+              //       //                       .length -
+              //       //                       1
+              //       //                   ? Container(
+              //       //                 width: width,
+              //       //                 height: 1.5,
+              //       //                 color: blackColorD9,
+              //       //               )
+              //       //                   : const SizedBox(),
+              //       //               const SizedBox(height: 20)
+              //       //             ],
+              //       //           ),
+              //       //         );
+              //       //       },
+              //       //     ),
+              //       //   ),
+              //       // )
+              //     ],
+              //   ),
+              // ),
             ],
           );
         },

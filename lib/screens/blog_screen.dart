@@ -35,7 +35,7 @@ class BlogScreen extends StatelessWidget {
                         ),
                       ]),
                   child: Image.asset(
-                    "asset/images/blog1.jpg",
+                    "asset/images/sounds_image/blog1.jpg",
                     fit: BoxFit.cover,
                     height: 200,
                     width: double.infinity,
