@@ -49,7 +49,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
   int mixPlaylistIndex = 0;
   AudioCache audioCache = AudioCache();
   AudioPlayer audioPlayer1 = AudioPlayer();
-  AudioPlayer audioPlayer2 = AudioPlayer();
+  // AudioPlayer audioPlayer2 = AudioPlayer();
   Duration _duration = Duration.zero;
   Duration _position = Duration.zero;
   Duration _duration2 = Duration.zero;
@@ -71,7 +71,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
   void initState() {
 
     startPlayer1();
-    startPlayer2();
+    ///startPlayer2();
     changeVolume();
     brightNess();
     super.initState();
@@ -114,7 +114,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
   @override
   void dispose() {
     audioPlayer1.dispose();
-    audioPlayer2.dispose();
+    // audioPlayer2.dispose();
     _subscription.cancel();
     super.dispose();
   }
@@ -189,40 +189,40 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
     }
   }
 
-  startPlayer2() async {
-    audioPlayer2.onPlayerStateChanged.listen((state) {
-      issongplaying2 = state == PlayerState.playing;
-      if (!issongplaying1 || !issongplaying2) {
-        if (setDuration > 0) {
-          setDuration -= _duration.inSeconds;
-          if (mounted) {
-            pausePlayMethod();
-          }
-          if (mounted) {
-            setState(() {});
-          }
-        }
-      }
-      if (mounted) {
-        setState(() {});
-      }
-    });
-    audioPlayer2.onDurationChanged.listen((newDuration) {
-      _duration2 = newDuration;
-      if (mounted) {
-        setState(() {});
-      }
-    });
-    audioPlayer2.onPositionChanged.listen((newPositions) {
-      _position2 = newPositions;
-      if (mounted) {
-        setState(() {});
-      }
-    });
-    if (mounted) {
-      setState(() {});
-    }
-  }
+  // startPlayer2() async {
+  //   audioPlayer2.onPlayerStateChanged.listen((state) {
+  //     issongplaying2 = state == PlayerState.playing;
+  //     if (!issongplaying1 || !issongplaying2) {
+  //       if (setDuration > 0) {
+  //         setDuration -= _duration.inSeconds;
+  //         if (mounted) {
+  //           pausePlayMethod();
+  //         }
+  //         if (mounted) {
+  //           setState(() {});
+  //         }
+  //       }
+  //     }
+  //     if (mounted) {
+  //       setState(() {});
+  //     }
+  //   });
+  //   // audioPlayer2.onDurationChanged.listen((newDuration) {
+  //   //   _duration2 = newDuration;
+  //   //   if (mounted) {
+  //   //     setState(() {});
+  //   //   }
+  //   // });
+  //   // audioPlayer2.onPositionChanged.listen((newPositions) {
+  //   //   _position2 = newPositions;
+  //   //   if (mounted) {
+  //   //     setState(() {});
+  //   //   }
+  //   // });
+  //   if (mounted) {
+  //     setState(() {});
+  //   }
+  // }
 
   initialization() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -262,7 +262,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
   pausePlayMethod() async {
     if (issongplaying1 || issongplaying2) {
       await audioPlayer1.pause();
-      await audioPlayer2.pause();
+     /// await audioPlayer2.pause();
       pauseSliderTimmer();
     } else {
       String url1 = ref
@@ -280,7 +280,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
           ?.musicFile ??
           "";
       await audioPlayer1.play(AssetSource(url1));
-      await audioPlayer2.play(AssetSource(url2));
+  ///    await audioPlayer2.play(AssetSource(url2));
       resumeSliderTimmer();
     }
     if (mounted) {
@@ -304,7 +304,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
         ?.musicFile ??
         "";
     await audioPlayer1.play(AssetSource(url1));
-    await audioPlayer2.play(AssetSource(url2));
+   /// await audioPlayer2.play(AssetSource(url2));
     pauseSliderTimmer();
     if (mounted) {
       setState(() {});
@@ -332,7 +332,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
       if (_index == musicIndex) {
         if (issongplaying1 && issongplaying2) {
           await audioPlayer1.pause();
-          await audioPlayer2.pause();
+        //  await audioPlayer2.pause();
         } else {
           String url1 = ref
               .watch(playlistProvider)
@@ -349,7 +349,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
               ?.musicFile ??
               "";
           await audioPlayer1.play(AssetSource(url1));
-          await audioPlayer2.play(AssetSource(url2));
+         // await audioPlayer2.play(AssetSource(url2));
         }
       } else {
         musicIndex = _index;
@@ -368,7 +368,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
             ?.musicFile ??
             "";
         await audioPlayer1.play(AssetSource(url1));
-        await audioPlayer2.play(AssetSource(url2));
+       // await audioPlayer2.play(AssetSource(url2));
       }
     }
     if (mounted) {
@@ -637,7 +637,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                               onTap: () async {
                                 if (playPouse) {
                                   await audioPlayer1.pause();
-                                  await audioPlayer2.pause();
+                                ///  await audioPlayer2.pause();
 
                                   pauseSliderTimmer();
                                 } else {
@@ -656,7 +656,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                       ?.musicFile ??
                                       "";
                                   await audioPlayer1.play(AssetSource(url1));
-                                  await audioPlayer2.play(AssetSource(url2));
+                                 // await audioPlayer2.play(AssetSource(url2));
                                   resumeSliderTimmer();
                                 }
                                 playPouse = !playPouse;
@@ -858,8 +858,8 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                     });
                                     await audioPlayer1.setVolume(
                                         currentVolume);
-                                    await audioPlayer2.setVolume(
-                                        currentVolume);
+                                  //  await audioPlayer2.setVolume(
+                                       // currentVolume);
                                   },
                                 ),
                               ),
@@ -1524,7 +1524,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
         timer.cancel();
         sliderInitial=0.0;
         audioPlayer1.stop();
-        audioPlayer2.stop();
+        ///audioPlayer2.stop();
       }
       sliderInitial++;
       setState(() {

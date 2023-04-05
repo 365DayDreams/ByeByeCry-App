@@ -1,9 +1,7 @@
 import 'dart:io';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:bye_bye_cry_new/purchase/purchas_listner.dart';
 import 'package:bye_bye_cry_new/purchase/purchase_api.dart';
 import 'package:bye_bye_cry_new/screens/models/music_models.dart';
-import 'package:bye_bye_cry_new/sounds_details_screen.dart';
 import 'package:bye_bye_cry_new/start_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +10,7 @@ import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'confiq/store_config.dart';
+import 'package:flutter_system_ringtones/flutter_system_ringtones.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,9 +18,7 @@ void main() async {
   Hive.init(docDir.path);
   Hive.initFlutter();
   Hive.registerAdapter(MusicModelAdapter());
-
   await Hive.openBox("fav");
-
   if (Platform.isAndroid) {
     await Firebase.initializeApp();
   }
