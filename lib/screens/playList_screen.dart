@@ -11,6 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../compoment/shared/custom_app_bar.dart';
 import '../compoment/shared/custom_image.dart';
 import '../compoment/shared/custom_svg.dart';
+import '../compoment/shared/outline_button.dart';
 import '../compoment/shared/screen_size.dart';
 import '../compoment/utils/color_utils.dart';
 import '../compoment/utils/image_link.dart';
@@ -29,6 +30,8 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
   TextEditingController searchController = TextEditingController();
   bool goMixPlayList = false;
   List<bool> fav = [false];
+
+  bool deleteShow = false;
 
 
   List<String> times = [
@@ -80,8 +83,33 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
       //     fontWeight: FontWeight.w700
       //   ),),
       // ),
-      appBar:  CustomAppBar(
-        title: 'My Playlist',
+      appBar:  AppBar(
+        actions: [
+          InkWell(
+            onTap: (){
+              setState(() {
+                deleteShow = !deleteShow;
+              });
+            },
+            child: Padding(
+              padding: const EdgeInsets.only(right: 18.0),
+              child: Center(
+                child: Text('Edit',style: TextStyle(
+                    fontSize: 18,color: secondaryBlackColor,
+                    fontWeight: FontWeight.bold
+                ),),
+              ),
+            ),
+          )
+        ],
+        elevation: 0,
+        centerTitle: true,
+        backgroundColor: primaryPinkColor,
+        title: Text('My Playlist',style: TextStyle(
+          fontSize: 22,color: secondaryBlackColor,
+          fontWeight: FontWeight.bold
+        ),)
+
 
         //actionTitle: 'Edit',
       ),
@@ -540,7 +568,15 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
               ],
             ),
 
-            Container(
+        deleteShow==true? InkWell(
+          onTap: (){
+            _showDialogdelete(context, firstMusicName: musicName, secondMusicName: musicName, index22: musicIndex);
+          },
+          child: Padding(
+            padding: EdgeInsets.all(10.0),
+            child: CustomSvg(svg: deleteSvg),
+          ),
+        ):    Container(
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: Colors.black.withOpacity(0.05),
@@ -952,4 +988,76 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
     );
   }
 
+  void _showDialogdelete(BuildContext context,
+      {required String firstMusicName,
+        required String secondMusicName,
+        required int index22}) {
+    final width = ScreenSize(context).width;
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Align(
+          alignment: Alignment.center,
+          child: Wrap(
+            children: [
+              AlertDialog(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15)),
+                backgroundColor: Colors.white,
+                title: const CustomText(
+                  text: 'You ave removed',
+                  textAlign: TextAlign.center,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w400,
+                  color: secondaryBlackColor,
+                ),
+                content: Column(
+                  children: [
+                    CustomText(
+                      text: '$firstMusicName',
+                      fontSize: 18,
+                      color: primaryGreyColor,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    const SizedBox(
+                      height: 13,
+                    ),
+                    const CustomText(
+                      text: 'from Sound List',
+                      fontSize: 20,
+                      color: secondaryBlackColor,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ],
+                ),
+                actionsAlignment: MainAxisAlignment.center,
+                actionsPadding: const EdgeInsets.only(bottom: 20),
+                actions: <Widget>[
+                  OutLineButton(
+                    height: width * .08,
+                    width: width * .16,
+                    text: 'Ok',
+                    textColor: primaryGreyColor,
+                    textFontSize: 20,
+                    textFontWeight: FontWeight.w600,
+                    borderRadius: 48,
+                    onPressed: () {
+                      ref.watch(playlistProvider).mixMixPlaylist.removeAt(index22);
+                      // ref.read(mixMusicProvider).deleteMix(mixId: mixId);
+
+                        Navigator.pop(context);
+                        setState(() {
+
+                        });
+
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 }
