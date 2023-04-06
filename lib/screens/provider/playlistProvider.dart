@@ -54,8 +54,8 @@ class PlaylistProvider  extends ChangeNotifier{
     if(mixPlayList.isNotEmpty){
       String id = '';
       for(int index = 0; index < mixPlayList.length;index++){
-        if(mixPlayList[index].first != null && mixPlayList[index].second != null){
-          id += "${mixPlayList[index].first!.id}${mixPlayList[index].second!.id}";
+        if(mixPlayList[index].first != null){
+          id += "${mixPlayList[index].first!.id}";
         }
       }
       mixMixPlaylist.add(PlayListModel(id: id,title: mixTitle,playListList: mixPlayList));

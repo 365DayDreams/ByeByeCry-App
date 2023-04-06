@@ -92,12 +92,14 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound> with TickerProv
         changeIndex(changeIndex: true);
 
         if (mounted) {
-          String url = ref
-              .watch(addProvider)
-              .musicList[index]
-              .musicFile;
-          await audioPlayer1.play(AssetSource(url));
-          await audioPlayer2.play(AssetSource(url));
+          // String url = ref
+          //     .watch(addProvider)
+          //     .musicList[index]
+          //     .musicFile;
+         String url1 =  ref.watch(mixMusicProvider).combinationList[index].first!.musicFile;
+         String url2 =  ref.watch(mixMusicProvider).combinationList[index].first!.musicFile;
+          await audioPlayer1.play(AssetSource(url1));
+          await audioPlayer2.play(AssetSource(url2));
           // sliderInitial=0.0;
         }
 

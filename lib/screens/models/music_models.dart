@@ -35,7 +35,9 @@ class MixMusicModel{
     return MixMusicModel(
         id:json['id'] ,
         first: MusicModel.fromJson(json['first']),
-        second: MusicModel.fromJson(json['second'])
+        second: MusicModel.fromJson(json['second'],
+
+        )
     );
   }
   Map<String,dynamic> toJson() => {

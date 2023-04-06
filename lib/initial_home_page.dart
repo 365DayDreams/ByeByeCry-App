@@ -676,7 +676,7 @@ class _InitialHomePageState extends ConsumerState<InitialHomePage> {
           ),
         ),
       ) : Container(
-        height: height * .08,
+        height: height * .09,
 
         child:     OutLineButton(
          // height: height * .06,

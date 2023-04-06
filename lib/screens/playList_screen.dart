@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../compoment/shared/custom_app_bar.dart';
+import '../compoment/shared/custom_image.dart';
 import '../compoment/shared/custom_svg.dart';
 import '../compoment/shared/screen_size.dart';
 import '../compoment/utils/color_utils.dart';
@@ -538,53 +539,69 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
                 ),
               ],
             ),
-            Row(
-              children: [
-                InkWell(
-                  onTap: (){
-                    _showDialog(context);
-                  },
-                  child: Row(
-                    children: [
-                      CustomSvg(
-                        svg: timer,
-                        color: blackColor2,
-                      ),
 
-                      SizedBox(width: 5,),
-
-                      Padding(
-                        padding: const EdgeInsets.only(top: 4.0),
-                        child: CustomText(
-                            text:
-                            "${(selectedTimes[selectedTime] ~/ 60).toString().padLeft(2, "0")} : ${(selectedTimes[selectedTime] % 60).toString().padLeft(2, "0")} min")
-                      )
-                    ],
-                  ),
+            Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.black.withOpacity(0.05),
+              ),
+              child:  Padding(
+                padding: EdgeInsets.all(15.0),
+                child: CustomImage(
+                  scale: 0.8,
+                  imageUrl: playButton,
                 ),
-                SizedBox(width: 20,),
-                InkWell(
-                  onTap: (){
-                    _showDialogVolume(context);
-                  },
-                  child: Row(
-                    children: [
-                      CustomSvg(
-                        svg: volume,
-                        color: blackColor2,
-                      ),
+              )),
 
-                      SizedBox(width: 5,),
 
-                      Padding(
-                        padding: const EdgeInsets.only(top: 4.0),
-                        child: Text("${currentVolume.toString().replaceAll("0.", "")}"),
-                      )
-                    ],
-                  ),
-                ),
-              ],
-            ),
+
+            // Row(
+            //   children: [
+            //     InkWell(
+            //       onTap: (){
+            //         _showDialog(context);
+            //       },
+            //       child: Row(
+            //         children: [
+            //           CustomSvg(
+            //             svg: timer,
+            //             color: blackColor2,
+            //           ),
+            //
+            //           SizedBox(width: 5,),
+            //
+            //           Padding(
+            //             padding: const EdgeInsets.only(top: 4.0),
+            //             child: CustomText(
+            //                 text:
+            //                 "${(selectedTimes[selectedTime] ~/ 60).toString().padLeft(2, "0")} : ${(selectedTimes[selectedTime] % 60).toString().padLeft(2, "0")} min")
+            //           )
+            //         ],
+            //       ),
+            //     ),
+            //     SizedBox(width: 20,),
+            //     InkWell(
+            //       onTap: (){
+            //         _showDialogVolume(context);
+            //       },
+            //       child: Row(
+            //         children: [
+            //           CustomSvg(
+            //             svg: volume,
+            //             color: blackColor2,
+            //           ),
+            //
+            //           SizedBox(width: 5,),
+            //
+            //           Padding(
+            //             padding: const EdgeInsets.only(top: 4.0),
+            //             child: Text("${currentVolume.toString().replaceAll("0.", "")}"),
+            //           )
+            //         ],
+            //       ),
+            //     ),
+            //   ],
+            // ),
           ],
         ),
       ),
