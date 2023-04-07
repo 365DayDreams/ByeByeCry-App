@@ -50,12 +50,11 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
   Duration _duration = Duration.zero;
   Duration _position = Duration.zero;
   Duration _slider = Duration(seconds: 0);
-  double currentVolume = 0.0;
+  List<double> currentVolume = [0.0];
   bool issongplaying = false;
   double brightness = 0.5;
   late StreamSubscription<double> _subscription;
-  int index = 0;
-  int selectedTime = 0;
+  List<int> selectedTime = [0];
   int setDuration = 0;
   bool check = false;
   bool playPouse = true;
@@ -109,11 +108,7 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // Column(
-            //   children:
-            //   // List.generate(ref.watch(playlistProvider).mixPlayList.length, (index) =>
-            //   //    ),
-            // ),
+
 
 
             ListView.builder(
@@ -121,152 +116,186 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
               shrinkWrap: true,
               primary: false,
               itemBuilder: (_,index){
-                return  Container(
+                currentVolume.add(0.0);
+                selectedTime.add(0);
+                return  Column(
+                  children: [
+                    Container(
 
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: Column(
-                      children: [
-                     //   const SizedBox(height: 20),
-                        //  CustomText(text: "Sound Set ${index+1}",fontWeight: FontWeight.w600,fontSize: 20,color: primaryGreyColor),
-                        const SizedBox(height: 20),
-                        Column(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                        child: Column(
                           children: [
-                            Row(
+                         //   const SizedBox(height: 20),
+                            //  Custom1`Text(text: "Sound Set ${index+1}",fontWeight: FontWeight.w600,fontSize: 20,color: primaryGreyColor),
+                            const SizedBox(height: 20),
+                            Column(
                               children: [
+                                Row(
+                                  children: [
 
 
 
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 18.0),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      GestureDetector(
-                                        onTap: (){
-                                          ref.read(addProvider).showPlusPlaylist(playlistPlusBottom:true);
-                                          if(mounted){
-                                            ref.read(addProvider).changePage(1);
-                                          }
-                                          if(mounted){
-                                            ref.read(playlistProvider).addInPlaylistTrue();
-                                          }
-                                          if(mounted){
-                                            ref.read(playlistProvider).setIndex(setIndex: index);
-                                          }
-                                          if(mounted){
-                                            ref.read(playlistProvider).setMusicFirstOrSecond(setFirstOrSecondMusic: true);
-                                          }
-                                          if(mounted){
-                                            setState(() {});
-                                          }
-                                        },
-                                        child: Row(
-                                          children: [
-                                            ref.watch(playlistProvider).mixPlayList[index]?.first == null?Container(
-                                              // height: width * .3,
-                                              // width: width * .3,
-                                              decoration: BoxDecoration(
-                                                  color: secondaryPickColor,
-                                                  borderRadius: BorderRadius.circular(10)
-                                              ),
-                                              child:  Padding(
-                                                padding: EdgeInsets.all(25.0),
-                                                child: CustomSvg(
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 18.0),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        children: [
+                                          GestureDetector(
+                                            onTap: (){
+                                              ref.read(addProvider).showPlusPlaylist(playlistPlusBottom:true);
+                                              if(mounted){
+                                                ref.read(addProvider).changePage(1);
+                                              }
+                                              if(mounted){
+                                                ref.read(playlistProvider).addInPlaylistTrue();
+                                              }
+                                              if(mounted){
+                                                ref.read(playlistProvider).setIndex(setIndex: index);
+                                              }
+                                              if(mounted){
+                                                ref.read(playlistProvider).setMusicFirstOrSecond(setFirstOrSecondMusic: true);
+                                              }
+                                              if(mounted){
+                                                setState(() {});
+                                              }
 
-
-                                                  svg: musicJust,
+                                            },
+                                            child: Row(
+                                              children: [
+                                              CustomImage(
+                                                  imageUrl: "${ref.watch(playlistProvider).mixPlayList[index]?.first?.image}",
+                                                  height: width * .15,
+                                                  width: width * .15,
+                                                  boxFit: BoxFit.cover,
                                                 ),
-                                              ),
-                                            ):CustomImage(
-                                              imageUrl: "${ref.watch(playlistProvider).mixPlayList[index]?.first?.image}",
-                                              height: width * .15,
-                                              width: width * .15,
-                                              boxFit: BoxFit.cover,
+                                               SizedBox(width: 10,),
+                                                Center(
+                                                  child: CustomText(
+                                                    text: ref.watch(playlistProvider).mixPlayList[index]?.first?.musicName ?? "Add a Sound",
+                                                    textAlign: TextAlign.center,
+                                                    fontSize: 20,
+                                                    fontWeight: FontWeight.w500,
+
+                                                    color: primaryGreyColor,
+                                                  ),
+                                                )
+                                              ],
                                             ),
-                                           SizedBox(width: 30,),
-                                            Center(
-                                              child: CustomText(
-                                                text: ref.watch(playlistProvider).mixPlayList[index]?.first?.musicName ?? "Add a Sound",
-                                                textAlign: TextAlign.center,
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.w500,
+                                          ),
 
-                                                color: primaryGreyColor,
-                                              ),
-                                            )
-                                          ],
-                                        ),
+                                        ],
                                       ),
+                                    ),
+                                    Spacer(),
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 8.0,bottom: 4),
+                                      child: Row(
+                                        children: [
+                                          InkWell(
+                                            onTap: (){
+                                              _showDialog2(context,index);
+                                            },
+                                            child: Row(
+                                              children: [
+                                                CustomSvg(
+                                                  svg: timer,
+                                                  color: blackColor2,
+                                                ),
 
-                                    ],
-                                  ),
+                                                SizedBox(width: 2,),
+
+                                                Padding(
+                                                    padding: const EdgeInsets.only(top: 4.0),
+                                                    child: Text(
+
+                                                        "${(selectedTimes[selectedTime[index]] ~/ 60).toString().padLeft(2, "0")} : ${(selectedTimes[selectedTime[index]] % 60).toString().padLeft(2, "0").toString()} min".replaceAll("00 :", ""),style: TextStyle(
+                                                      fontSize: 14
+                                                    ),),
+
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                          SizedBox(width: 20,),
+                                          InkWell(
+                                            onTap: (){
+                                              _showDialogVolume(context,index);
+                                            },
+                                            child: Row(
+                                              children: [
+                                                CustomSvg(
+                                                  svg: volume,
+                                                  color: blackColor2,
+                                                ),
+
+                                                SizedBox(width: 5,),
+
+                                                Padding(
+                                                  padding: const EdgeInsets.only(top: 4.0),
+                                                  child: Text("${currentVolume[index].toString().replaceAll("0.", "")}"),
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+
+
+
+                                  ],
                                 ),
-                                Spacer(),
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 8.0,bottom: 4),
-                                  child: Row(
-                                    children: [
-                                      InkWell(
-                                        onTap: (){
-                                          _showDialog2(context);
-                                        },
-                                        child: Row(
-                                          children: [
-                                            CustomSvg(
-                                              svg: timer,
-                                              color: blackColor2,
-                                            ),
-
-                                            SizedBox(width: 2,),
-
-                                            Padding(
-                                                padding: const EdgeInsets.only(top: 4.0),
-                                                child: Text(
-
-                                                    "${(selectedTimes[selectedTime] ~/ 60).toString().padLeft(2, "0")} : ${(selectedTimes[selectedTime] % 60).toString().padLeft(2, "0").toString()} min".replaceAll("00 :", ""),style: TextStyle(
-                                                  fontSize: 14
-                                                ),),
-
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                      SizedBox(width: 20,),
-                                      InkWell(
-                                        onTap: (){
-                                          _showDialogVolume(context);
-                                        },
-                                        child: Row(
-                                          children: [
-                                            CustomSvg(
-                                              svg: volume,
-                                              color: blackColor2,
-                                            ),
-
-                                            SizedBox(width: 5,),
-
-                                            Padding(
-                                              padding: const EdgeInsets.only(top: 4.0),
-                                              child: Text("${currentVolume.toString().replaceAll("0.", "")}"),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-
-
 
                               ],
                             ),
-
                           ],
                         ),
-                      ],
+                      ),
                     ),
-                  ),
+                    if(index==ref.watch(playlistProvider).mixPlayList.length-1)
+                    ref.watch(playlistProvider).mixPlayList.length <3?
+                    GestureDetector(
+                      onTap: (){
+                        ref.read(addProvider)
+                            .showPlusPlaylist(playlistPlusBottom:true);
+                        if(mounted){
+                          ref.read(addProvider)
+                              .changePage(1);
+                        }
+                        if(mounted){
+                          ref.read(playlistProvider)
+                              .addInPlaylistTrue();
+                        }
+                        if(mounted){
+                          ref.read(playlistProvider)
+                              .setIndex(setIndex: index+1);
+                        }
+                        if(mounted){
+                          ref.read(playlistProvider).setMusicFirstOrSecond(setFirstOrSecondMusic: true);
+                        }
+                        ref.read(playlistProvider).createMusic();
+                        if(mounted){
+                          setState(() {});
+                        }
+
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 18.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: const [
+                            Icon(
+                              Icons.add,
+                              color: primaryGreyColor,
+                            ),
+                            CustomText(text: "Add another Sound Set",fontSize: 16,fontWeight: FontWeight.w600,color: primaryGreyColor),
+                          ],
+                        ),
+                      ),
+                    ):const SizedBox(),
+
+                  ],
                 );
 
               },
@@ -276,9 +305,28 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
 
 
             ref.watch(playlistProvider).mixPlayList.length <3?const SizedBox(height: 20):const SizedBox(),
+            if(ref.watch(playlistProvider).mixPlayList.length==0)
             ref.watch(playlistProvider).mixPlayList.length <3?GestureDetector(
               onTap: (){
-               ref.read(playlistProvider).createMusic();
+                ref.read(playlistProvider).createMusic();
+
+                ref.read(addProvider).showPlusPlaylist(playlistPlusBottom:true);
+                if(mounted){
+                  ref.read(addProvider).changePage(1);
+                }
+                if(mounted){
+                  ref.read(playlistProvider).addInPlaylistTrue();
+                }
+                if(mounted){
+                  ref.read(playlistProvider).setIndex(setIndex: 0);
+                }
+                if(mounted){
+                  ref.read(playlistProvider).setMusicFirstOrSecond(setFirstOrSecondMusic: true);
+                }
+                if(mounted){
+                  setState(() {});
+                }
+
               },
               child: Padding(
                 padding: const EdgeInsets.only(left: 18.0),
@@ -380,7 +428,7 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
     );
   }
 
-  void _showDialog2(BuildContext context) {
+  void _showDialog2(BuildContext context,int indexm) {
     final height = ScreenSize(context).height;
     final width = ScreenSize(context).width;
     showDialog(
@@ -434,7 +482,7 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
                             child: Center(
                                 child: CustomText(
                                     text:
-                                    "${(selectedTimes[selectedTime] ~/ 60).toString().padLeft(2, "0")} : ${(selectedTimes[selectedTime] % 60).toString().padLeft(2, "0")} min")),
+                                    "${(selectedTimes[selectedTime[indexm]] ~/ 60).toString().padLeft(2, "0")} : ${(selectedTimes[selectedTime[indexm]] % 60).toString().padLeft(2, "0")} min")),
                           ),
                           SliderTheme(
                             data: const SliderThemeData(
@@ -443,7 +491,7 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
                                 thumbShape: RoundSliderThumbShape(
                                     enabledThumbRadius: 10)),
                             child: Slider.adaptive(
-                                value: selectedTime.toDouble(),
+                                value: selectedTime[indexm].toDouble(),
                                 min: 0,
                                 max: 7,
                                 divisions: 7,
@@ -452,8 +500,8 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
                                 onChanged: (double newValue) async {
                                   state(() {
                                     setDuration = 1;
-                                    selectedTime = check ? 0 : newValue.toInt();
-                                    setDuration = selectedTimes[selectedTime];
+                                    selectedTime[indexm] = check ? 0 : newValue.toInt();
+                                    setDuration = selectedTimes[selectedTime[indexm]];
 
                                     setDuration *= 60;
                                     setSongDuration(setDuration);
@@ -498,7 +546,7 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
                                 state(() {
                                   check = newValue!;
                                   if (check) {
-                                    selectedTime = 0;
+                                    selectedTime[indexm] = 0;
                                   }
                                 });
                               }),
@@ -616,7 +664,8 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
   void resumeSliderTimmer() {
     setSongDuration(sliderEnd.toInt(), initValue: sliderInitial);
   }
-  void _showDialogVolume(BuildContext context) {
+  void _showDialogVolume(BuildContext context,int valumeIndex) {
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -624,6 +673,7 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
         return StatefulBuilder(
           builder: (BuildContext context,
               void Function(void Function()) updateState) {
+
             return Column(
               mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -661,7 +711,7 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
                               ),
                               Expanded(
                                 child: Slider(
-                                  value: currentVolume,
+                                  value: currentVolume[valumeIndex],
                                   min: 0.0,
                                   max: 1.0,
                                   divisions: 100,
@@ -670,7 +720,10 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
                                   onChanged: (double newValue) async {
                                     updateState(() {
                                       // Screen.setBrightness(newValue);
-                                      currentVolume = newValue;
+
+                                      setState(() {
+                                        currentVolume[valumeIndex] = newValue;
+                                      });
                                       print("volume $currentVolume");
                                     });
                                     // await audioPlayer.setVolume(
@@ -704,7 +757,7 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
                                       child: Center(
                                           child: CustomText(
                                             text:
-                                            "${(currentVolume * 100).toInt().toString().padLeft(2, "0")}%",
+                                            "${(currentVolume[valumeIndex] * 100).toInt().toString().padLeft(2, "0")}%",
                                             fontSize: 10,
                                             color: secondaryBlackColor,
                                             fontWeight: FontWeight.w600,

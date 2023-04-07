@@ -31,7 +31,6 @@ class _HomePageAgainPageState extends ConsumerState<HomePageAgain> {
     final height = ScreenSize(context).height;
     return SafeArea(
       child: Scaffold(
-
         body: Column(
           children: [
 
@@ -47,6 +46,8 @@ class _HomePageAgainPageState extends ConsumerState<HomePageAgain> {
                       child: CustomImage(
                         boxFit: BoxFit.fill,
                         imageUrl: logo,
+                        // height: height * .08,
+                        // width: 350,
                       ),
                     ),
                   ),
@@ -93,7 +94,6 @@ class _HomePageAgainPageState extends ConsumerState<HomePageAgain> {
                             ),
                           ]),
                       child: Image.asset(
-
                         "asset/images/homeslwwp_baby.jpg",
                         fit: BoxFit.cover,
 
@@ -122,88 +122,91 @@ class _HomePageAgainPageState extends ConsumerState<HomePageAgain> {
                     clipBehavior: Clip.none,
                     children: [
                       Container(
-                       // / height: 120,
                         color: secondaryGreenColor,
                         width: width,
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 11.0),
+                          padding: const EdgeInsets.symmetric(vertical: 21.0),
                           child: Container(
                               color: Colors.white,
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      GestureDetector(
-                                          onTap: () {
-                                            buttonCarouselController.previousPage(
-                                                duration:
-                                                const Duration(milliseconds: 500),
-                                                curve: Curves.easeIn);
-                                          },
-                                          child: Container(
-                                              color: Colors.transparent,
-                                              child: const Padding(
-                                                padding: EdgeInsets.all(6.0),
-                                                child: CustomSvg(svg: leftDirection),
-                                              ))),
-                                      Expanded(
-                                        child: CarouselSlider.builder(
-                                          carouselController:
-                                          buttonCarouselController,
-                                          itemCount: 3,
-                                          itemBuilder: (BuildContext context,
-                                              int itemIndex, int pageViewIndex) {
-                                            fav.add(false);
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 15.0, vertical: 30),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        GestureDetector(
+                                            onTap: () {
+                                              buttonCarouselController.previousPage(
+                                                  duration:
+                                                  const Duration(milliseconds: 500),
+                                                  curve: Curves.easeIn);
+                                            },
+                                            child: Container(
+                                                color: Colors.transparent,
+                                                child: const Padding(
+                                                  padding: EdgeInsets.all(6.0),
+                                                  child: CustomSvg(svg: leftDirection),
+                                                ))),
+                                        Expanded(
+                                          child: CarouselSlider.builder(
+                                            carouselController:
+                                            buttonCarouselController,
+                                            itemCount: 3,
+                                            itemBuilder: (BuildContext context,
+                                                int itemIndex, int pageViewIndex) {
+                                              fav.add(false);
 
-                                            return Container(
-                                              color: Colors.transparent,
-                                              child: const CustomText(
-                                                text:
-                                                "Does baby have gas? Try This :\nLay baby on their back and bring their knees to their chest. Move baby’s leg in a bicycle motion and apply each time their knees reach their chest ",
-                                                fontWeight: FontWeight.w600,
-                                                fontSize: 16,
-                                                color: secondaryBlackColor,
-                                                textAlign: TextAlign.center,
-                                                height: 1.3,
-                                              ),
-                                            );
-                                          },
-                                          options: CarouselOptions(
-                                              aspectRatio: 4.0,
-                                              viewportFraction: 1,
-                                              autoPlay: true,
-                                              enableInfiniteScroll: false,
-                                              onPageChanged: (index, reasons) {
-                                                setState(() {
-                                                  itemIndex = index;
-                                                });
-                                              }),
+                                              return Container(
+                                                color: Colors.transparent,
+                                                child: const CustomText(
+                                                  text:
+                                                  "Does baby have gas? Try This :\nLay baby on their back and bring their knees to their chest. Move baby’s leg in a bicycle motion and apply each time their knees reach their chest ",
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 18,
+                                                  color: secondaryBlackColor,
+                                                  textAlign: TextAlign.center,
+                                                  height: 1.3,
+                                                ),
+                                              );
+                                            },
+                                            options: CarouselOptions(
+                                                aspectRatio: 2.6,
+                                                viewportFraction: 1,
+                                                autoPlay: true,
+                                                enableInfiniteScroll: false,
+                                                onPageChanged: (index, reasons) {
+                                                  setState(() {
+                                                    itemIndex = index;
+                                                  });
+                                                }),
+                                          ),
                                         ),
-                                      ),
-                                      GestureDetector(
-                                          onTap: () {
-                                            buttonCarouselController.nextPage(
-                                                duration:
-                                                const Duration(milliseconds: 500),
-                                                curve: Curves.easeIn);
-                                          },
-                                          child: Container(
-                                              color: Colors.transparent,
-                                              child: const Padding(
-                                                padding: EdgeInsets.all(6.0),
-                                                child: CustomSvg(svg: rightDirection),
-                                              ))),
-                                    ],
+                                        GestureDetector(
+                                            onTap: () {
+                                              buttonCarouselController.nextPage(
+                                                  duration:
+                                                  const Duration(milliseconds: 500),
+                                                  curve: Curves.easeIn);
+                                            },
+                                            child: Container(
+                                                color: Colors.transparent,
+                                                child: const Padding(
+                                                  padding: EdgeInsets.all(6.0),
+                                                  child: CustomSvg(svg: rightDirection),
+                                                ))),
+                                      ],
+                                    ),
                                   )
                                 ],
                               )),
                         ),
                       ),
                       Positioned(
-                          right: 15,
-                          bottom: 65,
+                          right: 35,
+                          bottom: 165,
 
 
 

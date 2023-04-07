@@ -1586,7 +1586,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
     with TickerProviderStateMixin {
   List<String> times = [
     "0",
-    "5 min",
+
     "10 min",
     "30 min",
     "60 min",
@@ -1594,7 +1594,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
     "120 min",
     "150 min",
   ];
-  List<int> selectedTimes = [0, 5, 10, 30, 60, 90, 120, 150];
+  List<int> selectedTimes = [0, 10, 30, 60, 90, 120, 150];
   int selectedTime = 0;
   bool playPouse = true;
   int setDuration = 0;
@@ -1625,7 +1625,6 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
     startPlayer1();
     startPlayer2();
     changeVolume();
-    brightNess();
     super.initState();
     Timer.periodic(Duration(
         seconds: 1
@@ -1645,7 +1644,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
               .mixMixPlaylist[mixPlaylistIndex]
               .playListList![musicIndex].first!.musicFile;
           await audioPlayer1.play(AssetSource(url));
-          // sliderInitial=0.0;
+           sliderInitial=0.0;
         }
 
         if (mounted) {
@@ -1703,22 +1702,6 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
     });
   }
 
-  Future<void> brightNess() async {
-    try {
-      brightness = await FlutterScreenWake
-          .brightness; //get the current screen brightness
-      if (brightness > 1) {
-        brightness = brightness / 10;
-      }
-      print(brightness);
-      setState(() {
-        brightness = brightness;
-      });
-    } on PlatformException {
-      brightness = 0.0;
-    }
-    if (!mounted) return;
-  }
 
   startPlayer1() async {
     audioPlayer1.onPlayerStateChanged.listen((state) {
@@ -1860,7 +1843,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
 
     await audioPlayer1.play(AssetSource(url1));
 
-    pauseSliderTimmer();
+    sliderInitial=0.0;
     if (mounted) {
       setState(() {});
     }
@@ -2165,8 +2148,11 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                 changeIndex(changeIndex: false);
                                 if (mounted) {
                                   playMusic();
+                                  sliderInitial=0.0;
                                 }
                                 if (mounted) {
+                                  sliderInitial=0.0;
+
                                   setState(() {});
                                 }
                               },
@@ -2234,9 +2220,12 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                 changeIndex(changeIndex: true);
                                 if (mounted) {
                                   playMusic();
+
+                                  // sliderInitial=0.0;
                                 }
                                 if (mounted) {
                                   setState(() {});
+
                                 }
                               },
                               icon: const CustomSvg(
@@ -2499,7 +2488,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Container(
-                          width: width * 0.17,
+                          width: width * 0.25,
                           padding: const EdgeInsets.symmetric(vertical: 8),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(5),
