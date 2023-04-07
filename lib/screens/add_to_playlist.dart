@@ -185,7 +185,7 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
                                                             ?.musicName ??
                                                         "Add a Sound",
                                                     textAlign: TextAlign.center,
-                                                    fontSize: 20,
+                                                    fontSize: 18,
                                                     fontWeight: FontWeight.w500,
                                                     color: primaryGreyColor,
                                                   ),
@@ -251,7 +251,7 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
                                                       const EdgeInsets.only(
                                                           top: 4.0),
                                                   child: Text(
-                                                      "${currentVolume[index].toString().replaceAll("0.", "")}"),
+                                                      "${currentVolume[index].toStringAsFixed(0).replaceAll("0.", "")}"),
                                                 )
                                               ],
                                             ),
@@ -801,7 +801,7 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
                                       child: Center(
                                           child: CustomText(
                                         text:
-                                            "${(currentVolume[valumeIndex] * 100).toInt().toString().padLeft(2, "0")}%",
+                                            "${(currentVolume[valumeIndex]).toInt().toString().padLeft(2, "0")}%",
                                         fontSize: 10,
                                         color: secondaryBlackColor,
                                         fontWeight: FontWeight.w600,

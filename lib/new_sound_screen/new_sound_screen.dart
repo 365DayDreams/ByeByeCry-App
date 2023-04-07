@@ -210,27 +210,27 @@ class _NewSoundScreenState extends ConsumerState<NewSoundScreen> {
       onTap: () async {
         // if (issongplaying) await audioPlayer.dispose();
         // await Future.delayed(Duration(seconds: 2));
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (_) => SoundDetailsScreen(
-                  musicId: musicModel.id,
-                  onPressed: () async {
-                    if (ref.watch(addProvider).playFromPlayList) {
-                      if (mounted) {
-                        ref.read(addProvider).changePage(3);
-                      }
-                      if (mounted) {
-                        changeToPlayNow = false;
-                        setState(() {});
-                      }
-                    } else {
-                      setState(() {
-                        changeToPlayNow = false;
-                      });
-                    }
-                  },
-                )));
+        // Navigator.push(
+        //     context,
+        //     MaterialPageRoute(
+        //         builder: (_) => SoundDetailsScreen(
+        //           musicId: musicModel.id,
+        //           onPressed: () async {
+        //             if (ref.watch(addProvider).playFromPlayList) {
+        //               if (mounted) {
+        //                 ref.read(addProvider).changePage(3);
+        //               }
+        //               if (mounted) {
+        //                 changeToPlayNow = false;
+        //                 setState(() {});
+        //               }
+        //             } else {
+        //               setState(() {
+        //                 changeToPlayNow = false;
+        //               });
+        //             }
+        //           },
+        //         )));
       },
       // onTap: ref.watch(addProvider).showAddPlaylist?null:(){
       //   if(mounted){
@@ -284,7 +284,7 @@ class _NewSoundScreenState extends ConsumerState<NewSoundScreen> {
                     onTap: () async {
                       musicId = musicModel.id;
                       if (mounted) {
-                        //playMusic(id: musicId);
+                        playMusic(id: musicId);
                       }
                       print("OK");
                     },
