@@ -1,14 +1,13 @@
-
 import 'dart:async';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:bye_bye_cry_new/compoment/shared/custom_input.dart';
+import 'package:bye_bye_cry_new/new_sound_screen/my_playlist_new_sound_sc%20reen.dart';
 import 'package:bye_bye_cry_new/screens/provider/add_music_provider.dart';
 import 'package:bye_bye_cry_new/screens/provider/mix_music_provider.dart';
 import 'package:bye_bye_cry_new/screens/provider/playlistProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:just_audio/just_audio.dart';
 import '../compoment/shared/custom_app_bar.dart';
 import '../compoment/shared/custom_image.dart';
 import '../compoment/shared/custom_svg.dart';
@@ -21,7 +20,7 @@ import 'models/music_models.dart';
 
 class AddToPlayListPage extends ConsumerStatefulWidget {
   final VoidCallback? onPressed;
-  const AddToPlayListPage({Key? key,this.onPressed}) : super(key: key);
+  const AddToPlayListPage({Key? key, this.onPressed}) : super(key: key);
 
   @override
   ConsumerState<AddToPlayListPage> createState() => _AddToPlayListPageState();
@@ -34,7 +33,6 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
   TextEditingController searchController = TextEditingController();
   bool goMixPlayList = false;
   List<bool> fav = [false];
-
 
   List<String> times = [
     "0",
@@ -50,7 +48,7 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
   Duration _duration = Duration.zero;
   Duration _position = Duration.zero;
   Duration _slider = Duration(seconds: 0);
-  List<double> currentVolume = [0.0];
+  List<double> currentVolume = [50.0];
   bool issongplaying = false;
   double brightness = 0.5;
   late StreamSubscription<double> _subscription;
@@ -62,14 +60,15 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
   void initState() {
     super.initState();
   }
-  addMusicToMixPlaylist(){
-    if(mounted){
+
+  addMusicToMixPlaylist() {
+    if (mounted) {
       ref.read(playlistProvider).showMixPlayList(goMixPlaylist: false);
     }
-    if(mounted){
+    if (mounted) {
       ref.read(addProvider).showPlusPlaylist(playlistPlusBottom: false);
     }
-    if(mounted){
+    if (mounted) {
       setState(() {});
     }
   }
@@ -80,121 +79,132 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
     final height = ScreenSize(context).height;
     return Scaffold(
       bottomNavigationBar: InkWell(
-        onTap: (){
+        onTap: () {
           _showDialog(context);
         },
         child: Padding(
-          padding: const EdgeInsets.only(left: 58.0,right: 58,bottom: 11),
+          padding: const EdgeInsets.only(left: 58.0, right: 58, bottom: 11),
           child: Container(
             decoration: BoxDecoration(
-              color:primaryPinkColor ,
+              color: primaryPinkColor,
               borderRadius: BorderRadius.circular(33),
             ),
             alignment: Alignment.center,
             height: 50,
-            child: Text('Save To My Playlist',style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-              color: secondaryBlackColor
-            ),),
-
-
-
+            child: Text(
+              'Save To My Playlist',
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                  color: secondaryBlackColor),
+            ),
           ),
         ),
       ),
-
-      appBar: CustomAppBar(title: 'My Playlist',onPressed: widget.onPressed),
+      appBar: CustomAppBar(title: 'My Playlist', onPressed: widget.onPressed),
       body: SingleChildScrollView(
         child: Column(
           children: [
-
-
-
             ListView.builder(
               itemCount: ref.watch(playlistProvider).mixPlayList.length,
               shrinkWrap: true,
               primary: false,
-              itemBuilder: (_,index){
-                currentVolume.add(0.0);
+              itemBuilder: (_, index) {
+                currentVolume.add(50.0);
                 selectedTime.add(0);
-                return  Column(
+                return Column(
                   children: [
                     Container(
-
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10.0),
                         child: Column(
                           children: [
-                         //   const SizedBox(height: 20),
-                            //  Custom1`Text(text: "Sound Set ${index+1}",fontWeight: FontWeight.w600,fontSize: 20,color: primaryGreyColor),
                             const SizedBox(height: 20),
                             Column(
                               children: [
                                 Row(
                                   children: [
-
-
-
                                     Padding(
-                                      padding: const EdgeInsets.only(left: 18.0),
+                                      padding:
+                                          const EdgeInsets.only(left: 18.0),
                                       child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
                                         children: [
                                           GestureDetector(
-                                            onTap: (){
-                                              ref.read(addProvider).showPlusPlaylist(playlistPlusBottom:true);
-                                              if(mounted){
-                                                ref.read(addProvider).changePage(1);
+                                            onTap: () {
+                                              ref
+                                                  .read(addProvider)
+                                                  .showPlusPlaylist(
+                                                      playlistPlusBottom: true);
+                                              if (mounted) {
+                                                ref
+                                                    .read(addProvider)
+                                                    .changePage(1);
                                               }
-                                              if(mounted){
-                                                ref.read(playlistProvider).addInPlaylistTrue();
+                                              if (mounted) {
+                                                ref
+                                                    .read(playlistProvider)
+                                                    .addInPlaylistTrue();
                                               }
-                                              if(mounted){
-                                                ref.read(playlistProvider).setIndex(setIndex: index);
+                                              if (mounted) {
+                                                ref
+                                                    .read(playlistProvider)
+                                                    .setIndex(setIndex: index);
                                               }
-                                              if(mounted){
-                                                ref.read(playlistProvider).setMusicFirstOrSecond(setFirstOrSecondMusic: true);
+                                              if (mounted) {
+                                                ref
+                                                    .read(playlistProvider)
+                                                    .setMusicFirstOrSecond(
+                                                        setFirstOrSecondMusic:
+                                                            true);
                                               }
-                                              if(mounted){
+                                              if (mounted) {
                                                 setState(() {});
                                               }
-
                                             },
                                             child: Row(
                                               children: [
-                                              CustomImage(
-                                                  imageUrl: "${ref.watch(playlistProvider).mixPlayList[index]?.first?.image}",
+                                                CustomImage(
+                                                  imageUrl:
+                                                      "${ref.watch(playlistProvider).mixPlayList[index]?.first?.image}",
                                                   height: width * .15,
                                                   width: width * .15,
                                                   boxFit: BoxFit.cover,
                                                 ),
-                                               SizedBox(width: 10,),
+                                                SizedBox(
+                                                  width: 10,
+                                                ),
                                                 Center(
                                                   child: CustomText(
-                                                    text: ref.watch(playlistProvider).mixPlayList[index]?.first?.musicName ?? "Add a Sound",
+                                                    text: ref
+                                                            .watch(
+                                                                playlistProvider)
+                                                            .mixPlayList[index]
+                                                            ?.first
+                                                            ?.musicName ??
+                                                        "Add a Sound",
                                                     textAlign: TextAlign.center,
                                                     fontSize: 20,
                                                     fontWeight: FontWeight.w500,
-
                                                     color: primaryGreyColor,
                                                   ),
                                                 )
                                               ],
                                             ),
                                           ),
-
                                         ],
                                       ),
                                     ),
                                     Spacer(),
                                     Padding(
-                                      padding: const EdgeInsets.only(right: 8.0,bottom: 4),
+                                      padding: const EdgeInsets.only(
+                                          right: 8.0, bottom: 4),
                                       child: Row(
                                         children: [
                                           InkWell(
-                                            onTap: (){
-                                              _showDialog2(context,index);
+                                            onTap: () {
+                                              _showDialog2(context, index);
                                             },
                                             child: Row(
                                               children: [
@@ -202,25 +212,30 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
                                                   svg: timer,
                                                   color: blackColor2,
                                                 ),
-
-                                                SizedBox(width: 2,),
-
+                                                SizedBox(
+                                                  width: 2,
+                                                ),
                                                 Padding(
-                                                    padding: const EdgeInsets.only(top: 4.0),
-                                                    child: Text(
-
-                                                        "${(selectedTimes[selectedTime[index]] ~/ 60).toString().padLeft(2, "0")} : ${(selectedTimes[selectedTime[index]] % 60).toString().padLeft(2, "0").toString()} min".replaceAll("00 :", ""),style: TextStyle(
-                                                      fontSize: 14
-                                                    ),),
-
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          top: 4.0),
+                                                  child: Text(
+                                                    "${(selectedTimes[selectedTime[index]] ~/ 60).toString().padLeft(2, "0")} : ${(selectedTimes[selectedTime[index]] % 60).toString().padLeft(2, "0").toString()} min"
+                                                        .replaceAll(
+                                                            "00 : 00", "2"),
+                                                    style:
+                                                        TextStyle(fontSize: 14),
+                                                  ),
                                                 )
                                               ],
                                             ),
                                           ),
-                                          SizedBox(width: 20,),
+                                          SizedBox(
+                                            width: 20,
+                                          ),
                                           InkWell(
-                                            onTap: (){
-                                              _showDialogVolume(context,index);
+                                            onTap: () {
+                                              _showDialogVolume(context, index);
                                             },
                                             child: Row(
                                               children: [
@@ -228,12 +243,15 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
                                                   svg: volume,
                                                   color: blackColor2,
                                                 ),
-
-                                                SizedBox(width: 5,),
-
+                                                SizedBox(
+                                                  width: 5,
+                                                ),
                                                 Padding(
-                                                  padding: const EdgeInsets.only(top: 4.0),
-                                                  child: Text("${currentVolume[index].toString().replaceAll("0.", "")}"),
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          top: 4.0),
+                                                  child: Text(
+                                                      "${currentVolume[index].toString().replaceAll("0.", "")}"),
                                                 )
                                               ],
                                             ),
@@ -241,44 +259,103 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
                                         ],
                                       ),
                                     ),
-
-
-
                                   ],
                                 ),
-
                               ],
                             ),
                           ],
                         ),
                       ),
                     ),
-                    if(index==ref.watch(playlistProvider).mixPlayList.length-1)
-                    ref.watch(playlistProvider).mixPlayList.length <3?
-                    GestureDetector(
-                      onTap: (){
-                        ref.read(addProvider)
-                            .showPlusPlaylist(playlistPlusBottom:true);
-                        if(mounted){
-                          ref.read(addProvider)
-                              .changePage(1);
-                        }
-                        if(mounted){
-                          ref.read(playlistProvider)
-                              .addInPlaylistTrue();
-                        }
-                        if(mounted){
-                          ref.read(playlistProvider)
-                              .setIndex(setIndex: index+1);
-                        }
-                        if(mounted){
-                          ref.read(playlistProvider).setMusicFirstOrSecond(setFirstOrSecondMusic: true);
-                        }
+                    SizedBox(
+                      height: 15,
+                    ),
+                    if (index ==
+                        ref.watch(playlistProvider).mixPlayList.length - 1)
+                      ref.watch(playlistProvider).mixPlayList.length < 3
+                          ? GestureDetector(
+                              onTap: () {
+                                ref
+                                    .read(addProvider)
+                                    .showPlusPlaylist(playlistPlusBottom: true);
+                                if (mounted) {
+                                  Navigator.push(context, MaterialPageRoute(builder: (_)=> MyPlayListNewSoundScreen()));
+
+                                  // ref.read(addProvider).changePage(1);
+                                }
+                                if (mounted) {
+                                  ref
+                                      .read(playlistProvider)
+                                      .addInPlaylistTrue();
+                                }
+                                if (mounted) {
+                                  ref
+                                      .read(playlistProvider)
+                                      .setIndex(setIndex: index + 1);
+                                }
+                                if (mounted) {
+                                  ref
+                                      .read(playlistProvider)
+                                      .setMusicFirstOrSecond(
+                                          setFirstOrSecondMusic: true);
+                                }
+                                ref.read(playlistProvider).createMusic();
+
+                                if (mounted) {
+                                  setState(() {});
+                                }
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 18.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: const [
+                                    Icon(
+                                      Icons.add,
+                                      color: primaryGreyColor,
+                                    ),
+                                    CustomText(
+                                        text: "Add another Sound Set",
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                        color: primaryGreyColor),
+                                  ],
+                                ),
+                              ),
+                            )
+                          : const SizedBox(),
+                  ],
+                );
+              },
+            ),
+            ref.watch(playlistProvider).mixPlayList.length < 3
+                ? const SizedBox(height: 20)
+                : const SizedBox(),
+            if (ref.watch(playlistProvider).mixPlayList.length == 0)
+              ref.watch(playlistProvider).mixPlayList.length < 3
+                  ? GestureDetector(
+                      onTap: () {
                         ref.read(playlistProvider).createMusic();
-                        if(mounted){
+
+                        ref
+                            .read(addProvider)
+                            .showPlusPlaylist(playlistPlusBottom: true);
+                        if (mounted) {
+                          ref.read(addProvider).changePage(1);
+                        }
+                        if (mounted) {
+                          ref.read(playlistProvider).addInPlaylistTrue();
+                        }
+                        if (mounted) {
+                          ref.read(playlistProvider).setIndex(setIndex: 0);
+                        }
+                        if (mounted) {
+                          ref.read(playlistProvider).setMusicFirstOrSecond(
+                              setFirstOrSecondMusic: true);
+                        }
+                        if (mounted) {
                           setState(() {});
                         }
-
                       },
                       child: Padding(
                         padding: const EdgeInsets.only(left: 18.0),
@@ -289,66 +366,23 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
                               Icons.add,
                               color: primaryGreyColor,
                             ),
-                            CustomText(text: "Add another Sound Set",fontSize: 16,fontWeight: FontWeight.w600,color: primaryGreyColor),
+                            CustomText(
+                                text: "Add another Sound Set",
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: primaryGreyColor),
                           ],
                         ),
                       ),
-                    ):const SizedBox(),
-
-                  ],
-                );
-
-              },
-            ),
-
-
-
-
-            ref.watch(playlistProvider).mixPlayList.length <3?const SizedBox(height: 20):const SizedBox(),
-            if(ref.watch(playlistProvider).mixPlayList.length==0)
-            ref.watch(playlistProvider).mixPlayList.length <3?GestureDetector(
-              onTap: (){
-                ref.read(playlistProvider).createMusic();
-
-                ref.read(addProvider).showPlusPlaylist(playlistPlusBottom:true);
-                if(mounted){
-                  ref.read(addProvider).changePage(1);
-                }
-                if(mounted){
-                  ref.read(playlistProvider).addInPlaylistTrue();
-                }
-                if(mounted){
-                  ref.read(playlistProvider).setIndex(setIndex: 0);
-                }
-                if(mounted){
-                  ref.read(playlistProvider).setMusicFirstOrSecond(setFirstOrSecondMusic: true);
-                }
-                if(mounted){
-                  setState(() {});
-                }
-
-              },
-              child: Padding(
-                padding: const EdgeInsets.only(left: 18.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: const [
-                    Icon(
-                      Icons.add,
-                      color: primaryGreyColor,
-                    ),
-                    CustomText(text: "Add another Sound Set",fontSize: 16,fontWeight: FontWeight.w600,color: primaryGreyColor),
-                  ],
-                ),
-              ),
-            ):const SizedBox(),
-
+                    )
+                  : const SizedBox(),
             const SizedBox(height: 40),
           ],
         ),
       ),
     );
   }
+
   void _showDialog(BuildContext context) {
     final width = ScreenSize(context).height;
     showDialog(
@@ -360,8 +394,7 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
             children: [
               AlertDialog(
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15)
-                ),
+                    borderRadius: BorderRadius.circular(15)),
                 backgroundColor: secondaryPinkColor,
                 title: const CustomText(
                   text: 'Name Your Sound',
@@ -372,10 +405,13 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
                 ),
                 content: Container(
                   decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20)
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20)),
+                  child: CustomTextInputField(
+                    textEditingController: nameController,
+                    cursorColor: primaryPinkColor,
+                    borderColor: Colors.transparent,
                   ),
-                  child: CustomTextInputField(textEditingController: nameController,cursorColor: primaryPinkColor,borderColor: Colors.transparent,),
                 ),
                 actionsAlignment: MainAxisAlignment.center,
                 actionsPadding: const EdgeInsets.only(bottom: 10),
@@ -391,31 +427,38 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
                       textFontWeight: FontWeight.w600,
                       borderRadius: 48,
                       onPressed: () {
-                       if(nameController.text.isNotEmpty){
-                         addMusicToMixPlaylist();
-                         if(mounted){
-                           ref.read(playlistProvider).addInPlaylistFalse();
-                         }
-                         if(mounted){
-                           ref.read(playlistProvider).createMixMusicPlaylist(mixTitle: nameController.text);
-                         }
-                         if(mounted){
-                           setState(() {});
-                         }
-                         if(mounted){
-                           Navigator.pop(context);
-                         }
-                       }else{
-                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                             backgroundColor: Colors.white,
-                             behavior: SnackBarBehavior.floating,
-                             content: const Text("Give The Title Name",style: TextStyle(color: Colors.black,),textAlign: TextAlign.center,),
-                             margin: const EdgeInsets.symmetric(vertical: 10,horizontal: 20),
-                             shape: RoundedRectangleBorder(
-                               borderRadius: BorderRadius.circular(10)
-                             ),
-                         ));
-                       }
+                        if (nameController.text.isNotEmpty) {
+                          addMusicToMixPlaylist();
+                          if (mounted) {
+                            ref.read(playlistProvider).addInPlaylistFalse();
+                          }
+                          if (mounted) {
+                            ref.read(playlistProvider).createMixMusicPlaylist(
+                                mixTitle: nameController.text);
+                          }
+                          if (mounted) {
+                            setState(() {});
+                          }
+                          if (mounted) {
+                            Navigator.pop(context);
+                          }
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            backgroundColor: Colors.white,
+                            behavior: SnackBarBehavior.floating,
+                            content: const Text(
+                              "Give The Title Name",
+                              style: TextStyle(
+                                color: Colors.black,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                            margin: const EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 20),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10)),
+                          ));
+                        }
                       },
                     ),
                   ),
@@ -428,7 +471,7 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
     );
   }
 
-  void _showDialog2(BuildContext context,int indexm) {
+  void _showDialog2(BuildContext context, int indexm) {
     final height = ScreenSize(context).height;
     final width = ScreenSize(context).width;
     showDialog(
@@ -482,7 +525,7 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
                             child: Center(
                                 child: CustomText(
                                     text:
-                                    "${(selectedTimes[selectedTime[indexm]] ~/ 60).toString().padLeft(2, "0")} : ${(selectedTimes[selectedTime[indexm]] % 60).toString().padLeft(2, "0")} min")),
+                                        "${(selectedTimes[selectedTime[indexm]] ~/ 60).toString().padLeft(2, "0")} : ${(selectedTimes[selectedTime[indexm]] % 60).toString().padLeft(2, "0")} min")),
                           ),
                           SliderTheme(
                             data: const SliderThemeData(
@@ -500,8 +543,10 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
                                 onChanged: (double newValue) async {
                                   state(() {
                                     setDuration = 1;
-                                    selectedTime[indexm] = check ? 0 : newValue.toInt();
-                                    setDuration = selectedTimes[selectedTime[indexm]];
+                                    selectedTime[indexm] =
+                                        check ? 0 : newValue.toInt();
+                                    setDuration =
+                                        selectedTimes[selectedTime[indexm]];
 
                                     setDuration *= 60;
                                     setSongDuration(setDuration);
@@ -519,7 +564,7 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: List.generate(
                                   times.length,
-                                      (index) => CustomText(
+                                  (index) => CustomText(
                                       text: times[index],
                                       fontWeight: FontWeight.w400,
                                       fontSize: 8,
@@ -553,10 +598,10 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
                           TextButton(
                               onPressed: check
                                   ? () async {
-                                if (mounted) {
-                                  Navigator.pop(context);
-                                }
-                              }
+                                      if (mounted) {
+                                        Navigator.pop(context);
+                                      }
+                                    }
                                   : null,
                               child: const CustomText(
                                 text: "continuous play",
@@ -564,14 +609,13 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
                                 fontWeight: FontWeight.w400,
                                 color: primaryGreyColor,
                               )),
-
-
-
                         ],
                       ),
-                      SizedBox(height: 6,),
+                      SizedBox(
+                        height: 6,
+                      ),
                       InkWell(
-                        onTap: (){
+                        onTap: () {
                           Navigator.pop(context);
                         },
                         child: Padding(
@@ -583,11 +627,12 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
                               width: 200,
                               decoration: BoxDecoration(
                                   color: primaryPinkColor,
-                                  borderRadius: BorderRadius.circular(30)
+                                  borderRadius: BorderRadius.circular(30)),
+                              child: Text(
+                                "OK",
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold),
                               ),
-                              child: Text("OK",style: TextStyle(
-                                  fontSize: 18,fontWeight: FontWeight.bold
-                              ),),
                             ),
                           ),
                         ),
@@ -643,7 +688,7 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
       if (sliderEnd <= sliderInitial) {
         timer.cancel();
         sliderInitial = 0.0;
-      //  audioPlayer.stop();
+        //  audioPlayer.stop();
       }
       sliderInitial++;
       setState(() {});
@@ -664,8 +709,8 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
   void resumeSliderTimmer() {
     setSongDuration(sliderEnd.toInt(), initValue: sliderInitial);
   }
-  void _showDialogVolume(BuildContext context,int valumeIndex) {
 
+  void _showDialogVolume(BuildContext context, int valumeIndex) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -673,7 +718,6 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
         return StatefulBuilder(
           builder: (BuildContext context,
               void Function(void Function()) updateState) {
-
             return Column(
               mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -711,9 +755,10 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
                               ),
                               Expanded(
                                 child: Slider(
-                                  value: currentVolume[valumeIndex],
-                                  min: 0.0,
-                                  max: 1.0,
+                                  value: currentVolume[valumeIndex]
+                                      .floorToDouble(),
+                                  min: 50.0,
+                                  max: 100.0,
                                   divisions: 100,
                                   activeColor: primaryPinkColor,
                                   inactiveColor: primaryGreyColor2,
@@ -728,7 +773,6 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
                                     });
                                     // await audioPlayer.setVolume(
                                     //     currentVolume);
-
                                   },
                                 ),
                               ),
@@ -756,12 +800,12 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
                                           horizontal: 4.0, vertical: 5),
                                       child: Center(
                                           child: CustomText(
-                                            text:
+                                        text:
                                             "${(currentVolume[valumeIndex] * 100).toInt().toString().padLeft(2, "0")}%",
-                                            fontSize: 10,
-                                            color: secondaryBlackColor,
-                                            fontWeight: FontWeight.w600,
-                                          )),
+                                        fontSize: 10,
+                                        color: secondaryBlackColor,
+                                        fontWeight: FontWeight.w600,
+                                      )),
                                     ),
                                   )))
                         ],

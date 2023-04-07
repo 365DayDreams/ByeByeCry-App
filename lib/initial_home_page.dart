@@ -712,17 +712,25 @@ class _InitialHomePageState extends ConsumerState<InitialHomePage> {
               height: height * .04,
             ),
             Container(
-              color: primaryWhiteColor,
+
+              width: double.infinity,
+             decoration: BoxDecoration(
+               color:  primaryWhiteColor,
+
+             ),
+
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 20.0),
                 child: CustomImage(
-                  boxFit: BoxFit.fill,
+
+                  boxFit: BoxFit.contain,
                   imageUrl: logo,
-                 // height: height * .12,
-                  width: double.infinity,
+                  height: height * .09,
+                  // width: 350,
                 ),
               ),
             ),
+            SizedBox(height: 8),
             Container(
               width: width,
               color: primaryPinkColor,

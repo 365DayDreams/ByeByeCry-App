@@ -42,16 +42,23 @@ class _HomePageAgainPageState extends ConsumerState<HomePageAgain> {
                   GestureDetector(
                     onTap: () {},
                     child: Container(
-                      color: primaryWhiteColor,
+                    //  color: primaryWhiteColor,
+
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color:  primaryWhiteColor,
+
+                      ),
                       child: CustomImage(
-                        boxFit: BoxFit.fill,
+
+                        boxFit: BoxFit.contain,
                         imageUrl: logo,
-                        // height: height * .08,
+                        height: height * .09,
                         // width: 350,
                       ),
                     ),
                   ),
-
+                  SizedBox(height: 8),
                   Container(
                     width: width,
                     color: primaryPinkColor,

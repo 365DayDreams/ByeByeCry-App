@@ -53,9 +53,7 @@ class _StartPageState extends ConsumerState<StartPage> {
       const SoundScreen(),
       MixScreen(
         onPressed: () {
-          setState(() {
-            selectedIndex = 1;
-          });
+
           print("from mix $selectedIndex");
         },
       ),

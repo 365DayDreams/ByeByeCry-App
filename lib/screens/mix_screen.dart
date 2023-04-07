@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:bye_bye_cry_new/compoment/shared/custom_image.dart';
 import 'package:bye_bye_cry_new/compoment/shared/custom_snackbar.dart';
+import 'package:bye_bye_cry_new/new_sound_screen/new_sound_screen.dart';
 import 'package:bye_bye_cry_new/screens/provider/add_music_provider.dart';
 import 'package:bye_bye_cry_new/screens/provider/mix_music_provider.dart';
 import 'package:flutter/material.dart';
@@ -238,7 +239,9 @@ class _MixScreenState extends ConsumerState<MixScreen> {
                             ref
                                 .read(addProvider)
                                 .showPlusPlaylist(playlistPlusBottom: true);
-                            ref.read(addProvider).changePage(1);
+
+                            Navigator.push(context, MaterialPageRoute(builder: (_)=> NewSoundScreen()));
+                            // ref.read(addProvider).changePage(1);
                             ref
                                 .read(mixMusicProvider)
                                 .selectedMixSound(selectSound: true);
@@ -295,7 +298,8 @@ class _MixScreenState extends ConsumerState<MixScreen> {
                             ref.read(addProvider).showPlusPlaylist(
                                   playlistPlusBottom: true,
                                 );
-                            ref.read(addProvider).changePage(1);
+                            Navigator.push(context, MaterialPageRoute(builder: (_)=> NewSoundScreen()));
+                            // ref.read(addProvider).changePage(1);
                             ref
                                 .read(mixMusicProvider)
                                 .selectedMixSound(selectSound: false);

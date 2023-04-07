@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../local_db/local_db.dart';
@@ -54,8 +53,8 @@ class PlaylistProvider  extends ChangeNotifier{
     if(mixPlayList.isNotEmpty){
       String id = '';
       for(int index = 0; index < mixPlayList.length;index++){
-        if(mixPlayList[index].first != null){
-          id += "${mixPlayList[index].first!.id}";
+        if(mixPlayList[index].first != null && mixPlayList[index].second != null){
+          id += "${mixPlayList[index].first!.id}${mixPlayList[index].second!.id}";
         }
       }
       mixMixPlaylist.add(PlayListModel(id: id,title: mixTitle,playListList: mixPlayList));
@@ -78,11 +77,11 @@ class PlaylistProvider  extends ChangeNotifier{
         if(mixPlayList[idx].id == mixPlayList[index].id){
           return true;
         }else {
-            String reverseId = mixPlayList[index].id.split('').reversed.join();
+          String reverseId = mixPlayList[index].id.split('').reversed.join();
 
-            if(mixPlayList[idx].id == reverseId){
-                return true;
-            }
+          if(mixPlayList[idx].id == reverseId){
+            return true;
+          }
         }
       }
     }

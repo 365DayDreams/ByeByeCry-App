@@ -85,8 +85,6 @@ class LocalDB {
     return null;
   }
 
-  //PlayListModel
-
   setAccessToken(bool accessToken) async {
     final prefs = await SharedPreferences.getInstance();
     prefs.setBool("access_token", accessToken);
@@ -97,6 +95,5 @@ class LocalDB {
     bool? token = prefs.getBool("access_token");
     return token ?? false;
   }
+//PlayListModel
 }
-
-
