@@ -591,12 +591,10 @@
 //   }
 // }
 import 'dart:io';
-
 import 'package:bye_bye_cry_new/start_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 import 'android_subscription.dart';
 import 'compoment/shared/custom_image.dart';
 import 'compoment/shared/custom_image_text.dart';
@@ -647,17 +645,19 @@ class _InitialHomePageState extends ConsumerState<InitialHomePage> {
     return Scaffold(
       bottomNavigationBar: Platform.isIOS ?
       Padding(
-        padding: const EdgeInsets.only(bottom: 8.0,left: 10,right: 10),
+        padding: const EdgeInsets.only(bottom: 8.0,left: 0,right: 0),
         child: Container(
-           height: height * .08,
+
+          height: height * .08,
 
           child:     OutLineButton(
+
             text: 'Get Started',
-            anotherText: '(For better sleep for them and for you)',
+            // anotherText: '(For better sleep for them and for you)',
             textColor: secondaryBlackColor2,
             textFontSize: 22,
             textFontWeight: FontWeight.w700,
-            borderRadius: 50,
+            borderRadius: 0,
             onPressed: () async {
               bool isLoggedIn = false;
               await LocalDB().getAccessToken().then((value) {
@@ -679,7 +679,7 @@ class _InitialHomePageState extends ConsumerState<InitialHomePage> {
         height: height * .09,
 
         child:     OutLineButton(
-         // height: height * .06,
+          // height: height * .06,
           text: 'Get Started',
           anotherText: '(For better sleep for them and for you)',
           textColor: secondaryBlackColor2,
@@ -714,10 +714,10 @@ class _InitialHomePageState extends ConsumerState<InitialHomePage> {
             Container(
 
               width: double.infinity,
-             decoration: BoxDecoration(
-               color:  primaryWhiteColor,
+              decoration: BoxDecoration(
+                color:  primaryWhiteColor,
 
-             ),
+              ),
 
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 20.0),
@@ -892,7 +892,7 @@ class _InitialHomePageState extends ConsumerState<InitialHomePage> {
                   }),
             ),
 
-           // SizedBox(height: width * 0.1),
+            // SizedBox(height: width * 0.1),
             Container(
               padding: const EdgeInsets.all(20),
               color: secondaryGreenColor,

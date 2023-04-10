@@ -1,9 +1,8 @@
 import 'dart:io';
-import 'package:bye_bye_cry_new/initial_home_page.dart';
 import 'package:bye_bye_cry_new/purchase/purchas_listner.dart';
 import 'package:bye_bye_cry_new/purchase/purchase_api.dart';
 import 'package:bye_bye_cry_new/screens/models/music_models.dart';
-import 'package:bye_bye_cry_new/start_page.dart';import 'package:firebase_core/firebase_core.dart';
+import 'package:bye_bye_cry_new/start_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
@@ -18,10 +17,6 @@ void main() async {
   Hive.initFlutter();
   Hive.registerAdapter(MusicModelAdapter());
   await Hive.openBox("fav");
-  if (Platform.isAndroid) {
-    await Firebase.initializeApp();
-  }
-
   if (Platform.isIOS || Platform.isMacOS) {
     StoreConfig(
       store: Store.appleStore,
@@ -34,7 +29,23 @@ void main() async {
     );
   }
 
-
+  // final AudioContext audioContext = AudioContext(
+  //   iOS: AudioContextIOS(
+  //     category: AVAudioSessionCategory.playAndRecord,
+  //     options: [
+  //       AVAudioSessionOptions.defaultToSpeaker,
+  //       AVAudioSessionOptions.mixWithOthers,
+  //     ],
+  //   ),
+  //   android: AudioContextAndroid(
+  //     isSpeakerphoneOn: true,
+  //     stayAwake: true,
+  //     contentType: AndroidContentType.sonification,
+  //     usageType: AndroidUsageType.assistanceSonification,
+  //     audioFocus: AndroidAudioFocus.none,
+  //   ),
+  // );
+  // AudioPlayer.global.setGlobalAudioContext(audioContext);
 
   print(StoreConfig.instance.apiKey);
   //audioPlayer.setReleaseMode(ReleaseMode.loop);
