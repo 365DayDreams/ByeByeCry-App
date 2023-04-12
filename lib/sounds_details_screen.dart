@@ -2094,11 +2094,7 @@
 //     setSongDuration(sliderEnd.toInt(), initValue: sliderInitial);
 //   }
 // }
-
-
-
 import 'dart:async';
-
 import 'package:audioplayers/audioplayers.dart';
 import 'package:bye_bye_cry_new/compoment/shared/custom_image.dart';
 import 'package:bye_bye_cry_new/compoment/shared/custom_svg.dart';
@@ -2108,6 +2104,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screen_wake/flutter_screen_wake.dart';
+import 'package:just_audio/just_audio.dart' as justAudio;
 import 'package:perfect_volume_control/perfect_volume_control.dart';
 import '../compoment/shared/custom_text.dart';
 import '../compoment/shared/screen_size.dart';
@@ -2160,24 +2157,17 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
     //setSongDuration(60 *2,initValue: 0);
 
     super.initState();
-    Timer.periodic(Duration(
-        seconds: 1
-    ), (timer) async {
+    Timer.periodic(Duration(seconds: 1), (timer) async {
       print(_position);
-      if(sliderInitial.toInt()==
-          (sliderEnd-1).toInt()){
-
-
-        pageController.nextPage(duration: Duration(milliseconds: 100), curve: Curves.linear);
-        sliderInitial=0.0;
+      if (sliderInitial.toInt() == (sliderEnd - 1).toInt()) {
+        pageController.nextPage(
+            duration: Duration(milliseconds: 100), curve: Curves.linear);
+        sliderInitial = 0.0;
         sliderEnd = 120.0;
         changeIndex(changeIndex: true);
 
         if (mounted) {
-          String url = ref
-              .watch(addProvider)
-              .musicList[index]
-              .musicFile;
+          String url = ref.watch(addProvider).musicList[index].musicFile;
           await audioPlayer.play(AssetSource(url));
           // sliderInitial=0.0;
         }
@@ -2185,9 +2175,8 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
         if (mounted) {
           setState(() {});
         }
-
       }
-      if(!mounted){
+      if (!mounted) {
         timer.cancel();
         return;
       }
@@ -2201,9 +2190,7 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
       // }else{
       //
       // }
-
     });
-
   }
 
   @override
@@ -2328,6 +2315,17 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
     } else {
       String url = ref.watch(addProvider).musicList[index].musicFile;
       await audioPlayer.play(AssetSource(url));
+      //   New Audio Player...
+      //  ins.silenceIncomingCalls();
+      //
+      // // ins.playAudio(Duration(minutes: 2), [justAudio.AudioSource.asset("assets/$url")]);
+      //  //ins.stop();
+      //  print(ins.isPlaying());
+      //  ins.silenceIncomingCalls();
+      //  //print(ins.currentAudio()!.url);
+      //  print(ins.getRemainingDuration());
+      // ins.seek(Duration(seconds: 5));//left duration total duration - current duration
+
       resumeSliderTimmer();
       print("play");
     }
@@ -2351,6 +2349,7 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
       setState(() {});
     }
   }
+
   PageController pageController = PageController();
 
   @override
@@ -2415,10 +2414,8 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
           //   value,
           //     duration: Duration(seconds: 1), curve: Curves.easeIn);
         },
-        itemCount: ref
-            .watch(addProvider)
-            .musicList.length,
-        itemBuilder: (_,indexxxx){
+        itemCount: ref.watch(addProvider).musicList.length,
+        itemBuilder: (_, indexxxx) {
           return SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -2436,7 +2433,7 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                           padding: EdgeInsets.only(right: width * .07),
                           child: CustomImage(
                             imageUrl:
-                            'asset/images/icon_png/now_playing_icon/Sun.png',
+                                'asset/images/icon_png/now_playing_icon/Sun.png',
                             color: Colors.orangeAccent.shade100,
                           ),
                         ),
@@ -2460,7 +2457,8 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         CustomText(
-                          text: ref.watch(addProvider).musicList[index].musicName,
+                          text:
+                              ref.watch(addProvider).musicList[index].musicName,
                           fontSize: 20,
                           fontWeight: FontWeight.w400,
                           color: secondaryBlackColor,
@@ -2476,13 +2474,16 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       InkWell(
-                        onTap: (){
+                        onTap: () {
                           ref.read(addProvider).addOrRemovePlayList(
                               id: ref.watch(addProvider).musicList[index].id);
                         },
                         child: Row(
                           children: [
-                            Icon(Icons.add_outlined,size: 30,),
+                            Icon(
+                              Icons.add_outlined,
+                              size: 30,
+                            ),
                             // GestureDetector(
                             //     onTap: () {
                             //       ref.read(addProvider).addOrRemovePlayList(
@@ -2567,10 +2568,12 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                   child: SliderTheme(
                     data: const SliderThemeData(
                         trackShape: RectangularSliderTrackShape(),
-                        thumbShape: RoundSliderThumbShape(enabledThumbRadius: 10)),
+                        thumbShape:
+                            RoundSliderThumbShape(enabledThumbRadius: 10)),
                     child: Slider(
-                        value:
-                        sliderInitial <= sliderEnd ? sliderInitial : sliderEnd,
+                        value: sliderInitial <= sliderEnd
+                            ? sliderInitial
+                            : sliderEnd,
                         min: 0,
                         max: sliderEnd,
                         divisions: 350,
@@ -2612,7 +2615,8 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                                     .watch(addProvider)
                                     .musicList[index]
                                     .musicFile;
-                                await audioPlayer.seek(const Duration(seconds: 0));
+                                await audioPlayer
+                                    .seek(const Duration(seconds: 0));
                                 await audioPlayer.play(AssetSource(url));
                               }
                               if (_position.inSeconds.toInt() >=
@@ -2633,8 +2637,8 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                           decoration: BoxDecoration(
                               color: secondaryWhiteColor2,
                               shape: BoxShape.circle,
-                              border:
-                              Border.all(color: Colors.transparent, width: 0),
+                              border: Border.all(
+                                  color: Colors.transparent, width: 0),
                               boxShadow: const [
                                 BoxShadow(
                                     blurRadius: 10, color: secondaryWhiteColor2)
@@ -2665,7 +2669,8 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                               padding: const EdgeInsets.all(22),
                               child: CustomSvg(
                                 color: primaryPinkColor,
-                                svg: issongplaying ? pouseButton : playButtonSvg,
+                                svg:
+                                    issongplaying ? pouseButton : playButtonSvg,
                               ),
                             ),
                           ),
@@ -2679,11 +2684,11 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                                     .watch(addProvider)
                                     .musicList[index]
                                     .musicFile;
-                                await audioPlayer.seek(const Duration(seconds: 0));
+                                await audioPlayer
+                                    .seek(const Duration(seconds: 0));
                                 await audioPlayer.play(AssetSource(url));
-                                sliderInitial=0.0;
+                                sliderInitial = 0.0;
                                 sliderEnd = 120.0;
-
                               }
                               if (_position.inSeconds.toInt() >=
                                   _duration.inSeconds.toInt() - 1) {
@@ -2716,10 +2721,8 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
               ],
             ),
           );
-
         },
       ),
-
     );
   }
 
@@ -2784,7 +2787,7 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                                 child: const CustomImage(
                                   boxFit: BoxFit.fill,
                                   imageUrl:
-                                  'asset/images/icon_png/now_playing_icon/Sun.png',
+                                      'asset/images/icon_png/now_playing_icon/Sun.png',
                                   color: primaryPinkColor,
                                 ),
                               ),
@@ -2860,9 +2863,7 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                                       currentVolume = newValue;
                                       print("volume $currentVolume");
                                     });
-                                    await audioPlayer.setVolume(
-                                        currentVolume);
-
+                                    await audioPlayer.setVolume(currentVolume);
                                   },
                                 ),
                               ),
@@ -2890,12 +2891,12 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                                           horizontal: 4.0, vertical: 5),
                                       child: Center(
                                           child: CustomText(
-                                            text:
+                                        text:
                                             "${(currentVolume * 100).toInt().toString().padLeft(2, "0")}%",
-                                            fontSize: 10,
-                                            color: secondaryBlackColor,
-                                            fontWeight: FontWeight.w600,
-                                          )),
+                                        fontSize: 10,
+                                        color: secondaryBlackColor,
+                                        fontWeight: FontWeight.w600,
+                                      )),
                                     ),
                                   )))
                         ],
@@ -2965,7 +2966,7 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                             child: Center(
                                 child: CustomText(
                                     text:
-                                    "${(selectedTimes[selectedTime] ~/ 60).toString().padLeft(2, "0")} : ${(selectedTimes[selectedTime] % 60).toString().padLeft(2, "0")} min")),
+                                        "${(selectedTimes[selectedTime] ~/ 60).toString().padLeft(2, "0")} : ${(selectedTimes[selectedTime] % 60).toString().padLeft(2, "0")} min")),
                           ),
                           SliderTheme(
                             data: const SliderThemeData(
@@ -3002,7 +3003,7 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: List.generate(
                                   times.length,
-                                      (index) => CustomText(
+                                  (index) => CustomText(
                                       text: times[index],
                                       fontWeight: FontWeight.w400,
                                       fontSize: 8,
@@ -3036,10 +3037,10 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                           TextButton(
                               onPressed: check
                                   ? () async {
-                                if (mounted) {
-                                  Navigator.pop(context);
-                                }
-                              }
+                                      if (mounted) {
+                                        Navigator.pop(context);
+                                      }
+                                    }
                                   : null,
                               child: const CustomText(
                                 text: "continuous play",
@@ -3047,14 +3048,13 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                                 fontWeight: FontWeight.w400,
                                 color: primaryGreyColor,
                               )),
-
-
-
                         ],
                       ),
-                      SizedBox(height: 6,),
+                      SizedBox(
+                        height: 6,
+                      ),
                       InkWell(
-                        onTap: (){
+                        onTap: () {
                           Navigator.pop(context);
                         },
                         child: Padding(
@@ -3066,11 +3066,12 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                               width: 200,
                               decoration: BoxDecoration(
                                   color: primaryPinkColor,
-                                  borderRadius: BorderRadius.circular(30)
+                                  borderRadius: BorderRadius.circular(30)),
+                              child: Text(
+                                "OK",
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold),
                               ),
-                              child: Text("OK",style: TextStyle(
-                                  fontSize: 18,fontWeight: FontWeight.bold
-                              ),),
                             ),
                           ),
                         ),

@@ -83,9 +83,9 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
   getVol1() async {
     await LocalDB().getVolume().then((value) {
       setState(() {
-        volume1 = double.parse(value) * 60;
+        volume1 = double.parse(value);
 
-        print("Val_111_${Savetimer}");
+        print("Volume${volume1}");
       });
     });
   }
@@ -93,9 +93,9 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
   getVol2() async {
     await LocalDB().getVolume2().then((value) {
       setState(() {
-        volume2 = double.parse(value) * 60;
+        volume2 = double.parse(value);
 
-        print("Val_111_${Savetimer2}");
+        print("Volume 2${volume2}");
       });
     });
   }
@@ -103,9 +103,9 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
   getVol3() async {
     await LocalDB().getVolume3().then((value) {
       setState(() {
-        volume3 = double.parse(value) * 60;
+        volume3 = double.parse(value);
 
-        print("Val_111_${Savetimer3}");
+        print("Volume 3 ${volume3}");
       });
     });
   }
@@ -135,7 +135,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
   Duration _position2 = Duration.zero;
   Duration position = Duration.zero;
   Duration duration = Duration.zero;
-  double currentVolume = 0.0;
+  // double currentVolume = 0.0;
   bool issongplaying1 = false;
   bool issongplaying2 = false;
   double brightness = 0.5;
@@ -156,7 +156,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
     getVol3();
     startPlayer1();
     startPlayer2();
-    changeVolume();
+    //changeVolume();
     super.initState();
     Timer.periodic(Duration(seconds: 1), (timer) async {
       print(position);
@@ -213,22 +213,22 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
     super.dispose();
   }
 
-  changeVolume() {
-    PerfectVolumeControl.hideUI = true;
-    Future.delayed(Duration.zero, () async {
-      currentVolume = await PerfectVolumeControl.getVolume();
-      setState(() {
-        //refresh UI
-      });
-    });
-    _subscription = PerfectVolumeControl.stream.listen((volume) {
-      currentVolume = volume;
-      if (mounted) {
-        print('sound $currentVolume');
-        setState(() {});
-      }
-    });
-  }
+  // changeVolume() {
+  //   PerfectVolumeControl.hideUI = true;
+  //   Future.delayed(Duration.zero, () async {
+  //     currentVolume = await PerfectVolumeControl.getVolume();
+  //     setState(() {
+  //       //refresh UI
+  //     });
+  //   });
+  //   _subscription = PerfectVolumeControl.stream.listen((volume) {
+  //     currentVolume = volume;
+  //     if (mounted) {
+  //       print('sound $currentVolume');
+  //       setState(() {});
+  //     }
+  //   });
+  // }
 
   startPlayer1() async {
     audioPlayer1.onPlayerStateChanged.listen((state) {
@@ -521,13 +521,14 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                 ),
                 GestureDetector(
                   onTap: () {
-                    CustomBottomSheet.bottomSheet(context, isDismiss: true,
-                        child: StatefulBuilder(
-                      builder: (BuildContext context,
-                          void Function(void Function()) updateState) {
-                        return bottomSheet(context: context);
-                      },
-                    ));
+                    // CustomBottomSheet.bottomSheet(context, isDismiss: true,
+                    //     child: StatefulBuilder(
+                    //   builder: (BuildContext context,
+                    //       void Function(void Function()) updateState) {
+                    //     // return bottomSheet(context: context);
+                    //     return Container();
+                    //   },
+                    // ));
                   },
                   child: Container(
                     color: Colors.transparent,
@@ -547,12 +548,12 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                   fontWeight: FontWeight.w400,
                                   color: secondaryBlackColor,
                                 ),
-                                const SizedBox(
-                                    height: 8,
-                                    child: CustomSvg(
-                                      svg: down_arrow,
-                                      color: blackColorA0,
-                                    )),
+                                // const SizedBox(
+                                //     height: 8,
+                                //     child: CustomSvg(
+                                //       svg: down_arrow,
+                                //       color: blackColorA0,
+                                //     )),
                               ],
                             ),
                           ),
@@ -975,56 +976,165 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                   ),
                                 ),
                               ),
-                              Expanded(
-                                child: Slider(
-                                  value: currentVolume,
-                                  min: 0.0,
-                                  max: 1.0,
-                                  divisions: 100,
-                                  activeColor: primaryPinkColor,
-                                  inactiveColor: primaryGreyColor2,
-                                  onChanged: (double newValue) async {
-                                    updateState(() {
-                                      // Screen.setBrightness(newValue);
-                                      currentVolume = newValue;
-                                      print("volume $currentVolume");
-                                    });
-                                    await audioPlayer1.setVolume(currentVolume);
-                                  },
+
+                              if(musicIndex==0)...[
+                                Expanded(
+                                  child: Slider(
+                                    value: volume1!,
+                                    min: 0.0,
+                                    max: 100.0,
+                                    divisions: 100,
+                                    activeColor: primaryPinkColor,
+                                    inactiveColor: primaryGreyColor2,
+                                    onChanged: (double newValue) async {
+                                      updateState(() {
+                                        // Screen.setBrightness(newValue);
+                                        volume1 = newValue;
+
+                                      });
+                                      await audioPlayer1.setVolume(volume1!);
+                                    },
+                                  ),
                                 ),
-                              ),
+                              ]else if(musicIndex==1)...[
+                                Expanded(
+                                  child: Slider(
+                                    value: volume2!,
+                                    min: 0.0,
+                                    max: 100.0,
+                                    divisions: 100,
+                                    activeColor: primaryPinkColor,
+                                    inactiveColor: primaryGreyColor2,
+                                    onChanged: (double newValue) async {
+                                      updateState(() {
+                                        // Screen.setBrightness(newValue);
+                                        volume2 = newValue;
+
+                                      });
+                                      await audioPlayer1.setVolume(volume2!);
+                                    },
+                                  ),
+                                ),
+                              ]else if(musicIndex==2)...[
+                                Expanded(
+                                  child: Slider(
+                                    value: volume3!,
+                                    min: 0.0,
+                                    max: 100.0,
+                                    divisions: 100,
+                                    activeColor: primaryPinkColor,
+                                    inactiveColor: primaryGreyColor2,
+                                    onChanged: (double newValue) async {
+                                      updateState(() {
+                                        // Screen.setBrightness(newValue);
+                                        volume3 = newValue;
+
+                                      });
+                                      await audioPlayer1.setVolume(volume3!);
+                                    },
+                                  ),
+                                ),
+                              ],
+
+
                             ],
                           ),
-                          Positioned(
-                              right: width * 0.25,
-                              top: 10,
-                              child: Transform(
-                                  transform: Matrix4.identity()
-                                    ..rotateZ(90 * 3.1415927 / 180),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(2),
-                                        boxShadow: [
-                                          BoxShadow(
-                                              color: secondaryBlackColor
-                                                  .withOpacity(0.2),
-                                              blurRadius: 0.2,
-                                              spreadRadius: 0.5)
-                                        ]),
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 4.0, vertical: 5),
-                                      child: Center(
-                                          child: CustomText(
-                                        text:
-                                            "${(currentVolume * 100).toInt().toString().padLeft(2, "0")}%",
-                                        fontSize: 10,
-                                        color: secondaryBlackColor,
-                                        fontWeight: FontWeight.w600,
-                                      )),
-                                    ),
-                                  )))
+                          if(musicIndex==0)...[
+                            Positioned(
+                                right: width * 0.25,
+                                top: 10,
+                                child: Transform(
+                                    transform: Matrix4.identity()
+                                      ..rotateZ(90 * 3.1415927 / 180),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(2),
+                                          boxShadow: [
+                                            BoxShadow(
+                                                color: secondaryBlackColor
+                                                    .withOpacity(0.2),
+                                                blurRadius: 0.2,
+                                                spreadRadius: 0.5)
+                                          ]),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 4.0, vertical: 5),
+                                        child: Center(
+                                            child: CustomText(
+                                              text:
+                                              "$volume1%",
+                                              fontSize: 10,
+                                              color: secondaryBlackColor,
+                                              fontWeight: FontWeight.w600,
+                                            )),
+                                      ),
+                                    )))
+                          ]else if(musicIndex==1)...[
+                            Positioned(
+                                right: width * 0.25,
+                                top: 10,
+                                child: Transform(
+                                    transform: Matrix4.identity()
+                                      ..rotateZ(90 * 3.1415927 / 180),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(2),
+                                          boxShadow: [
+                                            BoxShadow(
+                                                color: secondaryBlackColor
+                                                    .withOpacity(0.2),
+                                                blurRadius: 0.2,
+                                                spreadRadius: 0.5)
+                                          ]),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 4.0, vertical: 5),
+                                        child: Center(
+                                            child: CustomText(
+                                              text:
+                                              "$volume2%",
+                                              fontSize: 10,
+                                              color: secondaryBlackColor,
+                                              fontWeight: FontWeight.w600,
+                                            )),
+                                      ),
+                                    )))
+                          ]else if(musicIndex==2)...[
+                            Positioned(
+                                right: width * 0.25,
+                                top: 10,
+                                child: Transform(
+                                    transform: Matrix4.identity()
+                                      ..rotateZ(90 * 3.1415927 / 180),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(2),
+                                          boxShadow: [
+                                            BoxShadow(
+                                                color: secondaryBlackColor
+                                                    .withOpacity(0.2),
+                                                blurRadius: 0.2,
+                                                spreadRadius: 0.5)
+                                          ]),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 4.0, vertical: 5),
+                                        child: Center(
+                                            child: CustomText(
+                                              text:
+                                              "$volume3%",
+                                              fontSize: 10,
+                                              color: secondaryBlackColor,
+                                              fontWeight: FontWeight.w600,
+                                            )),
+                                      ),
+                                    )))
+                          ],
+
+
                         ],
                       ),
                     ),
@@ -1400,22 +1510,22 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                                       children: [
                                                         const CustomSvg(
                                                             svg: volume),
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .symmetric(
-                                                                  horizontal:
-                                                                      5.0),
-                                                          child: CustomText(
-                                                              text:
-                                                                  "${(currentVolume * 100).toInt().toString().padLeft(2, "0")}%",
-                                                              fontSize: 12,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
-                                                              color:
-                                                                  blackColor50),
-                                                        ),
+                                                        // Padding(
+                                                        //   padding:
+                                                        //       const EdgeInsets
+                                                        //               .symmetric(
+                                                        //           horizontal:
+                                                        //               5.0),
+                                                        //   child: CustomText(
+                                                        //       text:
+                                                        //           "${(currentVolume * 100).toInt().toString().padLeft(2, "0")}%",
+                                                        //       fontSize: 12,
+                                                        //       fontWeight:
+                                                        //           FontWeight
+                                                        //               .w600,
+                                                        //       color:
+                                                        //           blackColor50),
+                                                        // ),
                                                       ],
                                                     ),
                                                   ],

@@ -77,6 +77,8 @@ PODS:
   - GTMSessionFetcher/Core (2.3.0)
   - just_audio (0.0.1):
     - Flutter
+  - lecle_volume_flutter (0.0.1):
+    - Flutter
   - OrderedSet (5.0.0)
   - path_provider_foundation (0.0.1):
     - Flutter
@@ -117,6 +119,7 @@ DEPENDENCIES:
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - google_sign_in_ios (from `.symlinks/plugins/google_sign_in_ios/ios`)
   - just_audio (from `.symlinks/plugins/just_audio/ios`)
+  - lecle_volume_flutter (from `.symlinks/plugins/lecle_volume_flutter/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/ios`)
   - perfect_volume_control (from `.symlinks/plugins/perfect_volume_control/ios`)
   - Purchases
@@ -175,6 +178,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/google_sign_in_ios/ios"
   just_audio:
     :path: ".symlinks/plugins/just_audio/ios"
+  lecle_volume_flutter:
+    :path: ".symlinks/plugins/lecle_volume_flutter/ios"
   path_provider_foundation:
     :path: ".symlinks/plugins/path_provider_foundation/ios"
   perfect_volume_control:
@@ -215,6 +220,7 @@ SPEC CHECKSUMS:
   GTMAppAuth: 0ff230db599948a9ad7470ca667337803b3fc4dd
   GTMSessionFetcher: 3a63d75eecd6aa32c2fc79f578064e1214dfdec2
   just_audio: baa7252489dbcf47a4c7cc9ca663e9661c99aafa
+  lecle_volume_flutter: 08089c5d9db06794f45faa79b96df2e8597d1376
   OrderedSet: aaeb196f7fef5a9edf55d89760da9176ad40b93c
   path_provider_foundation: c68054786f1b4f3343858c1e1d0caaded73f0be9
   perfect_volume_control: 79b165ecd79d6ee20e60bf15534de61ebf3bb5f3
