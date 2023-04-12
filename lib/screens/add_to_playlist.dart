@@ -451,20 +451,28 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
                           }
                           if (mounted) {
                             LocalDB().setTimer(
-                                (selectedTimes[selectedTime[0]] %
-                                    60)
+                                (selectedTimes[selectedTime[0]] % 60)
                                     .toString()
                                     .padLeft(2, "0"));
                             LocalDB().setTimer2(
-                                (selectedTimes[selectedTime[1]] %
-                                    60)
+                                (selectedTimes[selectedTime[1]] % 60)
                                     .toString()
                                     .padLeft(2, "0"));
                             LocalDB().setTimer3(
-                                (selectedTimes[selectedTime[2]] %
-                                    60)
+                                (selectedTimes[selectedTime[2]] % 60)
                                     .toString()
                                     .padLeft(2, "0"));
+
+                            LocalDB().setVolume(currentVolume[0]
+                                .toStringAsFixed(0)
+                                .replaceAll("0.", ""));
+                            LocalDB().setVolume2(currentVolume[1]
+                                .toStringAsFixed(0)
+                                .replaceAll("0.", ""));
+                            LocalDB().setVolume3(currentVolume[2]
+                                .toStringAsFixed(0)
+                                .replaceAll("0.", ""));
+
                             Navigator.pop(context);
                           }
                         } else {
@@ -578,27 +586,30 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
                                     print(
                                         "Okkkk ${(selectedTimes[selectedTime[indexm]] % 60).toString().padLeft(2, "0")}");
 
-                                    if(selectedTimes[selectedTime[indexm]]==0){
+                                    if (selectedTimes[selectedTime[indexm]] ==
+                                        0) {
                                       LocalDB().setTimer(
                                           (selectedTimes[selectedTime[indexm]] %
-                                              60)
+                                                  60)
                                               .toString()
                                               .padLeft(2, "0"));
-                                    }else if(selectedTimes[selectedTime[indexm]]==1){
+                                    } else if (selectedTimes[
+                                            selectedTime[indexm]] ==
+                                        1) {
                                       LocalDB().setTimer2(
                                           (selectedTimes[selectedTime[indexm]] %
-                                              60)
+                                                  60)
                                               .toString()
                                               .padLeft(2, "0"));
-                                    }else if(selectedTimes[selectedTime[indexm]]==2){
+                                    } else if (selectedTimes[
+                                            selectedTime[indexm]] ==
+                                        2) {
                                       LocalDB().setTimer3(
                                           (selectedTimes[selectedTime[indexm]] %
-                                              60)
+                                                  60)
                                               .toString()
                                               .padLeft(2, "0"));
                                     }
-
-
                                   });
                                   setState(() {});
                                 },
@@ -817,7 +828,28 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
                                       setState(() {
                                         currentVolume[valumeIndex] = newValue;
                                       });
-                                      print("volume $currentVolume");
+                                      if (currentVolume[valumeIndex] == 0) {
+                                        LocalDB().setVolume(
+                                            currentVolume[valumeIndex]
+                                                .toStringAsFixed(0)
+                                                .replaceAll("0.", ""));
+                                      } else if (currentVolume[valumeIndex] ==
+                                          1) {
+                                        LocalDB().setVolume2(
+                                            currentVolume[valumeIndex]
+                                                .toStringAsFixed(0)
+                                                .replaceAll("0.", ""));
+                                      } else if (currentVolume[valumeIndex] ==
+                                          2) {
+                                        LocalDB().setVolume3(
+                                            currentVolume[valumeIndex]
+                                                .toStringAsFixed(0)
+                                                .replaceAll("0.", ""));
+                                      }
+
+                                      print("volume ${currentVolume[0]
+                                          .toStringAsFixed(0)
+                                          .replaceAll("0.", "")}");
                                     });
                                     // await audioPlayer.setVolume(
                                     //     currentVolume);
@@ -844,6 +876,7 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
                                               spreadRadius: 0.5)
                                         ]),
                                     child: Padding(
+
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 4.0, vertical: 5),
                                       child: Center(

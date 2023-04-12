@@ -96,7 +96,6 @@ class LocalDB {
     return token ?? false;
   }
 
-
   setTimer(String timer) async {
     final prefs = await SharedPreferences.getInstance();
     prefs.setString("timer", timer);
@@ -107,9 +106,6 @@ class LocalDB {
     String? timer = prefs.getString("timer");
     return timer ?? "";
   }
-
-
-
 
   setTimer2(String timer) async {
     final prefs = await SharedPreferences.getInstance();
@@ -133,10 +129,36 @@ class LocalDB {
     return timer ?? "";
   }
 
+  setVolume(String timer) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString("vol", timer);
+  }
 
+  Future getVolume() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? timer = prefs.getString("vol");
+    return timer ?? "";
+  }
 
+  setVolume2(String timer) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString("vol2", timer);
+  }
 
+  Future getVolume2() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? timer = prefs.getString("vol2");
+    return timer ?? "";
+  }
 
+  setVolume3(String timer) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString("vol3", timer);
+  }
 
-
+  Future getVolume3() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? timer = prefs.getString("vol3");
+    return timer ?? "";
+  }
 }
