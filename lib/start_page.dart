@@ -7,6 +7,7 @@ import 'package:bye_bye_cry_new/screens/provider/add_music_provider.dart';
 import 'package:bye_bye_cry_new/screens/provider/mix_music_provider.dart';
 import 'package:bye_bye_cry_new/screens/provider/playlistProvider.dart';
 import 'package:bye_bye_cry_new/screens/sound_screen.dart';
+import 'package:bye_bye_cry_new/wishlist_Screen/wishlist_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -58,6 +59,7 @@ class _StartPageState extends ConsumerState<StartPage> {
         },
       ),
       const PlayListScreen(),
+
       const BlogScreen(),
     ];
     setState(() {});

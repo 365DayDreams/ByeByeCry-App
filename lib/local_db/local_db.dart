@@ -95,5 +95,48 @@ class LocalDB {
     bool? token = prefs.getBool("access_token");
     return token ?? false;
   }
-//PlayListModel
+
+
+  setTimer(String timer) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString("timer", timer);
+  }
+
+  Future getTimer() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? timer = prefs.getString("timer");
+    return timer ?? "";
+  }
+
+
+
+
+  setTimer2(String timer) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString("timer2", timer);
+  }
+
+  Future getTimer2() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? timer = prefs.getString("timer2");
+    return timer ?? "";
+  }
+
+  setTimer3(String timer) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString("timer3", timer);
+  }
+
+  Future getTimer3() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? timer = prefs.getString("timer3");
+    return timer ?? "";
+  }
+
+
+
+
+
+
+
 }

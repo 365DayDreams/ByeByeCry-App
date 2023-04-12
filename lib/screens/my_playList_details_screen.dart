@@ -1555,13 +1555,13 @@ import 'dart:math';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:bye_bye_cry_new/compoment/shared/custom_image.dart';
 import 'package:bye_bye_cry_new/compoment/shared/custom_svg.dart';
+import 'package:bye_bye_cry_new/local_db/local_db.dart';
 import 'package:bye_bye_cry_new/screens/models/music_models.dart';
 import 'package:bye_bye_cry_new/screens/provider/mix_music_provider.dart';
 import 'package:bye_bye_cry_new/screens/provider/playlistProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screen_wake/flutter_screen_wake.dart';
 import 'package:perfect_volume_control/perfect_volume_control.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 import '../compoment/bottom_sheet.dart';
@@ -1584,9 +1584,40 @@ class PlaylistMixSound2 extends ConsumerStatefulWidget {
 
 class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
     with TickerProviderStateMixin {
+  double? Savetimer;
+  double? Savetimer2;
+  double? Savetimer3;
+  getTimer() async {
+    await LocalDB().getTimer().then((value) {
+      setState(() {
+        Savetimer = double.parse(value) * 60;
+
+        print("Val_111_${Savetimer}");
+      });
+    });
+  }
+
+  getTimer2() async {
+    await LocalDB().getTimer2().then((value) {
+      setState(() {
+        Savetimer2 = double.parse(value) * 60;
+
+        print("Val_111_${Savetimer2}");
+      });
+    });
+  }
+  getTimer3() async {
+    await LocalDB().getTimer3().then((value) {
+      setState(() {
+        Savetimer3 = double.parse(value) * 60;
+
+        print("Val_111_${Savetimer3}");
+      });
+    });
+  }
+
   List<String> times = [
     "0",
-
     "10 min",
     "30 min",
     "60 min",
@@ -1621,39 +1652,38 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
 
   @override
   void initState() {
-
+    getTimer();
+    getTimer2();
+    getTimer3();
     startPlayer1();
     startPlayer2();
     changeVolume();
     super.initState();
-    Timer.periodic(Duration(
-        seconds: 1
-    ), (timer) async {
+    Timer.periodic(Duration(seconds: 1), (timer) async {
       print(position);
       print(_position);
-      if(sliderInitial.toInt()==
-          (sliderEnd-1).toInt()){
-
-        pageController.nextPage(duration: Duration(milliseconds: 100), curve: Curves.linear);
-        sliderInitial=0.0;
+      if (sliderInitial.toInt() == (Savetimer! - 1).toInt()) {
+        pageController.nextPage(
+            duration: Duration(milliseconds: 100), curve: Curves.linear);
+        sliderInitial = 0.0;
         changeIndex(changeIndex: true);
 
         if (mounted) {
-          String url =ref
+          String url = ref
               .watch(playlistProvider)
               .mixMixPlaylist[mixPlaylistIndex]
-              .playListList![musicIndex].first!.musicFile;
+              .playListList![musicIndex]
+              .first!
+              .musicFile;
           await audioPlayer1.play(AssetSource(url));
-           sliderInitial=0.0;
+          sliderInitial = 0.0;
         }
 
         if (mounted) {
           setState(() {});
         }
-
-
       }
-      if(!mounted){
+      if (!mounted) {
         timer.cancel();
         return;
       }
@@ -1667,9 +1697,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
       // }else{
       //
       // }
-
     });
-
   }
 
   @override
@@ -1701,7 +1729,6 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
       }
     });
   }
-
 
   startPlayer1() async {
     audioPlayer1.onPlayerStateChanged.listen((state) {
@@ -1781,7 +1808,6 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
           .mixMixPlaylist
           .indexWhere((element) => element.id == widget.playlistMixMusicId);
       if (mounted) {
-
         setState(() {});
       }
       checkMounted();
@@ -1800,10 +1826,10 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
       musicIndex = (musicIndex - 1);
       if (musicIndex < 0) {
         musicIndex = ref
-            .watch(playlistProvider)
-            .mixMixPlaylist[mixPlaylistIndex]
-            .playListList!
-            .length -
+                .watch(playlistProvider)
+                .mixMixPlaylist[mixPlaylistIndex]
+                .playListList!
+                .length -
             1;
       }
     }
@@ -1812,15 +1838,16 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
   pausePlayMethod() async {
     if (issongplaying1 || issongplaying2) {
       await audioPlayer1.pause();
+
       ///await audioPlayer2.pause();
       pauseSliderTimmer();
     } else {
       String url1 = ref
-          .watch(playlistProvider)
-          .mixMixPlaylist[mixPlaylistIndex]
-          .playListList![musicIndex]
-          .first
-          ?.musicFile ??
+              .watch(playlistProvider)
+              .mixMixPlaylist[mixPlaylistIndex]
+              .playListList![musicIndex]
+              .first
+              ?.musicFile ??
           "";
 
       await audioPlayer1.play(AssetSource(url1));
@@ -1834,16 +1861,16 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
 
   playMusic() async {
     String url1 = ref
-        .watch(playlistProvider)
-        .mixMixPlaylist[mixPlaylistIndex]
-        .playListList![musicIndex]
-        .first
-        ?.musicFile ??
+            .watch(playlistProvider)
+            .mixMixPlaylist[mixPlaylistIndex]
+            .playListList![musicIndex]
+            .first
+            ?.musicFile ??
         "";
 
     await audioPlayer1.play(AssetSource(url1));
 
-    sliderInitial=0.0;
+    sliderInitial = 0.0;
     if (mounted) {
       setState(() {});
     }
@@ -1859,7 +1886,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
 
   playMusicForBottomSheet(
       {required String id,
-        required Function(void Function()) updateState}) async {
+      required Function(void Function()) updateState}) async {
     print("playlist play button click");
     int _index = ref
         .watch(playlistProvider)
@@ -1870,39 +1897,38 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
       if (_index == musicIndex) {
         if (issongplaying1 && issongplaying2) {
           await audioPlayer1.pause();
-
         } else {
           String url1 = ref
-              .watch(playlistProvider)
-              .mixMixPlaylist[mixPlaylistIndex]
-              .playListList![_index]
-              .first
-              ?.musicFile ??
+                  .watch(playlistProvider)
+                  .mixMixPlaylist[mixPlaylistIndex]
+                  .playListList![_index]
+                  .first
+                  ?.musicFile ??
               "";
           String url2 = ref
-              .watch(playlistProvider)
-              .mixMixPlaylist[mixPlaylistIndex]
-              .playListList![_index]
-              .second
-              ?.musicFile ??
+                  .watch(playlistProvider)
+                  .mixMixPlaylist[mixPlaylistIndex]
+                  .playListList![_index]
+                  .second
+                  ?.musicFile ??
               "";
           await audioPlayer1.play(AssetSource(url1));
         }
       } else {
         musicIndex = _index;
         String url1 = ref
-            .watch(playlistProvider)
-            .mixMixPlaylist[mixPlaylistIndex]
-            .playListList![_index]
-            .first
-            ?.musicFile ??
+                .watch(playlistProvider)
+                .mixMixPlaylist[mixPlaylistIndex]
+                .playListList![_index]
+                .first
+                ?.musicFile ??
             "";
         String url2 = ref
-            .watch(playlistProvider)
-            .mixMixPlaylist[mixPlaylistIndex]
-            .playListList![_index]
-            .second
-            ?.musicFile ??
+                .watch(playlistProvider)
+                .mixMixPlaylist[mixPlaylistIndex]
+                .playListList![_index]
+                .second
+                ?.musicFile ??
             "";
         await audioPlayer1.play(AssetSource(url1));
       }
@@ -1923,15 +1949,14 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
       backgroundColor: Colors.white,
       appBar: CustomAppBar(
         title:
-        '${ref.watch(playlistProvider).mixMixPlaylist[mixPlaylistIndex].title}',
+            '${ref.watch(playlistProvider).mixMixPlaylist[mixPlaylistIndex].title}',
         iconButton: false,
         onPressedButton: null,
-        onPressed: (){
+        onPressed: () {
           Navigator.pop(context);
         },
       ),
-      body:
-      PageView.builder(
+      body: PageView.builder(
         padEnds: false,
         controller: pageController,
         onPageChanged: (value) async {
@@ -1957,305 +1982,302 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
             .playListList!
             .length,
         itemBuilder: (context, index) {
-          return
-            SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Container(
-                        color: Colors.transparent,
-                        child: GestureDetector(
-                          onTap: () {
-                            _showDialogBrightNess(context);
-                          },
-                          child: Padding(
-                            padding: EdgeInsets.only(right: width * .07),
-                            child: CustomImage(
-                              imageUrl:
-                              'asset/images/icon_png/now_playing_icon/Sun.png',
-                              color: Colors.orangeAccent.shade100,
-                            ),
+          return SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Container(
+                      color: Colors.transparent,
+                      child: GestureDetector(
+                        onTap: () {
+                          _showDialogBrightNess(context);
+                        },
+                        child: Padding(
+                          padding: EdgeInsets.only(right: width * .07),
+                          child: CustomImage(
+                            imageUrl:
+                                'asset/images/icon_png/now_playing_icon/Sun.png',
+                            color: Colors.orangeAccent.shade100,
                           ),
                         ),
                       ),
-                    ],
-                  ),
-                  CustomImage(
-                    imageUrl: ref
-                        .watch(playlistProvider)
-                        .mixMixPlaylist[mixPlaylistIndex]
-                        .playListList![musicIndex]
-                        .first
-                        ?.image ??
-                        "",
-                    height: width * .7,
-                    width: width * .9,
-                    boxFit: BoxFit.fill,
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      CustomBottomSheet.bottomSheet(context, isDismiss: true,
-                          child: StatefulBuilder(
-                            builder: (BuildContext context,
-                                void Function(void Function()) updateState) {
-                              return bottomSheet(context: context);
-                            },
-                          ));
-                    },
-                    child: Container(
-                      color: Colors.transparent,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Expanded(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  CustomText(
-                                    text:
-                                    "${ref.watch(playlistProvider).mixMixPlaylist[mixPlaylistIndex].playListList![musicIndex].first?.musicName}",
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w400,
-                                    color: secondaryBlackColor,
-                                  ),
-                                  const SizedBox(
-                                      height: 8,
-                                      child: CustomSvg(
-                                        svg: down_arrow,
-                                        color: blackColorA0,
-                                      )),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
                     ),
-                  ),
-                  SizedBox(height: width * 0.1),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        CustomText(
-                          text: '${getHumanTimeBySecond(sliderInitial.toInt())}',
-                          fontSize: 10,
-                          color: blackColor2,
-                          fontWeight: FontWeight.w700,
-                        ),
-                        CustomText(
-                          text: '${getHumanTimeBySecond(sliderEnd.toInt())}',
-                          fontSize: 10,
-                          color: blackColor2,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    //color: Colors.green,
-                    width: width * .95,
-                    child: SliderTheme(
-                      data: const SliderThemeData(
-                          trackShape: RectangularSliderTrackShape(),
-                          thumbShape: RoundSliderThumbShape(enabledThumbRadius: 10)),
-                      child: Slider(
-                          value: sliderInitial.floorToDouble(),
-                          min: 0,
-                          max: sliderEnd,
-                          divisions: 350,
-                          activeColor: primaryPinkColor,
-                          inactiveColor: primaryGreyColor2,
-                          onChanged: (double newValue) async{
-                            print("slider");
-                            updateSlider(newValue);
-                            setState(() {});
-                          },
-                          semanticFormatterCallback: (double newValue) {
-                            return '${newValue.round()} dollars';
-                          }),
-                    ),
-                  ),
-                  // SizedBox(
-                  //   //color: Colors.green,
-                  //   width: width * .95,
-                  //   child: SliderTheme(
-                  //     data: const SliderThemeData(
-                  //         trackShape: RectangularSliderTrackShape(),
-                  //         thumbShape:
-                  //             RoundSliderThumbShape(enabledThumbRadius: 10)),
-                  //     child: Slider(
-                  //         value: _position.inSeconds.toDouble() >
-                  //                 _position2.inSeconds.toDouble()
-                  //             ? _position.inSeconds.toDouble()
-                  //             : _position2.inSeconds.toDouble(),
-                  //         min: 0,
-                  //         max: _duration.inSeconds.toDouble() >
-                  //                 _duration2.inSeconds.toDouble()
-                  //             ? _duration.inSeconds.toDouble()
-                  //             : _duration2.inSeconds.toDouble(),
-                  //         divisions: 100,
-                  //         activeColor: primaryPinkColor,
-                  //         inactiveColor: primaryGreyColor2,
-                  //         onChanged: (double newValue) async {
-                  //           print("aaaa${_duration.inSeconds}");
-                  //           print("nnnnn${_position.inSeconds}");
-                  //           if (newValue.toInt() <= _duration.inSeconds) {
-                  //             await audioPlayer1
-                  //                 .seek(Duration(seconds: newValue.toInt()));
-                  //           }
-                  //           if (newValue.toInt() <= _duration2.inSeconds) {
-                  //             await audioPlayer2
-                  //                 .seek(Duration(seconds: newValue.toInt()));
-                  //           }
-                  //           await audioPlayer1.resume();
-                  //           await audioPlayer2.resume();
-                  //           if (mounted) {
-                  //             setState(() {});
-                  //           }
-                  //         },
-                  //         semanticFormatterCallback: (double newValue) {
-                  //           return '${newValue.round()} dollars';
-                  //         }),
-                  //   ),
-                  // ),
-                  Container(
+                  ],
+                ),
+                CustomImage(
+                  imageUrl: ref
+                          .watch(playlistProvider)
+                          .mixMixPlaylist[mixPlaylistIndex]
+                          .playListList![musicIndex]
+                          .first
+                          ?.image ??
+                      "",
+                  height: width * .7,
+                  width: width * .9,
+                  boxFit: BoxFit.fill,
+                ),
+                GestureDetector(
+                  onTap: () {
+                    CustomBottomSheet.bottomSheet(context, isDismiss: true,
+                        child: StatefulBuilder(
+                      builder: (BuildContext context,
+                          void Function(void Function()) updateState) {
+                        return bottomSheet(context: context);
+                      },
+                    ));
+                  },
+                  child: Container(
                     color: Colors.transparent,
                     child: Padding(
-                      padding: const EdgeInsets.only(left: 20.0, right: 20),
+                      padding: const EdgeInsets.all(8.0),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          IconButton(
-                              padding: const EdgeInsets.only(left: 10),
-                              onPressed: () {
-                                _showDialogVolume(context);
-                              },
-                              icon: Container(
-                                  color: Colors.transparent,
-                                  child: const CustomSvg(
-                                      svg: volume, color: blackColor2))),
-                          IconButton(
-                              padding: EdgeInsets.zero,
-                              onPressed: () async {
-                                changeIndex(changeIndex: false);
-                                if (mounted) {
-                                  playMusic();
-                                  sliderInitial=0.0;
-                                }
-                                if (mounted) {
-                                  sliderInitial=0.0;
-
-                                  setState(() {});
-                                }
-                              },
-                              icon: const CustomSvg(
-                                  svg: left_shift, color: primaryPinkColor)),
-                          Container(
-                            // color: Colors.red,
-                            height: width * 0.18,
-                            width: width * 0.18,
-                            clipBehavior: Clip.hardEdge,
-                            decoration: BoxDecoration(
-                                color: secondaryWhiteColor2,
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                    color: Colors.transparent, width: 0),
-                                boxShadow: const [
-                                  BoxShadow(
-                                      blurRadius: 10, color: secondaryWhiteColor2)
-                                ]),
-                            child: GestureDetector(
-                              onTap: () async {
-                                if (playPouse) {
-                                  await audioPlayer1.pause();
-
-
-                                  pauseSliderTimmer();
-                                } else {
-                                  String url1 = ref
-                                      .watch(playlistProvider)
-                                      .mixMixPlaylist[mixPlaylistIndex]
-                                      .playListList![musicIndex]
-                                      .first
-                                      ?.musicFile ??
-                                      "";
-                                  String url2 = ref
-                                      .watch(playlistProvider)
-                                      .mixMixPlaylist[mixPlaylistIndex]
-                                      .playListList![musicIndex]
-                                      .second
-                                      ?.musicFile ??
-                                      "";
-                                  await audioPlayer1.play(AssetSource(url1));
-                                  resumeSliderTimmer();
-                                }
-                                playPouse = !playPouse;
-
-                                if (mounted) {
-                                  setState(() {});
-                                }
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.all(22),
-                                child: CustomSvg(
-                                  color: primaryPinkColor,
-                                  svg: (issongplaying1 || issongplaying2)
-                                      ? pouseButton
-                                      : playButtonSvg,
+                          Expanded(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                CustomText(
+                                  text:
+                                      "${ref.watch(playlistProvider).mixMixPlaylist[mixPlaylistIndex].playListList![musicIndex].first?.musicName}",
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w400,
+                                  color: secondaryBlackColor,
                                 ),
-                              ),
+                                const SizedBox(
+                                    height: 8,
+                                    child: CustomSvg(
+                                      svg: down_arrow,
+                                      color: blackColorA0,
+                                    )),
+                              ],
                             ),
                           ),
-                          IconButton(
-                              padding: EdgeInsets.zero,
-                              onPressed: () async {
-                                changeIndex(changeIndex: true);
-                                if (mounted) {
-                                  playMusic();
-
-                                  // sliderInitial=0.0;
-                                }
-                                if (mounted) {
-                                  setState(() {});
-
-                                }
-                              },
-                              icon: const CustomSvg(
-                                  svg: right_shift, color: primaryPinkColor)),
-                          IconButton(
-                              padding: EdgeInsets.zero,
-                              onPressed: () {
-                                ref.read(mixMusicProvider).alertDialogStart();
-                                if (mounted) {
-                                  setState(() {
-                                    check = false;
-                                    selectedTime = 0;
-                                  });
-                                  _showDialog(context);
-                                }
-                              },
-                              icon: Container(
-                                  color: Colors.transparent,
-                                  child: const Padding(
-                                    padding: EdgeInsets.symmetric(vertical: 8.0),
-                                    child:
-                                    CustomSvg(svg: timer, color: blackColor2),
-                                  ))),
                         ],
                       ),
                     ),
                   ),
-                ],
-              ),
-            );
+                ),
+                SizedBox(height: width * 0.1),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CustomText(
+                        text: '${getHumanTimeBySecond(sliderInitial.toInt())} ',
+                        fontSize: 10,
+                        color: blackColor2,
+                        fontWeight: FontWeight.w700,
+                      ),
+                      CustomText(
+                        text: '${getHumanTimeBySecond(Savetimer!.toInt())}',
+                        fontSize: 10,
+                        color: blackColor2,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  //color: Colors.green,
+                  width: width * .95,
+                  child: SliderTheme(
+                    data: const SliderThemeData(
+                        trackShape: RectangularSliderTrackShape(),
+                        thumbShape:
+                            RoundSliderThumbShape(enabledThumbRadius: 10)),
+                    child: Slider(
+                        value: sliderInitial.floorToDouble(),
+                        min: 0,
+                        max: Savetimer!,
+                        divisions: 350,
+                        activeColor: primaryPinkColor,
+                        inactiveColor: primaryGreyColor2,
+                        onChanged: (double newValue) async {
+                          print("slider");
+                          updateSlider(newValue);
+                          setState(() {});
+                        },
+                        semanticFormatterCallback: (double newValue) {
+                          return '${newValue.round()} dollars';
+                        }),
+                  ),
+                ),
+                // SizedBox(
+                //   //color: Colors.green,
+                //   width: width * .95,
+                //   child: SliderTheme(
+                //     data: const SliderThemeData(
+                //         trackShape: RectangularSliderTrackShape(),
+                //         thumbShape:
+                //             RoundSliderThumbShape(enabledThumbRadius: 10)),
+                //     child: Slider(
+                //         value: _position.inSeconds.toDouble() >
+                //                 _position2.inSeconds.toDouble()
+                //             ? _position.inSeconds.toDouble()
+                //             : _position2.inSeconds.toDouble(),
+                //         min: 0,
+                //         max: _duration.inSeconds.toDouble() >
+                //                 _duration2.inSeconds.toDouble()
+                //             ? _duration.inSeconds.toDouble()
+                //             : _duration2.inSeconds.toDouble(),
+                //         divisions: 100,
+                //         activeColor: primaryPinkColor,
+                //         inactiveColor: primaryGreyColor2,
+                //         onChanged: (double newValue) async {
+                //           print("aaaa${_duration.inSeconds}");
+                //           print("nnnnn${_position.inSeconds}");
+                //           if (newValue.toInt() <= _duration.inSeconds) {
+                //             await audioPlayer1
+                //                 .seek(Duration(seconds: newValue.toInt()));
+                //           }
+                //           if (newValue.toInt() <= _duration2.inSeconds) {
+                //             await audioPlayer2
+                //                 .seek(Duration(seconds: newValue.toInt()));
+                //           }
+                //           await audioPlayer1.resume();
+                //           await audioPlayer2.resume();
+                //           if (mounted) {
+                //             setState(() {});
+                //           }
+                //         },
+                //         semanticFormatterCallback: (double newValue) {
+                //           return '${newValue.round()} dollars';
+                //         }),
+                //   ),
+                // ),
+                Container(
+                  color: Colors.transparent,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 20.0, right: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        IconButton(
+                            padding: const EdgeInsets.only(left: 10),
+                            onPressed: () {
+                              _showDialogVolume(context);
+                            },
+                            icon: Container(
+                                color: Colors.transparent,
+                                child: const CustomSvg(
+                                    svg: volume, color: blackColor2))),
+                        IconButton(
+                            padding: EdgeInsets.zero,
+                            onPressed: () async {
+                              sliderInitial=0.0;
+                              changeIndex(changeIndex: false);
+                              if (mounted) {
+                                playMusic();
+                              }
+                              if (mounted) {
+
+                                setState(() {});
+                              }
+                            },
+                            icon: const CustomSvg(
+                                svg: left_shift, color: primaryPinkColor)),
+                        Container(
+                          // color: Colors.red,
+                          height: width * 0.18,
+                          width: width * 0.18,
+                          clipBehavior: Clip.hardEdge,
+                          decoration: BoxDecoration(
+                              color: secondaryWhiteColor2,
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                  color: Colors.transparent, width: 0),
+                              boxShadow: const [
+                                BoxShadow(
+                                    blurRadius: 10, color: secondaryWhiteColor2)
+                              ]),
+                          child: GestureDetector(
+                            onTap: () async {
+                              if (playPouse) {
+                                await audioPlayer1.pause();
+
+                                pauseSliderTimmer();
+                              } else {
+                                String url1 = ref
+                                        .watch(playlistProvider)
+                                        .mixMixPlaylist[mixPlaylistIndex]
+                                        .playListList![musicIndex]
+                                        .first
+                                        ?.musicFile ??
+                                    "";
+                                String url2 = ref
+                                        .watch(playlistProvider)
+                                        .mixMixPlaylist[mixPlaylistIndex]
+                                        .playListList![musicIndex]
+                                        .second
+                                        ?.musicFile ??
+                                    "";
+                                await audioPlayer1.play(AssetSource(url1));
+                                resumeSliderTimmer();
+                              }
+                              playPouse = !playPouse;
+
+                              if (mounted) {
+                                setState(() {});
+                              }
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(22),
+                              child: CustomSvg(
+                                color: primaryPinkColor,
+                                svg: (issongplaying1 || issongplaying2)
+                                    ? pouseButton
+                                    : playButtonSvg,
+                              ),
+                            ),
+                          ),
+                        ),
+                        IconButton(
+                            padding: EdgeInsets.zero,
+                            onPressed: () async {
+                              sliderInitial=0.0;
+                              changeIndex(changeIndex: true);
+                              if (mounted) {
+                                playMusic();
+
+                              }
+                              if (mounted) {
+                                setState(() {});
+                              }
+                            },
+                            icon: const CustomSvg(
+                                svg: right_shift, color: primaryPinkColor)),
+                        IconButton(
+                            padding: EdgeInsets.zero,
+                            onPressed: () {
+                              ref.read(mixMusicProvider).alertDialogStart();
+                              if (mounted) {
+                                setState(() {
+                                  check = false;
+                                  selectedTime = 0;
+                                });
+                                _showDialog(context);
+                              }
+                            },
+                            icon: Container(
+                                color: Colors.transparent,
+                                child: const Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 8.0),
+                                  child:
+                                      CustomSvg(svg: timer, color: blackColor2),
+                                ))),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
         },
       ),
     );
@@ -2305,7 +2327,8 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                         brightness = newValue;
                                         print("$brightness");
                                       });
-                                      await ScreenBrightness().setScreenBrightness(brightness);
+                                      await ScreenBrightness()
+                                          .setScreenBrightness(brightness);
                                     },
                                     semanticFormatterCallback:
                                         (double newValue) {
@@ -2321,7 +2344,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                 child: const CustomImage(
                                   boxFit: BoxFit.fill,
                                   imageUrl:
-                                  'asset/images/icon_png/now_playing_icon/Sun.png',
+                                      'asset/images/icon_png/now_playing_icon/Sun.png',
                                   color: primaryPinkColor,
                                 ),
                               ),
@@ -2397,9 +2420,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                       currentVolume = newValue;
                                       print("volume $currentVolume");
                                     });
-                                    await audioPlayer1.setVolume(
-                                        currentVolume);
-
+                                    await audioPlayer1.setVolume(currentVolume);
                                   },
                                 ),
                               ),
@@ -2427,12 +2448,12 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                           horizontal: 4.0, vertical: 5),
                                       child: Center(
                                           child: CustomText(
-                                            text:
+                                        text:
                                             "${(currentVolume * 100).toInt().toString().padLeft(2, "0")}%",
-                                            fontSize: 10,
-                                            color: secondaryBlackColor,
-                                            fontWeight: FontWeight.w600,
-                                          )),
+                                        fontSize: 10,
+                                        color: secondaryBlackColor,
+                                        fontWeight: FontWeight.w600,
+                                      )),
                                     ),
                                   )))
                         ],
@@ -2497,7 +2518,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                           child: Center(
                               child: CustomText(
                                   text:
-                                  "${(selectedTimes[selectedTime] ~/ 60).toString().padLeft(2, "0")} : ${(selectedTimes[selectedTime] % 60).toString().padLeft(2, "0")} min")),
+                                      "${(selectedTimes[selectedTime] ~/ 60).toString().padLeft(2, "0")} : ${(selectedTimes[selectedTime] % 60).toString().padLeft(2, "0")} min")),
                         ),
                         // SliderTheme(
                         //   data: const SliderThemeData(
@@ -2528,7 +2549,8 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                         SliderTheme(
                           data: const SliderThemeData(
                               trackShape: RectangularSliderTrackShape(),
-                              thumbShape: RoundSliderThumbShape(enabledThumbRadius: 10)),
+                              thumbShape: RoundSliderThumbShape(
+                                  enabledThumbRadius: 10)),
                           child: Slider.adaptive(
                               value: selectedTime.toDouble(),
                               min: 0,
@@ -2536,16 +2558,15 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                               divisions: 7,
                               activeColor: primaryPinkColor,
                               inactiveColor: primaryGreyColor2,
-                              onChanged: (double newValue) async{
+                              onChanged: (double newValue) async {
                                 state(() {
                                   setDuration = 1;
-                                  selectedTime = check?0:newValue.toInt();
+                                  selectedTime = check ? 0 : newValue.toInt();
                                   setDuration = selectedTimes[selectedTime];
 
-                                  setDuration *=60;
+                                  setDuration *= 60;
                                   setSongDuration(setDuration);
                                   print("index $selectedTime");
-
                                 });
                                 setState(() {});
                               },
@@ -2559,7 +2580,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: List.generate(
                                 times.length,
-                                    (index) => CustomText(
+                                (index) => CustomText(
                                     text: times[index],
                                     fontWeight: FontWeight.w400,
                                     fontSize: 8,
@@ -2592,10 +2613,10 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                           TextButton(
                               onPressed: check
                                   ? () async {
-                                if (mounted) {
-                                  Navigator.pop(context);
-                                }
-                              }
+                                      if (mounted) {
+                                        Navigator.pop(context);
+                                      }
+                                    }
                                   : null,
                               child: const CustomText(
                                 text: "continuous play",
@@ -2605,10 +2626,11 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                               ))
                         ],
                       ),
-
-                      SizedBox(height: 6,),
+                      SizedBox(
+                        height: 6,
+                      ),
                       InkWell(
-                        onTap: (){
+                        onTap: () {
                           Navigator.pop(context);
                         },
                         child: Padding(
@@ -2620,11 +2642,12 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                               width: 200,
                               decoration: BoxDecoration(
                                   color: primaryPinkColor,
-                                  borderRadius: BorderRadius.circular(30)
+                                  borderRadius: BorderRadius.circular(30)),
+                              child: Text(
+                                "OK",
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold),
                               ),
-                              child: Text("OK",style: TextStyle(
-                                  fontSize: 18,fontWeight: FontWeight.bold
-                              ),),
                             ),
                           ),
                         ),
@@ -2695,7 +2718,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                   children: [
                                     CustomText(
                                         text:
-                                        "${ref.watch(playlistProvider).mixMixPlaylist[mixPlaylistIndex].title}",
+                                            "${ref.watch(playlistProvider).mixMixPlaylist[mixPlaylistIndex].title}",
                                         fontWeight: FontWeight.w600,
                                         fontSize: 20,
                                         color: blackColor50),
@@ -2716,7 +2739,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                               )
                             ],
                           ),
-                         // const CustomSvg(svg: arrow_foreword),
+                          // const CustomSvg(svg: arrow_foreword),
                         ],
                       ),
                     ),
@@ -2740,7 +2763,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                 children: [
                                   Column(
                                     crossAxisAlignment:
-                                    CrossAxisAlignment.start,
+                                        CrossAxisAlignment.start,
                                     children: [
                                       // CustomText(
                                       //     text: "Sound Set ${index + 1}",
@@ -2750,52 +2773,52 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                       SizedBox(height: width * 0.05),
                                       Row(
                                         mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                            MainAxisAlignment.spaceBetween,
                                         children: [
                                           Column(
                                             crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                                CrossAxisAlignment.start,
                                             children: [
                                               Container(
                                                 color: Colors.transparent,
                                                 child: Row(
                                                   mainAxisAlignment:
-                                                  MainAxisAlignment.start,
+                                                      MainAxisAlignment.start,
                                                   children: [
                                                     SizedBox(
                                                       width: width * 0.44,
                                                       child: Row(
                                                         mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .start,
+                                                            MainAxisAlignment
+                                                                .start,
                                                         children: [
                                                           SizedBox(
                                                               height:
-                                                              width * 0.1,
+                                                                  width * 0.1,
                                                               width:
-                                                              width * 0.1,
+                                                                  width * 0.1,
                                                               child:
-                                                              CustomImage(
+                                                                  CustomImage(
                                                                 imageUrl:
-                                                                "${ref.watch(playlistProvider).mixMixPlaylist[mixPlaylistIndex].playListList![index].first?.image}",
+                                                                    "${ref.watch(playlistProvider).mixMixPlaylist[mixPlaylistIndex].playListList![index].first?.image}",
                                                                 boxFit:
-                                                                BoxFit.fill,
+                                                                    BoxFit.fill,
                                                               )),
                                                           Expanded(
                                                             child: Padding(
                                                               padding:
-                                                              const EdgeInsets
-                                                                  .all(
-                                                                  10.0),
+                                                                  const EdgeInsets
+                                                                          .all(
+                                                                      10.0),
                                                               child: CustomText(
                                                                   text:
-                                                                  "${ref.watch(playlistProvider).mixMixPlaylist[mixPlaylistIndex].playListList![index].first?.musicName}",
+                                                                      "${ref.watch(playlistProvider).mixMixPlaylist[mixPlaylistIndex].playListList![index].first?.musicName}",
                                                                   fontSize: 16,
                                                                   fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
+                                                                      FontWeight
+                                                                          .w600,
                                                                   color:
-                                                                  blackColor50),
+                                                                      blackColor50),
                                                             ),
                                                           ),
                                                         ],
@@ -2803,26 +2826,26 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                                     ),
                                                     Row(
                                                       mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .start,
+                                                          MainAxisAlignment
+                                                              .start,
                                                       children: [
                                                         const CustomSvg(
                                                             svg: volume),
                                                         Padding(
                                                           padding:
-                                                          const EdgeInsets
-                                                              .symmetric(
-                                                              horizontal:
-                                                              5.0),
+                                                              const EdgeInsets
+                                                                      .symmetric(
+                                                                  horizontal:
+                                                                      5.0),
                                                           child: CustomText(
                                                               text:
-                                                              "${(currentVolume * 100).toInt().toString().padLeft(2, "0")}%",
+                                                                  "${(currentVolume * 100).toInt().toString().padLeft(2, "0")}%",
                                                               fontSize: 12,
                                                               fontWeight:
-                                                              FontWeight
-                                                                  .w600,
+                                                                  FontWeight
+                                                                      .w600,
                                                               color:
-                                                              blackColor50),
+                                                                  blackColor50),
                                                         ),
                                                       ],
                                                     ),
@@ -2921,7 +2944,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                                 id: ref
                                                     .watch(playlistProvider)
                                                     .mixMixPlaylist[
-                                                mixPlaylistIndex]
+                                                        mixPlaylistIndex]
                                                     .playListList![index]
                                                     .id,
                                                 updateState: updateState,
@@ -2938,52 +2961,52 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                                         .withOpacity(0.1)),
                                                 child: Padding(
                                                   padding:
-                                                  const EdgeInsets.all(1.0),
+                                                      const EdgeInsets.all(1.0),
                                                   child: ref
-                                                      .watch(
-                                                      playlistProvider)
-                                                      .mixMixPlaylist[
-                                                  mixPlaylistIndex]
-                                                      .playListList![
-                                                  index]
-                                                      .id !=
-                                                      ref
-                                                          .watch(
-                                                          playlistProvider)
-                                                          .mixMixPlaylist[
-                                                      mixPlaylistIndex]
-                                                          .playListList![
-                                                      musicIndex]
-                                                          .id
+                                                              .watch(
+                                                                  playlistProvider)
+                                                              .mixMixPlaylist[
+                                                                  mixPlaylistIndex]
+                                                              .playListList![
+                                                                  index]
+                                                              .id !=
+                                                          ref
+                                                              .watch(
+                                                                  playlistProvider)
+                                                              .mixMixPlaylist[
+                                                                  mixPlaylistIndex]
+                                                              .playListList![
+                                                                  musicIndex]
+                                                              .id
                                                       ? const CustomImage(
-                                                    imageUrl: playButton,
-                                                    height: 30,
-                                                    width: 30,
-                                                    color: blackColor97,
-                                                  )
+                                                          imageUrl: playButton,
+                                                          height: 30,
+                                                          width: 30,
+                                                          color: blackColor97,
+                                                        )
                                                       : issongplaying1 ||
-                                                      issongplaying2
-                                                      ? const Padding(
-                                                    padding:
-                                                    EdgeInsets
-                                                        .all(
-                                                        10.0),
-                                                    child: CustomSvg(
-                                                        svg:
-                                                        pouseButton,
-                                                        height: 15,
-                                                        width: 15,
-                                                        color:
-                                                        blackColor97),
-                                                  )
-                                                      : const CustomImage(
-                                                    imageUrl:
-                                                    playButton,
-                                                    height: 30,
-                                                    width: 30,
-                                                    color:
-                                                    blackColor97,
-                                                  ),
+                                                              issongplaying2
+                                                          ? const Padding(
+                                                              padding:
+                                                                  EdgeInsets
+                                                                      .all(
+                                                                          10.0),
+                                                              child: CustomSvg(
+                                                                  svg:
+                                                                      pouseButton,
+                                                                  height: 15,
+                                                                  width: 15,
+                                                                  color:
+                                                                      blackColor97),
+                                                            )
+                                                          : const CustomImage(
+                                                              imageUrl:
+                                                                  playButton,
+                                                              height: 30,
+                                                              width: 30,
+                                                              color:
+                                                                  blackColor97,
+                                                            ),
                                                 )),
                                           )
                                         ],
@@ -2991,28 +3014,28 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                     ],
                                   ),
                                   index <
-                                      ref
-                                          .watch(playlistProvider)
-                                          .mixMixPlaylist[
-                                      mixPlaylistIndex]
-                                          .playListList!
-                                          .length -
-                                          1
+                                          ref
+                                                  .watch(playlistProvider)
+                                                  .mixMixPlaylist[
+                                                      mixPlaylistIndex]
+                                                  .playListList!
+                                                  .length -
+                                              1
                                       ? const SizedBox(height: 10)
                                       : const SizedBox(),
                                   index <
-                                      ref
-                                          .watch(playlistProvider)
-                                          .mixMixPlaylist[
-                                      mixPlaylistIndex]
-                                          .playListList!
-                                          .length -
-                                          1
+                                          ref
+                                                  .watch(playlistProvider)
+                                                  .mixMixPlaylist[
+                                                      mixPlaylistIndex]
+                                                  .playListList!
+                                                  .length -
+                                              1
                                       ? Container(
-                                    width: width,
-                                    height: 1.5,
-                                    color: blackColorD9,
-                                  )
+                                          width: width,
+                                          height: 1.5,
+                                          color: blackColorD9,
+                                        )
                                       : const SizedBox(),
                                   const SizedBox(height: 20)
                                 ],
@@ -3031,7 +3054,8 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
       ),
     );
   }
-  String getHumanTimeBySecond(int seconds){
+
+  String getHumanTimeBySecond(int seconds) {
     int hours = (seconds / 3600).floor();
     int minutes = ((seconds - (hours * 3600)) / 60).floor();
     int secs = seconds - (hours * 3600) - (minutes * 60);
@@ -3043,51 +3067,45 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
     return "$hoursStr:$minutesStr:$secondsStr";
   }
 
-  var sliderInitial =0.0;
-  var sliderEnd =120.0;
+  var sliderInitial = 0.0;
+  //var sliderEnd =120.0;
 
   Timer? sliderTimer;
 
-  void setSongDuration(int setDuration, {double initValue=0}) {
-    sliderInitial=initValue;
-    sliderEnd=setDuration.toDouble();
-    if(sliderTimer!=null){
+  void setSongDuration(int setDuration, {double initValue = 0}) {
+    sliderInitial = initValue;
+    Savetimer = setDuration.toDouble();
+
+    if (sliderTimer != null) {
       sliderTimer!.cancel();
     }
-    sliderTimer=Timer.periodic(Duration(seconds: 1), (timer) {
-      if(!mounted){
+    sliderTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+      if (!mounted) {
         timer.cancel();
       }
 
-
-      if(sliderEnd<=sliderInitial){
+      if (Savetimer! <= sliderInitial) {
         timer.cancel();
-        sliderInitial=0.0;
+        sliderInitial = 0.0;
         audioPlayer1.stop();
-
       }
       sliderInitial++;
-      setState(() {
-
-      });
+      setState(() {});
     });
   }
 
   void updateSlider(double newValue) {
-    sliderInitial=newValue;
-    setState(() {
-
-    });
+    sliderInitial = newValue;
+    setState(() {});
   }
 
   void pauseSliderTimmer() {
     print("=========${sliderTimer!.isActive}");
     print("=========");
     sliderTimer!.cancel();
-
   }
 
   void resumeSliderTimmer() {
-    setSongDuration(sliderEnd.toInt(), initValue: sliderInitial);
+    setSongDuration(Savetimer!.toInt(), initValue: sliderInitial);
   }
 }
