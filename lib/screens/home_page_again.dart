@@ -1,10 +1,15 @@
+import 'dart:math';
+
 import 'package:bye_bye_cry_new/compoment/shared/custom_svg.dart';
 import 'package:bye_bye_cry_new/compoment/shared/custom_text.dart';
+import 'package:bye_bye_cry_new/screens/models/home_page_fav_model.dart';
 import 'package:bye_bye_cry_new/screens/provider/add_music_provider.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/adapters.dart';
 import '../compoment/shared/custom_image.dart';
 import '../compoment/shared/outline_button.dart';
 import '../compoment/shared/screen_size.dart';
@@ -21,9 +26,31 @@ class HomePageAgain extends ConsumerStatefulWidget {
 class _HomePageAgainPageState extends ConsumerState<HomePageAgain> {
   CarouselController buttonCarouselController = CarouselController();
 
-
   final List<bool> fav = [false];
-  int itemIndex =0;
+  int itemIndex = 0;
+
+  List<HomePageFavModel> dummyText = [
+    HomePageFavModel(
+        id: 1,
+        text:
+            "Does baby have gas? Try This Lay baby on their back and bring their knees to their chest.Does baby have gas? Try This Lay baby on their back and bring their knees to their chest."),
+    HomePageFavModel(
+        id: 2,
+        text:
+            "Does baby have gas? Try This Lay baby on their back and bring their knees to their chest.Does baby have gas? Try This Lay baby on their back and bring their knees to their chest."),
+    HomePageFavModel(
+        id: 3,
+        text:
+            "Does baby have gas? Try This Lay baby on their back and bring their knees to their chest.Does baby have gas? Try This Lay baby on their back and bring their knees to their chest."),
+    HomePageFavModel(
+        id: 4,
+        text:
+            "Does baby have gas? Try This Lay baby on their back and bring their knees to their chest.Does baby have gas? Try This Lay baby on their back and bring their knees to their chest."),
+    HomePageFavModel(
+        id: 5,
+        text:
+            "Does baby have gas? Try This Lay baby on their back and bring their knees to their chest.Does baby have gas? Try This Lay baby on their back and bring their knees to their chest."),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -32,10 +59,9 @@ class _HomePageAgainPageState extends ConsumerState<HomePageAgain> {
     return SafeArea(
       child: Scaffold(
         body: SingleChildScrollView(
-          physics: NeverScrollableScrollPhysics(),
+          //    physics: NeverScrollableScrollPhysics(),
           child: Column(
             children: [
-
               Container(
                 color: Colors.white,
                 child: Column(
@@ -44,15 +70,13 @@ class _HomePageAgainPageState extends ConsumerState<HomePageAgain> {
                     GestureDetector(
                       onTap: () {},
                       child: Container(
-                      //  color: primaryWhiteColor,
+                        //  color: primaryWhiteColor,
 
                         width: double.infinity,
                         decoration: BoxDecoration(
-                          color:  primaryWhiteColor,
-
+                          color: primaryWhiteColor,
                         ),
                         child: CustomImage(
-
                           boxFit: BoxFit.contain,
                           imageUrl: logo,
                           height: height * .09,
@@ -66,8 +90,6 @@ class _HomePageAgainPageState extends ConsumerState<HomePageAgain> {
                       color: primaryPinkColor,
                       height: 2,
                     ),
-
-
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -86,7 +108,6 @@ class _HomePageAgainPageState extends ConsumerState<HomePageAgain> {
                                   fontSize: 64,
                                   color: secondaryBlackColor)),
                         ),
-
                       ],
                     ),
                     Padding(
@@ -99,20 +120,17 @@ class _HomePageAgainPageState extends ConsumerState<HomePageAgain> {
                                 color: Colors.grey.withOpacity(0.5),
                                 spreadRadius: 2,
                                 blurRadius: 4,
-                                offset: Offset(0, 3), // changes position of shadow
+                                offset:
+                                    Offset(0, 3), // changes position of shadow
                               ),
                             ]),
                         child: Image.asset(
                           "asset/images/homeslwwp_baby.jpg",
                           fit: BoxFit.cover,
-
                         ),
                       ),
                     ),
-
                     SizedBox(height: 15),
-
-
                     OutLineButton(
                       height: height * .07,
                       text: 'Start Playing'.toUpperCase(),
@@ -127,129 +145,228 @@ class _HomePageAgainPageState extends ConsumerState<HomePageAgain> {
                       textPaddingHorizontal: 57,
                     ),
                     SizedBox(height: 10),
-                    Stack(
-                      clipBehavior: Clip.none,
-                      children: [
-                        Container(
-                          color: secondaryGreenColor,
-                          width: width,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 21.0),
-                            child: Container(
-                                color: Colors.white,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 15.0, vertical: 30),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    ValueListenableBuilder(
+                        valueListenable: Hive.box("homeFav").listenable(),
+                        builder: (context, box, _) {
+                          return Stack(
+                            clipBehavior: Clip.none,
+                            children: [
+                              Container(
+                                color: secondaryGreenColor,
+                                width: width,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 21.0),
+                                  child: Container(
+                                      color: Colors.white,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
                                         children: [
-                                          GestureDetector(
-                                              onTap: () {
-                                                buttonCarouselController.previousPage(
-                                                    duration:
-                                                    const Duration(milliseconds: 500),
-                                                    curve: Curves.easeIn);
-                                              },
-                                              child: Container(
-                                                  color: Colors.transparent,
-                                                  child: const Padding(
-                                                    padding: EdgeInsets.all(6.0),
-                                                    child: CustomSvg(svg: leftDirection),
-                                                  ))),
-                                          Expanded(
-                                            child: CarouselSlider.builder(
-                                              carouselController:
-                                              buttonCarouselController,
-                                              itemCount: 3,
-                                              itemBuilder: (BuildContext context,
-                                                  int itemIndex, int pageViewIndex) {
-                                                fav.add(false);
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 15.0, vertical: 30),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                GestureDetector(
+                                                    onTap: () {
+                                                      buttonCarouselController
+                                                          .previousPage(
+                                                              duration:
+                                                                  const Duration(
+                                                                      milliseconds:
+                                                                          500),
+                                                              curve: Curves
+                                                                  .easeIn);
+                                                    },
+                                                    child: Container(
+                                                        color:
+                                                            Colors.transparent,
+                                                        child: const Padding(
+                                                          padding:
+                                                              EdgeInsets.all(
+                                                                  6.0),
+                                                          child: CustomSvg(
+                                                              svg:
+                                                                  leftDirection),
+                                                        ))),
+                                                Expanded(
+                                                  child: CarouselSlider.builder(
+                                                    carouselController:
+                                                        buttonCarouselController,
+                                                    itemCount: dummyText.length,
+                                                    itemBuilder:
+                                                        (BuildContext context,
+                                                            int itemIndex,
+                                                            int pageViewIndex) {
+                                                      fav.add(false);
 
-                                                return Container(
-                                                  color: Colors.transparent,
-                                                  child: const CustomText(
-                                                    text:
-                                                    "Does baby have gas? Try This :\nLay baby on their back and bring their knees to their chest. Move baby’s leg in a bicycle motion and apply each time their knees reach their chest ",
-                                                    fontWeight: FontWeight.w600,
-                                                    fontSize: 18,
-                                                    color: secondaryBlackColor,
-                                                    textAlign: TextAlign.center,
-                                                    height: 1.3,
+                                                      return Container(
+                                                        color:
+                                                            Colors.transparent,
+                                                        child: CustomText(
+                                                          text:
+                                                              "${dummyText[itemIndex].text}",
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          fontSize: 18,
+                                                          color:
+                                                              secondaryBlackColor,
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          height: 1.3,
+                                                        ),
+                                                      );
+                                                    },
+                                                    options: CarouselOptions(
+                                                        aspectRatio: 2.6,
+                                                        viewportFraction: 1,
+                                                        autoPlay: true,
+                                                        enableInfiniteScroll:
+                                                            false,
+                                                        onPageChanged:
+                                                            (index, reasons) {
+                                                          setState(() {
+                                                            itemIndex = index;
+                                                          });
+                                                        }),
                                                   ),
-                                                );
-                                              },
-                                              options: CarouselOptions(
-                                                  aspectRatio: 2.6,
-                                                  viewportFraction: 1,
-                                                  autoPlay: true,
-                                                  enableInfiniteScroll: false,
-                                                  onPageChanged: (index, reasons) {
-                                                    setState(() {
-                                                      itemIndex = index;
-                                                    });
-                                                  }),
+                                                ),
+                                                GestureDetector(
+                                                    onTap: () {
+                                                      buttonCarouselController
+                                                          .nextPage(
+                                                              duration:
+                                                                  const Duration(
+                                                                      milliseconds:
+                                                                          500),
+                                                              curve: Curves
+                                                                  .easeIn);
+                                                    },
+                                                    child: Container(
+                                                        color:
+                                                            Colors.transparent,
+                                                        child: const Padding(
+                                                          padding:
+                                                              EdgeInsets.all(
+                                                                  6.0),
+                                                          child: CustomSvg(
+                                                              svg:
+                                                                  rightDirection),
+                                                        ))),
+                                              ],
                                             ),
-                                          ),
-                                          GestureDetector(
-                                              onTap: () {
-                                                buttonCarouselController.nextPage(
-                                                    duration:
-                                                    const Duration(milliseconds: 500),
-                                                    curve: Curves.easeIn);
-                                              },
-                                              child: Container(
-                                                  color: Colors.transparent,
-                                                  child: const Padding(
-                                                    padding: EdgeInsets.all(6.0),
-                                                    child: CustomSvg(svg: rightDirection),
-                                                  ))),
+                                          )
                                         ],
-                                      ),
-                                    )
-                                  ],
-                                )),
-                          ),
-                        ),
-                        Positioned(
-                            right: 35,
-                            bottom: 165,
-
-
-
-
-                            child: IconButton(
-                                onPressed: () {
-                                  fav[itemIndex]= !fav[itemIndex];
-                                  setState(() {
-
-                                  });
-                                },
-                                icon:
-                                !fav[itemIndex] ? Icon(
-                                  Icons.favorite_border,
-                                  size: 35,
-                                  color: primaryPinkColor,
-                                ) :
-                                Icon(
-                                  Icons.favorite,
-                                  size: 35,
-                                  color: primaryPinkColor,
-                                )))
-
-                      ],
-                    ),
+                                      )),
+                                ),
+                              ),
+                              Positioned(
+                                right: 35,
+                                bottom: 165,
+                                child: IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        if (box.containsKey(
+                                            dummyText[itemIndex].id)) {
+                                          box.delete(dummyText[itemIndex].id);
+                                        } else {
+                                          box.put(dummyText[itemIndex].id,
+                                              dummyText[itemIndex]);
+                                        }
+                                      });
+                                    },
+                                    icon: Hive.box("homeFav").containsKey(
+                                            dummyText[itemIndex].id)
+                                        ? Icon(
+                                            Icons.favorite,
+                                            size: 40,
+                                            color: primaryPinkColor,
+                                          )
+                                        : Icon(
+                                            Icons.favorite_border,
+                                            size: 40,
+                                            color: primaryPinkColor,
+                                          )),
+                              )
+                            ],
+                          );
+                          // return Stack(
+                          //   clipBehavior: Clip.none,
+                          //   children: [
+                          //     Container(
+                          //       // /color: secondaryGreenColor,
+                          //       child: Padding(
+                          //         padding: const EdgeInsets.only(
+                          //             left: 28.0, right: 8, top: 14),
+                          //         child: CarouselSlider.builder(
+                          //           carouselController:
+                          //               buttonCarouselController,
+                          //           itemCount: dummyText.length,
+                          //           itemBuilder: (BuildContext context,
+                          //               int itemIndex, int pageViewIndex) {
+                          //             return Container(
+                          //               color: Colors.transparent,
+                          //               child: CustomText(
+                          //                 text: "${dummyText[itemIndex].text}",
+                          //                 fontWeight: FontWeight.w600,
+                          //                 fontSize: 18,
+                          //                 color: secondaryBlackColor,
+                          //                 textAlign: TextAlign.center,
+                          //                 height: 1.3,
+                          //               ),
+                          //             );
+                          //           },
+                          //           options: CarouselOptions(
+                          //               aspectRatio: 2.6,
+                          //               viewportFraction: 1,
+                          //               autoPlay: true,
+                          //               enableInfiniteScroll: false,
+                          //               onPageChanged: (index, reasons) {
+                          //                 setState(() {
+                          //                   itemIndex = index;
+                          //                 });
+                          //               }),
+                          //         ),
+                          //       ),
+                          //     ),
+                          //     Positioned(
+                          //       right: 35,
+                          //       top: 0,
+                          //       child: IconButton(
+                          //           onPressed: () {
+                          //             setState(() {
+                          //               if (box.containsKey(
+                          //                   dummyText[itemIndex].id)) {
+                          //                 box.delete(dummyText[itemIndex].id);
+                          //               } else {
+                          //                 box.put(dummyText[itemIndex].id,
+                          //                     dummyText[itemIndex]);
+                          //               }
+                          //             });
+                          //           },
+                          //           icon: Hive.box("homeFav").containsKey(
+                          //                   dummyText[itemIndex].id)
+                          //               ? Icon(
+                          //                   Icons.favorite,
+                          //                   size: 40,
+                          //                   color: primaryPinkColor,
+                          //                 )
+                          //               : Icon(
+                          //                   Icons.favorite_border,
+                          //                   size: 40,
+                          //                   color: primaryPinkColor,
+                          //                 )),
+                          //     )
+                          //   ],
+                          // );
+                        }),
                   ],
                 ),
               ),
-
-
-
-
-
-
             ],
           ),
         ),

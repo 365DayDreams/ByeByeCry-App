@@ -59,6 +59,7 @@ class _StartPageState extends ConsumerState<StartPage> {
         },
       ),
       const PlayListScreen(),
+      const WishListScreen(),
 
       const BlogScreen(),
     ];

@@ -109,13 +109,29 @@ class CustomBottomAppBarState extends ConsumerState<CustomBottomAppBar> {
               BottomNavigationBarItem(
                   icon: Padding(
                     padding: const EdgeInsets.only(bottom: 7.0),
+                    child:Icon(
+                      Icons.favorite_border,
+
+                      // currentIndex == 4
+                      //     ? navigationBarFifthImageS
+                      //     : navigationBarFifthImage,
+
+                      color: ref.watch(addProvider).pageNumber == 4
+                          ? primaryGreenColor
+                          : primaryGreyColor,
+                    ),
+                  ),
+                  label: "Favourite"),
+              BottomNavigationBarItem(
+                  icon: Padding(
+                    padding: const EdgeInsets.only(bottom: 7.0),
                     child: Image.asset(
                       navigationBarFifthImageS,
                       // currentIndex == 4
                       //     ? navigationBarFifthImageS
                       //     : navigationBarFifthImage,
                       scale: 1.4,
-                      color: ref.watch(addProvider).pageNumber == 4
+                      color: ref.watch(addProvider).pageNumber == 5
                           ? primaryGreenColor
                           : primaryGreyColor,
                     ),

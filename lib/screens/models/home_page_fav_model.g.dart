@@ -1,41 +1,35 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'music_models.dart';
+part of 'home_page_fav_model.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class MusicModelAdapter extends TypeAdapter<MusicModel> {
+class HomePageFavModelAdapter extends TypeAdapter<HomePageFavModel> {
   @override
-  final int typeId = 0;
+  final int typeId = 1;
 
   @override
-  MusicModel read(BinaryReader reader) {
+  HomePageFavModel read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return MusicModel(
-      musicName: fields[0] as String,
-      musicFile: fields[1] as String,
-      id: fields[2] as String,
-      image: fields[3] as String,
+    return HomePageFavModel(
+      id: fields[0] as int?,
+      text: fields[1] as String?,
     );
   }
 
   @override
-  void write(BinaryWriter writer, MusicModel obj) {
+  void write(BinaryWriter writer, HomePageFavModel obj) {
     writer
-      ..writeByte(4)
-      ..writeByte(0)
-      ..write(obj.musicName)
-      ..writeByte(1)
-      ..write(obj.musicFile)
       ..writeByte(2)
+      ..writeByte(0)
       ..write(obj.id)
-      ..writeByte(3)
-      ..write(obj.image);
+      ..writeByte(1)
+      ..write(obj.text);
   }
 
   @override
@@ -44,7 +38,7 @@ class MusicModelAdapter extends TypeAdapter<MusicModel> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is MusicModelAdapter &&
+      other is HomePageFavModelAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

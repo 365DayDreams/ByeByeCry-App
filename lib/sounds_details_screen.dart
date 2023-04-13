@@ -2325,7 +2325,6 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
       //  //print(ins.currentAudio()!.url);
       //  print(ins.getRemainingDuration());
       // ins.seek(Duration(seconds: 5));//left duration total duration - current duration
-
       resumeSliderTimmer();
       print("play");
     }
@@ -2480,10 +2479,17 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                         },
                         child: Row(
                           children: [
-                            Icon(
-                              Icons.add_outlined,
-                              size: 30,
-                            ),
+                            Icon(Icons.add_outlined,
+                                size: 30,
+                                color: ref
+                                        .watch(addProvider)
+                                        .playListIds
+                                        .contains(ref
+                                            .watch(addProvider)
+                                            .musicList[index]
+                                            .id)
+                                    ? Colors.red
+                                    : blackColorA0),
                             // GestureDetector(
                             //     onTap: () {
                             //       ref.read(addProvider).addOrRemovePlayList(

@@ -1787,7 +1787,9 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
                                     Icons.favorite_border,
                                     size: 35,
                                     color: primaryPinkColor,
-                                  ))),
+                                  )),
+
+                          ),
                         ),
                         ref.read(addProvider).showAddPlaylist
                             ? Padding(
