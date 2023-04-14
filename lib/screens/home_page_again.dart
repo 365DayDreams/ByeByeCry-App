@@ -37,19 +37,19 @@ class _HomePageAgainPageState extends ConsumerState<HomePageAgain> {
     HomePageFavModel(
         id: 2,
         text:
-            "Does baby have gas? Try This Lay baby on their back and bring their knees to their chest.Does baby have gas? Try This Lay baby on their back and bring their knees to their chest."),
+            "Abcd? Try This Lay baby on their back and bring their knees to their chest.Does baby have gas? Try This Lay baby on their back and bring their knees to their chest."),
     HomePageFavModel(
         id: 3,
         text:
-            "Does baby have gas? Try This Lay baby on their back and bring their knees to their chest.Does baby have gas? Try This Lay baby on their back and bring their knees to their chest."),
+            "Efg? Try This Lay baby on their back and bring their knees to their chest.Does baby have gas? Try This Lay baby on their back and bring their knees to their chest."),
     HomePageFavModel(
         id: 4,
         text:
-            "Does baby have gas? Try This Lay baby on their back and bring their knees to their chest.Does baby have gas? Try This Lay baby on their back and bring their knees to their chest."),
+            "1234? Try This Lay baby on their back and bring their knees to their chest.Does baby have gas? Try This Lay baby on their back and bring their knees to their chest."),
     HomePageFavModel(
         id: 5,
         text:
-            "Does baby have gas? Try This Lay baby on their back and bring their knees to their chest.Does baby have gas? Try This Lay baby on their back and bring their knees to their chest."),
+            "dghasdghdsghsd Try This Lay baby on their back and bring their knees to their chest.Does baby have gas? Try This Lay baby on their back and bring their knees to their chest."),
   ];
 
   @override
@@ -59,7 +59,7 @@ class _HomePageAgainPageState extends ConsumerState<HomePageAgain> {
     return SafeArea(
       child: Scaffold(
         body: SingleChildScrollView(
-          //    physics: NeverScrollableScrollPhysics(),
+             physics: NeverScrollableScrollPhysics(),
           child: Column(
             children: [
               Container(

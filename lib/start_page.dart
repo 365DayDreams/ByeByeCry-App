@@ -55,7 +55,7 @@ class _StartPageState extends ConsumerState<StartPage> {
       MixScreen(
         onPressed: () {
 
-          print("from mix $selectedIndex");
+          // selectedIndex==1;
         },
       ),
       const PlayListScreen(),

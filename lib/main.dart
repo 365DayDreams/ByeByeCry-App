@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:bye_bye_cry_new/initial_home_page.dart';
 import 'package:bye_bye_cry_new/purchase/purchas_listner.dart';
 import 'package:bye_bye_cry_new/purchase/purchase_api.dart';
 import 'package:bye_bye_cry_new/screens/models/home_page_fav_model.dart';
@@ -73,7 +74,7 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       title: 'Bye Bye Cry',
       theme: ThemeData(fontFamily: 'Neue Einstellung'),
-      home: StartPage(),
+      home: InitialHomePage(),
     );
   }
 }

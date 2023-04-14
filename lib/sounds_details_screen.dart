@@ -1,2103 +1,8 @@
-// // import 'dart:async';
-// // import 'package:audioplayers/audioplayers.dart';
-// // import 'package:bye_bye_cry_new/compoment/shared/custom_image.dart';
-// // import 'package:bye_bye_cry_new/compoment/shared/custom_svg.dart';
-// // import 'package:bye_bye_cry_new/screens/provider/add_music_provider.dart';
-// // import 'package:bye_bye_cry_new/screens/provider/mix_music_provider.dart';
-// // import 'package:flutter/material.dart';
-// // import 'package:flutter/services.dart';
-// // import 'package:flutter_riverpod/flutter_riverpod.dart';
-// // import 'package:flutter_screen_wake/flutter_screen_wake.dart';
-// // import 'package:perfect_volume_control/perfect_volume_control.dart';
-// // import 'package:screen_brightness/screen_brightness.dart';
-// // import '../compoment/shared/custom_text.dart';
-// // import '../compoment/shared/screen_size.dart';
-// // import '../compoment/utils/color_utils.dart';
-// // import '../compoment/utils/image_link.dart';
-// // AudioPlayer audioPlayer = AudioPlayer();
-// // bool issongplaying = false;
-// // Timer? sliderTimer;
-// // class SoundDetailsScreen extends ConsumerStatefulWidget {
-// //   final String musicId;
-// //   final VoidCallback? onPressed;
-// //   const SoundDetailsScreen({Key? key, required this.musicId, this.onPressed})
-// //       : super(key: key);
-// //
-// //   @override
-// //   ConsumerState<SoundDetailsScreen> createState() => _SoundDetailsScreenState();
-// // }
-// //
-// // class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
-// //     with TickerProviderStateMixin {
-// //   List<String> times = [
-// //     "0",
-// //     "10 min",
-// //     "30 min",
-// //     "60 min",
-// //     "90 min",
-// //     "120 min",
-// //     "150 min",
-// //   ];
-// //   List<int> selectedTimes = [0, 10, 30, 60, 90, 120, 150];
-// //   AudioCache audioCache = AudioCache();
-// //   Duration _duration = Duration.zero;
-// //   Duration _position = Duration.zero;
-// //   Duration _slider = Duration(seconds: 0);
-// //   double currentVolume = 0.0;
-// //   double brightness = 0.5;
-// //   late StreamSubscription<double> _subscription;
-// //   int index = 0;
-// //   int selectedTime = 0;
-// //   int setDuration = 0;
-// //   bool check = false;
-// //   bool playPouse = true;
-// //
-// //   @override
-// //   void initState() {
-// //     if(sliderTimer!=null){
-// //       sliderTimer!.cancel();
-// //     }
-// //     initialization();
-// //     startPlayer();
-// //     changeVolume();
-// //   //  initPlatformState();
-// //     //setSongDuration(60 *2,initValue: 0);
-// //
-// //     super.initState();
-// //     Timer.periodic(Duration(
-// //         seconds: 1
-// //     ), (timer) {
-// //       print(_position);
-// //       if(sliderInitial.toInt()==
-// //           (sliderEnd-1).toInt()){
-// //
-// //         pageController.nextPage(duration: Duration(milliseconds: 100), curve: Curves.linear);
-// //         sliderInitial=0.0;
-// //
-// //       }
-// //       if(!mounted){
-// //         timer.cancel();
-// //         return;
-// //       }
-// //       // if(ref
-// //       //     .watch(playlistProvider)
-// //       //     .mixMixPlaylist[mixPlaylistIndex]
-// //       //     .playListList!
-// //       //     .length-1 == musicIndex){
-// //       //   pageController.animateToPage(0, duration: Duration(seconds: 1), curve: Curves.easeInOut);
-// //       //
-// //       // }else{
-// //       //
-// //       // }
-// //
-// //     });
-// //
-// //   }
-// //
-// //   @override
-// //   void dispose() {
-// //    // audioPlayer.dispose();
-// //     _subscription.cancel();
-// //     super.dispose();
-// //   }
-// //
-// //   initialization() {
-// //     audioPlayer.setReleaseMode(ReleaseMode.loop);
-// //     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-// //       int _index = ref
-// //           .watch(addProvider)
-// //           .musicList
-// //           .indexWhere((element) => element.id == widget.musicId);
-// //       if (_index >= 0) {
-// //         index = _index;
-// //         if (mounted) {
-// //           setState(() {});
-// //           pausePlayMethod();
-// //         }
-// //       }
-// //     });
-// //   }
-// //
-// //   changeVolume() {
-// //     PerfectVolumeControl.hideUI = true;
-// //     Future.delayed(Duration.zero, () async {
-// //       currentVolume = await PerfectVolumeControl.getVolume();
-// //       if (mounted) {
-// //         setState(() {});
-// //       }
-// //     });
-// //     _subscription = PerfectVolumeControl.stream.listen((volume) {
-// //       currentVolume = volume;
-// //       if (mounted) {
-// //         print('sound $currentVolume');
-// //         setState(() {});
-// //       }
-// //     });
-// //   }
-// //
-// //   Future<void> initPlatformState() async {
-// //     // Platform messages may fail, so we use a try/catch PlatformException.
-// //     try {
-// //       brightness = await FlutterScreenWake
-// //           .brightness; //get the current screen brightness
-// //       if (brightness > 1) {
-// //         brightness = brightness / 10;
-// //       }
-// //       print(brightness);
-// //       if (mounted) {
-// //         setState(() {brightness = brightness;});
-// //       }
-// //
-// //     } on PlatformException {
-// //       brightness = 0.0;
-// //     }
-// //
-// //     if (!mounted) return;
-// //   }
-// //
-// //   startPlayer() async {
-// //     _position = _slider;
-// //     audioCache.prefix = "asset";
-// //     audioPlayer.onPlayerStateChanged.listen((state) async {
-// //       issongplaying = state == PlayerState.playing;
-// //
-// //       if (mounted) {
-// //         setState(() {});
-// //       }
-// //       if (_duration.inSeconds.toInt() == _position.inSeconds.toInt() ||
-// //           (_duration.inSeconds.toInt() - 1 == _position.inSeconds.toInt())) {
-// //         await audioPlayer.stop();
-// //         pausePlayMethod();
-// //
-// //         /* if(mounted){
-// //           setState(() {
-// //             if(setDuration > 0){
-// //               setDuration -= _duration.inSeconds.toInt();
-// //             }
-// //             print("set duration change $setDuration");
-// //             print("playe or not $playPouse");
-// //             if(!issongplaying){
-// //               if(playPouse) {
-// //                 if (mounted) {
-// //                   if (setDuration > 0) {
-// //                     pausePlayMethod();
-// //                   }
-// //                   setState(() {});
-// //                 }
-// //               }
-// //             }
-// //           });
-// //         }*/
-// //       }
-// //       if (mounted) {
-// //         if (playPouse) {}
-// //       }
-// //     });
-// //     audioPlayer.onDurationChanged.listen((newDuration) {
-// //       _duration = newDuration;
-// //       if (mounted) {
-// //         setState(() {});
-// //       }
-// //     });
-// //     audioPlayer.onPositionChanged.listen((newPositions) {
-// //       _position = newPositions;
-// //       if (mounted) {
-// //         setState(() {});
-// //       }
-// //     });
-// //     if (mounted) {
-// //       setState(() {});
-// //     }
-// //   }
-// //
-// //   pausePlayMethod() async {
-// //     print("issongplaying");
-// //     print(issongplaying);
-// //     if (issongplaying) {
-// //       await audioPlayer.pause();
-// //       pauseSliderTimmer();
-// //       print("pause");
-// //     } else {
-// //       String url = ref.watch(addProvider).musicList[index].musicFile;
-// //       await audioPlayer.play(AssetSource(url));
-// //       resumeSliderTimmer();
-// //       print("play");
-// //     }
-// //     if (mounted) {
-// //       setState(() {});
-// //     }
-// //   }
-// //
-// //   changeIndex({bool changeIndex = false}) {
-// //     print("change index");
-// //     if (changeIndex) {
-// //       index = (index + 1) % ref.watch(addProvider).musicList.length;
-// //     } else {
-// //       index = (index - 1);
-// //       if (index < 0) {
-// //         index = ref.watch(addProvider).musicList.length - 1;
-// //       }
-// //     }
-// //     print('new index $index');
-// //     if (mounted) {
-// //       setState(() {});
-// //     }
-// //   }
-// //   PageController pageController = PageController();
-// //
-// //   @override
-// //   Widget build(BuildContext context) {
-// //     final height = ScreenSize(context).height;
-// //     final width = ScreenSize(context).width;
-// //     return Scaffold(
-// //       backgroundColor: Colors.white,
-// //       appBar: AppBar(
-// //         elevation: 0,
-// //         backgroundColor: secondaryPinkColor,
-// //         title: const Text(
-// //           "Now Playing",
-// //           style: TextStyle(color: Colors.black),
-// //         ),
-// //         leading: Padding(
-// //           padding: const EdgeInsets.only(left: 15.0),
-// //           child: Container(
-// //             height: 20,
-// //             width: 20,
-// //             margin: const EdgeInsets.all(5.0),
-// //             padding: const EdgeInsets.all(2.0),
-// //             decoration: const BoxDecoration(
-// //                 color: primaryPinkColor, shape: BoxShape.circle),
-// //             child: IconButton(
-// //               iconSize: 15,
-// //               icon: const Icon(
-// //                 Icons.arrow_back_ios,
-// //                 color: secondaryBlackColor,
-// //               ),
-// //               onPressed: () {
-// //                 Navigator.pop(context);
-// //               },
-// //             ),
-// //           ),
-// //         ),
-// //       ),
-// //       // appBar: CustomAppBar(
-// //       //
-// //       //   title: 'Now Playing',
-// //       //   iconButton: false,
-// //       //   onPressedButton: null,
-// //       //   onPressed: widget.onPressed,
-// //       // ),
-// //       body: PageView.builder(
-// //         padEnds: false,
-// //         controller: pageController,
-// //         onPageChanged: (value) async {
-// //           changeIndex(changeIndex: true);
-// //           if (mounted) {
-// //            // playMusic();
-// //           }
-// //           if (mounted) {
-// //             setState(() {});
-// //           }
-// //           // // setState(() {
-// //           // //   musicIndex = value;
-// //           // //   print("Music List ===${musicIndex}");
-// //           // // });
-// //           //
-// //           // pageController.animateToPage(
-// //           //   value,
-// //           //     duration: Duration(seconds: 1), curve: Curves.easeIn);
-// //         },
-// //         itemCount: ref
-// //             .watch(addProvider)
-// //             .musicList.length,
-// //         itemBuilder: (_,indexxxx){
-// //           return SingleChildScrollView(
-// //             child: Column(
-// //               crossAxisAlignment: CrossAxisAlignment.center,
-// //               children: [
-// //                 Row(
-// //                   mainAxisAlignment: MainAxisAlignment.end,
-// //                   children: [
-// //                     Container(
-// //                       color: Colors.transparent,
-// //                       child: GestureDetector(
-// //                         onTap: () {
-// //                           _showDialogBrightNess(context);
-// //                         },
-// //                         child: Padding(
-// //                           padding: EdgeInsets.only(right: width * .07),
-// //                           child: CustomImage(
-// //                             imageUrl:
-// //                             'asset/images/icon_png/now_playing_icon/Sun.png',
-// //                             color: Colors.orangeAccent.shade100,
-// //                           ),
-// //                         ),
-// //                       ),
-// //                     ),
-// //                   ],
-// //                 ),
-// //                 CustomImage(
-// //                   imageUrl: ref.watch(addProvider).musicList[index].image,
-// //                   height: 300,
-// //                   width: 380,
-// //                   // height: width * .7,
-// //                   // width: width * .9,
-// //                   boxFit: BoxFit.fill,
-// //                 ),
-// //                 Container(
-// //                   color: Colors.transparent,
-// //                   child: Padding(
-// //                     padding: const EdgeInsets.all(8.0),
-// //                     child: Row(
-// //                       mainAxisAlignment: MainAxisAlignment.center,
-// //                       children: [
-// //                         CustomText(
-// //                           text: ref.watch(addProvider).musicList[index].musicName,
-// //                           fontSize: 20,
-// //                           fontWeight: FontWeight.w400,
-// //                           color: secondaryBlackColor,
-// //                         ),
-// //                       ],
-// //                     ),
-// //                   ),
-// //                 ),
-// //                 SizedBox(height: width * 0.06),
-// //                 Padding(
-// //                   padding: const EdgeInsets.symmetric(horizontal: 30.0),
-// //                   child: Row(
-// //                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-// //                     children: [
-// //                       InkWell(
-// //                         onTap: (){
-// //                           ref.read(addProvider).addOrRemovePlayList(
-// //                               id: ref.watch(addProvider).musicList[index].id);
-// //                         },
-// //                         child: Row(
-// //                           children: [
-// //                             Icon(Icons.add_outlined,size: 30,),
-// //                             // GestureDetector(
-// //                             //     onTap: () {
-// //                             //       ref.read(addProvider).addOrRemovePlayList(
-// //                             //           id: ref.watch(addProvider).musicList[index].id);
-// //                             //     },
-// //                             //     child: CustomImage(
-// //                             //       imageUrl: 'asset/images/icon_png/love.png',
-// //                             //       color: ref.watch(addProvider).playListIds.contains(
-// //                             //           ref.watch(addProvider).musicList[index].id)
-// //                             //           ? Colors.red
-// //                             //           : blackColorA0,
-// //                             //     )),
-// //                             const SizedBox(
-// //                               width: 10,
-// //                             ),
-// //                             Padding(
-// //                               padding: const EdgeInsets.only(top: 5.0),
-// //                               child: const CustomText(
-// //                                 text: 'Add To Playlist',
-// //                                 fontSize: 14,
-// //                                 fontWeight: FontWeight.w400,
-// //                               ),
-// //                             ),
-// //                           ],
-// //                         ),
-// //                       ),
-// //                       Row(
-// //                         children: [
-// //                           const CustomImage(
-// //                             imageUrl: 'asset/images/icon_png/another_sound.png',
-// //                             color: blackColorA0,
-// //                           ),
-// //                           const SizedBox(
-// //                             width: 10,
-// //                           ),
-// //                           Container(
-// //                             color: Colors.transparent,
-// //                             child: GestureDetector(
-// //                               onTap: () {
-// //                                 ref.read(addProvider).changePage(2);
-// //                                 ref.read(mixMusicProvider).clearMixMusics();
-// //                                 ref.read(mixMusicProvider).mixFirstMusic(
-// //                                     ref.watch(addProvider).musicList[index]);
-// //                                 // Navigator.push(context, MaterialPageRoute(builder: (context) => const StartPage()));
-// //                               },
-// //                               child: const CustomText(
-// //                                 text: 'Mix Another\n Sound',
-// //                                 fontSize: 14,
-// //                                 fontWeight: FontWeight.w400,
-// //                               ),
-// //                             ),
-// //                           ),
-// //                         ],
-// //                       ),
-// //                     ],
-// //                   ),
-// //                 ),
-// //                 SizedBox(height: width * 0.1),
-// //                 Padding(
-// //                   padding: const EdgeInsets.symmetric(horizontal: 30.0),
-// //                   child: Row(
-// //                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-// //                     children: [
-// //                       CustomText(
-// //                         text: '${getHumanTimeBySecond(sliderInitial.toInt())}',
-// //                         fontSize: 10,
-// //                         color: blackColor2,
-// //                         fontWeight: FontWeight.w700,
-// //                       ),
-// //                       CustomText(
-// //                         text: '${getHumanTimeBySecond(sliderEnd.toInt())}',
-// //                         fontSize: 10,
-// //                         color: blackColor2,
-// //                         fontWeight: FontWeight.w700,
-// //                       ),
-// //                     ],
-// //                   ),
-// //                 ),
-// //                 SizedBox(
-// //                   //color: Colors.green,
-// //                   width: width * .95,
-// //                   child: SliderTheme(
-// //                     data: const SliderThemeData(
-// //                         trackShape: RectangularSliderTrackShape(),
-// //                         thumbShape: RoundSliderThumbShape(enabledThumbRadius: 10)),
-// //                     child: Slider(
-// //                         value:
-// //                         sliderInitial <= sliderEnd ? sliderInitial : sliderEnd,
-// //                         min: 0,
-// //                         max: sliderEnd,
-// //                         divisions: 350,
-// //                         activeColor: primaryPinkColor,
-// //                         inactiveColor: primaryGreyColor2,
-// //                         onChanged: (double newValue) async {
-// //                           print("slider");
-// //                           updateSlider(newValue);
-// //                           setState(() {});
-// //                         },
-// //                         semanticFormatterCallback: (double newValue) {
-// //                           return '${newValue.round()} dollars';
-// //                         }),
-// //                   ),
-// //                 ),
-// //                 Container(
-// //                   color: Colors.transparent,
-// //                   child: Padding(
-// //                     padding: const EdgeInsets.only(left: 20.0, right: 20),
-// //                     child: Row(
-// //                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-// //                       crossAxisAlignment: CrossAxisAlignment.center,
-// //                       children: [
-// //                         IconButton(
-// //                             padding: const EdgeInsets.only(left: 10),
-// //                             onPressed: () {
-// //                               _showDialogVolume(context);
-// //                             },
-// //                             icon: Container(
-// //                                 color: Colors.transparent,
-// //                                 child: const CustomSvg(
-// //                                     svg: volume, color: blackColor2))),
-// //                         IconButton(
-// //                             padding: EdgeInsets.zero,
-// //                             onPressed: () async {
-// //                               changeIndex(changeIndex: false);
-// //                               if (mounted) {
-// //                                 String url = ref
-// //                                     .watch(addProvider)
-// //                                     .musicList[index]
-// //                                     .musicFile;
-// //                                 await audioPlayer.seek(const Duration(seconds: 0));
-// //                                 await audioPlayer.play(AssetSource(url));
-// //                               }
-// //                               if (_position.inSeconds.toInt() >=
-// //                                   _duration.inSeconds.toInt() - 1) {
-// //                                 await audioPlayer.pause();
-// //                               }
-// //                               if (mounted) {
-// //                                 setState(() {});
-// //                               }
-// //                             },
-// //                             icon: const CustomSvg(
-// //                                 svg: left_shift, color: primaryPinkColor)),
-// //                         Container(
-// //                           // color: Colors.red,
-// //                           height: width * 0.18,
-// //                           width: width * 0.18,
-// //                           clipBehavior: Clip.hardEdge,
-// //                           decoration: BoxDecoration(
-// //                               color: secondaryWhiteColor2,
-// //                               shape: BoxShape.circle,
-// //                               border:
-// //                               Border.all(color: Colors.transparent, width: 0),
-// //                               boxShadow: const [
-// //                                 BoxShadow(
-// //                                     blurRadius: 10, color: secondaryWhiteColor2)
-// //                               ]),
-// //                           child: GestureDetector(
-// //                             onTap: () async {
-// //                               if (issongplaying) {
-// //                                 if (mounted) {
-// //                                   playPouse = false;
-// //                                 }
-// //                                 await audioPlayer.pause();
-// //                                 pauseSliderTimmer();
-// //                                 print("pause solution");
-// //                               } else {
-// //                                 if (mounted) {
-// //                                   playPouse = true;
-// //                                 }
-// //                                 String url = ref
-// //                                     .watch(addProvider)
-// //                                     .musicList[index]
-// //                                     .musicFile;
-// //                                 await audioPlayer.play(AssetSource(url));
-// //                                 print("play");
-// //                                 resumeSliderTimmer();
-// //                               }
-// //                             },
-// //                             child: Padding(
-// //                               padding: const EdgeInsets.all(22),
-// //                               child: CustomSvg(
-// //                                 color: primaryPinkColor,
-// //                                 svg: issongplaying
-// //                                     ? pouseButton : playButtonSvg,
-// //                               ),
-// //                             ),
-// //                           ),
-// //                         ),
-// //                         IconButton(
-// //                             padding: EdgeInsets.zero,
-// //                             onPressed: () async {
-// //                               changeIndex(changeIndex: true);
-// //                               if (mounted) {
-// //                                 String url = ref
-// //                                     .watch(addProvider)
-// //                                     .musicList[index]
-// //                                     .musicFile;
-// //                                 await audioPlayer.seek(const Duration(seconds: 0));
-// //                                 await audioPlayer.play(AssetSource(url));
-// //                                 sliderInitial=0.0;
-// //                               }
-// //                               if (_position.inSeconds.toInt() >=
-// //                                   _duration.inSeconds.toInt() - 1) {
-// //                                 await audioPlayer.pause();
-// //                               }
-// //                               if (mounted) {
-// //                                 setState(() {});
-// //                               }
-// //                             },
-// //                             icon: const CustomSvg(
-// //                                 svg: right_shift, color: primaryPinkColor)),
-// //                         IconButton(
-// //                             padding: EdgeInsets.zero,
-// //                             onPressed: () {
-// //                               _showDialog(context);
-// //                             },
-// //                             icon: Container(
-// //                                 color: Colors.transparent,
-// //                                 child: const Padding(
-// //                                   padding: EdgeInsets.symmetric(vertical: 8.0),
-// //                                   child: CustomSvg(
-// //                                     svg: timer,
-// //                                     color: blackColor2,
-// //                                   ),
-// //                                 ))),
-// //                       ],
-// //                     ),
-// //                   ),
-// //                 ),
-// //               ],
-// //             ),
-// //           );
-// //
-// //         },
-// //       ),
-// //
-// //     );
-// //   }
-// //
-// //   void _showDialogBrightNess(BuildContext context) {
-// //     final height = ScreenSize(context).height;
-// //     final width = ScreenSize(context).width;
-// //     showDialog(
-// //       context: context,
-// //       builder: (BuildContext context) {
-// //         return StatefulBuilder(
-// //           builder: (BuildContext context,
-// //               void Function(void Function()) updateState) {
-// //             return Align(
-// //               alignment: Alignment.topCenter,
-// //               child: Wrap(
-// //                 children: [
-// //                   Container(
-// //                     color: Colors.transparent,
-// //                     height: width * 0.23,
-// //                     child: AlertDialog(
-// //                       shape: RoundedRectangleBorder(
-// //                           borderRadius: BorderRadius.circular(15)),
-// //                       backgroundColor: Colors.white,
-// //                       contentPadding: EdgeInsets.zero,
-// //                       content: SizedBox(
-// //                         height: width * 0.25,
-// //                         child: Row(
-// //                           children: [
-// //                             Expanded(
-// //                               child: SliderTheme(
-// //                                 data: const SliderThemeData(
-// //                                     trackShape: RectangularSliderTrackShape(),
-// //                                     thumbShape: RoundSliderThumbShape(
-// //                                         enabledThumbRadius: 10)),
-// //                                 child: Slider(
-// //                                     value: brightness,
-// //                                     min: 0.0,
-// //                                     max: 1.0,
-// //                                     divisions: 100,
-// //                                     activeColor: primaryPinkColor,
-// //                                     inactiveColor: primaryGreyColor2,
-// //                                     onChanged: (double newValue) async {
-// //                                       updateState(() {
-// //                                         // Screen.setBrightness(newValue);
-// //                                         brightness = newValue;
-// //                                         print("$brightness");
-// //                                       });
-// //                                       await ScreenBrightness().setScreenBrightness(brightness);
-// //
-// //                                     },
-// //                                     semanticFormatterCallback:
-// //                                         (double newValue) {
-// //                                       return '${newValue.round()} dollars';
-// //                                     }),
-// //                               ),
-// //                             ),
-// //                             Padding(
-// //                               padding: const EdgeInsets.only(right: 10),
-// //                               child: Container(
-// //                                 color: Colors.transparent,
-// //                                 height: width * 0.1,
-// //                                 child: const CustomImage(
-// //                                   boxFit: BoxFit.fill,
-// //                                   imageUrl:
-// //                                       'asset/images/icon_png/now_playing_icon/Sun.png',
-// //                                   color: primaryPinkColor,
-// //                                 ),
-// //                               ),
-// //                             ),
-// //                           ],
-// //                         ),
-// //                       ),
-// //                     ),
-// //                   ),
-// //                 ],
-// //               ),
-// //             );
-// //           },
-// //         );
-// //       },
-// //     );
-// //   }
-// //
-// //   void _showDialogVolume(BuildContext context) {
-// //     showDialog(
-// //       context: context,
-// //       builder: (BuildContext context) {
-// //         final width = ScreenSize(context).width;
-// //         return StatefulBuilder(
-// //           builder: (BuildContext context,
-// //               void Function(void Function()) updateState) {
-// //             return Column(
-// //               mainAxisAlignment: MainAxisAlignment.end,
-// //               crossAxisAlignment: CrossAxisAlignment.start,
-// //               children: [
-// //                 Transform(
-// //                   transform: Matrix4.identity()..rotateZ(-90 * 3.1415927 / 180),
-// //                   child: AlertDialog(
-// //                     alignment: Alignment.centerLeft,
-// //                     shape: RoundedRectangleBorder(
-// //                         borderRadius: BorderRadius.circular(15)),
-// //                     backgroundColor: Colors.white,
-// //                     contentPadding: EdgeInsets.zero,
-// //                     content: Container(
-// //                       decoration: BoxDecoration(
-// //                           color: Colors.white,
-// //                           borderRadius: BorderRadius.circular(10)),
-// //                       child: Stack(
-// //                         children: [
-// //                           Row(
-// //                             mainAxisAlignment: MainAxisAlignment.center,
-// //                             crossAxisAlignment: CrossAxisAlignment.center,
-// //                             children: [
-// //                               Padding(
-// //                                 padding: const EdgeInsets.only(
-// //                                     left: 20.0, top: 15, right: 0, bottom: 0),
-// //                                 child: Transform(
-// //                                   alignment: Alignment.topCenter,
-// //                                   transform: Matrix4.identity()
-// //                                     ..rotateZ(90 * 3.1415927 / 180),
-// //                                   child: const CustomSvg(
-// //                                     svg: volume,
-// //                                     color: Colors.red,
-// //                                   ),
-// //                                 ),
-// //                               ),
-// //                               Expanded(
-// //                                 child: Slider(
-// //                                   value: currentVolume,
-// //                                   min: 0.0,
-// //                                   max: 1.0,
-// //                                   divisions: 100,
-// //                                   activeColor: primaryPinkColor,
-// //                                   inactiveColor: primaryGreyColor2,
-// //                                   onChanged: (double newValue) async {
-// //                                     updateState(() {
-// //                                       // Screen.setBrightness(newValue);
-// //                                       currentVolume = newValue;
-// //                                       print("volume $currentVolume");
-// //                                     });
-// //                                     await audioPlayer.setVolume(
-// //                                         currentVolume);
-// //
-// //                                   },
-// //                                 ),
-// //                               ),
-// //                             ],
-// //                           ),
-// //                           Positioned(
-// //                               right: width * 0.25,
-// //                               top: 10,
-// //                               child: Transform(
-// //                                   transform: Matrix4.identity()
-// //                                     ..rotateZ(90 * 3.1415927 / 180),
-// //                                   child: Container(
-// //                                     decoration: BoxDecoration(
-// //                                         color: Colors.white,
-// //                                         borderRadius: BorderRadius.circular(2),
-// //                                         boxShadow: [
-// //                                           BoxShadow(
-// //                                               color: secondaryBlackColor
-// //                                                   .withOpacity(0.2),
-// //                                               blurRadius: 0.2,
-// //                                               spreadRadius: 0.5)
-// //                                         ]),
-// //                                     child: Padding(
-// //                                       padding: const EdgeInsets.symmetric(
-// //                                           horizontal: 4.0, vertical: 5),
-// //                                       child: Center(
-// //                                           child: CustomText(
-// //                                         text:
-// //                                             "${(currentVolume * 100).toInt().toString().padLeft(2, "0")}%",
-// //                                         fontSize: 10,
-// //                                         color: secondaryBlackColor,
-// //                                         fontWeight: FontWeight.w600,
-// //                                       )),
-// //                                     ),
-// //                                   )))
-// //                         ],
-// //                       ),
-// //                     ),
-// //                   ),
-// //                 ),
-// //               ],
-// //             );
-// //           },
-// //         );
-// //       },
-// //     );
-// //   }
-// //
-// //   void _showDialog(BuildContext context) {
-// //     final height = ScreenSize(context).height;
-// //     final width = ScreenSize(context).width;
-// //     showDialog(
-// //       context: context,
-// //       builder: (BuildContext context) {
-// //         return StatefulBuilder(
-// //           builder:
-// //               (BuildContext context, void Function(void Function()) state) {
-// //             /* if(mounted) {
-// //               //startTimer(state);
-// //               if(mounted){
-// //                 state((){});
-// //               }
-// //             }*/
-// //             return Align(
-// //               alignment: Alignment.center,
-// //               child: Wrap(
-// //                 children: [
-// //                   AlertDialog(
-// //                     shape: RoundedRectangleBorder(
-// //                         borderRadius: BorderRadius.circular(15)),
-// //                     backgroundColor: Colors.white,
-// //                     title: Padding(
-// //                       padding: const EdgeInsets.only(left: 18.0, right: 18),
-// //                       child: Column(
-// //                         children: const [
-// //                           CustomText(
-// //                             text: 'Select Duration',
-// //                             textAlign: TextAlign.center,
-// //                             fontSize: 20,
-// //                             fontWeight: FontWeight.w600,
-// //                             color: primaryGreyColor,
-// //                           ),
-// //                           SizedBox(height: 20),
-// //                         ],
-// //                       ),
-// //                     ),
-// //                     contentPadding: EdgeInsets.zero,
-// //                     content: Padding(
-// //                       padding: const EdgeInsets.only(left: 8.0, right: 18),
-// //                       child: Column(
-// //                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-// //                         children: [
-// //                           Container(
-// //                             width: width * 0.27,
-// //                             padding: const EdgeInsets.symmetric(vertical: 8),
-// //                             decoration: BoxDecoration(
-// //                               borderRadius: BorderRadius.circular(5),
-// //                               color: greyEC,
-// //                             ),
-// //                             child: Center(
-// //                                 child: CustomText(
-// //                                     text:
-// //                                         "${(selectedTimes[selectedTime] ~/ 60).toString().padLeft(2, "0")} : ${(selectedTimes[selectedTime] % 60).toString().padLeft(2, "0")} min")),
-// //                           ),
-// //                           SliderTheme(
-// //                             data: const SliderThemeData(
-// //                                 trackHeight: 5.0,
-// //                                 trackShape: RectangularSliderTrackShape(),
-// //                                 thumbShape: RoundSliderThumbShape(
-// //                                     enabledThumbRadius: 10)),
-// //                             child: Slider.adaptive(
-// //                                 value: selectedTime.toDouble(),
-// //                                 min: 0,
-// //                                 max: 7,
-// //                                 divisions: 7,
-// //                                 activeColor: primaryPinkColor,
-// //                                 inactiveColor: primaryGreyColor2,
-// //                                 onChanged: (double newValue) async {
-// //                                   state(() {
-// //                                     setDuration = 1;
-// //                                     selectedTime = check ? 0 : newValue.toInt();
-// //                                     setDuration = selectedTimes[selectedTime];
-// //
-// //                                     setDuration *= 60;
-// //                                     setSongDuration(setDuration);
-// //                                     print("index $selectedTime");
-// //                                   });
-// //                                   if (mounted) {
-// //                                     setState(() {});
-// //                                   }
-// //                                 },
-// //                                 semanticFormatterCallback: (double newValue) {
-// //                                   return '${newValue.round()} dollars';
-// //                                 }),
-// //                           ),
-// //                           SizedBox(
-// //                             width: width * 0.59,
-// //                             child: Row(
-// //                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-// //                               children: List.generate(
-// //                                   times.length,
-// //                                   (index) => CustomText(
-// //                                       text: times[index],
-// //                                       fontWeight: FontWeight.w400,
-// //                                       fontSize: 8,
-// //                                       color: secondaryBlackColor)),
-// //                             ),
-// //                           ),
-// //                           const SizedBox(height: 15),
-// //                         ],
-// //                       ),
-// //                     ),
-// //                     actionsAlignment: MainAxisAlignment.start,
-// //                     actionsPadding: const EdgeInsets.only(left: 48, bottom: 30),
-// //                     actions: <Widget>[
-// //                       Row(
-// //                         children: [
-// //                           Checkbox(
-// //                               side: const BorderSide(color: blackColorA0),
-// //                               shape: RoundedRectangleBorder(
-// //                                 borderRadius: BorderRadius.circular(5),
-// //                               ),
-// //                               activeColor: primaryPinkColor,
-// //                               value: check,
-// //                               onChanged: (newValue) {
-// //                                 state(() {
-// //                                   check = newValue!;
-// //                                   if (check) {
-// //                                     selectedTime = 0;
-// //                                   }
-// //                                 });
-// //                               }),
-// //                           TextButton(
-// //                               onPressed: check
-// //                                   ? () async {
-// //                                       if (mounted) {
-// //                                         Navigator.pop(context);
-// //                                       }
-// //                                     }
-// //                                   : null,
-// //                               child: const CustomText(
-// //                                 text: "continuous play",
-// //                                 fontSize: 16,
-// //                                 fontWeight: FontWeight.w400,
-// //                                 color: primaryGreyColor,
-// //                               )),
-// //
-// //
-// //
-// //                         ],
-// //                       ),
-// //                       SizedBox(height: 6,),
-// //                       InkWell(
-// //                         onTap: (){
-// //                           Navigator.pop(context);
-// //                         },
-// //                         child: Padding(
-// //                           padding: const EdgeInsets.only(right: 38.0),
-// //                           child: Center(
-// //                             child: Container(
-// //                               alignment: Alignment.center,
-// //                               height: 50,
-// //                               width: 200,
-// //                               decoration: BoxDecoration(
-// //                                   color: primaryPinkColor,
-// //                                 borderRadius: BorderRadius.circular(30)
-// //                               ),
-// //                               child: Text("OK",style: TextStyle(
-// //                                 fontSize: 18,fontWeight: FontWeight.bold
-// //                               ),),
-// //                             ),
-// //                           ),
-// //                         ),
-// //                       )
-// //                     ],
-// //                   ),
-// //                 ],
-// //               ),
-// //             );
-// //           },
-// //         );
-// //       },
-// //     ).then((value) {
-// //       if (mounted) {
-// //         ref.read(mixMusicProvider).alertDialogStop();
-// //         if (mounted) {
-// //           setState(() {
-// //             print("asche");
-// //           });
-// //         }
-// //       }
-// //     });
-// //   }
-// //
-// //   String getHumanTimeBySecond(int seconds) {
-// //     int hours = (seconds / 3600).floor();
-// //     int minutes = ((seconds - (hours * 3600)) / 60).floor();
-// //     int secs = seconds - (hours * 3600) - (minutes * 60);
-// //
-// //     String hoursStr = (hours < 10) ? "0$hours" : hours.toString();
-// //     String minutesStr = (minutes < 10) ? "0$minutes" : minutes.toString();
-// //     String secondsStr = (secs < 10) ? "0$secs" : secs.toString();
-// //
-// //     return "$hoursStr:$minutesStr:$secondsStr";
-// //   }
-// //
-// //   var sliderInitial = 0.0;
-// //   var sliderEnd = 120.0;
-// //
-// //
-// //
-// //   void setSongDuration(int setDuration, {double initValue = 0}) {
-// //     sliderInitial = initValue;
-// //     sliderEnd = setDuration.toDouble();
-// //     if (sliderTimer != null) {
-// //       sliderTimer!.cancel();
-// //     }
-// //     sliderTimer = Timer.periodic(Duration(seconds: 1), (timer) {
-// //       if (!mounted) {
-// //         timer.cancel();
-// //       }
-// //
-// //       if (sliderEnd <= sliderInitial) {
-// //         timer.cancel();
-// //         sliderInitial = 0.0;
-// //         audioPlayer.stop();
-// //       }
-// //       sliderInitial++;
-// //       if (mounted) {
-// //         setState(() {});
-// //       }
-// //     });
-// //   }
-// //
-// //   void updateSlider(double newValue) {
-// //     sliderInitial = newValue;
-// //     if (mounted) {
-// //       setState(() {});
-// //     }
-// //   }
-// //
-// //   void pauseSliderTimmer() {
-// //     //print("=========${sliderTimer!.isActive}");
-// //     print("=========");
-// //     if(sliderTimer!=null)
-// //     sliderTimer!.cancel();
-// //   }
-// //
-// //   void resumeSliderTimmer() {
-// //     setSongDuration(sliderEnd.toInt(), initValue: sliderInitial);
-// //   }
-// // }
-// import 'dart:async';
-//
-// import 'package:audioplayers/audioplayers.dart';
-// import 'package:bye_bye_cry_new/compoment/shared/custom_image.dart';
-// import 'package:bye_bye_cry_new/compoment/shared/custom_svg.dart';
-// import 'package:bye_bye_cry_new/screens/provider/add_music_provider.dart';
-// import 'package:bye_bye_cry_new/screens/provider/mix_music_provider.dart';
-// import 'package:flutter/material.dart';
-// import 'package:flutter/services.dart';
-// import 'package:flutter_riverpod/flutter_riverpod.dart';
-// import 'package:flutter_screen_wake/flutter_screen_wake.dart';
-// import 'package:perfect_volume_control/perfect_volume_control.dart';
-// import '../compoment/shared/custom_text.dart';
-// import '../compoment/shared/screen_size.dart';
-// import '../compoment/utils/color_utils.dart';
-// import '../compoment/utils/image_link.dart';
-//
-// class SoundDetailsScreen extends ConsumerStatefulWidget {
-//   final String musicId;
-//   final VoidCallback? onPressed;
-//   const SoundDetailsScreen({Key? key, required this.musicId, this.onPressed})
-//       : super(key: key);
-//
-//   @override
-//   ConsumerState<SoundDetailsScreen> createState() => _SoundDetailsScreenState();
-// }
-//
-// class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
-//     with TickerProviderStateMixin {
-//   List<String> times = [
-//     "0",
-//     "10 min",
-//     "30 min",
-//     "60 min",
-//     "90 min",
-//     "120 min",
-//     "150 min",
-//   ];
-//   List<int> selectedTimes = [0, 10, 30, 60, 90, 120, 150];
-//   AudioCache audioCache = AudioCache();
-//   AudioPlayer audioPlayer = AudioPlayer();
-//   Duration _duration = Duration.zero;
-//   Duration _position = Duration.zero;
-//   Duration _slider = Duration(seconds: 0);
-//   double currentVolume = 0.0;
-//   bool issongplaying = false;
-//   double brightness = 0.5;
-//   late StreamSubscription<double> _subscription;
-//   int index = 0;
-//   int selectedTime = 0;
-//   int setDuration = 0;
-//   bool check = false;
-//   bool playPouse = true;
-//
-//   @override
-//   void initState() {
-//     initialization();
-//     startPlayer();
-//     changeVolume();
-//     initPlatformState();
-//     //setSongDuration(60 *2,initValue: 0);
-//
-//     super.initState();
-//     Timer.periodic(Duration(
-//         seconds: 1
-//     ), (timer) async {
-//       print(_position);
-//       if(sliderInitial.toInt()==
-//           (sliderEnd-1).toInt()){
-//
-//
-//         pageController.nextPage(duration: Duration(milliseconds: 100), curve: Curves.linear);
-//        sliderInitial=0.0;
-//    changeIndex(changeIndex: true);
-//
-//         if (mounted) {
-//           String url = ref
-//               .watch(addProvider)
-//               .musicList[index]
-//               .musicFile;
-//           await audioPlayer.play(AssetSource(url));
-//          // sliderInitial=0.0;
-//         }
-//
-//         if (mounted) {
-//           setState(() {});
-//         }
-//
-//       }
-//       if(!mounted){
-//         timer.cancel();
-//         return;
-//       }
-//       // if(ref
-//       //     .watch(playlistProvider)
-//       //     .mixMixPlaylist[mixPlaylistIndex]
-//       //     .playListList!
-//       //     .length-1 == musicIndex){
-//       //   pageController.animateToPage(0, duration: Duration(seconds: 1), curve: Curves.easeInOut);
-//       //
-//       // }else{
-//       //
-//       // }
-//
-//     });
-//
-//   }
-//
-//   @override
-//   void dispose() {
-//     audioPlayer.dispose();
-//     _subscription.cancel();
-//     super.dispose();
-//   }
-//
-//   initialization() {
-//     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-//       int _index = ref
-//           .watch(addProvider)
-//           .musicList
-//           .indexWhere((element) => element.id == widget.musicId);
-//       if (_index >= 0) {
-//         index = _index;
-//         if (mounted) {
-//           setState(() {});
-//           pausePlayMethod();
-//         }
-//       }
-//     });
-//   }
-//
-//   changeVolume() {
-//     PerfectVolumeControl.hideUI = true;
-//     Future.delayed(Duration.zero, () async {
-//       currentVolume = await PerfectVolumeControl.getVolume();
-//       setState(() {
-//         //refresh UI
-//       });
-//     });
-//     _subscription = PerfectVolumeControl.stream.listen((volume) {
-//       currentVolume = volume;
-//       if (mounted) {
-//         print('sound $currentVolume');
-//         setState(() {});
-//       }
-//     });
-//   }
-//
-//   Future<void> initPlatformState() async {
-//     // Platform messages may fail, so we use a try/catch PlatformException.
-//     try {
-//       brightness = await FlutterScreenWake
-//           .brightness; //get the current screen brightness
-//       if (brightness > 1) {
-//         brightness = brightness / 10;
-//       }
-//       print(brightness);
-//       setState(() {
-//         brightness = brightness;
-//         //change the variable value and update screen UI
-//       });
-//     } on PlatformException {
-//       brightness = 0.0;
-//     }
-//
-//     if (!mounted) return;
-//   }
-//
-//   startPlayer() async {
-//     _position = _slider;
-//     audioCache.prefix = "asset";
-//     audioPlayer.onPlayerStateChanged.listen((state) async {
-//       issongplaying = state == PlayerState.playing;
-//       if (mounted) {
-//         setState(() {});
-//       }
-//       if (_duration.inSeconds.toInt() == _position.inSeconds.toInt() ||
-//           (_duration.inSeconds.toInt() - 1 == _position.inSeconds.toInt())) {
-//         await audioPlayer.stop();
-//         pausePlayMethod();
-//
-//         /* if(mounted){
-//           setState(() {
-//             if(setDuration > 0){
-//               setDuration -= _duration.inSeconds.toInt();
-//             }
-//             print("set duration change $setDuration");
-//             print("playe or not $playPouse");
-//             if(!issongplaying){
-//               if(playPouse) {
-//                 if (mounted) {
-//                   if (setDuration > 0) {
-//                     pausePlayMethod();
-//                   }
-//                   setState(() {});
-//                 }
-//               }
-//             }
-//           });
-//         }*/
-//       }
-//       if (mounted) {
-//         if (playPouse) {}
-//       }
-//     });
-//     audioPlayer.onDurationChanged.listen((newDuration) {
-//       _duration = newDuration;
-//       if (mounted) {
-//         setState(() {});
-//       }
-//     });
-//     audioPlayer.onPositionChanged.listen((newPositions) {
-//       _position = newPositions;
-//       if (mounted) {
-//         setState(() {});
-//       }
-//     });
-//     if (mounted) {
-//       setState(() {});
-//     }
-//   }
-//
-//   pausePlayMethod() async {
-//     if (issongplaying) {
-//       await audioPlayer.pause();
-//       pauseSliderTimmer();
-//       print("pause");
-//     } else {
-//       String url = ref.watch(addProvider).musicList[index].musicFile;
-//       await audioPlayer.play(AssetSource(url));
-//       resumeSliderTimmer();
-//       print("play");
-//     }
-//     if (mounted) {
-//       setState(() {});
-//     }
-//   }
-//
-//   changeIndex({bool changeIndex = false}) {
-//     print("change index");
-//     if (changeIndex) {
-//       index = (index + 1) % ref.watch(addProvider).musicList.length;
-//     } else {
-//       index = (index - 1);
-//       if (index < 0) {
-//         index = ref.watch(addProvider).musicList.length - 1;
-//       }
-//     }
-//     print('new index $index');
-//     if (mounted) {
-//       setState(() {});
-//     }
-//   }
-//   PageController pageController = PageController();
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     final height = ScreenSize(context).height;
-//     final width = ScreenSize(context).width;
-//     return Scaffold(
-//       backgroundColor: Colors.white,
-//       appBar: AppBar(
-//         elevation: 0,
-//         backgroundColor: secondaryPinkColor,
-//         title: const Text(
-//           "Now Playing",
-//           style: TextStyle(color: Colors.black),
-//         ),
-//         leading: Padding(
-//           padding: const EdgeInsets.only(left: 15.0),
-//           child: Container(
-//             height: 20,
-//             width: 20,
-//             margin: const EdgeInsets.all(5.0),
-//             padding: const EdgeInsets.all(2.0),
-//             decoration: const BoxDecoration(
-//                 color: primaryPinkColor, shape: BoxShape.circle),
-//             child: IconButton(
-//               iconSize: 15,
-//               icon: const Icon(
-//                 Icons.arrow_back_ios,
-//                 color: secondaryBlackColor,
-//               ),
-//               onPressed: () {
-//                 Navigator.pop(context);
-//               },
-//             ),
-//           ),
-//         ),
-//       ),
-//       // appBar: CustomAppBar(
-//       //
-//       //   title: 'Now Playing',
-//       //   iconButton: false,
-//       //   onPressedButton: null,
-//       //   onPressed: widget.onPressed,
-//       // ),
-//       body: PageView.builder(
-//         padEnds: false,
-//         controller: pageController,
-//         onPageChanged: (value) async {
-//           changeIndex(changeIndex: true);
-//           if (mounted) {
-//             // playMusic();
-//           }
-//           if (mounted) {
-//             setState(() {});
-//           }
-//           // // setState(() {
-//           // //   musicIndex = value;
-//           // //   print("Music List ===${musicIndex}");
-//           // // });
-//           //
-//           // pageController.animateToPage(
-//           //   value,
-//           //     duration: Duration(seconds: 1), curve: Curves.easeIn);
-//         },
-//         itemCount: ref
-//             .watch(addProvider)
-//             .musicList.length,
-//         itemBuilder: (_,indexxxx){
-//           return SingleChildScrollView(
-//             child: Column(
-//               crossAxisAlignment: CrossAxisAlignment.center,
-//               children: [
-//                 Row(
-//                   mainAxisAlignment: MainAxisAlignment.end,
-//                   children: [
-//                     Container(
-//                       color: Colors.transparent,
-//                       child: GestureDetector(
-//                         onTap: () {
-//                           _showDialogBrightNess(context);
-//                         },
-//                         child: Padding(
-//                           padding: EdgeInsets.only(right: width * .07),
-//                           child: CustomImage(
-//                             imageUrl:
-//                             'asset/images/icon_png/now_playing_icon/Sun.png',
-//                             color: Colors.orangeAccent.shade100,
-//                           ),
-//                         ),
-//                       ),
-//                     ),
-//                   ],
-//                 ),
-//                 CustomImage(
-//                   imageUrl: ref.watch(addProvider).musicList[index].image,
-//                   height: 300,
-//                   width: 380,
-//                   // height: width * .7,
-//                   // width: width * .9,
-//                   boxFit: BoxFit.fill,
-//                 ),
-//                 Container(
-//                   color: Colors.transparent,
-//                   child: Padding(
-//                     padding: const EdgeInsets.all(8.0),
-//                     child: Row(
-//                       mainAxisAlignment: MainAxisAlignment.center,
-//                       children: [
-//                         CustomText(
-//                           text: ref.watch(addProvider).musicList[index].musicName,
-//                           fontSize: 20,
-//                           fontWeight: FontWeight.w400,
-//                           color: secondaryBlackColor,
-//                         ),
-//                       ],
-//                     ),
-//                   ),
-//                 ),
-//                 SizedBox(height: width * 0.06),
-//                 Padding(
-//                   padding: const EdgeInsets.symmetric(horizontal: 30.0),
-//                   child: Row(
-//                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                     children: [
-//                       InkWell(
-//                         onTap: (){
-//                           ref.read(addProvider).addOrRemovePlayList(
-//                               id: ref.watch(addProvider).musicList[index].id);
-//                         },
-//                         child: Row(
-//                           children: [
-//                             Icon(Icons.add_outlined,size: 30,),
-//                             // GestureDetector(
-//                             //     onTap: () {
-//                             //       ref.read(addProvider).addOrRemovePlayList(
-//                             //           id: ref.watch(addProvider).musicList[index].id);
-//                             //     },
-//                             //     child: CustomImage(
-//                             //       imageUrl: 'asset/images/icon_png/love.png',
-//                             //       color: ref.watch(addProvider).playListIds.contains(
-//                             //           ref.watch(addProvider).musicList[index].id)
-//                             //           ? Colors.red
-//                             //           : blackColorA0,
-//                             //     )),
-//                             const SizedBox(
-//                               width: 10,
-//                             ),
-//                             Padding(
-//                               padding: const EdgeInsets.only(top: 5.0),
-//                               child: const CustomText(
-//                                 text: 'Add To Playlist',
-//                                 fontSize: 14,
-//                                 fontWeight: FontWeight.w400,
-//                               ),
-//                             ),
-//                           ],
-//                         ),
-//                       ),
-//                       Row(
-//                         children: [
-//                           const CustomImage(
-//                             imageUrl: 'asset/images/icon_png/another_sound.png',
-//                             color: blackColorA0,
-//                           ),
-//                           const SizedBox(
-//                             width: 10,
-//                           ),
-//                           Container(
-//                             color: Colors.transparent,
-//                             child: GestureDetector(
-//                               onTap: () {
-//                                 ref.read(addProvider).changePage(2);
-//                                 ref.read(mixMusicProvider).clearMixMusics();
-//                                 ref.read(mixMusicProvider).mixFirstMusic(
-//                                     ref.watch(addProvider).musicList[index]);
-//                                 // Navigator.push(context, MaterialPageRoute(builder: (context) => const StartPage()));
-//                               },
-//                               child: const CustomText(
-//                                 text: 'Mix Another\n Sound',
-//                                 fontSize: 14,
-//                                 fontWeight: FontWeight.w400,
-//                               ),
-//                             ),
-//                           ),
-//                         ],
-//                       ),
-//                     ],
-//                   ),
-//                 ),
-//                 SizedBox(height: width * 0.1),
-//                 Padding(
-//                   padding: const EdgeInsets.symmetric(horizontal: 30.0),
-//                   child: Row(
-//                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                     children: [
-//                       CustomText(
-//                         text: '${getHumanTimeBySecond(sliderInitial.toInt())}',
-//                         fontSize: 10,
-//                         color: blackColor2,
-//                         fontWeight: FontWeight.w700,
-//                       ),
-//                       CustomText(
-//                         text: '${getHumanTimeBySecond(sliderEnd.toInt())}',
-//                         fontSize: 10,
-//                         color: blackColor2,
-//                         fontWeight: FontWeight.w700,
-//                       ),
-//                     ],
-//                   ),
-//                 ),
-//                 SizedBox(
-//                   //color: Colors.green,
-//                   width: width * .95,
-//                   child: SliderTheme(
-//                     data: const SliderThemeData(
-//                         trackShape: RectangularSliderTrackShape(),
-//                         thumbShape: RoundSliderThumbShape(enabledThumbRadius: 10)),
-//                     child: Slider(
-//                         value:
-//                         sliderInitial <= sliderEnd ? sliderInitial : sliderEnd,
-//                         min: 0,
-//                         max: sliderEnd,
-//                         divisions: 350,
-//                         activeColor: primaryPinkColor,
-//                         inactiveColor: primaryGreyColor2,
-//                         onChanged: (double newValue) async {
-//                           print("slider");
-//                           updateSlider(newValue);
-//                           setState(() {});
-//                         },
-//                         semanticFormatterCallback: (double newValue) {
-//                           return '${newValue.round()} dollars';
-//                         }),
-//                   ),
-//                 ),
-//                 Container(
-//                   color: Colors.transparent,
-//                   child: Padding(
-//                     padding: const EdgeInsets.only(left: 20.0, right: 20),
-//                     child: Row(
-//                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                       crossAxisAlignment: CrossAxisAlignment.center,
-//                       children: [
-//                         IconButton(
-//                             padding: const EdgeInsets.only(left: 10),
-//                             onPressed: () {
-//                               _showDialogVolume(context);
-//                             },
-//                             icon: Container(
-//                                 color: Colors.transparent,
-//                                 child: const CustomSvg(
-//                                     svg: volume, color: blackColor2))),
-//                         IconButton(
-//                             padding: EdgeInsets.zero,
-//                             onPressed: () async {
-//                               changeIndex(changeIndex: false);
-//                               if (mounted) {
-//                                 String url = ref
-//                                     .watch(addProvider)
-//                                     .musicList[index]
-//                                     .musicFile;
-//                                 await audioPlayer.seek(const Duration(seconds: 0));
-//                                 await audioPlayer.play(AssetSource(url));
-//                               }
-//                               if (_position.inSeconds.toInt() >=
-//                                   _duration.inSeconds.toInt() - 1) {
-//                                 await audioPlayer.pause();
-//                               }
-//                               if (mounted) {
-//                                 setState(() {});
-//                               }
-//                             },
-//                             icon: const CustomSvg(
-//                                 svg: left_shift, color: primaryPinkColor)),
-//                         Container(
-//                           // color: Colors.red,
-//                           height: width * 0.18,
-//                           width: width * 0.18,
-//                           clipBehavior: Clip.hardEdge,
-//                           decoration: BoxDecoration(
-//                               color: secondaryWhiteColor2,
-//                               shape: BoxShape.circle,
-//                               border:
-//                               Border.all(color: Colors.transparent, width: 0),
-//                               boxShadow: const [
-//                                 BoxShadow(
-//                                     blurRadius: 10, color: secondaryWhiteColor2)
-//                               ]),
-//                           child: GestureDetector(
-//                             onTap: () async {
-//                               if (issongplaying) {
-//                                 if (mounted) {
-//                                   playPouse = false;
-//                                 }
-//                                 await audioPlayer.pause();
-//                                 pauseSliderTimmer();
-//                                 print("pause solution");
-//                               } else {
-//                                 if (mounted) {
-//                                   playPouse = true;
-//                                 }
-//                                 String url = ref
-//                                     .watch(addProvider)
-//                                     .musicList[index]
-//                                     .musicFile;
-//                                 await audioPlayer.play(AssetSource(url));
-//                                 print("play");
-//                                 resumeSliderTimmer();
-//                               }
-//                             },
-//                             child: Padding(
-//                               padding: const EdgeInsets.all(22),
-//                               child: CustomSvg(
-//                                 color: primaryPinkColor,
-//                                 svg: issongplaying ? pouseButton : playButtonSvg,
-//                               ),
-//                             ),
-//                           ),
-//                         ),
-//                         IconButton(
-//                             padding: EdgeInsets.zero,
-//                             onPressed: () async {
-//                               changeIndex(changeIndex: true);
-//                               if (mounted) {
-//                                 String url = ref
-//                                     .watch(addProvider)
-//                                     .musicList[index]
-//                                     .musicFile;
-//                                 await audioPlayer.seek(const Duration(seconds: 0));
-//                                 await audioPlayer.play(AssetSource(url));
-//                                 sliderInitial=0.0;
-//                               }
-//                               if (_position.inSeconds.toInt() >=
-//                                   _duration.inSeconds.toInt() - 1) {
-//                                 await audioPlayer.pause();
-//                               }
-//                               if (mounted) {
-//                                 setState(() {});
-//                               }
-//                             },
-//                             icon: const CustomSvg(
-//                                 svg: right_shift, color: primaryPinkColor)),
-//                         IconButton(
-//                             padding: EdgeInsets.zero,
-//                             onPressed: () {
-//                               _showDialog(context);
-//                             },
-//                             icon: Container(
-//                                 color: Colors.transparent,
-//                                 child: const Padding(
-//                                   padding: EdgeInsets.symmetric(vertical: 8.0),
-//                                   child: CustomSvg(
-//                                     svg: timer,
-//                                     color: blackColor2,
-//                                   ),
-//                                 ))),
-//                       ],
-//                     ),
-//                   ),
-//                 ),
-//               ],
-//             ),
-//           );
-//
-//         },
-//       ),
-//
-//     );
-//   }
-//
-//   void _showDialogBrightNess(BuildContext context) {
-//     final height = ScreenSize(context).height;
-//     final width = ScreenSize(context).width;
-//     showDialog(
-//       context: context,
-//       builder: (BuildContext context) {
-//         return StatefulBuilder(
-//           builder: (BuildContext context,
-//               void Function(void Function()) updateState) {
-//             return Align(
-//               alignment: Alignment.topCenter,
-//               child: Wrap(
-//                 children: [
-//                   Container(
-//                     color: Colors.transparent,
-//                     height: width * 0.23,
-//                     child: AlertDialog(
-//                       shape: RoundedRectangleBorder(
-//                           borderRadius: BorderRadius.circular(15)),
-//                       backgroundColor: Colors.white,
-//                       contentPadding: EdgeInsets.zero,
-//                       content: SizedBox(
-//                         height: width * 0.25,
-//                         child: Row(
-//                           children: [
-//                             Expanded(
-//                               child: SliderTheme(
-//                                 data: const SliderThemeData(
-//                                     trackShape: RectangularSliderTrackShape(),
-//                                     thumbShape: RoundSliderThumbShape(
-//                                         enabledThumbRadius: 10)),
-//                                 child: Slider(
-//                                     value: brightness,
-//                                     min: 0.0,
-//                                     max: 1.0,
-//                                     divisions: 100,
-//                                     activeColor: primaryPinkColor,
-//                                     inactiveColor: primaryGreyColor2,
-//                                     onChanged: (double newValue) async {
-//                                       updateState(() {
-//                                         // Screen.setBrightness(newValue);
-//                                         brightness = newValue;
-//                                         print("$brightness");
-//                                       });
-//                                       await FlutterScreenWake.setBrightness(
-//                                           brightness);
-//                                     },
-//                                     semanticFormatterCallback:
-//                                         (double newValue) {
-//                                       return '${newValue.round()} dollars';
-//                                     }),
-//                               ),
-//                             ),
-//                             Padding(
-//                               padding: const EdgeInsets.only(right: 10),
-//                               child: Container(
-//                                 color: Colors.transparent,
-//                                 height: width * 0.1,
-//                                 child: const CustomImage(
-//                                   boxFit: BoxFit.fill,
-//                                   imageUrl:
-//                                   'asset/images/icon_png/now_playing_icon/Sun.png',
-//                                   color: primaryPinkColor,
-//                                 ),
-//                               ),
-//                             ),
-//                           ],
-//                         ),
-//                       ),
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//             );
-//           },
-//         );
-//       },
-//     );
-//   }
-//
-//   void _showDialogVolume(BuildContext context) {
-//     showDialog(
-//       context: context,
-//       builder: (BuildContext context) {
-//         final width = ScreenSize(context).width;
-//         return StatefulBuilder(
-//           builder: (BuildContext context,
-//               void Function(void Function()) updateState) {
-//             return Column(
-//               mainAxisAlignment: MainAxisAlignment.end,
-//               crossAxisAlignment: CrossAxisAlignment.start,
-//               children: [
-//                 Transform(
-//                   transform: Matrix4.identity()..rotateZ(-90 * 3.1415927 / 180),
-//                   child: AlertDialog(
-//                     alignment: Alignment.centerLeft,
-//                     shape: RoundedRectangleBorder(
-//                         borderRadius: BorderRadius.circular(15)),
-//                     backgroundColor: Colors.white,
-//                     contentPadding: EdgeInsets.zero,
-//                     content: Container(
-//                       decoration: BoxDecoration(
-//                           color: Colors.white,
-//                           borderRadius: BorderRadius.circular(10)),
-//                       child: Stack(
-//                         children: [
-//                           Row(
-//                             mainAxisAlignment: MainAxisAlignment.center,
-//                             crossAxisAlignment: CrossAxisAlignment.center,
-//                             children: [
-//                               Padding(
-//                                 padding: const EdgeInsets.only(
-//                                     left: 20.0, top: 15, right: 0, bottom: 0),
-//                                 child: Transform(
-//                                   alignment: Alignment.topCenter,
-//                                   transform: Matrix4.identity()
-//                                     ..rotateZ(90 * 3.1415927 / 180),
-//                                   child: const CustomSvg(
-//                                     svg: volume,
-//                                     color: Colors.red,
-//                                   ),
-//                                 ),
-//                               ),
-//                               Expanded(
-//                                 child: Slider(
-//                                   value: currentVolume,
-//                                   min: 0.0,
-//                                   max: 1.0,
-//                                   divisions: 100,
-//                                   activeColor: primaryPinkColor,
-//                                   inactiveColor: primaryGreyColor2,
-//                                   onChanged: (double newValue) async {
-//                                     updateState(() {
-//                                       // Screen.setBrightness(newValue);
-//                                       currentVolume = newValue;
-//                                       print("volume $currentVolume");
-//                                     });
-//                                     await audioPlayer.setVolume(
-//                                         currentVolume);
-//
-//                                   },
-//                                 ),
-//                               ),
-//                             ],
-//                           ),
-//                           Positioned(
-//                               right: width * 0.25,
-//                               top: 10,
-//                               child: Transform(
-//                                   transform: Matrix4.identity()
-//                                     ..rotateZ(90 * 3.1415927 / 180),
-//                                   child: Container(
-//                                     decoration: BoxDecoration(
-//                                         color: Colors.white,
-//                                         borderRadius: BorderRadius.circular(2),
-//                                         boxShadow: [
-//                                           BoxShadow(
-//                                               color: secondaryBlackColor
-//                                                   .withOpacity(0.2),
-//                                               blurRadius: 0.2,
-//                                               spreadRadius: 0.5)
-//                                         ]),
-//                                     child: Padding(
-//                                       padding: const EdgeInsets.symmetric(
-//                                           horizontal: 4.0, vertical: 5),
-//                                       child: Center(
-//                                           child: CustomText(
-//                                             text:
-//                                             "${(currentVolume * 100).toInt().toString().padLeft(2, "0")}%",
-//                                             fontSize: 10,
-//                                             color: secondaryBlackColor,
-//                                             fontWeight: FontWeight.w600,
-//                                           )),
-//                                     ),
-//                                   )))
-//                         ],
-//                       ),
-//                     ),
-//                   ),
-//                 ),
-//               ],
-//             );
-//           },
-//         );
-//       },
-//     );
-//   }
-//
-//   void _showDialog(BuildContext context) {
-//     final height = ScreenSize(context).height;
-//     final width = ScreenSize(context).width;
-//     showDialog(
-//       context: context,
-//       builder: (BuildContext context) {
-//         return StatefulBuilder(
-//           builder:
-//               (BuildContext context, void Function(void Function()) state) {
-//             /* if(mounted) {
-//               //startTimer(state);
-//               if(mounted){
-//                 state((){});
-//               }
-//             }*/
-//             return Align(
-//               alignment: Alignment.center,
-//               child: Wrap(
-//                 children: [
-//                   AlertDialog(
-//                     shape: RoundedRectangleBorder(
-//                         borderRadius: BorderRadius.circular(15)),
-//                     backgroundColor: Colors.white,
-//                     title: Padding(
-//                       padding: const EdgeInsets.only(left: 18.0, right: 18),
-//                       child: Column(
-//                         children: const [
-//                           CustomText(
-//                             text: 'Select Duration',
-//                             textAlign: TextAlign.center,
-//                             fontSize: 20,
-//                             fontWeight: FontWeight.w600,
-//                             color: primaryGreyColor,
-//                           ),
-//                           SizedBox(height: 20),
-//                         ],
-//                       ),
-//                     ),
-//                     contentPadding: EdgeInsets.zero,
-//                     content: Padding(
-//                       padding: const EdgeInsets.only(left: 8.0, right: 18),
-//                       child: Column(
-//                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                         children: [
-//                           Container(
-//                             width: width * 0.27,
-//                             padding: const EdgeInsets.symmetric(vertical: 8),
-//                             decoration: BoxDecoration(
-//                               borderRadius: BorderRadius.circular(5),
-//                               color: greyEC,
-//                             ),
-//                             child: Center(
-//                                 child: CustomText(
-//                                     text:
-//                                     "${(selectedTimes[selectedTime] ~/ 60).toString().padLeft(2, "0")} : ${(selectedTimes[selectedTime] % 60).toString().padLeft(2, "0")} min")),
-//                           ),
-//                           SliderTheme(
-//                             data: const SliderThemeData(
-//                                 trackHeight: 5.0,
-//                                 trackShape: RectangularSliderTrackShape(),
-//                                 thumbShape: RoundSliderThumbShape(
-//                                     enabledThumbRadius: 10)),
-//                             child: Slider.adaptive(
-//                                 value: selectedTime.toDouble(),
-//                                 min: 0,
-//                                 max: 7,
-//                                 divisions: 7,
-//                                 activeColor: primaryPinkColor,
-//                                 inactiveColor: primaryGreyColor2,
-//                                 onChanged: (double newValue) async {
-//                                   state(() {
-//                                     setDuration = 1;
-//                                     selectedTime = check ? 0 : newValue.toInt();
-//                                     setDuration = selectedTimes[selectedTime];
-//
-//                                     setDuration *= 60;
-//                                     setSongDuration(setDuration);
-//                                     print("index $selectedTime");
-//                                   });
-//                                   setState(() {});
-//                                 },
-//                                 semanticFormatterCallback: (double newValue) {
-//                                   return '${newValue.round()} dollars';
-//                                 }),
-//                           ),
-//                           SizedBox(
-//                             width: width * 0.59,
-//                             child: Row(
-//                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                               children: List.generate(
-//                                   times.length,
-//                                       (index) => CustomText(
-//                                       text: times[index],
-//                                       fontWeight: FontWeight.w400,
-//                                       fontSize: 8,
-//                                       color: secondaryBlackColor)),
-//                             ),
-//                           ),
-//                           const SizedBox(height: 15),
-//                         ],
-//                       ),
-//                     ),
-//                     actionsAlignment: MainAxisAlignment.start,
-//                     actionsPadding: const EdgeInsets.only(left: 48, bottom: 30),
-//                     actions: <Widget>[
-//                       Row(
-//                         children: [
-//                           Checkbox(
-//                               side: const BorderSide(color: blackColorA0),
-//                               shape: RoundedRectangleBorder(
-//                                 borderRadius: BorderRadius.circular(5),
-//                               ),
-//                               activeColor: primaryPinkColor,
-//                               value: check,
-//                               onChanged: (newValue) {
-//                                 state(() {
-//                                   check = newValue!;
-//                                   if (check) {
-//                                     selectedTime = 0;
-//                                   }
-//                                 });
-//                               }),
-//                           TextButton(
-//                               onPressed: check
-//                                   ? () async {
-//                                 if (mounted) {
-//                                   Navigator.pop(context);
-//                                 }
-//                               }
-//                                   : null,
-//                               child: const CustomText(
-//                                 text: "continuous play",
-//                                 fontSize: 16,
-//                                 fontWeight: FontWeight.w400,
-//                                 color: primaryGreyColor,
-//                               )),
-//
-//
-//
-//                         ],
-//                       ),
-//                       SizedBox(height: 6,),
-//                       InkWell(
-//                         onTap: (){
-//                           Navigator.pop(context);
-//                         },
-//                         child: Padding(
-//                           padding: const EdgeInsets.only(right: 38.0),
-//                           child: Center(
-//                             child: Container(
-//                               alignment: Alignment.center,
-//                               height: 50,
-//                               width: 200,
-//                               decoration: BoxDecoration(
-//                                   color: primaryPinkColor,
-//                                   borderRadius: BorderRadius.circular(30)
-//                               ),
-//                               child: Text("OK",style: TextStyle(
-//                                   fontSize: 18,fontWeight: FontWeight.bold
-//                               ),),
-//                             ),
-//                           ),
-//                         ),
-//                       )
-//                     ],
-//                   ),
-//                 ],
-//               ),
-//             );
-//           },
-//         );
-//       },
-//     ).then((value) {
-//       if (mounted) {
-//         ref.read(mixMusicProvider).alertDialogStop();
-//         if (mounted) {
-//           setState(() {
-//             print("asche");
-//           });
-//         }
-//       }
-//     });
-//   }
-//
-//   String getHumanTimeBySecond(int seconds) {
-//     int hours = (seconds / 3600).floor();
-//     int minutes = ((seconds - (hours * 3600)) / 60).floor();
-//     int secs = seconds - (hours * 3600) - (minutes * 60);
-//
-//     String hoursStr = (hours < 10) ? "0$hours" : hours.toString();
-//     String minutesStr = (minutes < 10) ? "0$minutes" : minutes.toString();
-//     String secondsStr = (secs < 10) ? "0$secs" : secs.toString();
-//
-//     return "$hoursStr:$minutesStr:$secondsStr";
-//   }
-//
-//   var sliderInitial = 0.0;
-//   var sliderEnd = 120.0;
-//
-//   Timer? sliderTimer;
-//
-//   void setSongDuration(int setDuration, {double initValue = 0}) {
-//     sliderInitial = initValue;
-//     sliderEnd = setDuration.toDouble();
-//     if (sliderTimer != null) {
-//       sliderTimer!.cancel();
-//     }
-//     sliderTimer = Timer.periodic(Duration(seconds: 1), (timer) {
-//       if (!mounted) {
-//         timer.cancel();
-//       }
-//
-//       if (sliderEnd <= sliderInitial) {
-//         timer.cancel();
-//         sliderInitial = 0.0;
-//         audioPlayer.stop();
-//       }
-//       sliderInitial++;
-//       setState(() {});
-//     });
-//   }
-//
-//   void updateSlider(double newValue) {
-//     sliderInitial = newValue;
-//     setState(() {});
-//   }
-//
-//   void pauseSliderTimmer() {
-//     print("=========${sliderTimer!.isActive}");
-//     print("=========");
-//     sliderTimer!.cancel();
-//   }
-//
-//   void resumeSliderTimmer() {
-//     setSongDuration(sliderEnd.toInt(), initValue: sliderInitial);
-//   }
-// }
 import 'dart:async';
-import 'package:audioplayers/audioplayers.dart';
+import 'package:animated_toggle_switch/animated_toggle_switch.dart';
 import 'package:bye_bye_cry_new/compoment/shared/custom_image.dart';
 import 'package:bye_bye_cry_new/compoment/shared/custom_svg.dart';
+import 'package:bye_bye_cry_new/main.dart';
 import 'package:bye_bye_cry_new/screens/provider/add_music_provider.dart';
 import 'package:bye_bye_cry_new/screens/provider/mix_music_provider.dart';
 import 'package:flutter/material.dart';
@@ -2133,8 +38,7 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
     "150 min",
   ];
   List<int> selectedTimes = [0, 10, 30, 60, 90, 120, 150];
-  AudioCache audioCache = AudioCache();
-  AudioPlayer audioPlayer = AudioPlayer();
+
   Duration _duration = Duration.zero;
   Duration _position = Duration.zero;
   Duration _slider = Duration(seconds: 0);
@@ -2153,7 +57,6 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
     initialization();
     startPlayer();
     changeVolume();
-    initPlatformState();
     //setSongDuration(60 *2,initValue: 0);
 
     super.initState();
@@ -2168,7 +71,7 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
 
         if (mounted) {
           String url = ref.watch(addProvider).musicList[index].musicFile;
-          await audioPlayer.play(AssetSource(url));
+          await ins.playAudio(Duration(minutes: 2), "assets/" + url);
           // sliderInitial=0.0;
         }
 
@@ -2195,7 +98,6 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
 
   @override
   void dispose() {
-    audioPlayer.dispose();
     _subscription.cancel();
     super.dispose();
   }
@@ -2233,92 +135,28 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
     });
   }
 
-  Future<void> initPlatformState() async {
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    try {
-      brightness = await FlutterScreenWake
-          .brightness; //get the current screen brightness
-      if (brightness > 1) {
-        brightness = brightness / 10;
-      }
-      print(brightness);
-      setState(() {
-        brightness = brightness;
-        //change the variable value and update screen UI
-      });
-    } on PlatformException {
-      brightness = 0.0;
-    }
-
-    if (!mounted) return;
-  }
-
   startPlayer() async {
     _position = _slider;
-    audioCache.prefix = "asset";
-    audioPlayer.onPlayerStateChanged.listen((state) async {
-      issongplaying = state == PlayerState.playing;
-      if (mounted) {
-        setState(() {});
-      }
-      if (_duration.inSeconds.toInt() == _position.inSeconds.toInt() ||
-          (_duration.inSeconds.toInt() - 1 == _position.inSeconds.toInt())) {
-        await audioPlayer.stop();
-        pausePlayMethod();
 
-        /* if(mounted){
-          setState(() {
-            if(setDuration > 0){
-              setDuration -= _duration.inSeconds.toInt();
-            }
-            print("set duration change $setDuration");
-            print("playe or not $playPouse");
-            if(!issongplaying){
-              if(playPouse) {
-                if (mounted) {
-                  if (setDuration > 0) {
-                    pausePlayMethod();
-                  }
-                  setState(() {});
-                }
-              }
-            }
-          });
-        }*/
-      }
-      if (mounted) {
-        if (playPouse) {}
-      }
-    });
-    audioPlayer.onDurationChanged.listen((newDuration) {
-      _duration = newDuration;
-      if (mounted) {
-        setState(() {});
-      }
-    });
-    audioPlayer.onPositionChanged.listen((newPositions) {
-      _position = newPositions;
-      if (mounted) {
-        setState(() {});
-      }
-    });
+    pausePlayMethod();
+
     if (mounted) {
       setState(() {});
     }
   }
 
   pausePlayMethod() async {
-    if (issongplaying) {
-      await audioPlayer.pause();
+    if (ins.isPlaying()) {
+      await ins.stop();
       pauseSliderTimmer();
       print("pause");
     } else {
       String url = ref.watch(addProvider).musicList[index].musicFile;
-      await audioPlayer.play(AssetSource(url));
+      // await audioPlayer.play(AssetSource(url));
       //   New Audio Player...
       //  ins.silenceIncomingCalls();
       //
-      // // ins.playAudio(Duration(minutes: 2), [justAudio.AudioSource.asset("assets/$url")]);
+      ins.playAudio(Duration(minutes: 2), "assets/$url");
       //  //ins.stop();
       //  print(ins.isPlaying());
       //  ins.silenceIncomingCalls();
@@ -2350,6 +188,9 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
   }
 
   PageController pageController = PageController();
+  int value = 0;
+  bool positive = false;
+  bool loading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -2420,8 +261,78 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                  // mainAxisAlignment: MainAxisAlignment.end,
                   children: [
+                    InkWell(
+                      onTap: () {
+                        // Slient Function...
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 18.0),
+                        child: Row(
+                          children: [
+                            Icon(Icons.notifications_outlined),
+                            SizedBox(
+                              width: 20,
+                            ),
+                            AnimatedToggleSwitch<bool>.dual(
+                              current: positive,
+                              first: false,
+                              second: true,
+                              dif: 0.0,
+                              borderColor: Colors.transparent,
+                              borderWidth: 5.0,
+                              height: 35,
+                              boxShadow: const [
+                                BoxShadow(
+                                  color: Colors.black26,
+                                  spreadRadius: 1,
+                                  blurRadius: 2,
+                                  offset: Offset(0, 1.5),
+                                ),
+                              ],
+                              onChanged: (b) {
+                                try {
+                                  setState(() {
+                                    positive = b;
+                                    print(positive);
+                                    //  silent on change fumction...
+
+                                    ins.silenceIncomingCalls(silent: positive);
+
+
+
+
+                                  });
+
+
+
+
+                                } catch (e, s) {
+                                  print(s);
+                                }
+                                return Future.delayed(Duration(seconds: 2));
+                              },
+                              colorBuilder: (b) =>
+                                  b ? Colors.green : Colors.red,
+                              iconBuilder: (value) => value
+                                  ? Icon(
+                                      Icons.check,
+                                      color: Colors.white,
+                                    )
+                                  : Icon(
+                                      Icons.close,
+                                      color: Colors.white,
+                                    ),
+                              textBuilder: (value) => value
+                                  ? Center(child: Text('Yes'))
+                                  : Center(child: Text('No')),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Spacer(),
                     Container(
                       color: Colors.transparent,
                       child: GestureDetector(
@@ -2588,6 +499,8 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                         onChanged: (double newValue) async {
                           print("slider");
                           updateSlider(newValue);
+                          ins.seek(Duration(
+                              seconds: (sliderEnd - sliderInitial).toInt()));
                           setState(() {});
                         },
                         semanticFormatterCallback: (double newValue) {
@@ -2621,14 +534,13 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                                     .watch(addProvider)
                                     .musicList[index]
                                     .musicFile;
-                                await audioPlayer
-                                    .seek(const Duration(seconds: 0));
-                                await audioPlayer.play(AssetSource(url));
+                                await ins.stop();
+                                ins.playAudio(
+                                    Duration(minutes: 2), "assets/$url");
+                                sliderInitial = 0.0;
+                                sliderEnd = 120.0;
                               }
-                              if (_position.inSeconds.toInt() >=
-                                  _duration.inSeconds.toInt() - 1) {
-                                await audioPlayer.pause();
-                              }
+
                               if (mounted) {
                                 setState(() {});
                               }
@@ -2651,11 +563,11 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                               ]),
                           child: GestureDetector(
                             onTap: () async {
-                              if (issongplaying) {
+                              if (ins.isPlaying()) {
                                 if (mounted) {
                                   playPouse = false;
                                 }
-                                await audioPlayer.pause();
+                                ins.stop();
                                 pauseSliderTimmer();
                                 print("pause solution");
                               } else {
@@ -2666,21 +578,29 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                                     .watch(addProvider)
                                     .musicList[index]
                                     .musicFile;
-                                await audioPlayer.play(AssetSource(url));
+                                //await audioPlayer.play(AssetSource(url));
                                 print("play");
                                 resumeSliderTimmer();
+                                ins.playAudio(
+                                    Duration(
+                                        seconds: (sliderEnd - sliderInitial)
+                                            .toInt()),
+                                    "assets/$url");
                               }
+                              setState(() {});
                             },
                             child: Padding(
                               padding: const EdgeInsets.all(22),
                               child: CustomSvg(
                                 color: primaryPinkColor,
-                                svg:
-                                    issongplaying ? pouseButton : playButtonSvg,
+                                svg: ins.isPlaying()
+                                    ? pouseButton
+                                    : playButtonSvg,
                               ),
                             ),
                           ),
                         ),
+                        //player next
                         IconButton(
                             padding: EdgeInsets.zero,
                             onPressed: () async {
@@ -2690,16 +610,15 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                                     .watch(addProvider)
                                     .musicList[index]
                                     .musicFile;
-                                await audioPlayer
-                                    .seek(const Duration(seconds: 0));
-                                await audioPlayer.play(AssetSource(url));
+
+                                await ins.stop();
+                                ins.playAudio(
+                                    Duration(minutes: 2), "assets/$url");
+
                                 sliderInitial = 0.0;
                                 sliderEnd = 120.0;
                               }
-                              if (_position.inSeconds.toInt() >=
-                                  _duration.inSeconds.toInt() - 1) {
-                                await audioPlayer.pause();
-                              }
+
                               if (mounted) {
                                 setState(() {});
                               }
@@ -2869,7 +788,7 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                                       currentVolume = newValue;
                                       print("volume $currentVolume");
                                     });
-                                    await audioPlayer.setVolume(currentVolume);
+                                    await ins.setVolume(currentVolume);
                                   },
                                 ),
                               ),
@@ -2995,7 +914,8 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
 
                                     setDuration *= 60;
                                     setSongDuration(setDuration);
-                                    print("index $selectedTime");
+                                    ins.seek(Duration(seconds: setDuration));
+                                    print("index $setDuration");
                                   });
                                   setState(() {});
                                 },
@@ -3133,7 +1053,7 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
       if (sliderEnd <= sliderInitial) {
         timer.cancel();
         sliderInitial = 0.0;
-        audioPlayer.stop();
+        ins.stop();
       }
       sliderInitial++;
       setState(() {});

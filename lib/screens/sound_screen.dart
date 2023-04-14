@@ -1377,24 +1377,33 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
     'Mix Two Sounds'
   ];
 
-  @override
-  void dispose() {
-    //audioPlayer.dispose();
-    super.dispose();
-  }
 
   String? searchval;
+
+
+
 
   @override
   void initState() {
     // wishListController.getCartData();
     // initialized();
+
+
     startPlayer();
 
     // deleteShow = false;
     // ref.read(addProvider).showAddPlaylist= false;
 
     super.initState();
+    setState(() {
+
+
+      // if(ref.read(addProvider).changePage(1,page: "A")){
+      //   ref.read(addProvider).showAddPlaylist= fa;
+      // }
+
+
+    });
   }
 
   @override
@@ -1449,7 +1458,7 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
       },
     )
         : Scaffold(
-      appBar: CustomAppBar(
+      appBar:  deleteShow==true ? CustomAppBar(
           title: deleteShow ? 'Edit My Sounds' : 'My Sounds',
           actionTitle: deleteShow ? "" : 'Edit',
           onPressedButton: () {
@@ -1458,15 +1467,28 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
               setState(() {});
             }
           },
-          onPressed: () {
+          onPressed:  () {
             deleteShow = false;
             if (ref.watch(addProvider).showAddPlaylist) {
               ref.read(addProvider).showPlusPlaylist();
             }
             if (mounted) {
-              setState(() {});
+              setState(() {
+
+              });
             }
-          }),
+          })  : AppBar(
+        elevation: 0.0,
+        backgroundColor: secondaryPinkColor,
+        centerTitle: true,
+        title: CustomText(
+
+          text: "My Sounds",
+          fontSize: 24,
+          fontWeight: FontWeight.w700,
+          color: secondaryBlackColor,
+        ),
+      ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -1567,7 +1589,7 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
                         ],
                       ),
                     )),
-                InkWell(
+            deleteShow==true ? Container():     InkWell(
                   onTap: () {
                     Navigator.push(
                         context,
@@ -1635,228 +1657,473 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
       return ValueListenableBuilder(
           valueListenable: Hive.box("fav").listenable(),
           builder: (context, box, _) {
-            return GestureDetector(
-              onTap: () async {
-                // if (issongplaying) await audioPlayer.dispose();
-                // await Future.delayed(Duration(seconds: 2));
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (_) => SoundDetailsScreen(
-                          musicId: musicModel.id,
-                          onPressed: () async {
-                            if (ref.watch(addProvider).playFromPlayList) {
-                              if (mounted) {
-                                ref.read(addProvider).changePage(3);
-                              }
-                              if (mounted) {
-                                changeToPlayNow = false;
-                                setState(() {});
-                              }
-                            } else {
-                              setState(() {
-                                changeToPlayNow = false;
-                              });
-                            }
-                          },
-                        )));
-              },
-              // onTap: ref.watch(addProvider).showAddPlaylist?null:(){
-              //   if(mounted){
-              //     ref.read(addProvider).playFromPlaylistActive(change: false);
-              //   }
-              //   setState(() {
-              //     music = musicModel;
-              //     musicId = musicModel.id;
-              //     changeToPlayNow = ref.watch(addProvider).showAddPlaylist?false:deleteShow?false:true;
-              //     print("change");
-              //   });
-              // },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Image.asset(
-                          "${musicModel.image}",
-                          height: 60,
-                          fit: BoxFit.contain,
-                        ),
-                      ),
-                      // Padding(
-                      //   padding: const EdgeInsets.only(top: 5.0),
-                      //   child: CustomImage(imageUrl: musicModel.image),
-                      // ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      CustomText(
-                        text: musicModel.musicName,
-                        color: blackColor50,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 20,
-                      ),
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Row(
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            // color: Colors.black.withOpacity(0.05),
-                          ),
-                          child: ref.read(addProvider).showAddPlaylist
-                              ? GestureDetector(
-                            onTap: () async {
-                              musicId = musicModel.id;
-                              if (mounted) {
-                                //playMusic(id: musicId);
-                              }
-                              print("OK");
-                            },
-                            child: musicId == musicModel.id
-                                ? Padding(
-                              padding: const EdgeInsets.all(15.0),
-                              child: issongplaying
-                                  ? const CustomSvg(
-                                svg: pouseButton,
-                                color: blackColor97,
-                                height: 12,
-                                width: 12,
-                              )
-                                  : const CustomImage(
-                                imageUrl: playButton,
-                                scale: 0.8,
-                              ),
-                            )
-                                : const Padding(
-                              padding: EdgeInsets.all(15.0),
-                              child: CustomImage(
-                                scale: 0.8,
-                                imageUrl: playButton,
-                              ),
-                            ),
-                          )
-                              : deleteShow
-                              ? SizedBox()
-                              : InkWell(
-                              onTap: () {
-                                setState(() {
-                                  if (box.containsKey(musicModel.id)) {
-                                    box.delete(musicModel.id);
-                                  } else {
-                                    box.put(musicModel.id, musicModel);
-                                  }
-
-                                  // wishListController.addToCart(musicModel);
-                                });
-
-                                // Navigator.push(context, MaterialPageRoute(builder: (_)=> SoundDetailsScreen(
-                                //   musicId: musicModel.id,
-                                // onPressed: ()async{
-                                //   if(ref.watch(addProvider).playFromPlayList){
-                                //     if(mounted){
-                                //       ref.read(addProvider).changePage(3);
-                                //     }
-                                //     if(mounted){
-                                //       changeToPlayNow = false;
-                                //       setState(() {});
-                                //     }
-                                //   } else{
-                                //     setState(() {
-                                //       changeToPlayNow = false;
-                                //     });
-                                //   }
-                                // },
-                                // )));
-                              },
-                              child: Padding(
-                                  padding: EdgeInsets.all(10.0),
-                                  child: Hive.box("fav")
-                                      .containsKey(musicModel.id)
-                                      ? Icon(
-                                    Icons.favorite,
-                                    size: 35,
-                                    color: primaryPinkColor,
-                                  )
-                                      : Icon(
-                                    Icons.favorite_border,
-                                    size: 35,
-                                    color: primaryPinkColor,
-                                  )),
-
-                          ),
-                        ),
-                        ref.read(addProvider).showAddPlaylist
-                            ? Padding(
-                          padding: const EdgeInsets.only(left: 20.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.black.withOpacity(0.1)),
-                            child: GestureDetector(
-                              onTap: () {
-                                ref.read(addProvider).changePage(3);
-                                if (ref
-                                    .watch(playlistProvider)
-                                    .addInPlayListTrueFalse) {
-                                  if (mounted) {
-                                    ref
-                                        .read(playlistProvider)
-                                        .showMixPlayList(
-                                        goMixPlaylist: true);
-                                    //Change.
-                                    //   ref.read(addProvider).showAddPlaylist=false;
-                                  }
-                                  if (mounted) {
-                                    ref.read(playlistProvider).setMusic(
-                                        setMusicModel: musicModel);
-                                  }
-                                  if (mounted) {
-                                    ref
-                                        .read(playlistProvider)
-                                        .addInPlaylistFalse();
-                                  }
-                                } else {
-                                  ref.read(addProvider).changePage(2);
-                                  if (ref
-                                      .read(mixMusicProvider)
-                                      .selectMixSound) {
-                                    ref
-                                        .read(mixMusicProvider)
-                                        .mixFirstMusic(musicModel);
-                                  } else {
-                                    ref
-                                        .read(mixMusicProvider)
-                                        .mixSecondMusic(musicModel);
-                                  }
-                                  ref.read(addProvider).showPlusPlaylist(
-                                      playlistPlusBottom: false);
-                                  //Change...
-                                  //  ref.read(addProvider).showAddPlaylist=false;
+            return  Padding(
+              padding: const EdgeInsets.only(top: 8.0,bottom: 8),
+              child: ListTile(
+                onTap: ()async{
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => SoundDetailsScreen(
+                            musicId: musicModel.id,
+                            onPressed: () async {
+                              if (ref.watch(addProvider).playFromPlayList) {
+                                if (mounted) {
+                                  ref.read(addProvider).changePage(3);
                                 }
-                              },
-                              child: const Padding(
-                                padding: EdgeInsets.all(5.0),
-                                child: Icon(
-                                  Icons.add,
-                                  color: blackColorA0,
-                                ),
-                              ),
-                            ),
+                                if (mounted) {
+                                  changeToPlayNow = false;
+                                  setState(() {});
+                                }
+                              } else {
+                                setState(() {
+                                  changeToPlayNow = false;
+                                });
+                              }
+                            },
+                          )));
+                },
+                leading:Padding(
+                  padding: const EdgeInsets.only(left: 0.0,right: 18),
+                  child: Image.asset(
+                    "${musicModel.image}",
+                    height: 200,
+                    // height: 100,
+                    // fit: BoxFit.fill,
+                  ),
+                ) ,
+                title:CustomText(
+                  text: musicModel.musicName,
+                  color: blackColor50,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 20,
+                ) ,
+                trailing:    Wrap(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.black.withOpacity(0.05),
+                      ),
+                      child: ref.read(addProvider).showAddPlaylist
+                          ? GestureDetector(
+                        onTap: () async {
+                          musicId = musicModel.id;
+                          if (mounted) {
+                            playMusic(id: musicId);
+                          }
+                          print("OK");
+                        },
+                        child: musicId == musicModel.id
+                            ? Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          child: issongplaying
+                              ? const CustomSvg(
+                            svg: pouseButton,
+                            color: blackColor97,
+                            height: 12,
+                            width: 12,
+                          )
+                              : const CustomImage(
+                            imageUrl: playButton,
+                            scale: 0.8,
                           ),
                         )
-                            : const SizedBox(),
-                      ],
+                            : const Padding(
+                          padding: EdgeInsets.all(15.0),
+                          child: CustomImage(
+                            scale: 0.8,
+                            imageUrl: playButton,
+                          ),
+                        ),
+                      )
+                          : deleteShow
+                          ? SizedBox()
+                          : InkWell(
+                        onTap: () {
+                          setState(() {
+                            if (box.containsKey(musicModel.id)) {
+                              box.delete(musicModel.id);
+                            } else {
+                              box.put(musicModel.id, musicModel);
+                            }
+
+                            // wishListController.addToCart(musicModel);
+                          });
+
+                          // Navigator.push(context, MaterialPageRoute(builder: (_)=> SoundDetailsScreen(
+                          //   musicId: musicModel.id,
+                          // onPressed: ()async{
+                          //   if(ref.watch(addProvider).playFromPlayList){
+                          //     if(mounted){
+                          //       ref.read(addProvider).changePage(3);
+                          //     }
+                          //     if(mounted){
+                          //       changeToPlayNow = false;
+                          //       setState(() {});
+                          //     }
+                          //   } else{
+                          //     setState(() {
+                          //       changeToPlayNow = false;
+                          //     });
+                          //   }
+                          // },
+                          // )));
+                        },
+                        child: Padding(
+                            padding: EdgeInsets.all(10.0),
+                            child: Hive.box("fav")
+                                .containsKey(musicModel.id)
+                                ? Icon(
+                              Icons.favorite,
+                              size: 35,
+                              color: primaryPinkColor,
+                            )
+                                : Icon(
+                              Icons.favorite_border,
+                              size: 35,
+                              color: primaryPinkColor,
+                            )),
+
+                      ),
                     ),
-                  ),
-                ],
+                    ref.read(addProvider).showAddPlaylist
+                        ? Padding(
+                      padding: const EdgeInsets.only(left: 20.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.black.withOpacity(0.1)),
+                        child: GestureDetector(
+                          onTap: () {
+                            ref.read(addProvider).changePage(3);
+                            if (ref
+                                .watch(playlistProvider)
+                                .addInPlayListTrueFalse) {
+                              if (mounted) {
+                                ref
+                                    .read(playlistProvider)
+                                    .showMixPlayList(
+                                    goMixPlaylist: true);
+                                //Change.
+                                //   ref.read(addProvider).showAddPlaylist=false;
+                              }
+                              if (mounted) {
+                                ref.read(playlistProvider).setMusic(
+                                    setMusicModel: musicModel);
+                              }
+                              if (mounted) {
+                                ref
+                                    .read(playlistProvider)
+                                    .addInPlaylistFalse();
+                              }
+                            } else {
+                              ref.read(addProvider).changePage(2);
+                              if (ref
+                                  .read(mixMusicProvider)
+                                  .selectMixSound) {
+                                ref
+                                    .read(mixMusicProvider)
+                                    .mixFirstMusic(musicModel);
+                              } else {
+                                ref
+                                    .read(mixMusicProvider)
+                                    .mixSecondMusic(musicModel);
+                              }
+                              ref.read(addProvider).showPlusPlaylist(
+                                  playlistPlusBottom: false);
+                              //Change...
+                              //  ref.read(addProvider).showAddPlaylist=false;
+                            }
+                          },
+                          child: const Padding(
+                            padding: EdgeInsets.all(5.0),
+                            child: Icon(
+                              Icons.add,
+                              color: blackColorA0,
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                        : const SizedBox(),
+                  ],
+
+
+                ),
+                // ref.read(addProvider).showAddPlaylist
+                //     ? Padding(
+                //   padding: const EdgeInsets.only(left: 20.0),
+                //   child: Container(
+                //     decoration: BoxDecoration(
+                //         shape: BoxShape.circle,
+                //         color: Colors.black.withOpacity(0.1)),
+                //     child: GestureDetector(
+                //       onTap: () {
+                //         ref.read(addProvider).changePage(3);
+                //         if (ref
+                //             .watch(playlistProvider)
+                //             .addInPlayListTrueFalse) {
+                //           if (mounted) {
+                //             ref
+                //                 .read(playlistProvider)
+                //                 .showMixPlayList(
+                //                 goMixPlaylist: true);
+                //             //Change.
+                //             //   ref.read(addProvider).showAddPlaylist=false;
+                //           }
+                //           if (mounted) {
+                //             ref.read(playlistProvider).setMusic(
+                //                 setMusicModel: musicModel);
+                //           }
+                //           if (mounted) {
+                //             ref
+                //                 .read(playlistProvider)
+                //                 .addInPlaylistFalse();
+                //           }
+                //         } else {
+                //           ref.read(addProvider).changePage(2);
+                //           if (ref
+                //               .read(mixMusicProvider)
+                //               .selectMixSound) {
+                //             ref
+                //                 .read(mixMusicProvider)
+                //                 .mixFirstMusic(musicModel);
+                //           } else {
+                //             ref
+                //                 .read(mixMusicProvider)
+                //                 .mixSecondMusic(musicModel);
+                //           }
+                //           ref.read(addProvider).showPlusPlaylist(
+                //               playlistPlusBottom: false);
+                //           //Change...
+                //           //  ref.read(addProvider).showAddPlaylist=false;
+                //         }
+                //       },
+                //       child: const Padding(
+                //         padding: EdgeInsets.all(5.0),
+                //         child: Icon(
+                //           Icons.add,
+                //           color: blackColorA0,
+                //         ),
+                //       ),
+                //     ),
+                //   ),
+                // )
+                //     : const SizedBox(),
               ),
             );
+
+            //   Row(
+            //   // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //   children: [
+            //     InkWell(
+            //       onTap: ()async{
+            //         Navigator.push(
+            //             context,
+            //             MaterialPageRoute(
+            //                 builder: (_) => SoundDetailsScreen(
+            //                   musicId: musicModel.id,
+            //                   onPressed: () async {
+            //                     if (ref.watch(addProvider).playFromPlayList) {
+            //                       if (mounted) {
+            //                         ref.read(addProvider).changePage(3);
+            //                       }
+            //                       if (mounted) {
+            //                         changeToPlayNow = false;
+            //                         setState(() {});
+            //                       }
+            //                     } else {
+            //                       setState(() {
+            //                         changeToPlayNow = false;
+            //                       });
+            //                     }
+            //                   },
+            //                 )));
+            //       },
+            //       child: Row(
+            //         children: [
+            //           Padding(
+            //             padding: const EdgeInsets.all(8.0),
+            //             child: Image.asset(
+            //               "${musicModel.image}",
+            //               height: 60,
+            //               fit: BoxFit.contain,
+            //             ),
+            //           ),
+            //           // Padding(
+            //           //   padding: const EdgeInsets.only(top: 5.0),
+            //           //   child: CustomImage(imageUrl: musicModel.image),
+            //           // ),
+            //           const SizedBox(
+            //             width: 10,
+            //           ),
+            //           CustomText(
+            //             text: musicModel.musicName,
+            //             color: blackColor50,
+            //             fontWeight: FontWeight.w600,
+            //             fontSize: 20,
+            //           ),
+            //         ],
+            //       ),
+            //     ),
+            //     Spacer(),
+            //     Padding(
+            //       padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            //       child: Row(
+            //         children: [
+            //           Container(
+            //             decoration: BoxDecoration(
+            //               shape: BoxShape.circle,
+            //                color: Colors.black.withOpacity(0.05),
+            //             ),
+            //             child: ref.read(addProvider).showAddPlaylist
+            //                 ? GestureDetector(
+            //               onTap: () async {
+            //                 musicId = musicModel.id;
+            //                 if (mounted) {
+            //                 playMusic(id: musicId);
+            //                 }
+            //                 print("OK");
+            //               },
+            //               child: musicId == musicModel.id
+            //                   ? Padding(
+            //                 padding: const EdgeInsets.all(15.0),
+            //                 child: issongplaying
+            //                     ? const CustomSvg(
+            //                   svg: pouseButton,
+            //                   color: blackColor97,
+            //                   height: 12,
+            //                   width: 12,
+            //                 )
+            //                     : const CustomImage(
+            //                   imageUrl: playButton,
+            //                   scale: 0.8,
+            //                 ),
+            //               )
+            //                   : const Padding(
+            //                 padding: EdgeInsets.all(15.0),
+            //                 child: CustomImage(
+            //                   scale: 0.8,
+            //                   imageUrl: playButton,
+            //                 ),
+            //               ),
+            //             )
+            //                 : deleteShow
+            //                 ? SizedBox()
+            //                 : InkWell(
+            //                 onTap: () {
+            //                   setState(() {
+            //                     if (box.containsKey(musicModel.id)) {
+            //                       box.delete(musicModel.id);
+            //                     } else {
+            //                       box.put(musicModel.id, musicModel);
+            //                     }
+            //
+            //                     // wishListController.addToCart(musicModel);
+            //                   });
+            //
+            //                   // Navigator.push(context, MaterialPageRoute(builder: (_)=> SoundDetailsScreen(
+            //                   //   musicId: musicModel.id,
+            //                   // onPressed: ()async{
+            //                   //   if(ref.watch(addProvider).playFromPlayList){
+            //                   //     if(mounted){
+            //                   //       ref.read(addProvider).changePage(3);
+            //                   //     }
+            //                   //     if(mounted){
+            //                   //       changeToPlayNow = false;
+            //                   //       setState(() {});
+            //                   //     }
+            //                   //   } else{
+            //                   //     setState(() {
+            //                   //       changeToPlayNow = false;
+            //                   //     });
+            //                   //   }
+            //                   // },
+            //                   // )));
+            //                 },
+            //                 child: Padding(
+            //                     padding: EdgeInsets.all(10.0),
+            //                     child: Hive.box("fav")
+            //                         .containsKey(musicModel.id)
+            //                         ? Icon(
+            //                       Icons.favorite,
+            //                       size: 35,
+            //                       color: primaryPinkColor,
+            //                     )
+            //                         : Icon(
+            //                       Icons.favorite_border,
+            //                       size: 35,
+            //                       color: primaryPinkColor,
+            //                     )),
+            //
+            //             ),
+            //           ),
+            //           ref.read(addProvider).showAddPlaylist
+            //               ? Padding(
+            //             padding: const EdgeInsets.only(left: 20.0),
+            //             child: Container(
+            //               decoration: BoxDecoration(
+            //                   shape: BoxShape.circle,
+            //                   color: Colors.black.withOpacity(0.1)),
+            //               child: GestureDetector(
+            //                 onTap: () {
+            //                   ref.read(addProvider).changePage(3);
+            //                   if (ref
+            //                       .watch(playlistProvider)
+            //                       .addInPlayListTrueFalse) {
+            //                     if (mounted) {
+            //                       ref
+            //                           .read(playlistProvider)
+            //                           .showMixPlayList(
+            //                           goMixPlaylist: true);
+            //                       //Change.
+            //                       //   ref.read(addProvider).showAddPlaylist=false;
+            //                     }
+            //                     if (mounted) {
+            //                       ref.read(playlistProvider).setMusic(
+            //                           setMusicModel: musicModel);
+            //                     }
+            //                     if (mounted) {
+            //                       ref
+            //                           .read(playlistProvider)
+            //                           .addInPlaylistFalse();
+            //                     }
+            //                   } else {
+            //                     ref.read(addProvider).changePage(2);
+            //                     if (ref
+            //                         .read(mixMusicProvider)
+            //                         .selectMixSound) {
+            //                       ref
+            //                           .read(mixMusicProvider)
+            //                           .mixFirstMusic(musicModel);
+            //                     } else {
+            //                       ref
+            //                           .read(mixMusicProvider)
+            //                           .mixSecondMusic(musicModel);
+            //                     }
+            //                     ref.read(addProvider).showPlusPlaylist(
+            //                         playlistPlusBottom: false);
+            //                     //Change...
+            //                     //  ref.read(addProvider).showAddPlaylist=false;
+            //                   }
+            //                 },
+            //                 child: const Padding(
+            //                   padding: EdgeInsets.all(5.0),
+            //                   child: Icon(
+            //                     Icons.add,
+            //                     color: blackColorA0,
+            //                   ),
+            //                 ),
+            //               ),
+            //             ),
+            //           )
+            //               : const SizedBox(),
+            //         ],
+            //       ),
+            //     ),
+            //   ],
+            // );
           });
     } else {
       if (musicModel.musicName.toLowerCase().contains(search!.toLowerCase())) {
@@ -2072,224 +2339,260 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
         return ValueListenableBuilder(
             valueListenable: Hive.box("fav").listenable(),
             builder: (context, box, _) {
-              return GestureDetector(
-                onTap: () async {
-                  // if (issongplaying) await audioPlayer.dispose();
-                  // await Future.delayed(Duration(seconds: 2));
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) => SoundDetailsScreen(
-                            musicId: musicModel.id,
-                            onPressed: () async {
-                              if (ref.watch(addProvider).playFromPlayList) {
-                                if (mounted) {
-                                  ref.read(addProvider).changePage(3);
-                                }
-                                if (mounted) {
-                                  changeToPlayNow = false;
-                                  setState(() {});
-                                }
-                              } else {
-                                setState(() {
-                                  changeToPlayNow = false;
-                                });
-                              }
-                            },
-                          )));
-                },
-                // onTap: ref.watch(addProvider).showAddPlaylist?null:(){
-                //   if(mounted){
-                //     ref.read(addProvider).playFromPlaylistActive(change: false);
-                //   }
-                //   setState(() {
-                //     music = musicModel;
-                //     musicId = musicModel.id;
-                //     changeToPlayNow = ref.watch(addProvider).showAddPlaylist?false:deleteShow?false:true;
-                //     print("change");
-                //   });
-                // },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Image.asset(
-                            "${musicModel.image}",
-                            height: 60,
-                            fit: BoxFit.contain,
-                          ),
-                        ),
-                        // Padding(
-                        //   padding: const EdgeInsets.only(top: 5.0),
-                        //   child: CustomImage(imageUrl: musicModel.image),
-                        // ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        CustomText(
-                          text: musicModel.musicName,
-                          color: blackColor50,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 20,
-                        ),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Row(
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              // color: Colors.black.withOpacity(0.05),
-                            ),
-                            child: ref.read(addProvider).showAddPlaylist
-                                ? GestureDetector(
-                              onTap: () async {
-                                musicId = musicModel.id;
-                                if (mounted) {
-                                  //playMusic(id: musicId);
-                                }
-                                print("OK");
-                              },
-                              child: musicId == musicModel.id
-                                  ? Padding(
-                                padding: const EdgeInsets.all(15.0),
-                                child: issongplaying
-                                    ? const CustomSvg(
-                                  svg: pouseButton,
-                                  color: blackColor97,
-                                  height: 12,
-                                  width: 12,
-                                )
-                                    : const CustomImage(
-                                  imageUrl: playButton,
-                                  scale: 0.8,
-                                ),
-                              )
-                                  : const Padding(
-                                padding: EdgeInsets.all(15.0),
-                                child: CustomImage(
-                                  scale: 0.8,
-                                  imageUrl: playButton,
-                                ),
-                              ),
-                            )
-                                : deleteShow
-                                ? SizedBox()
-                                : InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    if (box.containsKey(musicModel.id)) {
-                                      box.delete(musicModel.id);
-                                    } else {
-                                      box.put(musicModel.id, musicModel);
-                                    }
-
-                                    // wishListController.addToCart(musicModel);
-                                  });
-
-                                  // Navigator.push(context, MaterialPageRoute(builder: (_)=> SoundDetailsScreen(
-                                  //   musicId: musicModel.id,
-                                  // onPressed: ()async{
-                                  //   if(ref.watch(addProvider).playFromPlayList){
-                                  //     if(mounted){
-                                  //       ref.read(addProvider).changePage(3);
-                                  //     }
-                                  //     if(mounted){
-                                  //       changeToPlayNow = false;
-                                  //       setState(() {});
-                                  //     }
-                                  //   } else{
-                                  //     setState(() {
-                                  //       changeToPlayNow = false;
-                                  //     });
-                                  //   }
-                                  // },
-                                  // )));
-                                },
-                                child: Padding(
-                                    padding: EdgeInsets.all(10.0),
-                                    child: Hive.box("fav")
-                                        .containsKey(musicModel.id)
-                                        ? Icon(
-                                      Icons.favorite,
-                                      size: 35,
-                                      color: primaryPinkColor,
-                                    )
-                                        : Icon(
-                                      Icons.favorite_border,
-                                      size: 35,
-                                      color: primaryPinkColor,
-                                    ))),
-                          ),
-                          ref.read(addProvider).showAddPlaylist
-                              ? Padding(
-                            padding: const EdgeInsets.only(left: 20.0),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.black.withOpacity(0.1)),
-                              child: GestureDetector(
-                                onTap: () {
-                                  ref.read(addProvider).changePage(3);
-                                  if (ref
-                                      .watch(playlistProvider)
-                                      .addInPlayListTrueFalse) {
-                                    if (mounted) {
-                                      ref
-                                          .read(playlistProvider)
-                                          .showMixPlayList(
-                                          goMixPlaylist: true);
-                                      //Change.
-                                      //   ref.read(addProvider).showAddPlaylist=false;
-                                    }
-                                    if (mounted) {
-                                      ref.read(playlistProvider).setMusic(
-                                          setMusicModel: musicModel);
-                                    }
-                                    if (mounted) {
-                                      ref
-                                          .read(playlistProvider)
-                                          .addInPlaylistFalse();
-                                    }
-                                  } else {
-                                    ref.read(addProvider).changePage(2);
-                                    if (ref
-                                        .read(mixMusicProvider)
-                                        .selectMixSound) {
-                                      ref
-                                          .read(mixMusicProvider)
-                                          .mixFirstMusic(musicModel);
-                                    } else {
-                                      ref
-                                          .read(mixMusicProvider)
-                                          .mixSecondMusic(musicModel);
-                                    }
-                                    ref.read(addProvider).showPlusPlaylist(
-                                        playlistPlusBottom: false);
-                                    //Change...
-                                    //  ref.read(addProvider).showAddPlaylist=false;
+              return Padding(
+                padding: const EdgeInsets.only(top: 8.0,bottom: 8),
+                child: ListTile(
+                  onTap: ()async{
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => SoundDetailsScreen(
+                              musicId: musicModel.id,
+                              onPressed: () async {
+                                if (ref.watch(addProvider).playFromPlayList) {
+                                  if (mounted) {
+                                    ref.read(addProvider).changePage(3);
                                   }
-                                },
-                                child: const Padding(
-                                  padding: EdgeInsets.all(5.0),
-                                  child: Icon(
-                                    Icons.add,
-                                    color: blackColorA0,
-                                  ),
-                                ),
-                              ),
+                                  if (mounted) {
+                                    changeToPlayNow = false;
+                                    setState(() {});
+                                  }
+                                } else {
+                                  setState(() {
+                                    changeToPlayNow = false;
+                                  });
+                                }
+                              },
+                            )));
+                  },
+                  leading:Padding(
+                    padding: const EdgeInsets.only(left: 0.0,right: 18),
+                    child: Image.asset(
+                      "${musicModel.image}",
+                      height: 200,
+                      // height: 100,
+                      // fit: BoxFit.fill,
+                    ),
+                  ) ,
+                  title:CustomText(
+                    text: musicModel.musicName,
+                    color: blackColor50,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 20,
+                  ) ,
+                  trailing:    Wrap(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.black.withOpacity(0.05),
+                        ),
+                        child: ref.read(addProvider).showAddPlaylist
+                            ? GestureDetector(
+                          onTap: () async {
+                            musicId = musicModel.id;
+                            if (mounted) {
+                              playMusic(id: musicId);
+                            }
+                            print("OK");
+                          },
+                          child: musicId == musicModel.id
+                              ? Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: issongplaying
+                                ? const CustomSvg(
+                              svg: pouseButton,
+                              color: blackColor97,
+                              height: 12,
+                              width: 12,
+                            )
+                                : const CustomImage(
+                              imageUrl: playButton,
+                              scale: 0.8,
                             ),
                           )
-                              : const SizedBox(),
-                        ],
+                              : const Padding(
+                            padding: EdgeInsets.all(15.0),
+                            child: CustomImage(
+                              scale: 0.8,
+                              imageUrl: playButton,
+                            ),
+                          ),
+                        )
+                            : deleteShow
+                            ? SizedBox()
+                            : InkWell(
+                          onTap: () {
+                            setState(() {
+                              if (box.containsKey(musicModel.id)) {
+                                box.delete(musicModel.id);
+                              } else {
+                                box.put(musicModel.id, musicModel);
+                              }
+
+                              // wishListController.addToCart(musicModel);
+                            });
+
+                            // Navigator.push(context, MaterialPageRoute(builder: (_)=> SoundDetailsScreen(
+                            //   musicId: musicModel.id,
+                            // onPressed: ()async{
+                            //   if(ref.watch(addProvider).playFromPlayList){
+                            //     if(mounted){
+                            //       ref.read(addProvider).changePage(3);
+                            //     }
+                            //     if(mounted){
+                            //       changeToPlayNow = false;
+                            //       setState(() {});
+                            //     }
+                            //   } else{
+                            //     setState(() {
+                            //       changeToPlayNow = false;
+                            //     });
+                            //   }
+                            // },
+                            // )));
+                          },
+                          child: Padding(
+                              padding: EdgeInsets.all(10.0),
+                              child: Hive.box("fav")
+                                  .containsKey(musicModel.id)
+                                  ? Icon(
+                                Icons.favorite,
+                                size: 35,
+                                color: primaryPinkColor,
+                              )
+                                  : Icon(
+                                Icons.favorite_border,
+                                size: 35,
+                                color: primaryPinkColor,
+                              )),
+
+                        ),
                       ),
-                    ),
-                  ],
+                      ref.read(addProvider).showAddPlaylist
+                          ? Padding(
+                        padding: const EdgeInsets.only(left: 20.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.black.withOpacity(0.1)),
+                          child: GestureDetector(
+                            onTap: () {
+                              ref.read(addProvider).changePage(3);
+                              if (ref
+                                  .watch(playlistProvider)
+                                  .addInPlayListTrueFalse) {
+                                if (mounted) {
+                                  ref
+                                      .read(playlistProvider)
+                                      .showMixPlayList(
+                                      goMixPlaylist: true);
+                                  //Change.
+                                  //   ref.read(addProvider).showAddPlaylist=false;
+                                }
+                                if (mounted) {
+                                  ref.read(playlistProvider).setMusic(
+                                      setMusicModel: musicModel);
+                                }
+                                if (mounted) {
+                                  ref
+                                      .read(playlistProvider)
+                                      .addInPlaylistFalse();
+                                }
+                              } else {
+                                ref.read(addProvider).changePage(2);
+                                if (ref
+                                    .read(mixMusicProvider)
+                                    .selectMixSound) {
+                                  ref
+                                      .read(mixMusicProvider)
+                                      .mixFirstMusic(musicModel);
+                                } else {
+                                  ref
+                                      .read(mixMusicProvider)
+                                      .mixSecondMusic(musicModel);
+                                }
+                                ref.read(addProvider).showPlusPlaylist(
+                                    playlistPlusBottom: false);
+                                //Change...
+                                //  ref.read(addProvider).showAddPlaylist=false;
+                              }
+                            },
+                            child: const Padding(
+                              padding: EdgeInsets.all(5.0),
+                              child: Icon(
+                                Icons.add,
+                                color: blackColorA0,
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
+                          : const SizedBox(),
+                    ],
+
+
+                  ),
+                  // ref.read(addProvider).showAddPlaylist
+                  //     ? Padding(
+                  //   padding: const EdgeInsets.only(left: 20.0),
+                  //   child: Container(
+                  //     decoration: BoxDecoration(
+                  //         shape: BoxShape.circle,
+                  //         color: Colors.black.withOpacity(0.1)),
+                  //     child: GestureDetector(
+                  //       onTap: () {
+                  //         ref.read(addProvider).changePage(3);
+                  //         if (ref
+                  //             .watch(playlistProvider)
+                  //             .addInPlayListTrueFalse) {
+                  //           if (mounted) {
+                  //             ref
+                  //                 .read(playlistProvider)
+                  //                 .showMixPlayList(
+                  //                 goMixPlaylist: true);
+                  //             //Change.
+                  //             //   ref.read(addProvider).showAddPlaylist=false;
+                  //           }
+                  //           if (mounted) {
+                  //             ref.read(playlistProvider).setMusic(
+                  //                 setMusicModel: musicModel);
+                  //           }
+                  //           if (mounted) {
+                  //             ref
+                  //                 .read(playlistProvider)
+                  //                 .addInPlaylistFalse();
+                  //           }
+                  //         } else {
+                  //           ref.read(addProvider).changePage(2);
+                  //           if (ref
+                  //               .read(mixMusicProvider)
+                  //               .selectMixSound) {
+                  //             ref
+                  //                 .read(mixMusicProvider)
+                  //                 .mixFirstMusic(musicModel);
+                  //           } else {
+                  //             ref
+                  //                 .read(mixMusicProvider)
+                  //                 .mixSecondMusic(musicModel);
+                  //           }
+                  //           ref.read(addProvider).showPlusPlaylist(
+                  //               playlistPlusBottom: false);
+                  //           //Change...
+                  //           //  ref.read(addProvider).showAddPlaylist=false;
+                  //         }
+                  //       },
+                  //       child: const Padding(
+                  //         padding: EdgeInsets.all(5.0),
+                  //         child: Icon(
+                  //           Icons.add,
+                  //           color: blackColorA0,
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ),
+                  // )
+                  //     : const SizedBox(),
                 ),
               );
             });

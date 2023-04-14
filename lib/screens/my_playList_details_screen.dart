@@ -162,7 +162,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
       print(position);
       print(_position);
 
-      if (sliderInitial.toInt() == (Savetimer! - 1).toInt()) {
+      if (sliderInitial.toInt() == (Savetimer! - 1).toInt() || sliderInitial.toInt() == (Savetimer2! - 1).toInt() || sliderInitial.toInt() == (Savetimer3! - 1).toInt()) {
         pageController.nextPage(
             duration: Duration(milliseconds: 100), curve: Curves.linear);
         sliderInitial = 0.0;
@@ -746,6 +746,8 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                               changeIndex(changeIndex: false);
                               if (mounted) {
                                 playMusic();
+                                sliderInitial = 0.0;
+
                               }
                               if (mounted) {
                                 setState(() {});
@@ -815,6 +817,8 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                               changeIndex(changeIndex: true);
                               if (mounted) {
                                 playMusic();
+                                sliderInitial = 0.0;
+                                // sliderEnd = 120.0;
                               }
                               if (mounted) {
                                 setState(() {});
@@ -1063,7 +1067,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                         child: Center(
                                             child: CustomText(
                                               text:
-                                              "$volume1%",
+                                              "${volume1!.floor()}%",
                                               fontSize: 10,
                                               color: secondaryBlackColor,
                                               fontWeight: FontWeight.w600,
@@ -1094,7 +1098,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                         child: Center(
                                             child: CustomText(
                                               text:
-                                              "$volume2%",
+                                              "${volume2!.floor()}%",
                                               fontSize: 10,
                                               color: secondaryBlackColor,
                                               fontWeight: FontWeight.w600,
@@ -1125,7 +1129,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                         child: Center(
                                             child: CustomText(
                                               text:
-                                              "$volume3%",
+                                              "${volume3!.floor()}%",
                                               fontSize: 10,
                                               color: secondaryBlackColor,
                                               fontWeight: FontWeight.w600,

@@ -32,23 +32,29 @@ class _WishListScreenState extends State<WishListScreen> {
                     itemCount: value.values.length,
                     itemBuilder: (_, index) {
                       List<HomePageFavModel> data = List.from(value.values);
-                      return Container(
-                          child: Padding(
-                        padding: const EdgeInsets.all(4),
-                        child: Card(
-                          elevation: 7,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                                child: Text(
-                              " ${index+1}. ${data[index].text}",
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                            child: Padding(
+                          padding: const EdgeInsets.all(4),
+                          child: Card(
+                            elevation: 3,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 10.0,right: 10),
+                                    child: Text(
+                                " ${index+1}. ${data[index].text}",
 
-                              style:
-                                  TextStyle(fontSize: 16, color: Colors.black,height: 1.6),
-                            )),
+                                style:
+                                      TextStyle(fontSize: 16, color: Colors.black,height: 1.6),
+                              ),
+                                  )),
+                            ),
                           ),
-                        ),
-                      ));
+                        )),
+                      );
                     },
                   )
                 : Center(

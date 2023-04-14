@@ -7,7 +7,7 @@ import 'package:lecle_volume_flutter/lecle_volume_flutter.dart';
 class AudioPlayerBG {
   static AudioPlayerBG? _instance;
 
-  static late final AudioPlayer? _player;
+   AudioPlayer? _player;
   Future<AudioSession>? _session;
 
   int? _limit = 0;
@@ -30,8 +30,9 @@ class AudioPlayerBG {
     return _instance!;
   }
 
-  Future<void> _packagePlayer(List<AudioSource> audioSourceList) async {
-    // Define the playlist
+  Future<void> _packagePlayer(String src) async {
+
+    /*// Define the playlist
     var playlist = ConcatenatingAudioSource(
       // Start loading next item just before reaching it
       useLazyPreparation: true,
@@ -39,12 +40,11 @@ class AudioPlayerBG {
       shuffleOrder: DefaultShuffleOrder(),
       // Specify the playlist items
       children: audioSourceList,
-    );
+    );*/
 
-    await _player!.setAudioSource(playlist,
-        initialIndex: 0, initialPosition: Duration.zero);
+    await _player!.setAsset(src);
 
-    _player!.setLoopMode(LoopMode.all);
+    _player!.setLoopMode(LoopMode.one);
 
     _player!.play();
   }
@@ -54,19 +54,17 @@ class AudioPlayerBG {
   }
 
   Future<void> playAudio(
-      Duration durationMax, List<AudioSource> audioSourceList) async {
-    await _packagePlayer(audioSourceList);
+      Duration durationMax, String src) async {
     _limit = durationMax.inSeconds;
 
     if (_timerDuration != null) {
       _timerDuration!.cancel();
       try {
-        _player!.stop();
+     // await _player!.stop();
       } catch (e) {
         // TODO
       }
     }
-
     // Set a timer to stop audio playback after the specified duration
 
     _timerDuration = Timer.periodic(Duration(seconds: 1), (timer) {
@@ -80,11 +78,33 @@ class AudioPlayerBG {
         _timerDuration!.cancel();
       }
     });
+    await _packagePlayer(src);
+
   }
 
-  void stop() async {
+  Future<void> stop() async {
     await _player!.stop();
+    //_player!.dispose();
     if (_timerDuration != null) _timerDuration!.cancel();
+  }
+  void pauseAudio() async {
+    await _player!.pause;
+    if (_timerDuration != null) _timerDuration!.cancel();
+  }
+  void resumeAudio() async {
+    await _player!.play;
+    if (_timerDuration != null) _timerDuration!.cancel();
+    _timerDuration = Timer.periodic(Duration(seconds: 1), (timer) {
+      _limit = _limit! - 1;
+
+      print("_limit===========${_player!.playing}");
+      print(_limit);
+
+      if (_limit! <= 0) {
+        _player!.stop();
+        _timerDuration!.cancel();
+      }
+    });
   }
 
   bool isPlaying() {
@@ -103,7 +123,13 @@ class AudioPlayerBG {
     return _limit ?? 0;
   }
 
+  setVolume(vol){
+    _player!.setVolume(vol);
+  }
+  bool IsSilenCall=false;
+
   void silenceIncomingCalls({bool silent = true}) async {
+    IsSilenCall = silent;
     if (!silent) {//mistake cilo // real device a run dissi wait r music dynamic banaite partecina
       initAudioStreamType();
       setVol(androidVol: 5, iOSVol: 5.0, showVolumeUI: false);
@@ -127,7 +153,6 @@ class AudioPlayerBG {
 
     });
   }
-
   Future<void> initAudioStreamType() async {
     await Volume.initAudioStream(AudioManager.streamRing);
   }
@@ -143,8 +168,12 @@ class AudioPlayerBG {
     );
   }
 
+
   listenCall(AudioSession audioSession) {
     audioSession.interruptionEventStream.listen((event) async {
+if(!IsSilenCall){
+  return;
+}
       print("==============dasfsdfsd==");
       print(event.begin);
       if (event.begin) {

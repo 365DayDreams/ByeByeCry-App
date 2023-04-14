@@ -134,35 +134,33 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
                                         children: [
                                           GestureDetector(
                                             onTap: () {
-                                              // ref
-                                              //     .read(addProvider)
-                                              //     .showPlusPlaylist(
-                                              //         playlistPlusBottom: true);
-                                              // if (mounted) {
-                                              //   ref
-                                              //       .read(addProvider)
-                                              //       .changePage(1);
-                                              // }
-                                              // if (mounted) {
-                                              //   ref
-                                              //       .read(playlistProvider)
-                                              //       .addInPlaylistTrue();
-                                              // }
-                                              // if (mounted) {
-                                              //   ref
-                                              //       .read(playlistProvider)
-                                              //       .setIndex(setIndex: index);
-                                              // }
-                                              // if (mounted) {
-                                              //   ref
-                                              //       .read(playlistProvider)
-                                              //       .setMusicFirstOrSecond(
-                                              //           setFirstOrSecondMusic:
-                                              //               true);
-                                              // }
-                                              // if (mounted) {
-                                              //   setState(() {});
-                                              // }
+                                              ref
+                                                  .read(addProvider)
+                                                  .showPlusPlaylist(
+                                                      playlistPlusBottom: true);
+                                              if (mounted) {
+                                                ref.read(addProvider).changePage(1,);
+                                              }
+                                              if (mounted) {
+                                                ref
+                                                    .read(playlistProvider)
+                                                    .addInPlaylistTrue();
+                                              }
+                                              if (mounted) {
+                                                ref
+                                                    .read(playlistProvider)
+                                                    .setIndex(setIndex: index);
+                                              }
+                                              if (mounted) {
+                                                ref
+                                                    .read(playlistProvider)
+                                                    .setMusicFirstOrSecond(
+                                                        setFirstOrSecondMusic:
+                                                            true);
+                                              }
+                                              if (mounted) {
+                                                setState(() {});
+                                              }
                                             },
                                             child: Row(
                                               children: [
@@ -281,13 +279,13 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
                                     .read(addProvider)
                                     .showPlusPlaylist(playlistPlusBottom: true);
                                 if (mounted) {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (_) =>
-                                              MyPlayListNewSoundScreen()));
+                                  // Navigator.push(
+                                  //     context,
+                                  //     MaterialPageRoute(
+                                  //         builder: (_) =>
+                                  //             MyPlayListNewSoundScreen()));
 
-                                  // ref.read(addProvider).changePage(1);
+                                  ref.read(addProvider).changePage(1);
                                 }
                                 if (mounted) {
                                   ref
@@ -346,12 +344,12 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
                             .read(addProvider)
                             .showPlusPlaylist(playlistPlusBottom: true);
                         if (mounted) {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (_) => MyPlayListNewSoundScreen()));
+                          // Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //         builder: (_) => MyPlayListNewSoundScreen()));
 
-                          // ref.read(addProvider).changePage(1);
+                      ref.read(addProvider).changePage(1);
                         }
                         if (mounted) {
                           ref.read(playlistProvider).addInPlaylistTrue();
@@ -447,7 +445,7 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
                                 mixTitle: nameController.text);
                           }
                           if (mounted) {
-                            setState(() {});
+                            Navigator.pop(context);
                           }
                           if (mounted) {
                             LocalDB().setTimer(
@@ -473,8 +471,9 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
                                 .toStringAsFixed(0)
                                 .replaceAll("0.", ""));
 
-                            Navigator.pop(context);
+
                           }
+
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             backgroundColor: Colors.white,

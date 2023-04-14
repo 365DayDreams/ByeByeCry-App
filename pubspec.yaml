@@ -40,7 +40,7 @@ dependencies:
   hexcolor: ^3.0.1
   flutter_inappwebview: ^5.7.2+3
   screen_brightness: ^0.2.2
-  just_audio: ^0.9.32
+  just_audio: 0.9.31
   audio_service: ^0.18.9
   sqflite: ^2.2.6
   favorite_button: ^0.0.4
@@ -52,6 +52,7 @@ dependencies:
   audio_session: ^0.1.13
   lecle_volume_flutter: ^0.0.1+1
   flutter_carousel_slider: ^1.1.0
+  animated_toggle_switch: ^0.6.2
 
 
 
