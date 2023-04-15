@@ -1092,6 +1092,11 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
                     borderRadius: 48,
                     onPressed: () {
                       ref.read(mixMusicProvider).deleteMix(mixId: id.toString());
+                      ref.read(mixMusicProvider).addOrRemoveMixPlayList(id: id.toString());
+                     // ref.read(mixMusicProvider).re(id: id.toString());
+
+                      ref.watch(playlistProvider).mixMixPlaylist.removeAt(index);
+
                       if (mounted) {
                         Navigator.pop(context);
                       }

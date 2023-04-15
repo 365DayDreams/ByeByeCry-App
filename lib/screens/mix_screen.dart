@@ -201,6 +201,8 @@ class _MixScreenState extends ConsumerState<MixScreen> {
         onPressed: () {
           if (widget.type == "1") {
             Navigator.pop(context);
+          }else if(widget.type=="3"){
+            Navigator.pop(context);
           }
         },
       ),

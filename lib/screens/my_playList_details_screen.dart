@@ -159,10 +159,17 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
     //changeVolume();
     super.initState();
     Timer.periodic(Duration(seconds: 1), (timer) async {
-      print(position);
-      print(_position);
 
-      if (sliderInitial.toInt() == (Savetimer! - 1).toInt() || sliderInitial.toInt() == (Savetimer2! - 1).toInt() || sliderInitial.toInt() == (Savetimer3! - 1).toInt()) {
+
+      if (sliderInitial.toInt() == (Savetimer! - 1).toInt() ||
+          sliderInitial.toInt() == (Savetimer2! - 1).toInt() ||
+          sliderInitial.toInt() == (Savetimer3! - 1).toInt()) {
+
+        print("play next================");
+
+
+
+
         pageController.nextPage(
             duration: Duration(milliseconds: 100), curve: Curves.linear);
         sliderInitial = 0.0;
@@ -181,23 +188,14 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
 
         if (mounted) {
           setState(() {});
-        }
+
       }
       if (!mounted) {
         timer.cancel();
         return;
       }
-      // if(ref
-      //     .watch(playlistProvider)
-      //     .mixMixPlaylist[mixPlaylistIndex]
-      //     .playListList!
-      //     .length-1 == musicIndex){
-      //   pageController.animateToPage(0, duration: Duration(seconds: 1), curve: Curves.easeInOut);
-      //
-      // }else{
-      //
-      // }
-    });
+
+    }});
   }
 
   @override
@@ -209,7 +207,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
   @override
   void dispose() {
     audioPlayer1.dispose();
-    _subscription.cancel();
+    //_subscription.cancel();
     super.dispose();
   }
 
@@ -373,6 +371,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
     sliderInitial = 0.0;
     if (mounted) {
       setState(() {});
+      //resumeSliderTimmer();
     }
   }
 
@@ -1763,6 +1762,12 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
       sliderTimer!.cancel();
     }
     sliderTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+      print("Savetimer===========================");
+      print(Savetimer);
+      print(Savetimer2);
+      print(Savetimer3);
+
+
       if (!mounted) {
         timer.cancel();
       }
@@ -1832,6 +1837,15 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
   }
 
   void resumeSliderTimmer() {
-    setSongDuration(Savetimer!.toInt(), initValue: sliderInitial);
+    if(musicIndex==0){
+      setSongDuration(Savetimer!.toInt() , initValue: sliderInitial);
+
+    }else if(musicIndex==1){
+      setSongDuration(Savetimer2!.toInt() , initValue: sliderInitial);
+
+    }else if(musicIndex==2){
+      setSongDuration(Savetimer3!.toInt() , initValue: sliderInitial);
+
+    }
   }
 }

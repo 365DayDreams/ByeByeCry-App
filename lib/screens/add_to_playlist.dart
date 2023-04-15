@@ -84,7 +84,7 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
           _showDialog(context);
         },
         child: Padding(
-          padding: const EdgeInsets.only(left: 58.0, right: 58, bottom: 11),
+          padding: const EdgeInsets.only(left: 58.0, right: 58, bottom: 118),
           child: Container(
             decoration: BoxDecoration(
               color: primaryPinkColor,
@@ -164,7 +164,9 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
                                             },
                                             child: Row(
                                               children: [
-                                                CustomImage(
+                                                ref.watch(playlistProvider).mixPlayList[index].first?.image==null ? Container(
+
+                                                ) :    CustomImage(
                                                   imageUrl:
                                                       "${ref.watch(playlistProvider).mixPlayList[index].first?.image}",
                                                   height: width * .15,

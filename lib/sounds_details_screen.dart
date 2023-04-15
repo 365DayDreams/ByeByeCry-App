@@ -3,6 +3,7 @@ import 'package:animated_toggle_switch/animated_toggle_switch.dart';
 import 'package:bye_bye_cry_new/compoment/shared/custom_image.dart';
 import 'package:bye_bye_cry_new/compoment/shared/custom_svg.dart';
 import 'package:bye_bye_cry_new/main.dart';
+import 'package:bye_bye_cry_new/screens/mix_screen.dart';
 import 'package:bye_bye_cry_new/screens/provider/add_music_provider.dart';
 import 'package:bye_bye_cry_new/screens/provider/mix_music_provider.dart';
 import 'package:flutter/material.dart';
@@ -199,11 +200,17 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        elevation: 0,
         backgroundColor: secondaryPinkColor,
+        elevation: 0,
+
+
         title: const Text(
           "Now Playing",
-          style: TextStyle(color: Colors.black),
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.w700,
+            color: secondaryBlackColor,
+          ),
         ),
         leading: Padding(
           padding: const EdgeInsets.only(left: 15.0),
@@ -427,33 +434,37 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                           ],
                         ),
                       ),
-                      Row(
-                        children: [
-                          const CustomImage(
-                            imageUrl: 'asset/images/icon_png/another_sound.png',
-                            color: blackColorA0,
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          Container(
-                            color: Colors.transparent,
-                            child: GestureDetector(
-                              onTap: () {
-                                ref.read(addProvider).changePage(2);
-                                ref.read(mixMusicProvider).clearMixMusics();
-                                ref.read(mixMusicProvider).mixFirstMusic(
-                                    ref.watch(addProvider).musicList[index]);
-                                // Navigator.push(context, MaterialPageRoute(builder: (context) => const StartPage()));
-                              },
+                      InkWell(
+                        onTap: (){
+                          ref.read(addProvider).changePage(2);
+                          ref.read(mixMusicProvider).clearMixMusics();
+                          ref.read(mixMusicProvider).mixFirstMusic(
+                              ref.watch(addProvider).musicList[index]);
+
+
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const MixScreen(
+                            type: "3",
+                          )));
+                        },
+                        child: Row(
+                          children: [
+                            const CustomImage(
+                              imageUrl: 'asset/images/icon_png/another_sound.png',
+                              color: blackColorA0,
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Container(
+                              color: Colors.transparent,
                               child: const CustomText(
                                 text: 'Mix Another\n Sound',
                                 fontSize: 14,
                                 fontWeight: FontWeight.w400,
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -547,48 +558,48 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                             },
                             icon: const CustomSvg(
                                 svg: left_shift, color: primaryPinkColor)),
-                        Container(
-                          // color: Colors.red,
-                          height: width * 0.18,
-                          width: width * 0.18,
-                          clipBehavior: Clip.hardEdge,
-                          decoration: BoxDecoration(
-                              color: secondaryWhiteColor2,
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                  color: Colors.transparent, width: 0),
-                              boxShadow: const [
-                                BoxShadow(
-                                    blurRadius: 10, color: secondaryWhiteColor2)
-                              ]),
-                          child: GestureDetector(
-                            onTap: () async {
-                              if (ins.isPlaying()) {
-                                if (mounted) {
-                                  playPouse = false;
-                                }
-                                ins.stop();
-                                pauseSliderTimmer();
-                                print("pause solution");
-                              } else {
-                                if (mounted) {
-                                  playPouse = true;
-                                }
-                                String url = ref
-                                    .watch(addProvider)
-                                    .musicList[index]
-                                    .musicFile;
-                                //await audioPlayer.play(AssetSource(url));
-                                print("play");
-                                resumeSliderTimmer();
-                                ins.playAudio(
-                                    Duration(
-                                        seconds: (sliderEnd - sliderInitial)
-                                            .toInt()),
-                                    "assets/$url");
+                        GestureDetector(
+                          onTap: ()async{
+                            if (ins.isPlaying()) {
+                              if (mounted) {
+                                playPouse = false;
                               }
-                              setState(() {});
-                            },
+                              ins.stop();
+                              pauseSliderTimmer();
+                              print("pause solution");
+                            } else {
+                              if (mounted) {
+                                playPouse = true;
+                              }
+                              String url = ref
+                                  .watch(addProvider)
+                                  .musicList[index]
+                                  .musicFile;
+                              //await audioPlayer.play(AssetSource(url));
+                              print("play");
+                              resumeSliderTimmer();
+                              ins.playAudio(
+                                  Duration(
+                                      seconds: (sliderEnd - sliderInitial)
+                                          .toInt()),
+                                  "assets/$url");
+                            }
+                            setState(() {});
+                          },
+                          child: Container(
+                            // color: Colors.red,
+                            height: width * 0.18,
+                            width: width * 0.18,
+                            clipBehavior: Clip.hardEdge,
+                            decoration: BoxDecoration(
+                                color: secondaryWhiteColor2,
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                    color: Colors.transparent, width: 0),
+                                boxShadow: const [
+                                  BoxShadow(
+                                      blurRadius: 10, color: secondaryWhiteColor2)
+                                ]),
                             child: Padding(
                               padding: const EdgeInsets.all(22),
                               child: CustomSvg(
@@ -970,7 +981,7 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                                   : null,
                               child: const CustomText(
                                 text: "continuous play",
-                                fontSize: 16,
+                                fontSize: 19,
                                 fontWeight: FontWeight.w400,
                                 color: primaryGreyColor,
                               )),
@@ -989,7 +1000,7 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                             child: Container(
                               alignment: Alignment.center,
                               height: 50,
-                              width: 200,
+                              width: 100,
                               decoration: BoxDecoration(
                                   color: primaryPinkColor,
                                   borderRadius: BorderRadius.circular(30)),
