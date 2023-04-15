@@ -13,7 +13,8 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'background_music/bg_music.dart';
 import 'confiq/store_config.dart';
-AudioPlayerBG ins= AudioPlayerBG.getInstance(); //make it globally
+
+AudioPlayerBG ins = AudioPlayerBG.getInstance(); //make it globally
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -74,7 +75,7 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       title: 'Bye Bye Cry',
       theme: ThemeData(fontFamily: 'Neue Einstellung'),
-      home: InitialHomePage(),
+      home: StartPage(),
     );
   }
 }

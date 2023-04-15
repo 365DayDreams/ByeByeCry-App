@@ -5,6 +5,7 @@ import 'package:bye_bye_cry_new/compoment/shared/custom_text.dart';
 import 'package:bye_bye_cry_new/screens/provider/add_music_provider.dart';
 import 'package:bye_bye_cry_new/screens/provider/mix_music_provider.dart';
 import 'package:bye_bye_cry_new/screens/provider/playlistProvider.dart';
+import 'package:bye_bye_cry_new/sounds_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -118,32 +119,13 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
           children: [
             SizedBox(height: 20,),
 
-            // Padding(
-            //   padding: const EdgeInsets.only(
-            //       left: 20.0, right: 20, top: 10, bottom: 10),
-            //   child: Container(
-            //     height: 60,
-            //     margin: const EdgeInsets.all(16),
-            //     color: secondaryWhiteColor2,
-            //     child: ListTile(
-            //       dense: true,
-            //       title: TextField(
-            //         controller: searchController,
-            //         decoration: const InputDecoration(
-            //             hintStyle: TextStyle(color: blackColorA0,fontSize: 14,fontWeight: FontWeight.w400),
-            //             hintText: 'Search music', border: InputBorder.none
-            //         ),
-            //       ),
-            //       trailing: GestureDetector(onTap:(){},child: const CustomSvg(svg: "asset/images/search_icon.svg",)),
-            //     ),
-            //   ),
-            // ),
+
           Column(
               children: List.generate(
                 ref.watch(playlistProvider).mixMixPlaylist.length,
                     (index) => Container(
                     color: index % 2 == 0?Colors.transparent:pinkLightColor,
-                    child: mixMixMusicList(musicName: "${ref.watch(playlistProvider).mixMixPlaylist[index].title}",musicId: ref.watch(playlistProvider).mixMixPlaylist[index].id,musicIndex: index, ),),
+                    child: mixMixMusicList(musicName: "${ref.watch(playlistProvider).mixMixPlaylist[index].title}",musicId: ref.watch(playlistProvider).mixMixPlaylist[index].id,musicIndex: index, image: ref.watch(playlistProvider).mixMixPlaylist[index].playListList![0].first!.image??ref.watch(playlistProvider).mixMixPlaylist[index].playListList![1].second!.image),),
               ),
             ),
             Column(
@@ -219,9 +201,9 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
           }
         }
 
-        Navigator.push(context, MaterialPageRoute(builder: (_)=> PlaylistMixSound2(
-          playlistMixMusicId: musicId,
-          onPressed: setFuck,
+        Navigator.push(context, MaterialPageRoute(builder: (_)=> SoundDetailsScreen(
+         // playlistMixMusicId: musicId,
+          onPressed: setFuck, musicId: musicId,
 
         )));
       },
@@ -251,13 +233,20 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
             ),
 
 
-            deleteShow==true? InkWell(
-              onTap: (){
-                _showDialogdelete(context, firstMusicName: musicName, secondMusicName: musicName, index22: index);
-              },
-              child: Padding(
-                padding: EdgeInsets.all(10.0),
-                child: CustomSvg(svg: deleteSvg),
+            deleteShow==true? Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.black.withOpacity(0.05),
+              ),
+              child: InkWell(
+                onTap: (){
+                 _showDialogdelete(context, firstMusicName: musicName, secondMusicName: musicName, index22: index, id: musicId);
+
+                },
+                child: Padding(
+                  padding: EdgeInsets.all(15.0),
+                  child: CustomSvg(svg: deleteSvg),
+                ),
               ),
             ):    Container(
                 decoration: BoxDecoration(
@@ -425,13 +414,19 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
                 ),
               ],
             ),
-            deleteShow==true? InkWell(
-              onTap: (){
-                _showDialogdelete(context, firstMusicName: musicName, secondMusicName: musicName, index22: index);
-              },
-              child: Padding(
-                padding: EdgeInsets.all(10.0),
-                child: CustomSvg(svg: deleteSvg),
+            deleteShow==true? Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.black.withOpacity(0.05),
+              ),
+              child: InkWell(
+                onTap: (){
+                  _showDialogdelete(context, firstMusicName: musicName, secondMusicName: musicName, index22: index, id: musicId);
+                },
+                child: Padding(
+                  padding: EdgeInsets.all(15.0),
+                  child: CustomSvg(svg: deleteSvg),
+                ),
               ),
             ):    Container(
                 decoration: BoxDecoration(
@@ -567,7 +562,7 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
     //   ),
     // );
   }
-  Widget mixMixMusicList({required String musicName,required String musicId,required int musicIndex}) {
+  Widget mixMixMusicList({required String musicName,required String musicId,required int musicIndex,required String image}) {
 
     final height = ScreenSize(context).height;
     return InkWell(
@@ -603,7 +598,7 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
                   decoration: const BoxDecoration(
                       color: primaryPinkColor,
                       borderRadius: BorderRadius.all(Radius.circular(10))),
-                  // child: Image.asset("${image}"),
+                  child: Image.asset("${image}"),
                 ),
                 const SizedBox(width: 20),
                 CustomText(
@@ -614,13 +609,19 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
               ],
             ),
 
-        deleteShow==true? InkWell(
-          onTap: (){
-            _showDialogdelete(context, firstMusicName: musicName, secondMusicName: musicName, index22: musicIndex);
-          },
-          child: Padding(
-            padding: EdgeInsets.all(10.0),
-            child: CustomSvg(svg: deleteSvg),
+        deleteShow==true? Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.black.withOpacity(0.05),
+          ),
+          child: InkWell(
+            onTap: (){
+              _showDialogdelete(context, firstMusicName: musicName, secondMusicName: musicName, index22: musicIndex, id: musicId,);
+            },
+            child: Padding(
+              padding: EdgeInsets.all(15.0),
+              child: CustomSvg(svg: deleteSvg),
+            ),
           ),
         ):    Container(
               decoration: BoxDecoration(
@@ -1037,7 +1038,9 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
   void _showDialogdelete(BuildContext context,
       {required String firstMusicName,
         required String secondMusicName,
-        required int index22}) {
+        required int index22,
+         required String id
+      }) {
     final width = ScreenSize(context).width;
     showDialog(
       context: context,
@@ -1088,13 +1091,10 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
                     textFontWeight: FontWeight.w600,
                     borderRadius: 48,
                     onPressed: () {
-                      ref.watch(playlistProvider).mixMixPlaylist.removeAt(index22);
-                      // ref.read(mixMusicProvider).deleteMix(mixId: mixId);
-
+                      ref.read(mixMusicProvider).deleteMix(mixId: id.toString());
+                      if (mounted) {
                         Navigator.pop(context);
-                        setState(() {
-
-                        });
+                      }
 
                     },
                   ),

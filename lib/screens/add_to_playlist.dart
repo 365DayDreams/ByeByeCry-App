@@ -416,6 +416,8 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(20)),
                   child: CustomTextInputField(
+                    autoFocus: true,
+
                     textEditingController: nameController,
                     cursorColor: primaryPinkColor,
                     borderColor: Colors.transparent,

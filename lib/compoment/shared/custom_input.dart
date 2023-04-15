@@ -20,6 +20,7 @@ class CustomTextInputField extends StatefulWidget {
   final bool readOnly;
   final Color borderColor;
   final double borderRadius;
+  final bool ?autoFocus;
   const CustomTextInputField({
     Key? key,
     required this.textEditingController,
@@ -38,6 +39,7 @@ class CustomTextInputField extends StatefulWidget {
     this.readOnly = false,
     this.borderColor = Colors.white,
     this.borderRadius = 5,
+    this.autoFocus
   }) : super(key: key);
 
   @override
@@ -71,6 +73,7 @@ class _CustomTextInputFieldState extends State<CustomTextInputField> {
           ]
       ),
       child: TextFormField(
+        autofocus: widget.autoFocus!,
         readOnly: widget.readOnly,
         cursorColor: widget.cursorColor,
         maxLines: widget.maxLine,
