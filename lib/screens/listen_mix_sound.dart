@@ -432,55 +432,58 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                     ),
                   ),
                   SizedBox(height: width * 0.06),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            IconButton(
-                              onPressed: () {
-                                ref
-                                    .read(mixMusicProvider)
-                                    .addOrRemoveMixPlayList(
-                                        id: ref
-                                            .watch(mixMusicProvider)
-                                            .combinationList[musicIndex]
-                                            .id);
-                              },
-                              icon: Icon(
-                                Icons.add,
-                                size: 30,
-                                color: ref
-                                        .watch(mixMusicProvider)
-                                        .mixPlayListIds
-                                        .contains(ref
-                                            .watch(mixMusicProvider)
-                                            .combinationList[musicIndex]
-                                            .id)
-                                    ? Colors.red
-                                    : Colors.black,
+                  InkWell(
+                    onTap: (){
+                      setState(() {
+                        ref
+                            .read(mixMusicProvider)
+                            .addOrRemoveMixPlayList(
+                            id: ref
+                                .watch(mixMusicProvider)
+                                .combinationList[musicIndex]
+                                .id);
+                      });
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                            Icon(
+                                  Icons.add,
+                                  size: 30,
+                                  color: ref
+                                          .watch(mixMusicProvider)
+                                          .mixPlayListIds
+                                          .contains(ref
+                                              .watch(mixMusicProvider)
+                                              .combinationList[musicIndex]
+                                              .id)
+                                      ? Colors.red
+                                      : Colors.black,
+                                ),
+
+                              // GestureDetector(
+                              //     onTap: (){
+                              //     },
+                              //     child: CustomImage(imageUrl: 'asset/images/icon_png/love.png',color: ref.watch(mixMusicProvider).mixPlayListIds.contains(ref.watch(mixMusicProvider).combinationList[musicIndex].id)? Colors.red:blackColorA0,)),
+                              const SizedBox(
+                                width: 5,
                               ),
-                            ),
-                            // GestureDetector(
-                            //     onTap: (){
-                            //     },
-                            //     child: CustomImage(imageUrl: 'asset/images/icon_png/love.png',color: ref.watch(mixMusicProvider).mixPlayListIds.contains(ref.watch(mixMusicProvider).combinationList[musicIndex].id)? Colors.red:blackColorA0,)),
-                            const SizedBox(
-                              width: 5,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 4.0),
-                              child: const CustomText(
-                                text: 'Add To Playlist',
-                                fontSize: 16,
-                                fontWeight: FontWeight.w400,
+                              Padding(
+                                padding: const EdgeInsets.only(top: 4.0),
+                                child: const CustomText(
+                                  text: 'Add To Playlist',
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w400,
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                      ],
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   SizedBox(height: width * 0.1),
