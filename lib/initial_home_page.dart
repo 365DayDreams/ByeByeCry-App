@@ -1099,14 +1099,17 @@ class _InitialHomePageState extends ConsumerState<InitialHomePage> {
             const SizedBox(
               height: 10,
             ),
-            const CustomText(
-                height: 1.1,
-                color: lightGrey,
-                textAlign: TextAlign.center,
-                fontSize: 18,
-                fontWeight: FontWeight.w400,
-                text:
-                'All of the sounds you love. in a portable adorable sound machine'),
+            Padding(
+              padding: const EdgeInsets.only(left: 10.0,right: 10),
+              child: const CustomText(
+                  height: 1.1,
+                  color: lightGrey,
+                  textAlign: TextAlign.center,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w400,
+                  text:
+                  'All of the sounds you love. in a portable adorable sound machine'),
+            ),
             const SizedBox(
               height: 30,
             ),

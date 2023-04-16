@@ -389,17 +389,20 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                         ),
                       ),
                       Expanded(
-                        child: CustomImage(
-                          
-                          imageUrl: ref
-                                  .watch(mixMusicProvider)
-                                  .combinationList[musicIndex]
-                                  .second
-                                  ?.image ??
-                              "",
-                          // height: width * .7,
-                          // width: width * .4,
-                          // boxFit: BoxFit.contain,
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: CustomImage(
+
+                            imageUrl: ref
+                                    .watch(mixMusicProvider)
+                                    .combinationList[musicIndex]
+                                    .second
+                                    ?.image ??
+                                "",
+                            // height: width * .7,
+                            // width: width * .4,
+                            // boxFit: BoxFit.contain,
+                          ),
                         ),
                       ),
 
@@ -930,24 +933,27 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15)),
                     backgroundColor: Colors.white,
-                    title: Column(
-                      children: const [
-                        CustomText(
-                          text: 'Select Duration',
-                          textAlign: TextAlign.center,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600,
-                          color: primaryGreyColor,
-                        ),
-                        SizedBox(height: 20),
-                      ],
+                    title: Padding(
+                      padding: const EdgeInsets.only(left: 18.0, right: 18),
+                      child: Column(
+                        children: const [
+                          CustomText(
+                            text: 'Select Duration',
+                            textAlign: TextAlign.center,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                            color: primaryGreyColor,
+                          ),
+                          SizedBox(height: 20),
+                        ],
+                      ),
                     ),
                     contentPadding: EdgeInsets.zero,
                     content: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Container(
-                          width: width * 0.25,
+                          width: width * 0.27,
                           padding: const EdgeInsets.symmetric(vertical: 8),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(5),

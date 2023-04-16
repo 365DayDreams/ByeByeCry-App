@@ -32,14 +32,9 @@ class PlaylistMixSound2 extends ConsumerStatefulWidget {
 
 class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
     with TickerProviderStateMixin {
-
-
-
-
   double? Savetimer;
   double? Savetimer2;
   double? Savetimer3;
-
 
   getTimer() async {
     await LocalDB().getTimer().then((value) {
@@ -70,11 +65,6 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
       });
     });
   }
-
-
-
-
-
 
   double? volume1;
   double? volume2;
@@ -109,8 +99,6 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
       });
     });
   }
-
-
 
   List<String> times = [
     "0",
@@ -159,21 +147,22 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
     //changeVolume();
     super.initState();
     Timer.periodic(Duration(seconds: 1), (timer) async {
-
-
+      // if(sliderTimer==120.0|| sliderInitial==120.0){
+      //   timer.cancel();
+      // }
       if (sliderInitial.toInt() == (Savetimer! - 1).toInt() ||
+          sliderInitial == 120.0 ||
           sliderInitial.toInt() == (Savetimer2! - 1).toInt() ||
-          sliderInitial.toInt() == (Savetimer3! - 1).toInt()) {
-
+          sliderInitial == 120.0 ||
+          sliderInitial.toInt() == (Savetimer3! - 1).toInt() ||
+          sliderInitial == 120.0) {
         print("play next================");
-
-
-
-
+        changeIndex(changeIndex: true);
         pageController.nextPage(
             duration: Duration(milliseconds: 100), curve: Curves.linear);
+       changeIndex(changeIndex: true);
+
         sliderInitial = 0.0;
-        changeIndex(changeIndex: true);
 
         if (mounted) {
           String url = ref
@@ -188,14 +177,13 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
 
         if (mounted) {
           setState(() {});
-
+        }
+        if (!mounted) {
+          timer.cancel();
+          return;
+        }
       }
-      if (!mounted) {
-        timer.cancel();
-        return;
-      }
-
-    }});
+    });
   }
 
   @override
@@ -575,21 +563,27 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                       ),
                       if (musicIndex == 0) ...[
                         CustomText(
-                          text: Savetimer== 0.0 ? "2:00" :'${getHumanTimeBySecond(Savetimer!.toInt())}',
+                          text: Savetimer == 0.0
+                              ? "2:00"
+                              : '${getHumanTimeBySecond(Savetimer!.toInt())}',
                           fontSize: 10,
                           color: blackColor2,
                           fontWeight: FontWeight.w700,
                         ),
                       ] else if (musicIndex == 1) ...[
                         CustomText(
-                          text:Savetimer2==0.0 ? "2:00" : '${getHumanTimeBySecond(Savetimer2!.toInt())}',
+                          text: Savetimer2 == 0.0
+                              ? "2:00"
+                              : '${getHumanTimeBySecond(Savetimer2!.toInt())}',
                           fontSize: 10,
                           color: blackColor2,
                           fontWeight: FontWeight.w700,
                         ),
                       ] else if (musicIndex == 2) ...[
                         CustomText(
-                          text: Savetimer3==0.0 ? "2:00" :  '${getHumanTimeBySecond(Savetimer3!.toInt())}',
+                          text: Savetimer3 == 0.0
+                              ? "2:00"
+                              : '${getHumanTimeBySecond(Savetimer3!.toInt())}',
                           fontSize: 10,
                           color: blackColor2,
                           fontWeight: FontWeight.w700,
@@ -610,13 +604,13 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                       child: Slider(
                           value: sliderInitial.floorToDouble(),
                           min: 0,
-                          max: Savetimer==0.0 ?120.00:Savetimer!,
+                          max: Savetimer == 0.0 ? 120.00 : Savetimer!,
                           divisions: 350,
                           activeColor: primaryPinkColor,
                           inactiveColor: primaryGreyColor2,
                           onChanged: (double newValue) async {
                             print("slider");
-                            updateSlider(newValue);
+                            updateSlider(newValue.floorToDouble());
                             setState(() {});
                           },
                           semanticFormatterCallback: (double newValue) {
@@ -636,13 +630,13 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                       child: Slider(
                           value: sliderInitial.floorToDouble(),
                           min: 0,
-                          max: Savetimer2==0.0 ?120.00:Savetimer2!,
+                          max: Savetimer2 == 0.0 ? 120.00 : Savetimer2!,
                           divisions: 350,
                           activeColor: primaryPinkColor,
                           inactiveColor: primaryGreyColor2,
                           onChanged: (double newValue) async {
                             print("slider");
-                            updateSlider(newValue);
+                            updateSlider(newValue.floorToDouble());
                             setState(() {});
                           },
                           semanticFormatterCallback: (double newValue) {
@@ -662,13 +656,13 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                       child: Slider(
                           value: sliderInitial.floorToDouble(),
                           min: 0,
-                          max: Savetimer3 ==0.0  ? 120.00:Savetimer3! ,
+                          max: Savetimer3 == 0.0 ? 120.00 : Savetimer3!,
                           divisions: 350,
                           activeColor: primaryPinkColor,
                           inactiveColor: primaryGreyColor2,
                           onChanged: (double newValue) async {
                             print("slider");
-                            updateSlider(newValue);
+                            updateSlider(newValue.floorToDouble());
                             setState(() {});
                           },
                           semanticFormatterCallback: (double newValue) {
@@ -676,7 +670,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                           }),
                     ),
                   ),
-                ] ,
+                ],
 
                 // SizedBox(
                 //   //color: Colors.green,
@@ -746,7 +740,6 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                               if (mounted) {
                                 playMusic();
                                 sliderInitial = 0.0;
-
                               }
                               if (mounted) {
                                 setState(() {});
@@ -979,8 +972,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                   ),
                                 ),
                               ),
-
-                              if(musicIndex==0)...[
+                              if (musicIndex == 0) ...[
                                 Expanded(
                                   child: Slider(
                                     value: volume1!,
@@ -993,13 +985,12 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                       updateState(() {
                                         // Screen.setBrightness(newValue);
                                         volume1 = newValue;
-
                                       });
                                       await audioPlayer1.setVolume(volume1!);
                                     },
                                   ),
                                 ),
-                              ]else if(musicIndex==1)...[
+                              ] else if (musicIndex == 1) ...[
                                 Expanded(
                                   child: Slider(
                                     value: volume2!,
@@ -1012,13 +1003,12 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                       updateState(() {
                                         // Screen.setBrightness(newValue);
                                         volume2 = newValue;
-
                                       });
                                       await audioPlayer1.setVolume(volume2!);
                                     },
                                   ),
                                 ),
-                              ]else if(musicIndex==2)...[
+                              ] else if (musicIndex == 2) ...[
                                 Expanded(
                                   child: Slider(
                                     value: volume3!,
@@ -1031,18 +1021,15 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                       updateState(() {
                                         // Screen.setBrightness(newValue);
                                         volume3 = newValue;
-
                                       });
                                       await audioPlayer1.setVolume(volume3!);
                                     },
                                   ),
                                 ),
                               ],
-
-
                             ],
                           ),
-                          if(musicIndex==0)...[
+                          if (musicIndex == 0) ...[
                             Positioned(
                                 right: width * 0.25,
                                 top: 10,
@@ -1052,7 +1039,8 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                     child: Container(
                                       decoration: BoxDecoration(
                                           color: Colors.white,
-                                          borderRadius: BorderRadius.circular(2),
+                                          borderRadius:
+                                              BorderRadius.circular(2),
                                           boxShadow: [
                                             BoxShadow(
                                                 color: secondaryBlackColor
@@ -1065,15 +1053,14 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                             horizontal: 4.0, vertical: 5),
                                         child: Center(
                                             child: CustomText(
-                                              text:
-                                              "${volume1!.floor()}%",
-                                              fontSize: 10,
-                                              color: secondaryBlackColor,
-                                              fontWeight: FontWeight.w600,
-                                            )),
+                                          text: "${volume1!.floor()}%",
+                                          fontSize: 10,
+                                          color: secondaryBlackColor,
+                                          fontWeight: FontWeight.w600,
+                                        )),
                                       ),
                                     )))
-                          ]else if(musicIndex==1)...[
+                          ] else if (musicIndex == 1) ...[
                             Positioned(
                                 right: width * 0.25,
                                 top: 10,
@@ -1083,7 +1070,8 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                     child: Container(
                                       decoration: BoxDecoration(
                                           color: Colors.white,
-                                          borderRadius: BorderRadius.circular(2),
+                                          borderRadius:
+                                              BorderRadius.circular(2),
                                           boxShadow: [
                                             BoxShadow(
                                                 color: secondaryBlackColor
@@ -1096,15 +1084,14 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                             horizontal: 4.0, vertical: 5),
                                         child: Center(
                                             child: CustomText(
-                                              text:
-                                              "${volume2!.floor()}%",
-                                              fontSize: 10,
-                                              color: secondaryBlackColor,
-                                              fontWeight: FontWeight.w600,
-                                            )),
+                                          text: "${volume2!.floor()}%",
+                                          fontSize: 10,
+                                          color: secondaryBlackColor,
+                                          fontWeight: FontWeight.w600,
+                                        )),
                                       ),
                                     )))
-                          ]else if(musicIndex==2)...[
+                          ] else if (musicIndex == 2) ...[
                             Positioned(
                                 right: width * 0.25,
                                 top: 10,
@@ -1114,7 +1101,8 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                     child: Container(
                                       decoration: BoxDecoration(
                                           color: Colors.white,
-                                          borderRadius: BorderRadius.circular(2),
+                                          borderRadius:
+                                              BorderRadius.circular(2),
                                           boxShadow: [
                                             BoxShadow(
                                                 color: secondaryBlackColor
@@ -1127,17 +1115,14 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                             horizontal: 4.0, vertical: 5),
                                         child: Center(
                                             child: CustomText(
-                                              text:
-                                              "${volume3!.floor()}%",
-                                              fontSize: 10,
-                                              color: secondaryBlackColor,
-                                              fontWeight: FontWeight.w600,
-                                            )),
+                                          text: "${volume3!.floor()}%",
+                                          fontSize: 10,
+                                          color: secondaryBlackColor,
+                                          fontWeight: FontWeight.w600,
+                                        )),
                                       ),
                                     )))
                           ],
-
-
                         ],
                       ),
                     ),
@@ -1767,19 +1752,17 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
       print(Savetimer2);
       print(Savetimer3);
 
-
       if (!mounted) {
         timer.cancel();
       }
 
-      if(Savetimer ==0.0){
-
+      if (Savetimer == 0.0 || sliderInitial==120.0) {
         if (Savetimer! > sliderInitial) {
           timer.cancel();
           sliderInitial = 0.0;
           audioPlayer1.stop();
         }
-      }else{
+      } else {
         if (Savetimer! <= sliderInitial) {
           timer.cancel();
           sliderInitial = 0.0;
@@ -1787,14 +1770,13 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
         }
       }
 
-      if(Savetimer2 ==0.0){
-
+      if (Savetimer2 == 0.0 || sliderInitial==120.0) {
         if (Savetimer2! > sliderInitial) {
           timer.cancel();
           sliderInitial = 0.0;
           audioPlayer1.stop();
         }
-      }else{
+      } else {
         if (Savetimer2! <= sliderInitial) {
           timer.cancel();
           sliderInitial = 0.0;
@@ -1802,23 +1784,19 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
         }
       }
 
-      if(Savetimer3 ==0.0){
-
+      if (Savetimer3 == 0.0 || sliderInitial==120.0) {
         if (Savetimer3! > sliderInitial) {
           timer.cancel();
           sliderInitial = 0.0;
           audioPlayer1.stop();
         }
-      }else{
+      } else {
         if (Savetimer3! <= sliderInitial) {
           timer.cancel();
           sliderInitial = 0.0;
           audioPlayer1.stop();
         }
       }
-
-
-
 
       sliderInitial++;
       setState(() {});
@@ -1837,15 +1815,12 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
   }
 
   void resumeSliderTimmer() {
-    if(musicIndex==0){
-      setSongDuration(Savetimer!.toInt() , initValue: sliderInitial);
-
-    }else if(musicIndex==1){
-      setSongDuration(Savetimer2!.toInt() , initValue: sliderInitial);
-
-    }else if(musicIndex==2){
-      setSongDuration(Savetimer3!.toInt() , initValue: sliderInitial);
-
+    if (musicIndex == 0) {
+      setSongDuration(Savetimer!.toInt(), initValue: sliderInitial);
+    } else if (musicIndex == 1) {
+      setSongDuration(Savetimer2!.toInt(), initValue: sliderInitial);
+    } else if (musicIndex == 2) {
+      setSongDuration(Savetimer3!.toInt(), initValue: sliderInitial);
     }
   }
 }

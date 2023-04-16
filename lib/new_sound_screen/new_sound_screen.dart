@@ -275,20 +275,20 @@ class _NewSoundScreenState extends ConsumerState<NewSoundScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Row(
               children: [
-                Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.black.withOpacity(0.05),
-                  ),
-                  child:  GestureDetector(
-                    onTap: () async {
-                      musicId = musicModel.id;
-                      if (mounted) {
-                        playMusic(id: musicId);
-                      }
-                      print("OK");
-                    },
-                    child: musicId == musicModel.id
+                GestureDetector(
+                  onTap: (){
+                    musicId = musicModel.id;
+                    if (mounted) {
+                      playMusic(id: musicId);
+                    }
+                    print("OK");
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.black.withOpacity(0.05),
+                    ),
+                    child:  musicId == musicModel.id
                         ? Padding(
                       padding: const EdgeInsets.all(15.0),
                       child: issongplaying
@@ -309,63 +309,61 @@ class _NewSoundScreenState extends ConsumerState<NewSoundScreen> {
                         scale: 0.8,
                         imageUrl: playButton,
                       ),
-                    ),
-                  )
+                    )
 
+                  ),
                 ),
-                 Padding(
-                  padding: const EdgeInsets.only(left: 20.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.black.withOpacity(0.1)),
-                    child: GestureDetector(
-                      onTap: () {
-                      //  Navigator.push(context, MaterialPageRoute(builder: (_)=> MixScreen()));
-                       // ref.read(addProvider).changePage(2);
-                       //  Navigator.of(context);
-                        if (ref
-                            .watch(playlistProvider)
-                            .addInPlayListTrueFalse) {
-                          if (mounted) {
-                            ref
-                                .read(playlistProvider)
-                                .showMixPlayList(
-                                goMixPlaylist: true);
-                            //Change.
-                             ref.read(addProvider).showAddPlaylist=false;
-                          }
-                          if (mounted) {
-                            ref.read(playlistProvider).setMusic(
-                                setMusicModel: musicModel);
-                          }
-                          if (mounted) {
-                            ref
-                                .read(playlistProvider)
-                                .addInPlaylistFalse();
-                          }
-                        } else {
+                 GestureDetector(
+                   onTap: (){
 
-                         Navigator.pop(context);
+                     if (ref
+                         .watch(playlistProvider)
+                         .addInPlayListTrueFalse) {
+                       if (mounted) {
+                         ref
+                             .read(playlistProvider)
+                             .showMixPlayList(
+                             goMixPlaylist: true);
+                         //Change.
+                         ref.read(addProvider).showAddPlaylist=false;
+                       }
+                       if (mounted) {
+                         ref.read(playlistProvider).setMusic(
+                             setMusicModel: musicModel);
+                       }
+                       if (mounted) {
+                         ref
+                             .read(playlistProvider)
+                             .addInPlaylistFalse();
+                       }
+                     } else {
 
-                      //  ref.read(addProvider).changePage(2);
-                          if (ref
-                              .read(mixMusicProvider)
-                              .selectMixSound) {
-                            ref
-                                .read(mixMusicProvider)
-                                .mixFirstMusic(musicModel);
-                          } else {
-                            ref
-                                .read(mixMusicProvider)
-                                .mixSecondMusic(musicModel);
-                          }
-                          ref.read(addProvider).showPlusPlaylist(
-                              playlistPlusBottom: false);
-                          //Change...
-                           ref.read(addProvider).showAddPlaylist=false;
-                        }
-                      },
+                       Navigator.pop(context);
+
+                       //  ref.read(addProvider).changePage(2);
+                       if (ref
+                           .read(mixMusicProvider)
+                           .selectMixSound) {
+                         ref
+                             .read(mixMusicProvider)
+                             .mixFirstMusic(musicModel);
+                       } else {
+                         ref
+                             .read(mixMusicProvider)
+                             .mixSecondMusic(musicModel);
+                       }
+                       ref.read(addProvider).showPlusPlaylist(
+                           playlistPlusBottom: false);
+                       //Change...
+                       ref.read(addProvider).showAddPlaylist=false;
+                     }
+                   },
+                   child: Padding(
+                    padding: const EdgeInsets.only(left: 20.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.black.withOpacity(0.1)),
                       child: const Padding(
                         padding: EdgeInsets.all(5.0),
                         child: Icon(
@@ -374,8 +372,8 @@ class _NewSoundScreenState extends ConsumerState<NewSoundScreen> {
                         ),
                       ),
                     ),
-                  ),
-                )
+                ),
+                 )
 
               ],
             ),
