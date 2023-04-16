@@ -276,18 +276,19 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
                       ref.watch(playlistProvider).mixPlayList.length < 3
                           ? GestureDetector(
                               onTap: () {
-                                ref.read(playlistProvider).createMusic();
-                                ref
-                                    .read(addProvider)
-                                    .showPlusPlaylist(playlistPlusBottom: true);
-                                if (mounted) {
-                                  // Navigator.push(
-                                  //     context,
-                                  //     MaterialPageRoute(
-                                  //         builder: (_) =>
-                                  //             MyPlayListNewSoundScreen()));
 
-                                  ref.read(addProvider).changePage(1);
+                                if (mounted) {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (_) =>
+                                              MyPlayListNewSoundScreen()));
+                                  ref.read(playlistProvider).createMusic();
+                                  ref
+                                      .read(addProvider)
+                                      .showPlusPlaylist(playlistPlusBottom: true);
+
+                                  // ref.read(addProvider).changePage(1);
                                 }
                                 if (mounted) {
                                   ref
@@ -340,19 +341,28 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
               ref.watch(playlistProvider).mixPlayList.length < 3
                   ? GestureDetector(
                       onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) =>
+                                    MyPlayListNewSoundScreen()));
                         ref.read(playlistProvider).createMusic();
-
                         ref
                             .read(addProvider)
                             .showPlusPlaylist(playlistPlusBottom: true);
-                        if (mounted) {
-                          // Navigator.push(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //         builder: (_) => MyPlayListNewSoundScreen()));
-
-                      ref.read(addProvider).changePage(1);
-                        }
+                      //   ref.read(playlistProvider).createMusic();
+                      //
+                      //   ref
+                      //       .read(addProvider)
+                      //       .showPlusPlaylist(playlistPlusBottom: true);
+                      //   if (mounted) {
+                      //     // Navigator.push(
+                      //     //     context,
+                      //     //     MaterialPageRoute(
+                      //     //         builder: (_) => MyPlayListNewSoundScreen()));
+                      //
+                      // ref.read(addProvider).changePage(1);
+                      //   }
                         if (mounted) {
                           ref.read(playlistProvider).addInPlaylistTrue();
                         }
