@@ -382,7 +382,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
         .indexWhere((element) => element.id == id);
     if (_index >= 0) {
       if (_index == musicIndex) {
-        if (issongplaying1 && issongplaying2) {
+        if (issongplaying1) {
           await audioPlayer1.pause();
         } else {
           String url1 = ref
@@ -525,23 +525,34 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Expanded(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                CustomText(
-                                  text:
-                                      "${ref.watch(playlistProvider).mixMixPlaylist[mixPlaylistIndex].playListList![musicIndex].first?.musicName}",
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w400,
-                                  color: secondaryBlackColor,
-                                ),
-                                // const SizedBox(
-                                //     height: 8,
-                                //     child: CustomSvg(
-                                //       svg: down_arrow,
-                                //       color: blackColorA0,
-                                //     )),
-                              ],
+                            child: GestureDetector(
+                              onTap: (){
+                                CustomBottomSheet.bottomSheet(context, isDismiss: true,
+                                    child: StatefulBuilder(
+                                      builder: (BuildContext context,
+                                          void Function(void Function()) updateState) {
+                                        return bottomSheet(context: context);
+                                      },
+                                    ));
+                              },
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  CustomText(
+                                    text:
+                                        "${ref.watch(playlistProvider).mixMixPlaylist[mixPlaylistIndex].playListList![musicIndex].first?.musicName}",
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w400,
+                                    color: secondaryBlackColor,
+                                  ),
+                                  const SizedBox(
+                                      height: 8,
+                                      child: CustomSvg(
+                                        svg: down_arrow,
+                                        color: blackColorA0,
+                                      )),
+                                ],
+                              ),
                             ),
                           ),
                         ],
@@ -1385,7 +1396,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                   children: [
                                     CustomText(
                                         text:
-                                            "${ref.watch(playlistProvider).mixMixPlaylist[mixPlaylistIndex].title}",
+                                        "${ref.watch(playlistProvider).mixMixPlaylist[mixPlaylistIndex].title}",
                                         fontWeight: FontWeight.w600,
                                         fontSize: 20,
                                         color: blackColor50),
@@ -1430,7 +1441,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                 children: [
                                   Column(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    CrossAxisAlignment.start,
                                     children: [
                                       // CustomText(
                                       //     text: "Sound Set ${index + 1}",
@@ -1440,52 +1451,52 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                       SizedBox(height: width * 0.05),
                                       Row(
                                         mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
+                                        MainAxisAlignment.spaceBetween,
                                         children: [
                                           Column(
                                             crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                            CrossAxisAlignment.start,
                                             children: [
                                               Container(
                                                 color: Colors.transparent,
                                                 child: Row(
                                                   mainAxisAlignment:
-                                                      MainAxisAlignment.start,
+                                                  MainAxisAlignment.start,
                                                   children: [
                                                     SizedBox(
                                                       width: width * 0.44,
                                                       child: Row(
                                                         mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .start,
+                                                        MainAxisAlignment
+                                                            .start,
                                                         children: [
                                                           SizedBox(
                                                               height:
-                                                                  width * 0.1,
+                                                              width * 0.1,
                                                               width:
-                                                                  width * 0.1,
+                                                              width * 0.1,
                                                               child:
-                                                                  CustomImage(
+                                                              CustomImage(
                                                                 imageUrl:
-                                                                    "${ref.watch(playlistProvider).mixMixPlaylist[mixPlaylistIndex].playListList![index].first?.image}",
+                                                                "${ref.watch(playlistProvider).mixMixPlaylist[mixPlaylistIndex].playListList![index].first?.image}",
                                                                 boxFit:
-                                                                    BoxFit.fill,
+                                                                BoxFit.fill,
                                                               )),
                                                           Expanded(
                                                             child: Padding(
                                                               padding:
-                                                                  const EdgeInsets
-                                                                          .all(
-                                                                      10.0),
+                                                              const EdgeInsets
+                                                                  .all(
+                                                                  10.0),
                                                               child: CustomText(
                                                                   text:
-                                                                      "${ref.watch(playlistProvider).mixMixPlaylist[mixPlaylistIndex].playListList![index].first?.musicName}",
+                                                                  "${ref.watch(playlistProvider).mixMixPlaylist[mixPlaylistIndex].playListList![index].first?.musicName}",
                                                                   fontSize: 16,
                                                                   fontWeight:
-                                                                      FontWeight
-                                                                          .w600,
+                                                                  FontWeight
+                                                                      .w600,
                                                                   color:
-                                                                      blackColor50),
+                                                                  blackColor50),
                                                             ),
                                                           ),
                                                         ],
@@ -1493,27 +1504,65 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                                     ),
                                                     Row(
                                                       mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .start,
+                                                      MainAxisAlignment
+                                                          .start,
                                                       children: [
                                                         const CustomSvg(
                                                             svg: volume),
-                                                        // Padding(
-                                                        //   padding:
-                                                        //       const EdgeInsets
-                                                        //               .symmetric(
-                                                        //           horizontal:
-                                                        //               5.0),
-                                                        //   child: CustomText(
-                                                        //       text:
-                                                        //           "${(currentVolume * 100).toInt().toString().padLeft(2, "0")}%",
-                                                        //       fontSize: 12,
-                                                        //       fontWeight:
-                                                        //           FontWeight
-                                                        //               .w600,
-                                                        //       color:
-                                                        //           blackColor50),
-                                                        // ),
+                                                        if(musicIndex==0)...[
+                                                          Padding(
+                                                            padding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                                horizontal:
+                                                                5.0),
+                                                            child: CustomText(
+                                                                text:
+                                                                "${(volume1!).toInt().toString().padLeft(2, "0")}%",
+                                                                fontSize: 12,
+                                                                fontWeight:
+                                                                FontWeight
+                                                                    .w600,
+                                                                color:
+                                                                blackColor50),
+                                                          ),
+                                                        ]else if(musicIndex==1)...[
+
+                                                          Padding(
+                                                            padding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                                horizontal:
+                                                                5.0),
+                                                            child: CustomText(
+                                                                text:
+                                                                "${(volume2!).toInt().toString().padLeft(2, "0")}%",
+                                                                fontSize: 12,
+                                                                fontWeight:
+                                                                FontWeight
+                                                                    .w600,
+                                                                color:
+                                                                blackColor50),
+                                                          ),
+                                                        ]else if(musicIndex==2)...[
+                                                          Padding(
+                                                            padding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                                horizontal:
+                                                                5.0),
+                                                            child: CustomText(
+                                                                text:
+                                                                "${(volume3!).toInt().toString().padLeft(2, "0")}%",
+                                                                fontSize: 12,
+                                                                fontWeight:
+                                                                FontWeight
+                                                                    .w600,
+                                                                color:
+                                                                blackColor50),
+                                                          ),
+                                                        ],
+
                                                       ],
                                                     ),
                                                   ],
@@ -1591,18 +1640,91 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                             ],
                                           ),
                                           Row(
-                                            children: const [
+                                            children:  [
                                               CustomSvg(svg: timer),
-                                              Padding(
-                                                padding: EdgeInsets.symmetric(
-                                                    horizontal: 8.0),
-                                                child: CustomText(
-                                                  text: "4 min",
-                                                  fontWeight: FontWeight.w600,
-                                                  fontSize: 12,
-                                                  color: primaryGreyColor,
-                                                ),
-                                              )
+                                              if(index==0)...[
+                                                if(Savetimer==0.0)...[
+                                                  Padding(
+                                                    padding: EdgeInsets.symmetric(
+                                                        horizontal: 8.0),
+                                                    child: CustomText(
+                                                      text: "2.00",
+
+                                                      fontWeight: FontWeight.w600,
+                                                      fontSize: 12,
+                                                      color: primaryGreyColor,
+                                                    ),
+                                                  )
+                                                ]else...[
+                                                  Padding(
+                                                    padding: EdgeInsets.symmetric(
+                                                        horizontal: 8.0),
+                                                    child: CustomText(
+                                                      text: "${getHumanTimeBySecond(Savetimer!.toInt())}",
+
+                                                      fontWeight: FontWeight.w600,
+                                                      fontSize: 12,
+                                                      color: primaryGreyColor,
+                                                    ),
+                                                  )
+                                                ]
+                                              ]else if(index==1)...[
+
+                                                if(Savetimer2==0.0)...[
+                                                  Padding(
+                                                    padding: EdgeInsets.symmetric(
+                                                        horizontal: 8.0),
+                                                    child: CustomText(
+                                                      text: "2.00",
+
+                                                      fontWeight: FontWeight.w600,
+                                                      fontSize: 12,
+                                                      color: primaryGreyColor,
+                                                    ),
+                                                  )
+                                                ]else...[
+                                                  Padding(
+                                                    padding: EdgeInsets.symmetric(
+                                                        horizontal: 8.0),
+                                                    child: CustomText(
+                                                      text: "${getHumanTimeBySecond(Savetimer2!.toInt())}",
+
+                                                      fontWeight: FontWeight.w600,
+                                                      fontSize: 12,
+                                                      color: primaryGreyColor,
+                                                    ),
+                                                  )
+                                                ]
+                                              ]else if(index==2)...[
+                                                if(Savetimer3==0.0)...[
+                                                  Padding(
+                                                    padding: EdgeInsets.symmetric(
+                                                        horizontal: 8.0),
+                                                    child: CustomText(
+                                                      text: "2.00",
+
+                                                      fontWeight: FontWeight.w600,
+                                                      fontSize: 12,
+                                                      color: primaryGreyColor,
+                                                    ),
+                                                  )
+                                                ]else...[
+                                                  Padding(
+                                                    padding: EdgeInsets.symmetric(
+                                                        horizontal: 8.0),
+                                                    child: CustomText(
+                                                      text: "${getHumanTimeBySecond(Savetimer3!.toInt())}",
+
+                                                      fontWeight: FontWeight.w600,
+                                                      fontSize: 12,
+                                                      color: primaryGreyColor,
+                                                    ),
+                                                  )
+                                                ]
+
+                                              ],
+
+
                                             ],
                                           ),
                                           GestureDetector(
@@ -1611,7 +1733,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                                 id: ref
                                                     .watch(playlistProvider)
                                                     .mixMixPlaylist[
-                                                        mixPlaylistIndex]
+                                                mixPlaylistIndex]
                                                     .playListList![index]
                                                     .id,
                                                 updateState: updateState,
@@ -1628,52 +1750,52 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                                         .withOpacity(0.1)),
                                                 child: Padding(
                                                   padding:
-                                                      const EdgeInsets.all(1.0),
+                                                  const EdgeInsets.all(1.0),
                                                   child: ref
-                                                              .watch(
-                                                                  playlistProvider)
-                                                              .mixMixPlaylist[
-                                                                  mixPlaylistIndex]
-                                                              .playListList![
-                                                                  index]
-                                                              .id !=
-                                                          ref
-                                                              .watch(
-                                                                  playlistProvider)
-                                                              .mixMixPlaylist[
-                                                                  mixPlaylistIndex]
-                                                              .playListList![
-                                                                  musicIndex]
-                                                              .id
+                                                      .watch(
+                                                      playlistProvider)
+                                                      .mixMixPlaylist[
+                                                  mixPlaylistIndex]
+                                                      .playListList![
+                                                  index]
+                                                      .id !=
+                                                      ref
+                                                          .watch(
+                                                          playlistProvider)
+                                                          .mixMixPlaylist[
+                                                      mixPlaylistIndex]
+                                                          .playListList![
+                                                      musicIndex]
+                                                          .id
                                                       ? const CustomImage(
-                                                          imageUrl: playButton,
-                                                          height: 30,
-                                                          width: 30,
-                                                          color: blackColor97,
-                                                        )
+                                                    imageUrl: playButton,
+                                                    height: 30,
+                                                    width: 30,
+                                                    color: blackColor97,
+                                                  )
                                                       : issongplaying1 ||
-                                                              issongplaying2
-                                                          ? const Padding(
-                                                              padding:
-                                                                  EdgeInsets
-                                                                      .all(
-                                                                          10.0),
-                                                              child: CustomSvg(
-                                                                  svg:
-                                                                      pouseButton,
-                                                                  height: 15,
-                                                                  width: 15,
-                                                                  color:
-                                                                      blackColor97),
-                                                            )
-                                                          : const CustomImage(
-                                                              imageUrl:
-                                                                  playButton,
-                                                              height: 30,
-                                                              width: 30,
-                                                              color:
-                                                                  blackColor97,
-                                                            ),
+                                                      issongplaying2
+                                                      ? const Padding(
+                                                    padding:
+                                                    EdgeInsets
+                                                        .all(
+                                                        10.0),
+                                                    child: CustomSvg(
+                                                        svg:
+                                                        pouseButton,
+                                                        height: 15,
+                                                        width: 15,
+                                                        color:
+                                                        blackColor97),
+                                                  )
+                                                      : const CustomImage(
+                                                    imageUrl:
+                                                    playButton,
+                                                    height: 30,
+                                                    width: 30,
+                                                    color:
+                                                    blackColor97,
+                                                  ),
                                                 )),
                                           )
                                         ],
@@ -1681,28 +1803,28 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                     ],
                                   ),
                                   index <
-                                          ref
-                                                  .watch(playlistProvider)
-                                                  .mixMixPlaylist[
-                                                      mixPlaylistIndex]
-                                                  .playListList!
-                                                  .length -
-                                              1
+                                      ref
+                                          .watch(playlistProvider)
+                                          .mixMixPlaylist[
+                                      mixPlaylistIndex]
+                                          .playListList!
+                                          .length -
+                                          1
                                       ? const SizedBox(height: 10)
                                       : const SizedBox(),
                                   index <
-                                          ref
-                                                  .watch(playlistProvider)
-                                                  .mixMixPlaylist[
-                                                      mixPlaylistIndex]
-                                                  .playListList!
-                                                  .length -
-                                              1
+                                      ref
+                                          .watch(playlistProvider)
+                                          .mixMixPlaylist[
+                                      mixPlaylistIndex]
+                                          .playListList!
+                                          .length -
+                                          1
                                       ? Container(
-                                          width: width,
-                                          height: 1.5,
-                                          color: blackColorD9,
-                                        )
+                                    width: width,
+                                    height: 1.5,
+                                    color: blackColorD9,
+                                  )
                                       : const SizedBox(),
                                   const SizedBox(height: 20)
                                 ],

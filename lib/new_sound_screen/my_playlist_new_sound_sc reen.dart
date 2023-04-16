@@ -268,8 +268,8 @@ class _MyPlayListNewSoundScreenState extends ConsumerState<MyPlayListNewSoundScr
                 ),
               ),
               GestureDetector(
-                onTap: (){
-
+                onTap: () async {
+                  await audioPlayer.pause();
                   Navigator.pop(context);
                   if (ref
                       .watch(playlistProvider)
@@ -292,6 +292,8 @@ class _MyPlayListNewSoundScreenState extends ConsumerState<MyPlayListNewSoundScr
                           .addInPlaylistFalse();
                     }
                   } else {
+
+
 
                     Navigator.pop(context);
 

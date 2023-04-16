@@ -328,7 +328,7 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: CustomAppBar(
-          title: 'Witching Hour',
+          title: 'Mix sound playing',
           iconButton: false,
           onPressedButton: null,
           onPressed: widget.onPressed,
@@ -909,7 +909,6 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
       },
     );
   }
-
   void _showDialog(BuildContext context) {
     final height = ScreenSize(context).height;
     final width = ScreenSize(context).width;
@@ -949,160 +948,132 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                       ),
                     ),
                     contentPadding: EdgeInsets.zero,
-                    content: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          width: width * 0.27,
-                          padding: const EdgeInsets.symmetric(vertical: 8),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            color: greyEC,
+                    content: Padding(
+                      padding: const EdgeInsets.only(left: 8.0, right: 18),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            width: width * 0.27,
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              color: greyEC,
+                            ),
+                            child: Center(
+                                child: CustomText(
+                                    text:
+                                    "${(selectedTimes[selectedTime] ~/ 60).toString().padLeft(2, "0")} : ${(selectedTimes[selectedTime] % 60).toString().padLeft(2, "0")} min")),
                           ),
-                          child: Center(
-                              child: CustomText(
-                                  text:
-                                      "${(selectedTimes[selectedTime] ~/ 60).toString().padLeft(2, "0")} : ${(selectedTimes[selectedTime] % 60).toString().padLeft(2, "0")} min")),
-                        ),
-                        SliderTheme(
-                          data: const SliderThemeData(
-                              trackShape: RectangularSliderTrackShape(),
-                              thumbShape: RoundSliderThumbShape(
-                                  enabledThumbRadius: 10)),
-                          child: Slider.adaptive(
-                              value: selectedTime.toDouble(),
-                              min: 0,
-                              max: 7,
-                              divisions: 7,
-                              activeColor: primaryPinkColor,
-                              inactiveColor: primaryGreyColor2,
-                              onChanged: (double newValue) async {
-                                state(() {
-                                  setDuration = 1;
-                                  selectedTime = check ? 0 : newValue.toInt();
-                                  setDuration = selectedTimes[selectedTime];
+                          SliderTheme(
+                            data: const SliderThemeData(
+                                trackHeight: 5.0,
+                                trackShape: RectangularSliderTrackShape(),
+                                thumbShape: RoundSliderThumbShape(
+                                    enabledThumbRadius: 10)),
+                            child: Slider.adaptive(
+                                value: selectedTime.toDouble(),
+                                min: 0,
+                                max: 7,
+                                divisions: 7,
+                                activeColor: primaryPinkColor,
+                                inactiveColor: primaryGreyColor2,
+                                onChanged: (double newValue) async {
+                                  state(() {
+                                    setDuration = 1;
+                                    selectedTime = check ? 0 : newValue.toInt();
+                                    setDuration = selectedTimes[selectedTime];
 
-                                  setDuration *= 60;
-                                  setSongDuration(setDuration);
-                                  ins.seek(Duration(seconds: setDuration));
-
-                                  print("index $selectedTime");
-                                });
-                                setState(() {});
-                              },
-                              semanticFormatterCallback: (double newValue) {
-                                return '${newValue.round()} dollars';
-                              }),
-                        ),
-                        // SliderTheme(
-                        //   data: const SliderThemeData(
-                        //       trackShape: RectangularSliderTrackShape(),
-                        //       thumbShape: RoundSliderThumbShape(enabledThumbRadius: 10)),
-                        //   child: Slider.adaptive(
-                        //       value: selectedTime.toDouble(),
-                        //       min: 0,
-                        //       max: 7,
-                        //       divisions: 7,
-                        //       activeColor: primaryPinkColor,
-                        //       inactiveColor: primaryGreyColor2,
-                        //       onChanged: (double newValue) async{
-                        //         state(() {
-                        //           setDuration = 1;
-                        //           selectedTime = check?0:newValue.toInt();
-                        //           setDuration = selectedTimes[selectedTime];
-                        //           setDuration *= 60;
-                        //           print("index $selectedTime");
-                        //         });
-                        //         setState(() {});
-                        //       },
-                        //       semanticFormatterCallback: (double newValue) {
-                        //         return '${newValue.round()} dollars';
-                        //       }),
-                        // ),
-                        SizedBox(
-                          width: width * 0.59,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: List.generate(
-                                times.length,
-                                (index) => CustomText(
-                                    text: times[index],
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 8,
-                                    color: secondaryBlackColor)),
+                                    setDuration *= 60;
+                                    setSongDuration(setDuration);
+                                    ins.seek(Duration(seconds: setDuration));
+                                    print("index $setDuration");
+                                  });
+                                  setState(() {});
+                                },
+                                semanticFormatterCallback: (double newValue) {
+                                  return '${newValue.round()} dollars';
+                                }),
                           ),
-                        ),
-                        const SizedBox(height: 15),
-                      ],
+                          SizedBox(
+                            width: width * 0.59,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: List.generate(
+                                  times.length,
+                                      (index) => CustomText(
+                                      text: times[index],
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 8,
+                                      color: secondaryBlackColor)),
+                            ),
+                          ),
+                          const SizedBox(height: 15),
+                        ],
+                      ),
                     ),
                     actionsAlignment: MainAxisAlignment.start,
                     actionsPadding: const EdgeInsets.only(left: 48, bottom: 30),
                     actions: <Widget>[
-                      Column(
+                      Row(
                         children: [
-                          Row(
-                            children: [
-                              Checkbox(
-                                  side: const BorderSide(color: blackColorA0),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(5),
-                                  ),
-                                  activeColor: primaryPinkColor,
-                                  value: check,
-                                  onChanged: (newValue) {
-                                    state(() {
-                                      check = newValue!;
-                                      if (check) {
-                                        selectedTime = 0;
-                                      }
-                                    });
-                                  }),
-                              TextButton(
-                                  onPressed: check
-                                      ? () async {
-                                          if (mounted) {
-                                            Navigator.pop(context);
-                                          }
-                                        }
-                                      : null,
-                                  child: const CustomText(
-                                    text: "continuous play",
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w400,
-                                    color: primaryGreyColor,
-                                  ))
-                            ],
-                          ),
-                          SizedBox(
-                            height: 6,
-                          ),
-                          InkWell(
-                            onTap: () {
-                              Navigator.pop(context);
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.only(right: 38.0),
-                              child: Center(
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  height: 50,
-                                  width: 200,
-                                  decoration: BoxDecoration(
-                                      color: primaryPinkColor,
-                                      borderRadius: BorderRadius.circular(30)),
-                                  child: Text(
-                                    "OK",
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
+                          Checkbox(
+                              side: const BorderSide(color: blackColorA0),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5),
                               ),
-                            ),
-                          )
-                          // Text("A")
+                              activeColor: primaryPinkColor,
+                              value: check,
+                              onChanged: (newValue) {
+                                state(() {
+                                  check = newValue!;
+                                  if (check) {
+                                    selectedTime = 0;
+                                  }
+                                });
+                              }),
+                          TextButton(
+                              onPressed: check
+                                  ? () async {
+                                if (mounted) {
+                                  Navigator.pop(context);
+                                }
+                              }
+                                  : null,
+                              child: const CustomText(
+                                text: "continuous play",
+                                fontSize: 19,
+                                fontWeight: FontWeight.w400,
+                                color: primaryGreyColor,
+                              )),
                         ],
                       ),
+                      SizedBox(
+                        height: 6,
+                      ),
+                      InkWell(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 38.0),
+                          child: Center(
+                            child: Container(
+                              alignment: Alignment.center,
+                              height: 50,
+                              width: 100,
+                              decoration: BoxDecoration(
+                                  color: primaryPinkColor,
+                                  borderRadius: BorderRadius.circular(30)),
+                              child: Text(
+                                "OK",
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
                     ],
                   ),
                 ],
@@ -1116,14 +1087,231 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
         ref.read(mixMusicProvider).alertDialogStop();
         if (mounted) {
           setState(() {
-            secController.text = "";
-            minController.text = "";
             print("asche");
           });
         }
       }
     });
   }
+
+  // void _showDialog(BuildContext context) {
+  //   final height = ScreenSize(context).height;
+  //   final width = ScreenSize(context).width;
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return StatefulBuilder(
+  //         builder:
+  //             (BuildContext context, void Function(void Function()) state) {
+  //           /* if(mounted) {
+  //             //startTimer(state);
+  //             if(mounted){
+  //               state((){});
+  //             }
+  //           }*/
+  //           return Align(
+  //             alignment: Alignment.center,
+  //             child: Wrap(
+  //               children: [
+  //                 AlertDialog(
+  //                   shape: RoundedRectangleBorder(
+  //                       borderRadius: BorderRadius.circular(15)),
+  //                   backgroundColor: Colors.white,
+  //                   title: Padding(
+  //                     padding: const EdgeInsets.only(left:18.0, right: 18),
+  //                     child: Column(
+  //
+  //                       children: const [
+  //                         CustomText(
+  //                           text: 'Select Duration',
+  //                           textAlign: TextAlign.center,
+  //                           fontSize: 20,
+  //                           fontWeight: FontWeight.w600,
+  //                           color: primaryGreyColor,
+  //                         ),
+  //                         SizedBox(height: 20),
+  //                       ],
+  //                     ),
+  //                   ),
+  //                   contentPadding: EdgeInsets.zero,
+  //                   content: Padding(
+  //                     padding: const EdgeInsets.only(left: 8.0, right: 18),
+  //                     child: Column(
+  //                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                       children: [
+  //                         Container(
+  //                           width: width * 0.27,
+  //                           padding: const EdgeInsets.symmetric(vertical: 8),
+  //                           decoration: BoxDecoration(
+  //                             borderRadius: BorderRadius.circular(5),
+  //                             color: greyEC,
+  //                           ),
+  //                           child: Center(
+  //                               child: CustomText(
+  //                                   text:
+  //                                       "${(selectedTimes[selectedTime] ~/ 60).toString().padLeft(2, "0")} : ${(selectedTimes[selectedTime] % 60).toString().padLeft(2, "0")} min")),
+  //                         ),
+  //                         SliderTheme(
+  //                           data: const SliderThemeData(
+  //                               trackShape: RectangularSliderTrackShape(),
+  //                               thumbShape: RoundSliderThumbShape(
+  //                                   enabledThumbRadius: 10)),
+  //                           child: Slider.adaptive(
+  //                               value: selectedTime.toDouble(),
+  //                               min: 0,
+  //                               max: 7,
+  //                               divisions: 7,
+  //                               activeColor: primaryPinkColor,
+  //                               inactiveColor: primaryGreyColor2,
+  //                               onChanged: (double newValue) async {
+  //                                 state(() {
+  //                                   setDuration = 1;
+  //                                   selectedTime = check ? 0 : newValue.toInt();
+  //                                   setDuration = selectedTimes[selectedTime];
+  //
+  //                                   setDuration *= 60;
+  //                                   setSongDuration(setDuration);
+  //                                   ins.seek(Duration(seconds: setDuration));
+  //
+  //                                   print("index $selectedTime");
+  //                                 });
+  //                                 setState(() {});
+  //                               },
+  //                               semanticFormatterCallback: (double newValue) {
+  //                                 return '${newValue.round()} dollars';
+  //                               }),
+  //                         ),
+  //                         // SliderTheme(
+  //                         //   data: const SliderThemeData(
+  //                         //       trackShape: RectangularSliderTrackShape(),
+  //                         //       thumbShape: RoundSliderThumbShape(enabledThumbRadius: 10)),
+  //                         //   child: Slider.adaptive(
+  //                         //       value: selectedTime.toDouble(),
+  //                         //       min: 0,
+  //                         //       max: 7,
+  //                         //       divisions: 7,
+  //                         //       activeColor: primaryPinkColor,
+  //                         //       inactiveColor: primaryGreyColor2,
+  //                         //       onChanged: (double newValue) async{
+  //                         //         state(() {
+  //                         //           setDuration = 1;
+  //                         //           selectedTime = check?0:newValue.toInt();
+  //                         //           setDuration = selectedTimes[selectedTime];
+  //                         //           setDuration *= 60;
+  //                         //           print("index $selectedTime");
+  //                         //         });
+  //                         //         setState(() {});
+  //                         //       },
+  //                         //       semanticFormatterCallback: (double newValue) {
+  //                         //         return '${newValue.round()} dollars';
+  //                         //       }),
+  //                         // ),
+  //                         SizedBox(
+  //                           width: width * 0.59,
+  //                           child: Row(
+  //                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                             children: List.generate(
+  //                                 times.length,
+  //                                 (index) => CustomText(
+  //                                     text: times[index],
+  //                                     fontWeight: FontWeight.w400,
+  //                                     fontSize: 8,
+  //                                     color: secondaryBlackColor)),
+  //                           ),
+  //                         ),
+  //                         const SizedBox(height: 15),
+  //                       ],
+  //                     ),
+  //                   ),
+  //                   actionsAlignment: MainAxisAlignment.start,
+  //                   actionsPadding: const EdgeInsets.only(left: 48, bottom: 30),
+  //                   actions: <Widget>[
+  //                     Column(
+  //                       children: [
+  //                         Row(
+  //                           children: [
+  //                             Checkbox(
+  //                                 side: const BorderSide(color: blackColorA0),
+  //                                 shape: RoundedRectangleBorder(
+  //                                   borderRadius: BorderRadius.circular(5),
+  //                                 ),
+  //                                 activeColor: primaryPinkColor,
+  //                                 value: check,
+  //                                 onChanged: (newValue) {
+  //                                   state(() {
+  //                                     check = newValue!;
+  //                                     if (check) {
+  //                                       selectedTime = 0;
+  //                                     }
+  //                                   });
+  //                                 }),
+  //                             TextButton(
+  //                                 onPressed: check
+  //                                     ? () async {
+  //                                         if (mounted) {
+  //                                           Navigator.pop(context);
+  //                                         }
+  //                                       }
+  //                                     : null,
+  //                                 child: const CustomText(
+  //                                   text: "continuous play",
+  //                                   fontSize: 16,
+  //                                   fontWeight: FontWeight.w400,
+  //                                   color: primaryGreyColor,
+  //                                 ))
+  //                           ],
+  //                         ),
+  //                         SizedBox(
+  //                           height: 6,
+  //                         ),
+  //                         InkWell(
+  //                           onTap: () {
+  //                             Navigator.pop(context);
+  //                           },
+  //                           child: Padding(
+  //                             padding: const EdgeInsets.only(right: 38.0),
+  //                             child: Center(
+  //                               child: Container(
+  //                                 alignment: Alignment.center,
+  //                                 height: 50,
+  //                                 width: 200,
+  //                                 decoration: BoxDecoration(
+  //                                     color: primaryPinkColor,
+  //                                     borderRadius: BorderRadius.circular(30)),
+  //                                 child: Text(
+  //                                   "OK",
+  //                                   style: TextStyle(
+  //                                       fontSize: 18,
+  //                                       fontWeight: FontWeight.bold),
+  //                                 ),
+  //                               ),
+  //                             ),
+  //                           ),
+  //                         )
+  //                         // Text("A")
+  //                       ],
+  //                     ),
+  //                   ],
+  //                 ),
+  //               ],
+  //             ),
+  //           );
+  //         },
+  //       );
+  //     },
+  //   ).then((value) {
+  //     if (mounted) {
+  //       ref.read(mixMusicProvider).alertDialogStop();
+  //       if (mounted) {
+  //         setState(() {
+  //           secController.text = "";
+  //           minController.text = "";
+  //           print("asche");
+  //         });
+  //       }
+  //     }
+  //   });
+  // }
 
   String getHumanTimeBySecond(int seconds) {
     int hours = (seconds / 3600).floor();
