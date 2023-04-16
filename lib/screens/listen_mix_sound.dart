@@ -372,36 +372,43 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                     ],
                   ),
                   Row(
-                    // mainAxisAlignment: MainAxisAlignment.center,
-                    // crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Expanded(
-                        child: CustomImage(
-                          imageUrl: ref
-                                  .watch(mixMusicProvider)
-                                  .combinationList[musicIndex]
-                                  .first
-                                  ?.image ??
-                              "",
-                          // height: width * .7,
-                          // width: width * .5,
-                          // boxFit: BoxFit.contain,
+                        child: Center(
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: CustomImage(
+                              imageUrl: ref
+                                      .watch(mixMusicProvider)
+                                      .combinationList[musicIndex]
+                                      .first
+                                      ?.image ??
+                                  "",
+                              // height: width * .7,
+                              // width: width * .5,
+                              // boxFit: BoxFit.contain,
+                            ),
+                          ),
                         ),
                       ),
                       Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
-                          child: CustomImage(
+                        child: Center(
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 8.0),
+                            child: CustomImage(
 
-                            imageUrl: ref
-                                    .watch(mixMusicProvider)
-                                    .combinationList[musicIndex]
-                                    .second
-                                    ?.image ??
-                                "",
-                            // height: width * .7,
-                            // width: width * .4,
-                            // boxFit: BoxFit.contain,
+                              imageUrl: ref
+                                      .watch(mixMusicProvider)
+                                      .combinationList[musicIndex]
+                                      .second
+                                      ?.image ??
+                                  "",
+                              // height: width * .7,
+                              // width: width * .4,
+                              // boxFit: BoxFit.contain,
+                            ),
                           ),
                         ),
                       ),

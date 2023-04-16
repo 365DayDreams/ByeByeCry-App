@@ -60,22 +60,22 @@ android {
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
-    signingConfigs{
-        release{
-            keyAlias 'upload'
-            keyPassword 'byebyecry123'
-            storeFile file('upload-keystore.jks')
-            storePassword 'byebyecry123'
-        }
-    }
+//    signingConfigs{
+//        release{
+//            keyAlias 'upload'
+//            keyPassword 'byebyecry123'
+//            storeFile file('upload-keystore.jks')
+//            storePassword 'byebyecry123'
+//        }
+//    }
 
     buildTypes {
-        release {
-            signingConfig signingConfigs.release
-//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        debug {
+            signingConfig signingConfigs.debug
 
         }
     }
+
 //    signingConfigs {
 //        release {
 //

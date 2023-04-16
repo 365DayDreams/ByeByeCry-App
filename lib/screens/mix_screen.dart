@@ -6,6 +6,7 @@ import 'package:bye_bye_cry_new/compoment/shared/custom_snackbar.dart';
 import 'package:bye_bye_cry_new/new_sound_screen/new_sound_screen.dart';
 import 'package:bye_bye_cry_new/screens/provider/add_music_provider.dart';
 import 'package:bye_bye_cry_new/screens/provider/mix_music_provider.dart';
+import 'package:bye_bye_cry_new/start_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:perfect_volume_control/perfect_volume_control.dart';
@@ -482,6 +483,9 @@ class _MixScreenState extends ConsumerState<MixScreen> {
                                 .musicModelSecond
                                 ?.musicName ??
                             "");
+                    setState(() {
+
+                    });
                   },
                 ),
                 SizedBox(height: width * 0.15),
@@ -561,7 +565,8 @@ class _MixScreenState extends ConsumerState<MixScreen> {
                        setState(() {
                          ref.watch(mixMusicProvider).musicModelSecond= null;
                          ref.watch(mixMusicProvider).musicModelFirst= null;
-                         Navigator.pop(context);
+                         Navigator.push(context, MaterialPageRoute(builder: (_)=> StartPage()));
+
                          // Navigator.push(
                          //     context,
                          //     MaterialPageRoute(
