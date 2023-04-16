@@ -75,7 +75,9 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       title: 'Bye Bye Cry',
       theme: ThemeData(fontFamily: 'Neue Einstellung'),
-      home: InitialHomePage(),
+      home: StartPage(
+
+      ),
     );
   }
 }

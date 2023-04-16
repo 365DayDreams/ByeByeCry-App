@@ -1391,8 +1391,7 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
 
     startPlayer();
 
-    // deleteShow = false;
-    // ref.read(addProvider).showAddPlaylist= false;
+
 
     super.initState();
     setState(() {
@@ -1480,6 +1479,7 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
           })  :
 
       AppBar(
+
         actions: [
           Padding(
             padding: const EdgeInsets.only(top: 14.0,right: 17),
