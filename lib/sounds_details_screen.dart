@@ -155,12 +155,12 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
       String url = ref.watch(addProvider).musicList[index].musicFile;
       // await audioPlayer.play(AssetSource(url));
       //   New Audio Player...
-      //  ins.silenceIncomingCalls();
+       ins.silenceIncomingCalls();
       //
       ins.playAudio(Duration(minutes: 2), "assets/$url");
       //  //ins.stop();
       //  print(ins.isPlaying());
-      //  ins.silenceIncomingCalls();
+       ins.silenceIncomingCalls();
       //  //print(ins.currentAudio()!.url);
       //  print(ins.getRemainingDuration());
       // ins.seek(Duration(seconds: 5));//left duration total duration - current duration
@@ -578,11 +578,13 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                               //await audioPlayer.play(AssetSource(url));
                               print("play");
                               resumeSliderTimmer();
+                              ins.silenceIncomingCalls();
                               ins.playAudio(
                                   Duration(
                                       seconds: (sliderEnd - sliderInitial)
                                           .toInt()),
                                   "assets/$url");
+                              ins.silenceIncomingCalls();
                             }
                             setState(() {});
                           },
