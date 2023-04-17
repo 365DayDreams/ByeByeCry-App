@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:bye_bye_cry_new/local_db/local_db.dart';
 import 'package:bye_bye_cry_new/purchase/purchas_listner.dart';
 import 'package:bye_bye_cry_new/purchase/purchase_api.dart';
 import 'package:bye_bye_cry_new/screens/models/home_page_fav_model.dart';
@@ -37,23 +38,25 @@ void main() async {
     );
   }
 
-  final AudioContext audioContext = AudioContext(
-    iOS: AudioContextIOS(
-      category: AVAudioSessionCategory.playAndRecord,
-      options: [
-        AVAudioSessionOptions.defaultToSpeaker,
-        AVAudioSessionOptions.mixWithOthers,
-      ],
-    ),
-    android: AudioContextAndroid(
-      isSpeakerphoneOn: true,
-      stayAwake: true,
-      contentType: AndroidContentType.sonification,
-      usageType: AndroidUsageType.assistanceSonification,
-      audioFocus: AndroidAudioFocus.none,
-    ),
-  );
-  AudioPlayer.global.setGlobalAudioContext(audioContext);
+  if (Platform.isIOS) {
+    final AudioContext audioContext = AudioContext(
+      iOS: AudioContextIOS(
+        category: AVAudioSessionCategory.playAndRecord,
+        options: [
+          AVAudioSessionOptions.defaultToSpeaker,
+          AVAudioSessionOptions.mixWithOthers,
+        ],
+      ),
+      android: AudioContextAndroid(
+        isSpeakerphoneOn: true,
+        stayAwake: true,
+        contentType: AndroidContentType.sonification,
+        usageType: AndroidUsageType.assistanceSonification,
+        audioFocus: AndroidAudioFocus.none,
+      ),
+    );
+    AudioPlayer.global.setGlobalAudioContext(audioContext);
+  }
 
   print(StoreConfig.instance.apiKey);
   //audioPlayer.setReleaseMode(ReleaseMode.loop);
@@ -69,15 +72,29 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  bool isToken = false;
+
+  getToken() async {
+    await LocalDB().getAccessToken().then((value) {
+      setState(() {
+        isToken = value;
+      });
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getToken();
+  }
+
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Bye Bye Cry',
       theme: ThemeData(fontFamily: 'Neue Einstellung'),
-      home: InitialHomePage(
-
-      ),
+      home: isToken == true ? StartPage() : InitialHomePage(),
     );
   }
 }

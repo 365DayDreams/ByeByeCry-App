@@ -643,7 +643,7 @@ class _InitialHomePageState extends ConsumerState<InitialHomePage> {
     final width = ScreenSize(context).width;
     final height = ScreenSize(context).height;
     return Scaffold(
-      bottomNavigationBar: Platform.isIOS ?
+      bottomNavigationBar:
       Padding(
         padding: const EdgeInsets.only(bottom: 8.0,left: 0,right: 0),
         child: Container(
@@ -675,34 +675,8 @@ class _InitialHomePageState extends ConsumerState<InitialHomePage> {
             },
           ),
         ),
-      ) : Container(
-        height: height * .09,
-
-        child:     OutLineButton(
-          // height: height * .06,
-          text: 'Get Started',
-          anotherText: '(For better sleep for them and for you)',
-          textColor: secondaryBlackColor2,
-          textFontSize: 22,
-          textFontWeight: FontWeight.w700,
-          borderRadius: 50,
-          onPressed: () async {
-            bool isLoggedIn = false;
-            await LocalDB().getAccessToken().then((value) {
-              setState(() {
-                isLoggedIn = value;
-              });
-            });
-            if(isLoggedIn ==true){
-              Navigator.push(context, MaterialPageRoute(builder: (context) => const StartPage()));
-
-            }else{
-              Navigator.push(context, MaterialPageRoute(builder: (context) => const SubscriptionPage()));
-
-            }
-          },
-        ),
-      ),
+      )
+          ,
       backgroundColor: backGroundColor,
       body: SingleChildScrollView(
         child: Column(
