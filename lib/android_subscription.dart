@@ -51,6 +51,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
   getOffring(){
     Purchases.getOfferings().then((value) {
 
+
       offerings = value;
       Package product= offerings!.all["premium"]!
           .availablePackages
@@ -66,6 +67,8 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
               (element) =>
           element.storeProduct.identifier == "premium");
       month=product.storeProduct.priceString;
+
+
 
       setState(() {});
     });
@@ -168,33 +171,39 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                           );
                         }
                       }else{
+
+
                         print("offerings");
                         print(offerings!.all["premium"]!
                             .availablePackages);
-                        Package product= offerings!.all["premium"]!
+                        Package product = offerings!.all["premium"]!
                             .availablePackages
                             .firstWhere(
                                 (element) =>
-                            element.storeProduct.identifier == "annual_sub_1");
+                            element.storeProduct.identifier == "premium");
+
+
 
                         print('product====');
                         print(product);
-                        CustomerInfo customerInfo=
+                        CustomerInfo customerInfo =
                         await Purchases.purchasePackage(
                           product,
 
                         );
-
                         try {
                           if (customerInfo.entitlements.all["premium"] != null &&
                               customerInfo.entitlements.all["premium"]!.isActive ==
                                   true) {
-                            PurchasListener.isSubscribe=true;
-                            //success purchas
+                            print("TOken 1---${product.identifier}");
+                            PurchasListener.isSubscribe = true;
                             Navigator.push(context, MaterialPageRoute(builder: (_)=> StartPage()));
                             LocalDB().setAccessToken(PurchasListener.isSubscribe);
 
-                          }else{
+
+                            //success purchas
+                          } else {
+                            print("TOken 2---${product.identifier}");
                             Fluttertoast.showToast(
                                 msg: "Subscription failed",
                                 toastLength: Toast.LENGTH_SHORT,
@@ -206,11 +215,9 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                             );
                             Navigator.push(context, MaterialPageRoute(builder: (_)=> StartPage()));
 
-                            // Navigator.push(context, MaterialPageRoute(builder: (_)=> StartPage()));
 
                             //subscription failed
                           }
-
                         } catch (e) {
                           Fluttertoast.showToast(
                               msg: "Something Went Wrong.",
@@ -221,7 +228,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                               textColor: Colors.white,
                               fontSize: 16.0
                           );
-                          //any error
+                          //any e
                         }
                       }
 
@@ -340,29 +347,30 @@ SizedBox(height: 20,),
                         print("offerings");
                         print(offerings!.all["premium"]!
                             .availablePackages);
-                        Package product = offerings!.all["premium"]!
+                        Package product= offerings!.all["premium"]!
                             .availablePackages
                             .firstWhere(
                                 (element) =>
-                            element.storeProduct.identifier == "premium");
+                            element.storeProduct.identifier == "annual_sub_1");
 
                         print('product====');
                         print(product);
-                        CustomerInfo customerInfo =
+                        CustomerInfo customerInfo=
                         await Purchases.purchasePackage(
                           product,
 
                         );
+
                         try {
                           if (customerInfo.entitlements.all["premium"] != null &&
                               customerInfo.entitlements.all["premium"]!.isActive ==
                                   true) {
-                            PurchasListener.isSubscribe = true;
+                            PurchasListener.isSubscribe=true;
+                            //success purchas
                             Navigator.push(context, MaterialPageRoute(builder: (_)=> StartPage()));
                             LocalDB().setAccessToken(PurchasListener.isSubscribe);
 
-                            //success purchas
-                          } else {
+                          }else{
                             Fluttertoast.showToast(
                                 msg: "Subscription failed",
                                 toastLength: Toast.LENGTH_SHORT,
@@ -374,8 +382,11 @@ SizedBox(height: 20,),
                             );
                             Navigator.push(context, MaterialPageRoute(builder: (_)=> StartPage()));
 
+                            // Navigator.push(context, MaterialPageRoute(builder: (_)=> StartPage()));
+
                             //subscription failed
                           }
+
                         } catch (e) {
                           Fluttertoast.showToast(
                               msg: "Something Went Wrong.",
@@ -386,8 +397,14 @@ SizedBox(height: 20,),
                               textColor: Colors.white,
                               fontSize: 16.0
                           );
-                          //any e
+                          //any error
                         }
+
+                   //cbnsnsc
+
+
+
+
                       }
 
 

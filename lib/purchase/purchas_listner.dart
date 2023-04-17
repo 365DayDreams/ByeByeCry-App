@@ -21,11 +21,12 @@ class PurchasListener{
 
     CustomerInfo customerInfo = await Purchases.getCustomerInfo();
 
+    print("customerInfo.toJson()");
     print(customerInfo.toJson());
 
     if (customerInfo.entitlements.all["premium"] != null &&
         customerInfo.entitlements.all["premium"]!.isActive ==
-            true) {
+            true && customerInfo.entitlements.all["premium"]!.unsubscribeDetectedAt==null) {
       isSubscribe = true;
 
       var lastPayDate = customerInfo

@@ -78,7 +78,9 @@ class _MyAppState extends State<MyApp> {
     await LocalDB().getAccessToken().then((value) {
       setState(() {
         isToken = value;
+        isToken = PurchasListener.isSubscribe;
       });
+      print("TOken__${isToken}");
     });
   }
 
@@ -94,7 +96,7 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       title: 'Bye Bye Cry',
       theme: ThemeData(fontFamily: 'Neue Einstellung'),
-      home: isToken == true ? StartPage() : InitialHomePage(),
+      home: PurchasListener.isSubscribe ? StartPage() : InitialHomePage(),
     );
   }
 }

@@ -659,19 +659,11 @@ class _InitialHomePageState extends ConsumerState<InitialHomePage> {
             textFontWeight: FontWeight.w700,
             borderRadius: 0,
             onPressed: () async {
-              bool isLoggedIn = false;
-              await LocalDB().getAccessToken().then((value) {
-                setState(() {
-                  isLoggedIn = value;
-                });
-              });
-              if(isLoggedIn ==true){
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const StartPage()));
 
-              }else{
+
                 Navigator.push(context, MaterialPageRoute(builder: (context) => const SubscriptionPage()));
 
-              }
+
             },
           ),
         ),
