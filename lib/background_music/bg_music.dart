@@ -15,6 +15,7 @@ class AudioPlayerBG {
   Timer? _timerDuration;
 
   AudioPlayerBG._internal() {
+
     _player = AudioPlayer(
       // Handle audio_session events ourselves for the purpose of this demo.
       handleInterruptions: false,
@@ -42,7 +43,9 @@ class AudioPlayerBG {
       children: audioSourceList,
     );*/
 
-    await _player!.setAsset(src);
+    await _player!.setAsset(src,
+
+    );
 
     _player!.setLoopMode(LoopMode.one);
 

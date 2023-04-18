@@ -140,7 +140,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                           if (customerInfo.entitlements.all["premium"] != null &&
                               customerInfo.entitlements.all["premium"]!.isActive ==
                                   true) {
-                            PurchasListener.isSubscribe = true;
+                            PurchasListener.isSubscribe.value = true;
                             Navigator.push(context, MaterialPageRoute(builder: (_)=> StartPage()));
                           //  LocalDB().setAccessToken(PurchasListener.isSubscribe);
 
@@ -196,7 +196,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                               customerInfo.entitlements.all["premium"]!.isActive ==
                                   true) {
                             print("TOken 1---${product.identifier}");
-                            PurchasListener.isSubscribe = true;
+                            PurchasListener.isSubscribe.value = true;
                             Navigator.push(context, MaterialPageRoute(builder: (_)=> StartPage()));
                            // LocalDB().setAccessToken(PurchasListener.isSubscribe);
 
@@ -313,7 +313,7 @@ SizedBox(height: 20,),
                           if (customerInfo.entitlements.all["premium"] != null &&
                               customerInfo.entitlements.all["premium"]!.isActive ==
                                   true) {
-                            PurchasListener.isSubscribe = true;
+                            PurchasListener.isSubscribe.value = true;
                             //success purchas
                             Navigator.push(context, MaterialPageRoute(builder: (_)=> StartPage()));
                             //LocalDB().setAccessToken(PurchasListener.isSubscribe);
@@ -365,7 +365,7 @@ SizedBox(height: 20,),
                           if (customerInfo.entitlements.all["premium"] != null &&
                               customerInfo.entitlements.all["premium"]!.isActive ==
                                   true) {
-                            PurchasListener.isSubscribe=true;
+                            PurchasListener.isSubscribe.value=true;
                             //success purchas
                             Navigator.push(context, MaterialPageRoute(builder: (_)=> StartPage()));
                             //LocalDB().setAccessToken(PurchasListener.isSubscribe);

@@ -326,8 +326,7 @@ class _MyPlayListNewSoundScreenState extends ConsumerState<MyPlayListNewSoundScr
                         shape: BoxShape.circle,
                         color: Colors.black.withOpacity(0.1)),
                     child: const Padding(
-                      padding: EdgeInsets.all(5.0),
-                      child: Icon(
+                      padding: EdgeInsets.all(9.0),                      child: Icon(
                         Icons.add,
                         color: blackColorA0,
                       ),

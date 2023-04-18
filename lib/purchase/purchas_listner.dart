@@ -1,7 +1,8 @@
 import 'package:bye_bye_cry_new/confiq/store_config.dart';
+import 'package:get/get.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:intl/intl.dart';
-class PurchasListener{
+class PurchasListener {
   static final PurchasListener _singleton = PurchasListener._internal();
 
   factory PurchasListener() {
@@ -10,7 +11,7 @@ class PurchasListener{
 
   PurchasListener._internal();
 
-  static bool isSubscribe=false;
+  static RxBool isSubscribe=false.obs;
 
   static init() async {
 
@@ -27,7 +28,7 @@ class PurchasListener{
     if (customerInfo.entitlements.all["premium"] != null &&
         customerInfo.entitlements.all["premium"]!.isActive ==
             true && customerInfo.entitlements.all["premium"]!.unsubscribeDetectedAt==null) {
-      isSubscribe = true;
+      isSubscribe.value = true;
 
       var lastPayDate = customerInfo
           .entitlements.all["premium"]!.latestPurchaseDate;

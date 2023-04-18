@@ -640,6 +640,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.9.31"
+  just_audio_background:
+    dependency: "direct main"
+    description:
+      name: just_audio_background
+      sha256: "89498f9a53f44f50a550d778ceb3cd64cef21246685d85f427be4d97f6e2eb85"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.1-beta.9"
   just_audio_platform_interface:
     dependency: transitive
     description:
@@ -1206,5 +1214,5 @@ packages:
     source: hosted
     version: "3.1.1"
 sdks:
-  dart: ">=2.19.0 <4.0.0"
+  dart: ">=2.19.0 <3.0.0"
   flutter: ">=3.3.0"

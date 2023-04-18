@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:bye_bye_cry_new/local_db/local_db.dart';
 import 'package:bye_bye_cry_new/purchase/purchas_listner.dart';
 import 'package:bye_bye_cry_new/purchase/purchase_api.dart';
 import 'package:bye_bye_cry_new/screens/models/home_page_fav_model.dart';
@@ -14,6 +13,7 @@ import 'package:path_provider/path_provider.dart';
 import 'background_music/bg_music.dart';
 import 'confiq/store_config.dart';
 import 'initial_home_page.dart';
+import 'package:just_audio_background/just_audio_background.dart';
 
 AudioPlayerBG ins = AudioPlayerBG.getInstance(); //make it globally
 
@@ -58,9 +58,16 @@ void main() async {
     AudioPlayer.global.setGlobalAudioContext(audioContext);
   }
 
+  PurchasListener.init();
+/*
   print(StoreConfig.instance.apiKey);
   //audioPlayer.setReleaseMode(ReleaseMode.loop);
-  PurchasListener.init();
+  await JustAudioBackground.init(
+    androidNotificationChannelId: 'com.ryanheise.bg_demo.channel.audio',
+    androidNotificationChannelName: 'Audio playback',
+    androidNotificationOngoing: true,
+  );*/
+
   runApp(const ProviderScope(child: MyApp()));
 }
 
@@ -72,15 +79,21 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
-
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Bye Bye Cry',
       theme: ThemeData(fontFamily: 'Neue Einstellung'),
-      home: !PurchasListener.isSubscribe ? StartPage() : InitialHomePage(),
+      home: Obx(
+         () {
+          return Container(
+            child:
+            PurchasListener.isSubscribe.value ?
+            StartPage() : InitialHomePage()
+          );
+        }
+      ),
     );
   }
 }

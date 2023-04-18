@@ -372,7 +372,7 @@ class _NewSoundScreenState extends ConsumerState<NewSoundScreen> {
                           shape: BoxShape.circle,
                           color: Colors.black.withOpacity(0.1)),
                       child: const Padding(
-                        padding: EdgeInsets.all(5.0),
+                        padding: EdgeInsets.all(9.0),
                         child: Icon(
                           Icons.add,
                           color: blackColorA0,
