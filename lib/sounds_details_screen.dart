@@ -190,7 +190,7 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
 
   PageController pageController = PageController();
   int value = 0;
-  bool positive = false;
+  bool positive = true;
   bool loading = false;
 
   @override
@@ -318,7 +318,7 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                                 } catch (e, s) {
                                   print(s);
                                 }
-                                return Future.delayed(Duration(seconds: 2));
+                                return Future.delayed(Duration(seconds: 1));
                               },
                               colorBuilder: (b) =>
                                   b ? Colors.green : Colors.red,

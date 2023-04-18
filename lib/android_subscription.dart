@@ -142,7 +142,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                                   true) {
                             PurchasListener.isSubscribe = true;
                             Navigator.push(context, MaterialPageRoute(builder: (_)=> StartPage()));
-                            LocalDB().setAccessToken(PurchasListener.isSubscribe);
+                          //  LocalDB().setAccessToken(PurchasListener.isSubscribe);
 
                             //success purchas
                           } else {
@@ -198,7 +198,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                             print("TOken 1---${product.identifier}");
                             PurchasListener.isSubscribe = true;
                             Navigator.push(context, MaterialPageRoute(builder: (_)=> StartPage()));
-                            LocalDB().setAccessToken(PurchasListener.isSubscribe);
+                           // LocalDB().setAccessToken(PurchasListener.isSubscribe);
 
 
                             //success purchas
@@ -316,7 +316,7 @@ SizedBox(height: 20,),
                             PurchasListener.isSubscribe = true;
                             //success purchas
                             Navigator.push(context, MaterialPageRoute(builder: (_)=> StartPage()));
-                            LocalDB().setAccessToken(PurchasListener.isSubscribe);
+                            //LocalDB().setAccessToken(PurchasListener.isSubscribe);
                           } else {
                             Fluttertoast.showToast(
                                 msg: "Subscription failed",
@@ -368,7 +368,7 @@ SizedBox(height: 20,),
                             PurchasListener.isSubscribe=true;
                             //success purchas
                             Navigator.push(context, MaterialPageRoute(builder: (_)=> StartPage()));
-                            LocalDB().setAccessToken(PurchasListener.isSubscribe);
+                            //LocalDB().setAccessToken(PurchasListener.isSubscribe);
 
                           }else{
                             Fluttertoast.showToast(

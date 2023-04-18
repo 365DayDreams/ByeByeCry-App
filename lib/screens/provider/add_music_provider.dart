@@ -98,4 +98,25 @@ class AddMusicProvider extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+  deleteMix({required String mixId})async{
+    int index = playList.indexWhere((element) => element.id == mixId);
+    if(index >= 0){
+      if(musicList.contains(playList[index])){
+        musicList.remove(playList[index]);
+        musicList.remove(mixId);
+        await LocalDB.setPlayListItem(musicList);
+      }
+      playList.removeAt(index);
+      await LocalDB.setPlayListItem(playList);
+    }else{
+      int index = musicList.indexWhere((element) => element.id == mixId);
+      if(index >= 0){
+        musicList.remove(playList[index]);
+        musicList.remove(mixId);
+        await LocalDB.setPlayListItem(musicList);
+      }
+    }
+    notifyListeners();
+  }
 }

@@ -72,23 +72,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  bool isToken = false;
 
-  getToken() async {
-    await LocalDB().getAccessToken().then((value) {
-      setState(() {
-        isToken = value;
-        isToken = PurchasListener.isSubscribe;
-      });
-      print("TOken__${isToken}");
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    getToken();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -96,7 +80,7 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       title: 'Bye Bye Cry',
       theme: ThemeData(fontFamily: 'Neue Einstellung'),
-      home: PurchasListener.isSubscribe ? StartPage() : InitialHomePage(),
+      home: !PurchasListener.isSubscribe ? StartPage() : InitialHomePage(),
     );
   }
 }

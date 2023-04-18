@@ -84,7 +84,7 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
           _showDialog(context);
         },
         child: Padding(
-          padding: const EdgeInsets.only(left: 58.0, right: 58, bottom: 118),
+          padding: const EdgeInsets.only(left: 58.0, right: 58, bottom: 158),
           child: Container(
             decoration: BoxDecoration(
               color: primaryPinkColor,

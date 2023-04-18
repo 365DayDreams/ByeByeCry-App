@@ -653,7 +653,6 @@ class _InitialHomePageState extends ConsumerState<InitialHomePage> {
           child:     OutLineButton(
 
             text: 'Get Started',
-            // anotherText: '(For better sleep for them and for you)',
             textColor: secondaryBlackColor2,
             textFontSize: 22,
             textFontWeight: FontWeight.w700,

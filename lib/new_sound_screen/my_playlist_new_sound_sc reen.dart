@@ -203,27 +203,31 @@ class _MyPlayListNewSoundScreenState extends ConsumerState<MyPlayListNewSoundScr
     return     Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Row(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Image.asset(
-                "${musicModel.image}",
-                height: 60,
-                fit: BoxFit.contain,
+        Expanded(
+          child: Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Image.asset(
+                  "${musicModel.image}",
+                  height: 60,
+                  fit: BoxFit.contain,
+                ),
               ),
-            ),
 
-            const SizedBox(
-              width: 10,
-            ),
-            CustomText(
-              text: musicModel.musicName,
-              color: blackColor50,
-              fontWeight: FontWeight.w600,
-              fontSize: 20,
-            ),
-          ],
+              const SizedBox(
+                width: 10,
+              ),
+              Expanded(
+                child: CustomText(
+                  text: musicModel.musicName,
+                  color: blackColor50,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 20,
+                ),
+              ),
+            ],
+          ),
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),

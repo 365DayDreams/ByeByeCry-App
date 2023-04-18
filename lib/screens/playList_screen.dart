@@ -1091,15 +1091,16 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
                     textFontWeight: FontWeight.w600,
                     borderRadius: 48,
                     onPressed: () {
-                      ref.read(mixMusicProvider).deleteMix(mixId: id.toString());
-                      ref.read(mixMusicProvider).addOrRemoveMixPlayList(id: id.toString());
-                     // ref.read(mixMusicProvider).re(id: id.toString());
 
-                      ref.watch(playlistProvider).mixMixPlaylist.removeAt(index);
 
+                      ref.read(addProvider).deleteMix(mixId: id.toString());
+                      ref.read(playlistProvider).deleteMix(mixId: id.toString());
                       if (mounted) {
                         Navigator.pop(context);
                       }
+                      setState(() {
+
+                      });
 
                     },
                   ),

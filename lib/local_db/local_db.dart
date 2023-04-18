@@ -85,16 +85,16 @@ class LocalDB {
     return null;
   }
 
-  setAccessToken(bool accessToken) async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setBool("access_token", accessToken);
-  }
-
-  Future getAccessToken() async {
-    final prefs = await SharedPreferences.getInstance();
-    bool? token = prefs.getBool("access_token");
-    return token ?? false;
-  }
+  // setAccessToken(bool accessToken) async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   prefs.setBool("access_token", accessToken);
+  // }
+  //
+  // Future getAccessToken() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   bool? token = prefs.getBool("access_token");
+  //   return token ?? false;
+  // }
 
   setTimer(String timer) async {
     final prefs = await SharedPreferences.getInstance();
