@@ -16,6 +16,7 @@ import '../compoment/shared/custom_text.dart';
 import '../compoment/shared/screen_size.dart';
 import '../compoment/utils/color_utils.dart';
 import '../compoment/utils/image_link.dart';
+import '../global.dart';
 import '../main.dart';
 
 class ListenMixSound extends ConsumerStatefulWidget {
@@ -63,12 +64,14 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
   int musicIndex = 0;
   List<MusicModel> musicList = [];
   int index = 0;
-  bool check = false;
+  bool check = true;
   TextEditingController minController = TextEditingController();
   TextEditingController secController = TextEditingController();
 
   @override
   void initState() {
+    audioPlayer1.dispose();
+
     // startPlayer1();
     // startPlayer2();
     changeVolume();
@@ -509,6 +512,8 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                           color: blackColor2,
                           fontWeight: FontWeight.w700,
                         ),
+                        check==true ? Image.asset("asset/images/infinity.png",height: 30,width: 30,fit: BoxFit.contain,):
+
                         CustomText(
                           text: '${getHumanTimeBySecond(sliderEnd.toInt())}',
                           fontSize: 10,
@@ -616,7 +621,7 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                                 if (mounted) {
                                   playMusic();
                                   sliderInitial = 0.0;
-                                  sliderEnd = 120.0;
+                                  sliderEnd = 1111111120.0;
                                 }
                                 if (mounted) {
                                   setState(() {});
@@ -691,7 +696,7 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                                 if (mounted) {
                                   playMusic();
                                   sliderInitial = 0.0;
-                                  sliderEnd = 120.0;
+                                  sliderEnd = 1111111120.0;
                                 }
                                 if (mounted) {
                                   setState(() {});
@@ -867,7 +872,7 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                                       currentVolume = newValue;
                                       print("volume $currentVolume");
                                     });
-                                    ins.setVolume(currentVolume * 0.001);
+                                  //  ins.setVolume(currentVolume * 0.001);
                                     // await PerfectVolumeControl.setVolume(currentVolume);
                                   },
                                 ),
@@ -988,12 +993,20 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                                 onChanged: (double newValue) async {
                                   state(() {
                                     setDuration = 1;
-                                    selectedTime = check ? 0 : newValue.toInt();
+                                    selectedTime =  newValue.toInt();
                                     setDuration = selectedTimes[selectedTime];
 
                                     setDuration *= 60;
                                     setSongDuration(setDuration);
                                     ins.seek(Duration(seconds: setDuration));
+                                    if(selectedTime==0){
+                                      check= true;
+                                    }else{
+                                      check= false;
+                                    }
+                                    setState(() {
+
+                                    });
                                     print("index $setDuration");
                                   });
                                   setState(() {});
@@ -1333,7 +1346,7 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
   }
 
   var sliderInitial = 0.0;
-  var sliderEnd = 120.0;
+  var sliderEnd = 1111111120.0;
 
   Timer? sliderTimer;
 

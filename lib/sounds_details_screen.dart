@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:animated_toggle_switch/animated_toggle_switch.dart';
 import 'package:bye_bye_cry_new/compoment/shared/custom_image.dart';
 import 'package:bye_bye_cry_new/compoment/shared/custom_svg.dart';
+import 'package:bye_bye_cry_new/global.dart';
 import 'package:bye_bye_cry_new/main.dart';
 import 'package:bye_bye_cry_new/screens/mix_screen.dart';
 import 'package:bye_bye_cry_new/screens/provider/add_music_provider.dart';
@@ -50,7 +51,7 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
   int index = 0;
   int selectedTime = 0;
   int setDuration = 0;
-  bool check = false;
+  bool check = true;
   bool playPouse = true;
 
   @override
@@ -58,6 +59,7 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
     initialization();
     startPlayer();
     changeVolume();
+    audioPlayer1.dispose();
     //setSongDuration(60 *2,initValue: 0);
 
     super.initState();
@@ -67,7 +69,7 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
         pageController.nextPage(
             duration: Duration(milliseconds: 100), curve: Curves.linear);
         sliderInitial = 0.0;
-        sliderEnd = 120.0;
+        sliderEnd = 111111111111111120.0;
         changeIndex(changeIndex: true);
 
         if (mounted) {
@@ -390,81 +392,58 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      InkWell(
-                        onTap: () {
-                          ref.read(addProvider).addOrRemovePlayList(
-                              id: ref.watch(addProvider).musicList[index].id);
-                        },
-                        child: Row(
-                          children: [
-                            Icon(Icons.add_outlined,
-                                size: 30,
-                                color: ref
-                                        .watch(addProvider)
-                                        .playListIds
-                                        .contains(ref
-                                            .watch(addProvider)
-                                            .musicList[index]
-                                            .id)
-                                    ? Colors.red
-                                    : blackColorA0),
-                            // GestureDetector(
-                            //     onTap: () {
-                            //       ref.read(addProvider).addOrRemovePlayList(
-                            //           id: ref.watch(addProvider).musicList[index].id);
-                            //     },
-                            //     child: CustomImage(
-                            //       imageUrl: 'asset/images/icon_png/love.png',
-                            //       color: ref.watch(addProvider).playListIds.contains(
-                            //           ref.watch(addProvider).musicList[index].id)
-                            //           ? Colors.red
-                            //           : blackColorA0,
-                            //     )),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 5.0),
-                              child: const CustomText(
-                                text: 'Add To Playlist',
-                                fontSize: 14,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                          ],
-                        ),
+                      Row(
+                        children: [
+                          IconButton(
+                              padding: const EdgeInsets.only(left: 0),
+                              onPressed: () {
+                                _showDialogVolume(context);
+                              },
+                              icon: Container(
+                                  color: Colors.transparent,
+                                  child: const CustomSvg(
+                                      svg: volume, color: blackColor2))),
+                          Text("Set Volume"),
+                          // GestureDetector(
+                          //     onTap: () {
+                          //       ref.read(addProvider).addOrRemovePlayList(
+                          //           id: ref.watch(addProvider).musicList[index].id);
+                          //     },
+                          //     child: CustomImage(
+                          //       imageUrl: 'asset/images/icon_png/love.png',
+                          //       color: ref.watch(addProvider).playListIds.contains(
+                          //           ref.watch(addProvider).musicList[index].id)
+                          //           ? Colors.red
+                          //           : blackColorA0,
+                          //     )),
+                          // const SizedBox(
+                          //   width: 10,
+                          // ),
+
+                        ],
                       ),
-                      InkWell(
-                        onTap: (){
-                          ref.read(addProvider).changePage(2);
-                          ref.read(mixMusicProvider).clearMixMusics();
-                          ref.read(mixMusicProvider).mixFirstMusic(
-                              ref.watch(addProvider).musicList[index]);
-
-
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => const MixScreen(
-                            type: "3",
-                          )));
-                        },
-                        child: Row(
-                          children: [
-                            const CustomImage(
-                              imageUrl: 'asset/images/icon_png/another_sound.png',
-                              color: blackColorA0,
-                            ),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            Container(
-                              color: Colors.transparent,
-                              child: const CustomText(
-                                text: 'Mix Another\n Sound',
-                                fontSize: 14,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                          ],
-                        ),
+                      Row(
+                        children: [
+                          GestureDetector(
+                            onTap: (){
+                              _showDialog(context);
+                            },
+                            child: Container(
+                                color: Colors.transparent,
+                                child: CustomSvg(
+                                  svg: timer,
+                                  color: blackColor2,
+                                )),
+                          ),
+                          // const CustomImage(
+                          //   imageUrl: 'asset/images/icon_png/another_sound.png',
+                          //   color: blackColorA0,
+                          // ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                        Text("Set Timer"),
+                        ],
                       ),
                     ],
                   ),
@@ -481,6 +460,7 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                         color: blackColor2,
                         fontWeight: FontWeight.w700,
                       ),
+                      check==true ? Image.asset("asset/images/infinity.png",height: 30,width: 30,fit: BoxFit.contain,):
                       CustomText(
                         text: '${getHumanTimeBySecond(sliderEnd.toInt())}',
                         fontSize: 10,
@@ -524,18 +504,10 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                   child: Padding(
                     padding: const EdgeInsets.only(left: 20.0, right: 20),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        IconButton(
-                            padding: const EdgeInsets.only(left: 10),
-                            onPressed: () {
-                              _showDialogVolume(context);
-                            },
-                            icon: Container(
-                                color: Colors.transparent,
-                                child: const CustomSvg(
-                                    svg: volume, color: blackColor2))),
+
                         IconButton(
                             padding: EdgeInsets.zero,
                             onPressed: () async {
@@ -549,7 +521,7 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                                 ins.playAudio(
                                     Duration(minutes: 2), "assets/$url");
                                 sliderInitial = 0.0;
-                                sliderEnd = 120.0;
+                                sliderEnd = 111111111111111120.0;
                               }
 
                               if (mounted) {
@@ -629,7 +601,7 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                                     Duration(minutes: 2), "assets/$url");
 
                                 sliderInitial = 0.0;
-                                sliderEnd = 120.0;
+                                sliderEnd = 111111111111111120.0;
                               }
 
                               if (mounted) {
@@ -638,20 +610,7 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                             },
                             icon: const CustomSvg(
                                 svg: right_shift, color: primaryPinkColor)),
-                        IconButton(
-                            padding: EdgeInsets.zero,
-                            onPressed: () {
-                              _showDialog(context);
-                            },
-                            icon: Container(
-                                color: Colors.transparent,
-                                child: const Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 8.0),
-                                  child: CustomSvg(
-                                    svg: timer,
-                                    color: blackColor2,
-                                  ),
-                                ))),
+
                       ],
                     ),
                   ),
@@ -922,12 +881,21 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                                 onChanged: (double newValue) async {
                                   state(() {
                                     setDuration = 1;
-                                    selectedTime = check ? 0 : newValue.toInt();
+                                    selectedTime =  newValue.toInt();
+                                    print("OKK$selectedTime");
                                     setDuration = selectedTimes[selectedTime];
 
                                     setDuration *= 60;
                                     setSongDuration(setDuration);
                                     ins.seek(Duration(seconds: setDuration));
+                                    if(selectedTime==0){
+                                      check= true;
+                                    }else{
+                                      check= false;
+                                    }
+                                    setState(() {
+
+                                    });
                                     print("index $setDuration");
                                   });
                                   setState(() {});
@@ -1048,7 +1016,7 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
   }
 
   var sliderInitial = 0.0;
-  var sliderEnd = 120.0;
+  var sliderEnd = 111111111111111120.0;
 
   Timer? sliderTimer;
 

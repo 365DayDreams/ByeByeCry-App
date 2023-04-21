@@ -110,7 +110,7 @@ class CustomBottomAppBarState extends ConsumerState<CustomBottomAppBar> {
                   icon: Padding(
                     padding: const EdgeInsets.only(bottom: 7.0),
                     child:Icon(
-                      Icons.favorite_border,
+                      Icons.favorite,
 
                       // currentIndex == 4
                       //     ? navigationBarFifthImageS
@@ -136,7 +136,7 @@ class CustomBottomAppBarState extends ConsumerState<CustomBottomAppBar> {
                           : primaryGreyColor,
                     ),
                   ),
-                  label: "Blog"),
+                  label: "Info"),
             ],
             type: BottomNavigationBarType.fixed,
             elevation: 30,

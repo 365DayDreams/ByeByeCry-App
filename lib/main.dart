@@ -13,7 +13,6 @@ import 'package:path_provider/path_provider.dart';
 import 'background_music/bg_music.dart';
 import 'confiq/store_config.dart';
 import 'initial_home_page.dart';
-import 'package:just_audio_background/just_audio_background.dart';
 
 AudioPlayerBG ins = AudioPlayerBG.getInstance(); //make it globally
 
@@ -89,7 +88,7 @@ class _MyAppState extends State<MyApp> {
          () {
           return Container(
             child:
-            PurchasListener.isSubscribe.value ?
+            !PurchasListener.isSubscribe.value ?
             StartPage() : InitialHomePage()
           );
         }

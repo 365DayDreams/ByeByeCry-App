@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:audioplayers/audioplayers.dart';
 import 'package:bye_bye_cry_new/compoment/shared/custom_image.dart';
 import 'package:bye_bye_cry_new/compoment/shared/custom_snackbar.dart';
@@ -10,7 +9,6 @@ import 'package:bye_bye_cry_new/start_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:perfect_volume_control/perfect_volume_control.dart';
-import '../compoment/shared/custom_app_bar.dart';
 import '../compoment/shared/custom_svg.dart';
 import '../compoment/shared/custom_text.dart';
 import '../compoment/shared/outline_button.dart';
@@ -197,15 +195,28 @@ class _MixScreenState extends ConsumerState<MixScreen> {
     final height = ScreenSize(context).height;
 
     return Scaffold(
-      appBar: CustomAppBar(
-        title: 'My Mix',
-        onPressed: () {
-          if (widget.type == "1") {
-            Navigator.pop(context);
-          }else if(widget.type=="3"){
-            Navigator.pop(context);
-          }
-        },
+      // appBar: CustomAppBar(
+      //   title: 'My Mix',
+      //
+      //   onPressed:  () {
+      //     if (widget.type == "1") {
+      //       Navigator.pop(context);
+      //     }else if(widget.type=="3"){
+      //       Navigator.pop(context);
+      //     }
+      //   },
+      // ),
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: secondaryPinkColor,
+
+        title: CustomText(
+
+          text: "My Mix",
+          fontSize: 24,
+          fontWeight: FontWeight.w700,
+          color: secondaryBlackColor,
+        ),
       ),
       body: SingleChildScrollView(
         child: Column(

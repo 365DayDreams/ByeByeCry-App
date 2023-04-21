@@ -10,14 +10,13 @@ import 'package:bye_bye_cry_new/screens/provider/playlistProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:perfect_volume_control/perfect_volume_control.dart';
 import 'package:screen_brightness/screen_brightness.dart';
-import '../compoment/bottom_sheet.dart';
 import '../compoment/shared/custom_app_bar.dart';
 import '../compoment/shared/custom_text.dart';
 import '../compoment/shared/screen_size.dart';
 import '../compoment/utils/color_utils.dart';
 import '../compoment/utils/image_link.dart';
+import '../global.dart';
 
 class PlaylistMixSound2 extends ConsumerStatefulWidget {
   final String? playlistMixMusicId;
@@ -114,15 +113,15 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
   bool playPouse = true;
   int setDuration = 0;
   int mixPlaylistIndex = 0;
-  AudioCache audioCache = AudioCache();
-  AudioPlayer audioPlayer1 = AudioPlayer();
+
+
   // AudioPlayer audioPlayer2 = AudioPlayer();
-  Duration _duration = Duration.zero;
-  Duration _position = Duration.zero;
-  Duration _duration2 = Duration.zero;
-  Duration _position2 = Duration.zero;
-  Duration position = Duration.zero;
-  Duration duration = Duration.zero;
+  // Duration _duration = Duration.zero;
+  // Duration _position = Duration.zero;
+  // Duration _duration2 = Duration.zero;
+  // Duration _position2 = Duration.zero;
+  // Duration position = Duration.zero;
+  // Duration duration = Duration.zero;
   // double currentVolume = 0.0;
   bool issongplaying1 = false;
   bool issongplaying2 = false;
@@ -130,12 +129,13 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
   late StreamSubscription<double> _subscription;
   int musicIndex = 0;
   List<MusicModel> musicList = [];
-  bool check = false;
+  bool check = true;
   TextEditingController minController = TextEditingController();
   TextEditingController secController = TextEditingController();
 
   @override
   void initState() {
+    initialization();
     getTimer();
     getTimer2();
     getTimer3();
@@ -160,7 +160,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
         changeIndex(changeIndex: true);
         pageController.nextPage(
             duration: Duration(milliseconds: 100), curve: Curves.linear);
-       changeIndex(changeIndex: true);
+        changeIndex(changeIndex: true);
 
         sliderInitial = 0.0;
 
@@ -186,18 +186,8 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
     });
   }
 
-  @override
-  void didChangeDependencies() {
-    initialization();
-    super.didChangeDependencies();
-  }
 
-  @override
-  void dispose() {
-    audioPlayer1.dispose();
-    //_subscription.cancel();
-    super.dispose();
-  }
+
 
   // changeVolume() {
   //   PerfectVolumeControl.hideUI = true;
@@ -219,34 +209,22 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
   startPlayer1() async {
     audioPlayer1.onPlayerStateChanged.listen((state) {
       issongplaying1 = state == PlayerState.playing;
-      if (!issongplaying1 || !issongplaying2) {
+
         if (setDuration > 0) {
-          setDuration -= _duration.inSeconds;
+          setDuration -= Savetimer!.toInt();
           if (mounted) {
             pausePlayMethod();
             if (mounted) {
               setState(() {});
             }
           }
-        }
-      }
-      if (mounted) {
-        setState(() {});
-      }
-    });
-    audioPlayer1.onDurationChanged.listen((newDuration) {
-      _duration = newDuration;
 
+      }
       if (mounted) {
         setState(() {});
       }
     });
-    audioPlayer1.onPositionChanged.listen((newPositions) {
-      _position = newPositions;
-      if (mounted) {
-        setState(() {});
-      }
-    });
+
     if (mounted) {
       setState(() {});
     }
@@ -312,31 +290,32 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
       musicIndex = (musicIndex - 1);
       if (musicIndex < 0) {
         musicIndex = ref
-                .watch(playlistProvider)
-                .mixMixPlaylist[mixPlaylistIndex]
-                .playListList!
-                .length -
+            .watch(playlistProvider)
+            .mixMixPlaylist[mixPlaylistIndex]
+            .playListList!
+            .length -
             1;
       }
     }
   }
 
   pausePlayMethod() async {
-    if (issongplaying1 || issongplaying2) {
+    if (issongplaying1) {
       await audioPlayer1.pause();
 
       ///await audioPlayer2.pause();
       pauseSliderTimmer();
     } else {
       String url1 = ref
-              .watch(playlistProvider)
-              .mixMixPlaylist[mixPlaylistIndex]
-              .playListList![musicIndex]
-              .first
-              ?.musicFile ??
+          .watch(playlistProvider)
+          .mixMixPlaylist[mixPlaylistIndex]
+          .playListList![musicIndex]
+          .first
+          ?.musicFile ??
           "";
 
       await audioPlayer1.play(AssetSource(url1));
+
 
       resumeSliderTimmer();
     }
@@ -347,11 +326,11 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
 
   playMusic() async {
     String url1 = ref
-            .watch(playlistProvider)
-            .mixMixPlaylist[mixPlaylistIndex]
-            .playListList![musicIndex]
-            .first
-            ?.musicFile ??
+        .watch(playlistProvider)
+        .mixMixPlaylist[mixPlaylistIndex]
+        .playListList![musicIndex]
+        .first
+        ?.musicFile ??
         "";
 
     await audioPlayer1.play(AssetSource(url1));
@@ -368,12 +347,11 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
       setState(() {});
       pausePlayMethod();
     }
-    print("duration2 ${_duration2.inSeconds}  duration${_duration.inSeconds}");
   }
 
   playMusicForBottomSheet(
       {required String id,
-      required Function(void Function()) updateState}) async {
+        required Function(void Function()) updateState}) async {
     print("playlist play button click");
     int _index = ref
         .watch(playlistProvider)
@@ -382,40 +360,40 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
         .indexWhere((element) => element.id == id);
     if (_index >= 0) {
       if (_index == musicIndex) {
-        if (issongplaying1) {
+        if (issongplaying1 && issongplaying2) {
           await audioPlayer1.pause();
         } else {
           String url1 = ref
-                  .watch(playlistProvider)
-                  .mixMixPlaylist[mixPlaylistIndex]
-                  .playListList![_index]
-                  .first
-                  ?.musicFile ??
+              .watch(playlistProvider)
+              .mixMixPlaylist[mixPlaylistIndex]
+              .playListList![_index]
+              .first
+              ?.musicFile ??
               "";
           String url2 = ref
-                  .watch(playlistProvider)
-                  .mixMixPlaylist[mixPlaylistIndex]
-                  .playListList![_index]
-                  .second
-                  ?.musicFile ??
+              .watch(playlistProvider)
+              .mixMixPlaylist[mixPlaylistIndex]
+              .playListList![_index]
+              .second
+              ?.musicFile ??
               "";
           await audioPlayer1.play(AssetSource(url1));
         }
       } else {
         musicIndex = _index;
         String url1 = ref
-                .watch(playlistProvider)
-                .mixMixPlaylist[mixPlaylistIndex]
-                .playListList![_index]
-                .first
-                ?.musicFile ??
+            .watch(playlistProvider)
+            .mixMixPlaylist[mixPlaylistIndex]
+            .playListList![_index]
+            .first
+            ?.musicFile ??
             "";
         String url2 = ref
-                .watch(playlistProvider)
-                .mixMixPlaylist[mixPlaylistIndex]
-                .playListList![_index]
-                .second
-                ?.musicFile ??
+            .watch(playlistProvider)
+            .mixMixPlaylist[mixPlaylistIndex]
+            .playListList![_index]
+            .second
+            ?.musicFile ??
             "";
         await audioPlayer1.play(AssetSource(url1));
       }
@@ -436,7 +414,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
       backgroundColor: Colors.white,
       appBar: CustomAppBar(
         title:
-            '${ref.watch(playlistProvider).mixMixPlaylist[mixPlaylistIndex].title}',
+        '${ref.watch(playlistProvider).mixMixPlaylist[mixPlaylistIndex].title}',
         iconButton: false,
         onPressedButton: null,
         onPressed: () {
@@ -486,7 +464,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                           padding: EdgeInsets.only(right: width * .07),
                           child: CustomImage(
                             imageUrl:
-                                'asset/images/icon_png/now_playing_icon/Sun.png',
+                            'asset/images/icon_png/now_playing_icon/Sun.png',
                             color: Colors.orangeAccent.shade100,
                           ),
                         ),
@@ -496,11 +474,11 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                 ),
                 CustomImage(
                   imageUrl: ref
-                          .watch(playlistProvider)
-                          .mixMixPlaylist[mixPlaylistIndex]
-                          .playListList![musicIndex]
-                          .first
-                          ?.image ??
+                      .watch(playlistProvider)
+                      .mixMixPlaylist[mixPlaylistIndex]
+                      .playListList![musicIndex]
+                      .first
+                      ?.image ??
                       "",
                   height: width * .7,
                   width: width * .9,
@@ -525,34 +503,23 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Expanded(
-                            child: GestureDetector(
-                              onTap: (){
-                                CustomBottomSheet.bottomSheet(context, isDismiss: true,
-                                    child: StatefulBuilder(
-                                      builder: (BuildContext context,
-                                          void Function(void Function()) updateState) {
-                                        return bottomSheet(context: context);
-                                      },
-                                    ));
-                              },
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  CustomText(
-                                    text:
-                                        "${ref.watch(playlistProvider).mixMixPlaylist[mixPlaylistIndex].playListList![musicIndex].first?.musicName}",
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w400,
-                                    color: secondaryBlackColor,
-                                  ),
-                                  const SizedBox(
-                                      height: 8,
-                                      child: CustomSvg(
-                                        svg: down_arrow,
-                                        color: blackColorA0,
-                                      )),
-                                ],
-                              ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                CustomText(
+                                  text:
+                                  "${ref.watch(playlistProvider).mixMixPlaylist[mixPlaylistIndex].playListList![musicIndex].first?.musicName}",
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w400,
+                                  color: secondaryBlackColor,
+                                ),
+                                // const SizedBox(
+                                //     height: 8,
+                                //     child: CustomSvg(
+                                //       svg: down_arrow,
+                                //       color: blackColorA0,
+                                //     )),
+                              ],
                             ),
                           ),
                         ],
@@ -573,7 +540,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                         fontWeight: FontWeight.w700,
                       ),
                       if (musicIndex == 0) ...[
-                        CustomText(
+                        check==true ? Image.asset("asset/images/infinity.png",height: 30,width: 30,fit: BoxFit.contain,):      CustomText(
                           text: Savetimer == 0.0
                               ? "2:00"
                               : '${getHumanTimeBySecond(Savetimer!.toInt())}',
@@ -582,7 +549,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                           fontWeight: FontWeight.w700,
                         ),
                       ] else if (musicIndex == 1) ...[
-                        CustomText(
+                        check==true ? Image.asset("asset/images/infinity.png",height: 30,width: 30,fit: BoxFit.contain,):       CustomText(
                           text: Savetimer2 == 0.0
                               ? "2:00"
                               : '${getHumanTimeBySecond(Savetimer2!.toInt())}',
@@ -591,7 +558,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                           fontWeight: FontWeight.w700,
                         ),
                       ] else if (musicIndex == 2) ...[
-                        CustomText(
+                        check==true ? Image.asset("asset/images/infinity.png",height: 30,width: 30,fit: BoxFit.contain,):    CustomText(
                           text: Savetimer3 == 0.0
                               ? "2:00"
                               : '${getHumanTimeBySecond(Savetimer3!.toInt())}',
@@ -611,7 +578,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                       data: const SliderThemeData(
                           trackShape: RectangularSliderTrackShape(),
                           thumbShape:
-                              RoundSliderThumbShape(enabledThumbRadius: 10)),
+                          RoundSliderThumbShape(enabledThumbRadius: 10)),
                       child: Slider(
                           value: sliderInitial.floorToDouble(),
                           min: 0,
@@ -622,6 +589,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                           onChanged: (double newValue) async {
                             print("slider");
                             updateSlider(newValue.floorToDouble());
+
                             setState(() {});
                           },
                           semanticFormatterCallback: (double newValue) {
@@ -637,7 +605,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                       data: const SliderThemeData(
                           trackShape: RectangularSliderTrackShape(),
                           thumbShape:
-                              RoundSliderThumbShape(enabledThumbRadius: 10)),
+                          RoundSliderThumbShape(enabledThumbRadius: 10)),
                       child: Slider(
                           value: sliderInitial.floorToDouble(),
                           min: 0,
@@ -663,7 +631,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                       data: const SliderThemeData(
                           trackShape: RectangularSliderTrackShape(),
                           thumbShape:
-                              RoundSliderThumbShape(enabledThumbRadius: 10)),
+                          RoundSliderThumbShape(enabledThumbRadius: 10)),
                       child: Slider(
                           value: sliderInitial.floorToDouble(),
                           min: 0,
@@ -780,18 +748,18 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                 pauseSliderTimmer();
                               } else {
                                 String url1 = ref
-                                        .watch(playlistProvider)
-                                        .mixMixPlaylist[mixPlaylistIndex]
-                                        .playListList![musicIndex]
-                                        .first
-                                        ?.musicFile ??
+                                    .watch(playlistProvider)
+                                    .mixMixPlaylist[mixPlaylistIndex]
+                                    .playListList![musicIndex]
+                                    .first
+                                    ?.musicFile ??
                                     "";
                                 String url2 = ref
-                                        .watch(playlistProvider)
-                                        .mixMixPlaylist[mixPlaylistIndex]
-                                        .playListList![musicIndex]
-                                        .second
-                                        ?.musicFile ??
+                                    .watch(playlistProvider)
+                                    .mixMixPlaylist[mixPlaylistIndex]
+                                    .playListList![musicIndex]
+                                    .second
+                                    ?.musicFile ??
                                     "";
                                 await audioPlayer1.play(AssetSource(url1));
                                 resumeSliderTimmer();
@@ -846,7 +814,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                 child: const Padding(
                                   padding: EdgeInsets.symmetric(vertical: 8.0),
                                   child:
-                                      CustomSvg(svg: timer, color: blackColor2),
+                                  CustomSvg(svg: timer, color: blackColor2),
                                 ))),
                       ],
                     ),
@@ -921,7 +889,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                 child: const CustomImage(
                                   boxFit: BoxFit.fill,
                                   imageUrl:
-                                      'asset/images/icon_png/now_playing_icon/Sun.png',
+                                  'asset/images/icon_png/now_playing_icon/Sun.png',
                                   color: primaryPinkColor,
                                 ),
                               ),
@@ -1051,7 +1019,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                       decoration: BoxDecoration(
                                           color: Colors.white,
                                           borderRadius:
-                                              BorderRadius.circular(2),
+                                          BorderRadius.circular(2),
                                           boxShadow: [
                                             BoxShadow(
                                                 color: secondaryBlackColor
@@ -1064,11 +1032,11 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                             horizontal: 4.0, vertical: 5),
                                         child: Center(
                                             child: CustomText(
-                                          text: "${volume1!.floor()}%",
-                                          fontSize: 10,
-                                          color: secondaryBlackColor,
-                                          fontWeight: FontWeight.w600,
-                                        )),
+                                              text: "${volume1!.floor()}%",
+                                              fontSize: 10,
+                                              color: secondaryBlackColor,
+                                              fontWeight: FontWeight.w600,
+                                            )),
                                       ),
                                     )))
                           ] else if (musicIndex == 1) ...[
@@ -1082,7 +1050,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                       decoration: BoxDecoration(
                                           color: Colors.white,
                                           borderRadius:
-                                              BorderRadius.circular(2),
+                                          BorderRadius.circular(2),
                                           boxShadow: [
                                             BoxShadow(
                                                 color: secondaryBlackColor
@@ -1095,11 +1063,11 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                             horizontal: 4.0, vertical: 5),
                                         child: Center(
                                             child: CustomText(
-                                          text: "${volume2!.floor()}%",
-                                          fontSize: 10,
-                                          color: secondaryBlackColor,
-                                          fontWeight: FontWeight.w600,
-                                        )),
+                                              text: "${volume2!.floor()}%",
+                                              fontSize: 10,
+                                              color: secondaryBlackColor,
+                                              fontWeight: FontWeight.w600,
+                                            )),
                                       ),
                                     )))
                           ] else if (musicIndex == 2) ...[
@@ -1113,7 +1081,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                       decoration: BoxDecoration(
                                           color: Colors.white,
                                           borderRadius:
-                                              BorderRadius.circular(2),
+                                          BorderRadius.circular(2),
                                           boxShadow: [
                                             BoxShadow(
                                                 color: secondaryBlackColor
@@ -1126,11 +1094,11 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                             horizontal: 4.0, vertical: 5),
                                         child: Center(
                                             child: CustomText(
-                                          text: "${volume3!.floor()}%",
-                                          fontSize: 10,
-                                          color: secondaryBlackColor,
-                                          fontWeight: FontWeight.w600,
-                                        )),
+                                              text: "${volume3!.floor()}%",
+                                              fontSize: 10,
+                                              color: secondaryBlackColor,
+                                              fontWeight: FontWeight.w600,
+                                            )),
                                       ),
                                     )))
                           ],
@@ -1196,7 +1164,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                           child: Center(
                               child: CustomText(
                                   text:
-                                      "${(selectedTimes[selectedTime] ~/ 60).toString().padLeft(2, "0")} : ${(selectedTimes[selectedTime] % 60).toString().padLeft(2, "0")} min")),
+                                  "${(selectedTimes[selectedTime] ~/ 60).toString().padLeft(2, "0")} : ${(selectedTimes[selectedTime] % 60).toString().padLeft(2, "0")} min")),
                         ),
                         // SliderTheme(
                         //   data: const SliderThemeData(
@@ -1239,12 +1207,20 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                               onChanged: (double newValue) async {
                                 state(() {
                                   setDuration = 1;
-                                  selectedTime = check ? 0 : newValue.toInt();
+                                  selectedTime =  newValue.toInt();
                                   setDuration = selectedTimes[selectedTime];
 
                                   setDuration *= 60;
                                   setSongDuration(setDuration);
                                   print("index $selectedTime");
+                                  if(selectedTime==0){
+                                    check= true;
+                                  }else{
+                                    check= false;
+                                  }
+                                  setState(() {
+
+                                  });
                                 });
                                 setState(() {});
                               },
@@ -1258,7 +1234,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: List.generate(
                                 times.length,
-                                (index) => CustomText(
+                                    (index) => CustomText(
                                     text: times[index],
                                     fontWeight: FontWeight.w400,
                                     fontSize: 8,
@@ -1291,10 +1267,10 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                           TextButton(
                               onPressed: check
                                   ? () async {
-                                      if (mounted) {
-                                        Navigator.pop(context);
-                                      }
-                                    }
+                                if (mounted) {
+                                  Navigator.pop(context);
+                                }
+                              }
                                   : null,
                               child: const CustomText(
                                 text: "continuous play",
@@ -1509,60 +1485,22 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                                       children: [
                                                         const CustomSvg(
                                                             svg: volume),
-                                                        if(musicIndex==0)...[
-                                                          Padding(
-                                                            padding:
-                                                            const EdgeInsets
-                                                                .symmetric(
-                                                                horizontal:
-                                                                5.0),
-                                                            child: CustomText(
-                                                                text:
-                                                                "${(volume1!).toInt().toString().padLeft(2, "0")}%",
-                                                                fontSize: 12,
-                                                                fontWeight:
-                                                                FontWeight
-                                                                    .w600,
-                                                                color:
-                                                                blackColor50),
-                                                          ),
-                                                        ]else if(musicIndex==1)...[
-
-                                                          Padding(
-                                                            padding:
-                                                            const EdgeInsets
-                                                                .symmetric(
-                                                                horizontal:
-                                                                5.0),
-                                                            child: CustomText(
-                                                                text:
-                                                                "${(volume2!).toInt().toString().padLeft(2, "0")}%",
-                                                                fontSize: 12,
-                                                                fontWeight:
-                                                                FontWeight
-                                                                    .w600,
-                                                                color:
-                                                                blackColor50),
-                                                          ),
-                                                        ]else if(musicIndex==2)...[
-                                                          Padding(
-                                                            padding:
-                                                            const EdgeInsets
-                                                                .symmetric(
-                                                                horizontal:
-                                                                5.0),
-                                                            child: CustomText(
-                                                                text:
-                                                                "${(volume3!).toInt().toString().padLeft(2, "0")}%",
-                                                                fontSize: 12,
-                                                                fontWeight:
-                                                                FontWeight
-                                                                    .w600,
-                                                                color:
-                                                                blackColor50),
-                                                          ),
-                                                        ],
-
+                                                        // Padding(
+                                                        //   padding:
+                                                        //       const EdgeInsets
+                                                        //               .symmetric(
+                                                        //           horizontal:
+                                                        //               5.0),
+                                                        //   child: CustomText(
+                                                        //       text:
+                                                        //           "${(currentVolume * 100).toInt().toString().padLeft(2, "0")}%",
+                                                        //       fontSize: 12,
+                                                        //       fontWeight:
+                                                        //           FontWeight
+                                                        //               .w600,
+                                                        //       color:
+                                                        //           blackColor50),
+                                                        // ),
                                                       ],
                                                     ),
                                                   ],
@@ -1640,91 +1578,18 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                             ],
                                           ),
                                           Row(
-                                            children:  [
+                                            children: const [
                                               CustomSvg(svg: timer),
-                                              if(index==0)...[
-                                                if(Savetimer==0.0)...[
-                                                  Padding(
-                                                    padding: EdgeInsets.symmetric(
-                                                        horizontal: 8.0),
-                                                    child: CustomText(
-                                                      text: "2.00",
-
-                                                      fontWeight: FontWeight.w600,
-                                                      fontSize: 12,
-                                                      color: primaryGreyColor,
-                                                    ),
-                                                  )
-                                                ]else...[
-                                                  Padding(
-                                                    padding: EdgeInsets.symmetric(
-                                                        horizontal: 8.0),
-                                                    child: CustomText(
-                                                      text: "${getHumanTimeBySecond(Savetimer!.toInt())}",
-
-                                                      fontWeight: FontWeight.w600,
-                                                      fontSize: 12,
-                                                      color: primaryGreyColor,
-                                                    ),
-                                                  )
-                                                ]
-                                              ]else if(index==1)...[
-
-                                                if(Savetimer2==0.0)...[
-                                                  Padding(
-                                                    padding: EdgeInsets.symmetric(
-                                                        horizontal: 8.0),
-                                                    child: CustomText(
-                                                      text: "2.00",
-
-                                                      fontWeight: FontWeight.w600,
-                                                      fontSize: 12,
-                                                      color: primaryGreyColor,
-                                                    ),
-                                                  )
-                                                ]else...[
-                                                  Padding(
-                                                    padding: EdgeInsets.symmetric(
-                                                        horizontal: 8.0),
-                                                    child: CustomText(
-                                                      text: "${getHumanTimeBySecond(Savetimer2!.toInt())}",
-
-                                                      fontWeight: FontWeight.w600,
-                                                      fontSize: 12,
-                                                      color: primaryGreyColor,
-                                                    ),
-                                                  )
-                                                ]
-                                              ]else if(index==2)...[
-                                                if(Savetimer3==0.0)...[
-                                                  Padding(
-                                                    padding: EdgeInsets.symmetric(
-                                                        horizontal: 8.0),
-                                                    child: CustomText(
-                                                      text: "2.00",
-
-                                                      fontWeight: FontWeight.w600,
-                                                      fontSize: 12,
-                                                      color: primaryGreyColor,
-                                                    ),
-                                                  )
-                                                ]else...[
-                                                  Padding(
-                                                    padding: EdgeInsets.symmetric(
-                                                        horizontal: 8.0),
-                                                    child: CustomText(
-                                                      text: "${getHumanTimeBySecond(Savetimer3!.toInt())}",
-
-                                                      fontWeight: FontWeight.w600,
-                                                      fontSize: 12,
-                                                      color: primaryGreyColor,
-                                                    ),
-                                                  )
-                                                ]
-
-                                              ],
-
-
+                                              Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 8.0),
+                                                child: CustomText(
+                                                  text: "4 min",
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 12,
+                                                  color: primaryGreyColor,
+                                                ),
+                                              )
                                             ],
                                           ),
                                           GestureDetector(

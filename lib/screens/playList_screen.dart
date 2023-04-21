@@ -598,7 +598,7 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
                   decoration: const BoxDecoration(
                       color: primaryPinkColor,
                       borderRadius: BorderRadius.all(Radius.circular(10))),
-                  child: Image.asset("${image}"),
+                  // child: Image.asset("${image}"),
                 ),
                 const SizedBox(width: 20),
                 CustomText(
