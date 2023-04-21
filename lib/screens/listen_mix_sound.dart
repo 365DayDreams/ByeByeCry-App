@@ -16,8 +16,8 @@ import '../compoment/shared/custom_text.dart';
 import '../compoment/shared/screen_size.dart';
 import '../compoment/utils/color_utils.dart';
 import '../compoment/utils/image_link.dart';
-import '../global.dart';
 import '../main.dart';
+import 'my_playList_details_screen.dart';
 
 class ListenMixSound extends ConsumerStatefulWidget {
   final String? mixMusicModelId;
@@ -64,14 +64,13 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
   int musicIndex = 0;
   List<MusicModel> musicList = [];
   int index = 0;
-  bool check = true;
+  bool check = false;
   TextEditingController minController = TextEditingController();
   TextEditingController secController = TextEditingController();
 
   @override
   void initState() {
     audioPlayer1.dispose();
-
     // startPlayer1();
     // startPlayer2();
     changeVolume();
@@ -444,61 +443,110 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                       ),
                     ),
                   ),
-                  SizedBox(height: width * 0.06),
-                  InkWell(
-                    onTap: (){
-                      setState(() {
-                        ref
-                            .read(mixMusicProvider)
-                            .addOrRemoveMixPlayList(
-                            id: ref
-                                .watch(mixMusicProvider)
-                                .combinationList[musicIndex]
-                                .id);
-                      });
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
+                  SizedBox(height: width * 0.07),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        InkWell(
+                          onTap: (){
+                            _showDialogVolume(context);
+                          },
+                          child: Row(
                             children: [
-                            Icon(
-                                  Icons.add,
-                                  size: 30,
-                                  color: ref
-                                          .watch(mixMusicProvider)
-                                          .mixPlayListIds
-                                          .contains(ref
-                                              .watch(mixMusicProvider)
-                                              .combinationList[musicIndex]
-                                              .id)
-                                      ? Colors.red
-                                      : Colors.black,
-                                ),
-
+                              Container(
+                                  color: Colors.transparent,
+                                  child: const CustomSvg(
+                                      svg: volume, color: blackColor2)),
+                              SizedBox(width: 6,),
+                              Text("Set Volume"),
                               // GestureDetector(
-                              //     onTap: (){
+                              //     onTap: () {
+                              //       ref.read(addProvider).addOrRemovePlayList(
+                              //           id: ref.watch(addProvider).musicList[index].id);
                               //     },
-                              //     child: CustomImage(imageUrl: 'asset/images/icon_png/love.png',color: ref.watch(mixMusicProvider).mixPlayListIds.contains(ref.watch(mixMusicProvider).combinationList[musicIndex].id)? Colors.red:blackColorA0,)),
-                              const SizedBox(
-                                width: 5,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 4.0),
-                                child: const CustomText(
-                                  text: 'Add To Playlist',
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
+                              //     child: CustomImage(
+                              //       imageUrl: 'asset/images/icon_png/love.png',
+                              //       color: ref.watch(addProvider).playListIds.contains(
+                              //           ref.watch(addProvider).musicList[index].id)
+                              //           ? Colors.red
+                              //           : blackColorA0,
+                              //     )),
+                              // const SizedBox(
+                              //   width: 10,
+                              // ),
+
                             ],
                           ),
-                        ],
-                      ),
+                        ),
+                        InkWell(
+                          onTap: (){
+                            _showDialog(context);
+                          },
+                          child: Row(
+                            children: [
+                              Container(
+                                  color: Colors.transparent,
+                                  child: CustomSvg(
+                                    svg: timer,
+                                    color: blackColor2,
+                                  )),
+                              // const CustomImage(
+                              //   imageUrl: 'asset/images/icon_png/another_sound.png',
+                              //   color: blackColorA0,
+                              // ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              Text("Set Timer"),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ),
+                  // Padding(
+                  //   padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                  //   child: Row(
+                  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //     children: [
+                  //       Row(
+                  //         children: [
+                  //         Icon(
+                  //               Icons.add,
+                  //               size: 30,
+                  //               color: ref
+                  //                       .watch(mixMusicProvider)
+                  //                       .mixPlayListIds
+                  //                       .contains(ref
+                  //                           .watch(mixMusicProvider)
+                  //                           .combinationList[musicIndex]
+                  //                           .id)
+                  //                   ? Colors.red
+                  //                   : Colors.black,
+                  //             ),
+                  //
+                  //           // GestureDetector(
+                  //           //     onTap: (){
+                  //           //     },
+                  //           //     child: CustomImage(imageUrl: 'asset/images/icon_png/love.png',color: ref.watch(mixMusicProvider).mixPlayListIds.contains(ref.watch(mixMusicProvider).combinationList[musicIndex].id)? Colors.red:blackColorA0,)),
+                  //           const SizedBox(
+                  //             width: 5,
+                  //           ),
+                  //           Padding(
+                  //             padding: const EdgeInsets.only(top: 4.0),
+                  //             child: const CustomText(
+                  //               text: 'Add To Playlist',
+                  //               fontSize: 16,
+                  //               fontWeight: FontWeight.w400,
+                  //             ),
+                  //           ),
+                  //         ],
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
                   SizedBox(height: width * 0.1),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 30.0),
@@ -512,8 +560,6 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                           color: blackColor2,
                           fontWeight: FontWeight.w700,
                         ),
-                        check==true ? Image.asset("asset/images/infinity.png",height: 30,width: 30,fit: BoxFit.contain,):
-
                         CustomText(
                           text: '${getHumanTimeBySecond(sliderEnd.toInt())}',
                           fontSize: 10,
@@ -602,18 +648,18 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                     child: Padding(
                       padding: const EdgeInsets.only(left: 20.0, right: 20),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          IconButton(
-                              padding: const EdgeInsets.only(left: 10),
-                              onPressed: () {
-                                _showDialogVolume(context);
-                              },
-                              icon: Container(
-                                  color: Colors.transparent,
-                                  child: const CustomSvg(
-                                      svg: volume, color: blackColor2))),
+                          // IconButton(
+                          //     padding: const EdgeInsets.only(left: 10),
+                          //     onPressed: () {
+                          //       _showDialogVolume(context);
+                          //     },
+                          //     icon: Container(
+                          //         color: Colors.transparent,
+                          //         child: const CustomSvg(
+                          //             svg: volume, color: blackColor2))),
                           IconButton(
                               padding: EdgeInsets.zero,
                               onPressed: () async {
@@ -621,7 +667,7 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                                 if (mounted) {
                                   playMusic();
                                   sliderInitial = 0.0;
-                                  sliderEnd = 1111111120.0;
+                                  sliderEnd = 120.0;
                                 }
                                 if (mounted) {
                                   setState(() {});
@@ -696,7 +742,7 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                                 if (mounted) {
                                   playMusic();
                                   sliderInitial = 0.0;
-                                  sliderEnd = 1111111120.0;
+                                  sliderEnd = 120.0;
                                 }
                                 if (mounted) {
                                   setState(() {});
@@ -704,26 +750,26 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                               },
                               icon: const CustomSvg(
                                   svg: right_shift, color: primaryPinkColor)),
-                          IconButton(
-                              padding: EdgeInsets.zero,
-                              onPressed: () {
-                                ref.read(mixMusicProvider).alertDialogStart();
-                                if (mounted) {
-                                  setState(() {
-                                    check = false;
-                                    selectedTime = 0;
-                                  });
-                                  _showDialog(context);
-                                }
-                              },
-                              icon: Container(
-                                  color: Colors.transparent,
-                                  child: const Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(vertical: 8.0),
-                                    child: CustomSvg(
-                                        svg: timer, color: blackColor2),
-                                  ))),
+                          // IconButton(
+                          //     padding: EdgeInsets.zero,
+                          //     onPressed: () {
+                          //       ref.read(mixMusicProvider).alertDialogStart();
+                          //       if (mounted) {
+                          //         setState(() {
+                          //           check = false;
+                          //           selectedTime = 0;
+                          //         });
+                          //         _showDialog(context);
+                          //       }
+                          //     },
+                          //     icon: Container(
+                          //         color: Colors.transparent,
+                          //         child: const Padding(
+                          //           padding:
+                          //               EdgeInsets.symmetric(vertical: 8.0),
+                          //           child: CustomSvg(
+                          //               svg: timer, color: blackColor2),
+                          //         ))),
                         ],
                       ),
                     ),
@@ -993,20 +1039,12 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                                 onChanged: (double newValue) async {
                                   state(() {
                                     setDuration = 1;
-                                    selectedTime =  newValue.toInt();
+                                    selectedTime = check ? 0 : newValue.toInt();
                                     setDuration = selectedTimes[selectedTime];
 
                                     setDuration *= 60;
                                     setSongDuration(setDuration);
                                     ins.seek(Duration(seconds: setDuration));
-                                    if(selectedTime==0){
-                                      check= true;
-                                    }else{
-                                      check= false;
-                                    }
-                                    setState(() {
-
-                                    });
                                     print("index $setDuration");
                                   });
                                   setState(() {});
@@ -1346,7 +1384,7 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
   }
 
   var sliderInitial = 0.0;
-  var sliderEnd = 1111111120.0;
+  var sliderEnd = 120.0;
 
   Timer? sliderTimer;
 

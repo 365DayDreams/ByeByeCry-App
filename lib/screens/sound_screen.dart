@@ -1725,7 +1725,7 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
                     Container(
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Colors.black.withOpacity(0.05),
+                        color:ref.read(addProvider).showAddPlaylist ? Colors.black.withOpacity(0.05) : null,
                       ),
                       child: ref.read(addProvider).showAddPlaylist
                           ? GestureDetector(
@@ -2406,7 +2406,8 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
                       Container(
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: Colors.black.withOpacity(0.05),
+                          color:ref.read(addProvider).showAddPlaylist ? Colors.black.withOpacity(0.05) : null,
+
                         ),
                         child: ref.read(addProvider).showAddPlaylist
                             ? musicId == musicModel.id

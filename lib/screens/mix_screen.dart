@@ -8,6 +8,7 @@ import 'package:bye_bye_cry_new/screens/provider/mix_music_provider.dart';
 import 'package:bye_bye_cry_new/start_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:get/get.dart';
 import 'package:perfect_volume_control/perfect_volume_control.dart';
 import '../compoment/shared/custom_svg.dart';
 import '../compoment/shared/custom_text.dart';
@@ -592,11 +593,20 @@ class _MixScreenState extends ConsumerState<MixScreen> {
                        });
                       } else {
 
-                        ShowSnackBar.toastSnackBar(
-                            context: context,
-                            seconds: 2,
-                            text: "Add At least 2 music",
-                            color: Colors.white);
+                        Get.snackbar(
+                          "Mix Sound",
+                          "Add At Least 2 Music",
+                         // icon: Icon(Icons.person, color: Colors.white),
+                          snackPosition: SnackPosition.TOP,
+                          backgroundColor: Colors.red,
+                          colorText: Colors.white
+                        );
+
+                        // ShowSnackBar.toastSnackBar(
+                        //     context: context,
+                        //     seconds: 2,
+                        //     text: "Add At least 2 music",
+                        //     color: Colors.white);
                         print("add another music");
 
                       }
