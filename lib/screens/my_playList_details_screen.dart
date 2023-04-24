@@ -130,7 +130,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
   late StreamSubscription<double> _subscription;
   int musicIndex = 0;
   List<MusicModel> musicList = [];
-  bool check = false;
+  bool check = true;
   TextEditingController minController = TextEditingController();
   TextEditingController secController = TextEditingController();
 
@@ -157,26 +157,48 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
           sliderInitial.toInt() == (Savetimer3! - 1).toInt() ||
           sliderInitial == 120.0) {
         print("play next================");
-        changeIndex(changeIndex: true);
-        pageController.nextPage(
-            duration: Duration(milliseconds: 100), curve: Curves.linear);
-        changeIndex(changeIndex: true);
+        if(check==false) {
+          changeIndex(changeIndex: true);
+          pageController.nextPage(
+              duration: Duration(milliseconds: 100), curve: Curves.linear);
+          changeIndex(changeIndex: true);
 
-        sliderInitial = 0.0;
-
-        if (mounted) {
-          String url = ref
-              .watch(playlistProvider)
-              .mixMixPlaylist[mixPlaylistIndex]
-              .playListList![musicIndex]
-              .first!
-              .musicFile;
-          await audioPlayer1.play(AssetSource(url));
           sliderInitial = 0.0;
-        }
 
-        if (mounted) {
-          setState(() {});
+          if (mounted) {
+            String url = ref
+                .watch(playlistProvider)
+                .mixMixPlaylist[mixPlaylistIndex]
+                .playListList![musicIndex]
+                .first!
+                .musicFile;
+            await audioPlayer1.play(AssetSource(url));
+            sliderInitial = 0.0;
+          }
+
+          if (mounted) {
+            setState(() {});
+          }
+        }else{
+          audioPlayer1.stop();
+
+          sliderInitial = 0.0;
+
+          if (mounted) {
+            String url = ref
+                .watch(playlistProvider)
+                .mixMixPlaylist[mixPlaylistIndex]
+                .playListList![musicIndex]
+                .first!
+                .musicFile;
+            await audioPlayer1.play(AssetSource(url));
+            sliderInitial = 0.0;
+          }
+
+          if (mounted) {
+            setState(() {});
+          }
+
         }
         if (!mounted) {
           timer.cancel();

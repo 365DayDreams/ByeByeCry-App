@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:bye_bye_cry_new/background_music/bg_music.dart';
 import 'package:bye_bye_cry_new/compoment/shared/custom_image.dart';
 import 'package:bye_bye_cry_new/compoment/shared/custom_svg.dart';
 import 'package:bye_bye_cry_new/main.dart';
@@ -38,6 +39,7 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
     "150 min",
   ];
   List<int> selectedTimes = [0, 10, 30, 60, 90, 120, 150];
+
   Duration _duration = Duration.zero;
   Duration _position = Duration.zero;
   Duration _slider = Duration(seconds: 0);
@@ -55,37 +57,69 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
   void initState() {
     initialization();
     startPlayer();
-    // changeVolume();
+
     audioPlayer1.dispose();
     super.initState();
+    print('checkkking--$check');
 
 
-    Timer.periodic(Duration(seconds: 1), (timer) async {
-      print(_position);
-      if (sliderInitial.toInt() == (sliderEnd - 1).toInt()) {
-        pageController.nextPage(
-            duration: Duration(milliseconds: 100), curve: Curves.linear);
-        sliderInitial = 0.0;
-        sliderEnd = 120.0;
+      Timer.periodic(Duration(seconds: 1), (timer) async {
 
-        changeIndex(changeIndex: true);
+          print(_position);
+          if (sliderInitial.toInt() == (sliderEnd - 1).toInt()) {
+            if (check == false) {
+              pageController.nextPage(
+                  duration: Duration(milliseconds: 100), curve: Curves.linear);
+              sliderInitial = 0.0;
+              sliderEnd = 120.0;
 
-        if (mounted) {
-          String url = ref.watch(addProvider).musicList[index].musicFile;
-          await ins.playAudio(Duration(minutes: 2), "assets/" + url);
-          // sliderInitial=0.0;
-        }
+              changeIndex(changeIndex: true);
 
-        if (mounted) {
-          setState(() {});
-        }
-      }
-      if (!mounted) {
-        timer.cancel();
-        return;
-      }
-    });
-  }
+              if (mounted) {
+                String url = ref
+                    .watch(addProvider)
+                    .musicList[index].musicFile;
+                await ins.playAudio(Duration(minutes: 2), "assets/" + url);
+                // sliderInitial=0.0;
+                print("IF URL __$url");
+              }
+
+              if (mounted) {
+                setState(() {});
+              }
+            }else{
+
+              ins.stop();
+
+              sliderInitial = 0.0;
+              sliderEnd = 120.0;
+
+
+              if (mounted) {
+                String url = ref
+                    .watch(addProvider)
+                    .musicList[index].musicFile;
+                await ins.playAudio(Duration(minutes: 2), "assets/" + url);
+                // sliderInitial=0.0;
+                print("else URL __$url");
+
+              }
+
+              if (mounted) {
+                setState(() {});
+              }
+
+            }
+            if (!mounted) {
+              timer.cancel();
+              return;
+            }
+          }
+      });
+
+    }
+
+
 
   @override
   void dispose() {
@@ -143,17 +177,8 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
       print("pause");
     } else {
       String url = ref.watch(addProvider).musicList[index].musicFile;
-      // await audioPlayer.play(AssetSource(url));
-      //   New Audio Player...
-      //  ins.silenceIncomingCalls();
-      //
+
       ins.playAudio(Duration(minutes: 2), "assets/$url");
-      //  //ins.stop();
-      //  print(ins.isPlaying());
-      //  ins.silenceIncomingCalls();
-      //  //print(ins.currentAudio()!.url);
-      //  print(ins.getRemainingDuration());
-      // ins.seek(Duration(seconds: 5));//left duration total duration - current duration
       resumeSliderTimmer();
       print("play");
     }
@@ -161,7 +186,19 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
       setState(() {});
     }
   }
+  pausePlayMethod2() async {
+    if (ins.isPlaying()) {
 
+      String url = ref.watch(addProvider).musicList[index].musicFile;
+
+      ins.playAudio(Duration(minutes: 2), "assets/$url");
+
+      print("play");
+    }
+    if (mounted) {
+      setState(() {});
+    }
+  }
   changeIndex({bool changeIndex = false}) {
     print("change index");
     if (changeIndex) {
@@ -177,6 +214,7 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
       setState(() {});
     }
   }
+
 
   PageController pageController = PageController();
   int value = 0;

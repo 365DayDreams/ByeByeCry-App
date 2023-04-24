@@ -64,7 +64,7 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
   int musicIndex = 0;
   List<MusicModel> musicList = [];
   int index = 0;
-  bool check = false;
+  bool check = true;
   TextEditingController minController = TextEditingController();
   TextEditingController secController = TextEditingController();
 
@@ -79,40 +79,66 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
     Timer.periodic(Duration(seconds: 1), (timer) async {
       print(_position);
       if (sliderInitial.toInt() == (sliderEnd - 1).toInt()) {
-        pageController.nextPage(
-            duration: Duration(milliseconds: 100), curve: Curves.linear);
-        sliderInitial = 0.0;
-        changeIndex(changeIndex: true);
+        if (check == false) {
+          pageController.nextPage(
+              duration: Duration(milliseconds: 100), curve: Curves.linear);
 
-        if (mounted) {
-          // String url = ref
-          //     .watch(addProvider)
-          //     .musicList[index]
-          //     .musicFile;
-          String url1 = ref
-              .watch(mixMusicProvider)
-              .combinationList[index]
-              .first!
-              .musicFile;
-          String url2 = ref
-              .watch(mixMusicProvider)
-              .combinationList[index]
-              .first!
-              .musicFile;
-          // await audioPlayer1.play(AssetSource(url1));
-          await ins.playAudio(Duration(minutes: 2), "assets/" + url1);
-          // await audioPlayer2.play(AssetSource(url2));
-          await ins.playAudio(Duration(minutes: 2), "assets/" + url2);
-          // sliderInitial=0.0;
-        }
+          sliderInitial = 0.0;
+          sliderEnd = 120.0;
+          changeIndex(changeIndex: true);
 
-        if (mounted) {
-          setState(() {});
+          if (mounted) {
+            // String url = ref
+            //     .watch(addProvider)
+            //     .musicList[index]
+            //     .musicFile;
+            String url1 = ref
+                .watch(mixMusicProvider)
+                .combinationList[index]
+                .first!
+                .musicFile;
+            String url2 = ref
+                .watch(mixMusicProvider)
+                .combinationList[index]
+                .first!
+                .musicFile;
+            // await audioPlayer1.play(AssetSource(url1));
+            await ins.playAudio(Duration(minutes: 2), "assets/" + url1);
+            // await audioPlayer2.play(AssetSource(url2));
+            await ins.playAudio(Duration(minutes: 2), "assets/" + url2);
+            // sliderInitial=0.0;
+          }
+
+          if (mounted) {
+            setState(() {});
+          }
+        } else {
+          ins.stop();
+          if (mounted) {
+            // String url = ref
+            //     .watch(addProvider)
+            //     .musicList[index]
+            //     .musicFile;
+            String url1 = ref
+                .watch(mixMusicProvider)
+                .combinationList[index]
+                .first!
+                .musicFile;
+            String url2 = ref
+                .watch(mixMusicProvider)
+                .combinationList[index]
+                .first!
+                .musicFile;
+            // await audioPlayer1.play(AssetSource(url1));
+            await ins.playAudio(Duration(minutes: 2), "assets/" + url1);
+            // await audioPlayer2.play(AssetSource(url2));
+            await ins.playAudio(Duration(minutes: 2), "assets/" + url2);
+          }
         }
-      }
-      if (!mounted) {
-        timer.cancel();
-        return;
+        if (!mounted) {
+          timer.cancel();
+          return;
+        }
       }
     });
   }
