@@ -147,65 +147,94 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
     startPlayer2();
     //changeVolume();
     super.initState();
-    Timer.periodic(Duration(seconds: 1), (timer) async {
-      // if(sliderTimer==120.0|| sliderInitial==120.0){
-      //   timer.cancel();
-      // }
-      if (sliderInitial.toInt() == (Savetimer! - 1).toInt() ||
-          sliderInitial == 120.0 ||
-          sliderInitial.toInt() == (Savetimer2! - 1).toInt() ||
-          sliderInitial == 120.0 ||
-          sliderInitial.toInt() == (Savetimer3! - 1).toInt() ||
-          sliderInitial == 120.0) {
-        print("play next================");
-        if(check==false) {
-          changeIndex(changeIndex: true);
-          pageController.nextPage(
-              duration: Duration(milliseconds: 100), curve: Curves.linear);
-          changeIndex(changeIndex: true);
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      Timer.periodic(Duration(seconds: 1), (timer) async {
+        // if(sliderTimer==120.0|| sliderInitial==120.0){
+        //   timer.cancel();
+        // }
+        if (sliderInitial.toInt() == (Savetimer! - 1).toInt() ||
+            sliderInitial == 120.0 ||
+            sliderInitial.toInt() == (Savetimer2! - 1).toInt() ||
+            sliderInitial == 120.0 ||
+            sliderInitial.toInt() == (Savetimer3! - 1).toInt() ||
+            sliderInitial == 120.0) {
+          print("play next================");
+          if(check==false) {
+            changeIndex(changeIndex: true);
+            pageController.nextPage(
+                duration: Duration(milliseconds: 100), curve: Curves.linear);
+            changeIndex(changeIndex: true);
 
-          sliderInitial = 0.0;
-
-          if (mounted) {
-            String url = ref
-                .watch(playlistProvider)
-                .mixMixPlaylist[mixPlaylistIndex]
-                .playListList![musicIndex]
-                .first!
-                .musicFile;
-            await audioPlayer1.play(AssetSource(url));
             sliderInitial = 0.0;
-          }
+            if(musicIndex==0){
+              Savetimer = 120.0;
 
-          if (mounted) {
-            setState(() {});
-          }
-        }else{
-          audioPlayer1.stop();
+            }else if(musicIndex==1){
+              Savetimer2 = 120.0;
 
-          sliderInitial = 0.0;
+            }else if(musicIndex==2){
+              Savetimer3 = 120.0;
 
-          if (mounted) {
-            String url = ref
-                .watch(playlistProvider)
-                .mixMixPlaylist[mixPlaylistIndex]
-                .playListList![musicIndex]
-                .first!
-                .musicFile;
-            await audioPlayer1.play(AssetSource(url));
+            }
+            selectedTime = 0;
+            setDuration = 0;
+            check=true;
+
+            if (mounted) {
+              String url = ref
+                  .watch(playlistProvider)
+                  .mixMixPlaylist[mixPlaylistIndex]
+                  .playListList![musicIndex]
+                  .first!
+                  .musicFile;
+              await audioPlayer1.play(AssetSource(url));
+              sliderInitial = 0.0;
+            }
+
+            if (mounted) {
+              setState(() {});
+            }
+          }else{
+            audioPlayer1.stop();
+
             sliderInitial = 0.0;
-          }
+            if(musicIndex==0){
+              Savetimer = 120.0;
 
-          if (mounted) {
-            setState(() {});
-          }
+            }else if(musicIndex==1){
+              Savetimer2 = 120.0;
 
+            }else if(musicIndex==2){
+              Savetimer3 = 120.0;
+
+            }
+            selectedTime = 0;
+            setDuration = 0;
+            check=true;
+
+            if (mounted) {
+              String url = ref
+                  .watch(playlistProvider)
+                  .mixMixPlaylist[mixPlaylistIndex]
+                  .playListList![musicIndex]
+                  .first!
+                  .musicFile;
+              await audioPlayer1.play(AssetSource(url));
+              sliderInitial = 0.0;
+            }
+
+            if (mounted) {
+              setState(() {});
+            }
+
+          }
+          if (!mounted) {
+            timer.cancel();
+            return;
+          }
         }
-        if (!mounted) {
-          timer.cancel();
-          return;
-        }
-      }
+      });
+
     });
   }
 

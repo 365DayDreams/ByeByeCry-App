@@ -87,7 +87,9 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
             // ),
             appBar: AppBar(
 
-                leading: Padding(
+                leading:
+                deleteShow==true ?
+                Padding(
                   padding: const EdgeInsets.only(left: 15.0),
                   child: Container(
                     height: 20,
@@ -103,13 +105,16 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
                         color: secondaryBlackColor,
                       ),
                       onPressed: (){
-                        ref.read(addProvider).changePage(1);
+                        setState(() {
+                          deleteShow = !deleteShow;
+                        });
+                        // ref.read(addProvider).changePage(1);
 
                         // Navigator.push(context, MaterialPageRoute(builder: (_)=> StartPage()));
                       },
                     ),
                   ),
-                ),
+                ) : Container(),
                 actions: [
                   InkWell(
                     onTap: () {

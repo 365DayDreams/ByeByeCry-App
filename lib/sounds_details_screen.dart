@@ -1,9 +1,7 @@
 import 'dart:async';
-import 'package:bye_bye_cry_new/background_music/bg_music.dart';
 import 'package:bye_bye_cry_new/compoment/shared/custom_image.dart';
 import 'package:bye_bye_cry_new/compoment/shared/custom_svg.dart';
 import 'package:bye_bye_cry_new/main.dart';
-import 'package:bye_bye_cry_new/screens/my_playList_details_screen.dart';
 import 'package:bye_bye_cry_new/screens/provider/add_music_provider.dart';
 import 'package:bye_bye_cry_new/screens/provider/mix_music_provider.dart';
 import 'package:flutter/material.dart';
@@ -43,7 +41,7 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
   Duration _duration = Duration.zero;
   Duration _position = Duration.zero;
   Duration _slider = Duration(seconds: 0);
-  double currentVolume = 0.0;
+  double currentVolume = 40.0;
   bool issongplaying = false;
   double brightness = 0.5;
   late StreamSubscription<double> _subscription;
@@ -61,6 +59,7 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
     super.initState();
     print('checkkking--$check');
 
+  WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
     Timer.periodic(Duration(seconds: 1), (timer) async {
       print(_position);
       if (sliderInitial.toInt() == (sliderEnd - 1).toInt()) {
@@ -69,6 +68,9 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
               duration: Duration(milliseconds: 100), curve: Curves.linear);
           sliderInitial = 0.0;
           sliderEnd = 120.0;
+          selectedTime = 0;
+          setDuration = 0;
+          check=true;
 
           changeIndex(changeIndex: true);
 
@@ -87,6 +89,9 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
 
           sliderInitial = 0.0;
           sliderEnd = 120.0;
+          selectedTime = 0;
+          setDuration = 0;
+          check=true;
 
           if (mounted) {
             String url = ref.watch(addProvider).musicList[index].musicFile;
@@ -105,6 +110,8 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
         }
       }
     });
+
+  });
   }
 
   @override
@@ -678,7 +685,7 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                                 child: Slider(
                                   value: currentVolume,
                                   min: 0.0,
-                                  max: 1.0,
+                                  max: 100.0,
                                   divisions: 100,
                                   activeColor: primaryPinkColor,
                                   inactiveColor: primaryGreyColor2,
@@ -717,7 +724,7 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                                       child: Center(
                                           child: CustomText(
                                         text:
-                                            "${(currentVolume * 100).toInt().toString().padLeft(2, "0")}%",
+                                            "${(currentVolume).toInt().toString().padLeft(2, "0")}%",
                                         fontSize: 10,
                                         color: secondaryBlackColor,
                                         fontWeight: FontWeight.w600,

@@ -55,7 +55,7 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
   Duration _position2 = Duration.zero;
   Duration position = Duration.zero;
   Duration duration = Duration.zero;
-  double currentVolume = 0.0;
+  double currentVolume = 40.0;
   bool issongplaying1 = false;
   bool issongplaying2 = false;
   double brightness = 0.5;
@@ -75,70 +75,81 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
     changeVolume();
     //brightNess();
     super.initState();
-    Timer.periodic(Duration(seconds: 1), (timer) async {
-      print(_position);
-      if (sliderInitial.toInt() == (sliderEnd - 1).toInt()) {
-        if (check == false) {
-          pageController.nextPage(
-              duration: Duration(milliseconds: 100), curve: Curves.linear);
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      Timer.periodic(Duration(seconds: 1), (timer) async {
+        print(_position);
+        if (sliderInitial.toInt() == (sliderEnd - 1).toInt()) {
+          if (check == false) {
+            pageController.nextPage(
+                duration: Duration(milliseconds: 100), curve: Curves.linear);
 
-          sliderInitial = 0.0;
-          sliderEnd = 120.0;
-          changeIndex(changeIndex: true);
+            sliderInitial = 0.0;
+            sliderEnd = 120.0;
+            selectedTime = 0;
+            setDuration = 0;
+            check=true;
+            changeIndex(changeIndex: true);
 
-          if (mounted) {
-            // String url = ref
-            //     .watch(addProvider)
-            //     .musicList[index]
-            //     .musicFile;
-            String url1 = ref
-                .watch(mixMusicProvider)
-                .combinationList[index]
-                .first!
-                .musicFile;
-            String url2 = ref
-                .watch(mixMusicProvider)
-                .combinationList[index]
-                .first!
-                .musicFile;
-            // await audioPlayer1.play(AssetSource(url1));
-            await ins.playAudio(Duration(minutes: 2), "assets/" + url1);
-            // await audioPlayer2.play(AssetSource(url2));
-            await ins.playAudio(Duration(minutes: 2), "assets/" + url2);
-            // sliderInitial=0.0;
+            if (mounted) {
+              // String url = ref
+              //     .watch(addProvider)
+              //     .musicList[index]
+              //     .musicFile;
+              String url1 = ref
+                  .watch(mixMusicProvider)
+                  .combinationList[index]
+                  .first!
+                  .musicFile;
+              String url2 = ref
+                  .watch(mixMusicProvider)
+                  .combinationList[index]
+                  .first!
+                  .musicFile;
+              // await audioPlayer1.play(AssetSource(url1));
+              await ins.playAudio(Duration(minutes: 2), "assets/" + url1);
+              // await audioPlayer2.play(AssetSource(url2));
+              await ins.playAudio(Duration(minutes: 2), "assets/" + url2);
+              // sliderInitial=0.0;
+            }
+
+            if (mounted) {
+              setState(() {});
+            }
+          } else {
+            ins.stop();
+            if (mounted) {
+              // String url = ref
+              //     .watch(addProvider)
+              //     .musicList[index]
+              //     .musicFile;
+              sliderInitial = 0.0;
+              sliderEnd = 120.0;
+              selectedTime = 0;
+              setDuration = 0;
+              check=true;
+              String url1 = ref
+                  .watch(mixMusicProvider)
+                  .combinationList[index]
+                  .first!
+                  .musicFile;
+              String url2 = ref
+                  .watch(mixMusicProvider)
+                  .combinationList[index]
+                  .first!
+                  .musicFile;
+              // await audioPlayer1.play(AssetSource(url1));
+              await ins.playAudio(Duration(minutes: 2), "assets/" + url1);
+              // await audioPlayer2.play(AssetSource(url2));
+              await ins.playAudio(Duration(minutes: 2), "assets/" + url2);
+            }
           }
-
-          if (mounted) {
-            setState(() {});
-          }
-        } else {
-          ins.stop();
-          if (mounted) {
-            // String url = ref
-            //     .watch(addProvider)
-            //     .musicList[index]
-            //     .musicFile;
-            String url1 = ref
-                .watch(mixMusicProvider)
-                .combinationList[index]
-                .first!
-                .musicFile;
-            String url2 = ref
-                .watch(mixMusicProvider)
-                .combinationList[index]
-                .first!
-                .musicFile;
-            // await audioPlayer1.play(AssetSource(url1));
-            await ins.playAudio(Duration(minutes: 2), "assets/" + url1);
-            // await audioPlayer2.play(AssetSource(url2));
-            await ins.playAudio(Duration(minutes: 2), "assets/" + url2);
+          if (!mounted) {
+            timer.cancel();
+            return;
           }
         }
-        if (!mounted) {
-          timer.cancel();
-          return;
-        }
-      }
+      });
+
     });
   }
 
@@ -703,7 +714,7 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                               },
                               icon: const CustomSvg(
                                   svg: left_shift, color: primaryPinkColor)),
-                          InkWell(
+                          GestureDetector(
                             onTap: ()async{
                               if (ins.isPlaying()) {
                                 await ins.stop();
@@ -939,7 +950,7 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                                 child: Slider(
                                   value: currentVolume,
                                   min: 0.0,
-                                  max: 1.0,
+                                  max: 100.0,
                                   divisions: 100,
                                   activeColor: primaryPinkColor,
                                   inactiveColor: primaryGreyColor2,
@@ -981,7 +992,7 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                                       child: Center(
                                           child: CustomText(
                                         text:
-                                            "${(currentVolume * 100).toInt().toString().padLeft(2, "0")}%",
+                                            "${(currentVolume).toInt().toString().padLeft(2, "0")}%",
                                         fontSize: 10,
                                         color: secondaryBlackColor,
                                         fontWeight: FontWeight.w600,

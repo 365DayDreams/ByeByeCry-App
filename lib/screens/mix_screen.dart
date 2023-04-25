@@ -44,7 +44,7 @@ class _MixScreenState extends ConsumerState<MixScreen> {
     startPlayer1();
     startPlayer2();
     //addMixList();
-    getVolume();
+    // getVolume();
     super.initState();
   }
 
