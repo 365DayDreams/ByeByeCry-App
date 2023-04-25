@@ -22,8 +22,10 @@ void main() async {
   Hive.init(docDir.path);
   Hive.initFlutter();
   Hive.registerAdapter(MusicModelAdapter());
+  Hive.registerAdapter(MixMusicModelAdapter());
   Hive.registerAdapter(HomePageFavModelAdapter());
   await Hive.openBox("fav");
+  await Hive.openBox("mixFav");
   await Hive.openBox("homeFav");
   if (Platform.isIOS || Platform.isMacOS) {
     StoreConfig(

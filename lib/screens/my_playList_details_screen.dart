@@ -846,7 +846,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                             },
                             icon: const CustomSvg(
                                 svg: left_shift, color: primaryPinkColor)),
-                        InkWell(
+                        GestureDetector(
                           onTap: ()async{
                             if (playPouse) {
                               await audioPlayer1.pause();

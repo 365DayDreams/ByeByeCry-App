@@ -2,9 +2,11 @@ import 'dart:async';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:bye_bye_cry_new/compoment/shared/custom_text.dart';
+import 'package:bye_bye_cry_new/screens/home_screen.dart';
 import 'package:bye_bye_cry_new/screens/provider/add_music_provider.dart';
 import 'package:bye_bye_cry_new/screens/provider/mix_music_provider.dart';
 import 'package:bye_bye_cry_new/screens/provider/playlistProvider.dart';
+import 'package:bye_bye_cry_new/screens/sound_screen.dart';
 import 'package:bye_bye_cry_new/sounds_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -16,6 +18,7 @@ import '../compoment/shared/outline_button.dart';
 import '../compoment/shared/screen_size.dart';
 import '../compoment/utils/color_utils.dart';
 import '../compoment/utils/image_link.dart';
+import '../start_page.dart';
 import 'add_to_playlist.dart';
 import 'my_playList_details_screen.dart';
 
@@ -83,6 +86,30 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
             //   ),),
             // ),
             appBar: AppBar(
+
+                leading: Padding(
+                  padding: const EdgeInsets.only(left: 15.0),
+                  child: Container(
+                    height: 20,
+                    width: 20,
+                    margin: const EdgeInsets.all(5.0),
+                    padding: const EdgeInsets.all(2.0),
+                    decoration: const BoxDecoration(
+                        color: Colors.white, shape: BoxShape.circle),
+                    child: IconButton(
+                      iconSize: 15,
+                      icon: const Icon(
+                        Icons.arrow_back_ios,
+                        color: secondaryBlackColor,
+                      ),
+                      onPressed: (){
+                        ref.read(addProvider).changePage(1);
+
+                        // Navigator.push(context, MaterialPageRoute(builder: (_)=> StartPage()));
+                      },
+                    ),
+                  ),
+                ),
                 actions: [
                   InkWell(
                     onTap: () {
@@ -107,6 +134,7 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
                 elevation: 0,
                 centerTitle: true,
                 backgroundColor: primaryPinkColor,
+
                 title: Text(
                   'My Playlist',
                   style: TextStyle(

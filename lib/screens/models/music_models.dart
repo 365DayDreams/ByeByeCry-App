@@ -1,6 +1,7 @@
 import 'package:hive/hive.dart';
 part 'music_models.g.dart';
 
+
 class PlayListModel {
   String? title;
   String id;
@@ -23,10 +24,13 @@ class PlayListModel {
             List<dynamic>.from(playListList!.map((x) => x.toJson())),
       };
 }
-
+@HiveType(typeId: 10)
 class MixMusicModel {
+  @HiveField(0)
   String id;
+  @HiveField(1)
   MusicModel? first;
+  @HiveField(2)
   MusicModel? second;
   MixMusicModel({this.first, this.second, required this.id});
 
