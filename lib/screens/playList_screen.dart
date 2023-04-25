@@ -27,13 +27,12 @@ class PlayListScreen extends ConsumerStatefulWidget {
 }
 
 class _PlayListScreenState extends ConsumerState<PlayListScreen> {
-
   TextEditingController searchController = TextEditingController();
   bool goMixPlayList = false;
   List<bool> fav = [false];
 
   bool deleteShow = false;
-
+  int selectedIndex = -1;
 
   List<String> times = [
     "0",
@@ -54,642 +53,909 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
   bool issongplaying = false;
   double brightness = 0.5;
   late StreamSubscription<double> _subscription;
-  int index = 0;
+  // int index = 0;
   int selectedTime = 0;
   int setDuration = 0;
   bool check = false;
   bool playPouse = true;
 
-
-
   @override
   Widget build(BuildContext context) {
     final height = ScreenSize(context).height;
-    return ref.watch(playlistProvider).goMixPlaylistScreen? AddToPlayListPage(
-      onPressed: (){
-        ref.read(playlistProvider).showMixPlayList(goMixPlaylist: false);
-        if(mounted){
-          setState(() {});
-        }
-      },
-    ):
-    Scaffold(
-      // appBar: AppBar(
-      //   elevation: 0,
-      //   automaticallyImplyLeading: false,
-      //   centerTitle: true,
-      //   backgroundColor: primaryPinkColor,
-      //   title: Text("My Playlist",style: TextStyle(
-      //     fontSize: 22,color: Colors.black,
-      //     fontWeight: FontWeight.w700
-      //   ),),
-      // ),
-      appBar:  AppBar(
-        actions: [
-          InkWell(
-            onTap: (){
-              setState(() {
-                deleteShow = !deleteShow;
-              });
+    return ref.watch(playlistProvider).goMixPlaylistScreen
+        ? AddToPlayListPage(
+            onPressed: () {
+              ref.read(playlistProvider).showMixPlayList(goMixPlaylist: false);
+              if (mounted) {
+                setState(() {});
+              }
             },
-            child: Padding(
-              padding: const EdgeInsets.only(right: 18.0),
-              child: Center(
-                child: Text('Edit',style: TextStyle(
-                    fontSize: 18,color: secondaryBlackColor,
-                    fontWeight: FontWeight.bold
-                ),),
-              ),
-            ),
           )
-        ],
-        elevation: 0,
-        centerTitle: true,
-        backgroundColor: primaryPinkColor,
-        title: Text('My Playlist',style: TextStyle(
-          fontSize: 22,color: secondaryBlackColor,
-          fontWeight: FontWeight.bold
-        ),)
-
-
-        //actionTitle: 'Edit',
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            SizedBox(height: 20,),
-
-
-          Column(
-              children: List.generate(
-                ref.watch(playlistProvider).mixMixPlaylist.length,
-                    (index) => Container(
-                    color: index % 2 == 0?Colors.transparent:pinkLightColor,
-                    child: mixMixMusicList(musicName: "${ref.watch(playlistProvider).mixMixPlaylist[index].title}",musicId: ref.watch(playlistProvider).mixMixPlaylist[index].id,musicIndex: index, image: ref.watch(playlistProvider).mixMixPlaylist[index].playListList![0].first!.image??ref.watch(playlistProvider).mixMixPlaylist[index].playListList![1].second!.image),),
-              ),
-            ),
-            Column(
-              children: List.generate(
-                ref.watch(addProvider).playList.length,
-                (index) => Container(
-                    color: index % 2 == 0?Colors.transparent:pinkLightColor,
-                    child: musicList(musicName: ref.watch(addProvider).playList[index].musicName,musicId:  ref.watch(addProvider).playList[index].id,index: index,image:  ref.watch(addProvider).playList[index].image)),
-              ),
-            ),
-            Column(
-              children: List.generate(
-                ref.watch(mixMusicProvider).mixPlaylist.length,
-                    (index) => Container(
-                    color: index % 2 == 0?Colors.transparent:pinkLightColor,
-                    child: mixMusicList(musicName: "${ref.watch(mixMusicProvider).mixPlaylist[index].first?.musicName}+${ref.watch(mixMusicProvider).mixPlaylist[index].second?.musicName}",musicId:  ref.watch(mixMusicProvider).mixPlaylist[index].id,index: index,image: ref.watch(addProvider).playList[index].image),),
-              ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            GestureDetector(
-              onTap: (){
-                ref.read(playlistProvider).showMixPlayList(goMixPlaylist:true);
-                if(mounted){
-                  setState(() {});
-                }
-              },
-              child: Container(
-                height: height * .07,
-                color: pinkLightColor,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0,vertical: 5),
-                  child: Row(
-                    children: [
-                      IconButton(
-                        iconSize: 30,
-                        icon: const Icon(
-                          Icons.add,
+        : Scaffold(
+            // appBar: AppBar(
+            //   elevation: 0,
+            //   automaticallyImplyLeading: false,
+            //   centerTitle: true,
+            //   backgroundColor: primaryPinkColor,
+            //   title: Text("My Playlist",style: TextStyle(
+            //     fontSize: 22,color: Colors.black,
+            //     fontWeight: FontWeight.w700
+            //   ),),
+            // ),
+            appBar: AppBar(
+                actions: [
+                  InkWell(
+                    onTap: () {
+                      setState(() {
+                        deleteShow = !deleteShow;
+                      });
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 18.0),
+                      child: Center(
+                        child: Text(
+                          'Edit',
+                          style: TextStyle(
+                              fontSize: 18,
+                              color: secondaryBlackColor,
+                              fontWeight: FontWeight.bold),
                         ),
-                        onPressed: () {},
                       ),
-                      //SizedBox(width: height * .05),
-                      const CustomText(
-                        text: 'Add PlayList',
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
-                        color: blackColor2,
+                    ),
+                  )
+                ],
+                elevation: 0,
+                centerTitle: true,
+                backgroundColor: primaryPinkColor,
+                title: Text(
+                  'My Playlist',
+                  style: TextStyle(
+                      fontSize: 22,
+                      color: secondaryBlackColor,
+                      fontWeight: FontWeight.bold),
+                )
+
+                //actionTitle: 'Edit',
+                ),
+            body: SingleChildScrollView(
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 20,
+                  ),
+
+                  Column(
+                    children: [
+                      ListView.builder(
+                        shrinkWrap: true,
+                        primary: false,
+                        itemCount:
+                            ref.watch(playlistProvider).mixMixPlaylist.length,
+                        itemBuilder: (_, indexdddd) {
+                          var data = ref
+                              .watch(playlistProvider)
+                              .mixMixPlaylist[indexdddd];
+                             final height = ScreenSize(context).height;
+                          return Container(
+                            color: selectedIndex == indexdddd ? pinkLightColor : null,
+                            child: InkWell(
+                              onTap: () {
+                                setState(() {
+                                  if (selectedIndex == indexdddd) {
+                                    setState(() {
+                                      selectedIndex = -1;
+                                    });
+                                  } else {
+                                    setState(() {
+                                      selectedIndex = indexdddd;
+                                    });
+                                  }
+                                });
+                                setFuck() {
+                                  if (mounted) {
+                                    ref
+                                        .read(playlistProvider)
+                                        .setMixPlaylistMusicId(setMixPlaylistId: ref
+                                        .watch(playlistProvider)
+                                        .mixMixPlaylist[indexdddd]
+                                        .id);
+                                  }
+                                  if (mounted) {
+                                    ref.read(addProvider).changePage(1);
+                                  }
+                                  if (mounted) {
+                                    ref.read(playlistProvider).changePlaying(change: true);
+                                  }
+                                }
+
+                                if (deleteShow == true) {
+                                  return null;
+                                } else {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => PlaylistMixSound2(
+                                        playlistMixMusicId: ref
+                                            .watch(playlistProvider)
+                                            .mixMixPlaylist[indexdddd]
+                                            .id,
+                                        onPressed: setFuck,
+                                      ),
+                                    ),
+                                  );
+                                }
+                              },
+                              child: Padding(
+                                padding:
+                                const EdgeInsets.only(left: 20.0, right: 20, top: 5, bottom: 5),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Container(
+                                          height: height * .07,
+                                          width: height * .07,
+                                          decoration: const BoxDecoration(
+                                              color: primaryPinkColor,
+                                              borderRadius: BorderRadius.all(Radius.circular(10))),
+                                          // child: Image.asset("${image}"),
+                                        ),
+                                        const SizedBox(width: 20),
+                                        CustomText(
+                                          text: ref.watch(playlistProvider).mixMixPlaylist[indexdddd].title.toString(),
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ],
+                                    ),
+
+                                    deleteShow == true
+                                        ? Container(
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Colors.black.withOpacity(0.05),
+                                      ),
+                                      child: InkWell(
+                                        onTap: () {
+                                          _showDialogdelete(
+                                            context,
+                                            firstMusicName: ref.watch(playlistProvider).mixMixPlaylist[indexdddd].title.toString(),
+                                            id: ref.watch(playlistProvider).mixMixPlaylist[indexdddd].title.toString(),
+                                          );
+                                          print("ID_M__${ref.watch(playlistProvider).mixMixPlaylist[indexdddd].title.toString()}");
+                                        },
+                                        child: Padding(
+                                          padding: EdgeInsets.all(15.0),
+                                          child: CustomSvg(svg: deleteSvg),
+                                        ),
+                                      ),
+                                    )
+                                        : Container(
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.black.withOpacity(0.05),
+                                        ),
+                                        child: Padding(
+                                          padding: EdgeInsets.all(15.0),
+                                          child: CustomImage(
+                                            scale: 0.8,
+                                            imageUrl: playButton,
+                                          ),
+                                        )),
+
+                                    // Row(
+                                    //   children: [
+                                    //     InkWell(
+                                    //       onTap: (){
+                                    //         _showDialog(context);
+                                    //       },
+                                    //       child: Row(
+                                    //         children: [
+                                    //           CustomSvg(
+                                    //             svg: timer,
+                                    //             color: blackColor2,
+                                    //           ),
+                                    //
+                                    //           SizedBox(width: 5,),
+                                    //
+                                    //           Padding(
+                                    //             padding: const EdgeInsets.only(top: 4.0),
+                                    //             child: CustomText(
+                                    //                 text:
+                                    //                 "${(selectedTimes[selectedTime] ~/ 60).toString().padLeft(2, "0")} : ${(selectedTimes[selectedTime] % 60).toString().padLeft(2, "0")} min")
+                                    //           )
+                                    //         ],
+                                    //       ),
+                                    //     ),
+                                    //     SizedBox(width: 20,),
+                                    //     InkWell(
+                                    //       onTap: (){
+                                    //         _showDialogVolume(context);
+                                    //       },
+                                    //       child: Row(
+                                    //         children: [
+                                    //           CustomSvg(
+                                    //             svg: volume,
+                                    //             color: blackColor2,
+                                    //           ),
+                                    //
+                                    //           SizedBox(width: 5,),
+                                    //
+                                    //           Padding(
+                                    //             padding: const EdgeInsets.only(top: 4.0),
+                                    //             child: Text("${currentVolume.toString().replaceAll("0.", "")}"),
+                                    //           )
+                                    //         ],
+                                    //       ),
+                                    //     ),
+                                    //   ],
+                                    // ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+
+                          // return mixMixMusicList(
+                          //     musicName:
+                          //         "${ref.watch(playlistProvider).mixMixPlaylist[index].title}",
+                          //     musicId: ref
+                          //         .watch(playlistProvider)
+                          //         .mixMixPlaylist[index]
+                          //         .id,
+                          //     musicIndex: index,
+                          //     image: ref
+                          //         .watch(playlistProvider)
+                          //         .mixMixPlaylist[index]
+                          //         .playListList![0]
+                          //         .first!
+                          //         .image);
+                        },
                       ),
                     ],
                   ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-  Widget musicList({required String musicName,required String musicId,required int index,required String image}) {
-    final height = ScreenSize(context).height;
-    return InkWell(
-      onTap: (){
-        setFuck(){
-          if(mounted){
-            ref.read(playlistProvider).setMixPlaylistMusicId(setMixPlaylistId: musicId);
-          }
-          if(mounted){
-            ref.read(addProvider).changePage(1);
-          }
-          if(mounted){
-            ref.read(playlistProvider).changePlaying(change: true);
-          }
-        }
 
-        Navigator.push(context, MaterialPageRoute(builder: (_)=> SoundDetailsScreen(
-         // playlistMixMusicId: musicId,
-          onPressed: setFuck, musicId: musicId,
-
-        )));
-      },
-      child: Padding(
-        padding: const EdgeInsets.only(left: 20.0, right: 20, top: 5, bottom: 5),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                Container(
-                  height: height * .07,
-                  width: height * .07,
-                  decoration: const BoxDecoration(
-                      color: primaryPinkColor,
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                  // Column(
+                  //     children: List.generate(
+                  //       ref.watch(playlistProvider).mixMixPlaylist.length,
+                  //           (index) => Container(
+                  //           color: index % 2 == 0?Colors.transparent:pinkLightColor,
+                  //           child:
+                  //           mixMixMusicList(musicName: "${ref.watch(playlistProvider).mixMixPlaylist[index].title}",musicId: ref.watch(playlistProvider).mixMixPlaylist[index].id,musicIndex: index, image: ref.watch(playlistProvider).mixMixPlaylist[index].playListList![0].first!.image??ref.watch(playlistProvider).mixMixPlaylist[index].playListList![1].second!.image),),
+                  //     ),
+                  //   ),
+                  // Column(
+                  //   children: List.generate(
+                  //     ref.watch(addProvider).playList.length,
+                  //     (index) => Container(
+                  //         color: index % 2 == 0?Colors.transparent:pinkLightColor,
+                  //         child: musicList(musicName: ref.watch(addProvider).playList[index].musicName,musicId:  ref.watch(addProvider).playList[index].id,index: index,image:  ref.watch(addProvider).playList[index].image)),
+                  //   ),
+                  // ),
+                  // Column(
+                  //   children: List.generate(
+                  //     ref.watch(mixMusicProvider).mixPlaylist.length,
+                  //         (index) => Container(
+                  //         color: index % 2 == 0?Colors.transparent:pinkLightColor,
+                  //         child: mixMusicList(musicName: "${ref.watch(mixMusicProvider).mixPlaylist[index].first?.musicName}+${ref.watch(mixMusicProvider).mixPlaylist[index].second?.musicName}",musicId:  ref.watch(mixMusicProvider).mixPlaylist[index].id,index: index,image: ref.watch(addProvider).playList[index].image),),
+                  //   ),
+                  // ),
+                  const SizedBox(
+                    height: 10,
                   ),
-                  child: Image.asset("${image}"),
-                ),
-                const SizedBox(width: 20),
-                CustomText(
-                  text: musicName,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                ),
-              ],
-            ),
-
-
-            deleteShow==true? Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.black.withOpacity(0.05),
-              ),
-              child: InkWell(
-                onTap: (){
-                 _showDialogdelete(context, firstMusicName: musicName, secondMusicName: musicName, index22: index, id: musicId);
-
-                },
-                child: Padding(
-                  padding: EdgeInsets.all(15.0),
-                  child: CustomSvg(svg: deleteSvg),
-                ),
-              ),
-            ):    Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.black.withOpacity(0.05),
-                ),
-                child:  Padding(
-                  padding: EdgeInsets.all(15.0),
-                  child: CustomImage(
-                    scale: 0.8,
-                    imageUrl: playButton,
+                  GestureDetector(
+                    onTap: () {
+                      ref
+                          .read(playlistProvider)
+                          .showMixPlayList(goMixPlaylist: true);
+                      if (mounted) {
+                        setState(() {});
+                      }
+                    },
+                    child: Container(
+                      height: height * .07,
+                      color: pinkLightColor,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20.0, vertical: 5),
+                        child: Row(
+                          children: [
+                            IconButton(
+                              iconSize: 30,
+                              icon: const Icon(
+                                Icons.add,
+                              ),
+                              onPressed: () {},
+                            ),
+                            //SizedBox(width: height * .05),
+                            const CustomText(
+                              text: 'Add PlayList',
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                              color: blackColor2,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
-                )),
-            // Row(
-            //   children: [
-            //     InkWell(
-            //       onTap: (){
-            //         _showDialog(context);
-            //       },
-            //       child: Row(
-            //         children: [
-            //           CustomSvg(
-            //             svg: timer,
-            //             color: blackColor2,
-            //           ),
-            //
-            //           SizedBox(width: 5,),
-            //
-            //           Padding(
-            //               padding: const EdgeInsets.only(top: 4.0),
-            //               child: CustomText(
-            //                   text:
-            //                   "${(selectedTimes[selectedTime] ~/ 60).toString().padLeft(2, "0")} : ${(selectedTimes[selectedTime] % 60).toString().padLeft(2, "0")} min")
-            //           )
-            //         ],
-            //       ),
-            //     ),
-            //     SizedBox(width: 20,),
-            //     InkWell(
-            //       onTap: (){
-            //         _showDialogVolume(context);
-            //       },
-            //       child: Row(
-            //         children: [
-            //           CustomSvg(
-            //             svg: volume,
-            //             color: blackColor2,
-            //           ),
-            //
-            //           SizedBox(width: 5,),
-            //
-            //           Padding(
-            //             padding: const EdgeInsets.only(top: 4.0),
-            //             child: Text("${currentVolume.toString().replaceAll("0.", "")}"),
-            //           )
-            //         ],
-            //       ),
-            //     ),
-            //   ],
-            // ),
-          ],
-        ),
-      ),
-    );
-    // return Padding(
-    //   padding: const EdgeInsets.only(left: 20.0, right: 20, top: 5, bottom: 5),
-    //   child: Row(
-    //     //  crossAxisAlignment: CrossAxisAlignment.start,
-    //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //     children: [
-    //       Row(
-    //         children: [
-    //           Container(
-    //             height: height * .07,
-    //             width: height * .07,
-    //             decoration: const BoxDecoration(
-    //                 color: primaryPinkColor,
-    //                 borderRadius: BorderRadius.all(Radius.circular(10))),
-    //           ),
-    //           const SizedBox(width: 20),
-    //           CustomText(
-    //             text: musicName,
-    //             fontSize: 18,
-    //             fontWeight: FontWeight.w600,
-    //           ),
-    //         ],
-    //       ),
-    //       GestureDetector(
-    //         onTap: (){
-    //           if(mounted){
-    //             ref.read(addProvider).setMusicId(normalMusicId: musicId);
-    //           }
-    //           if(mounted){
-    //             ref.read(addProvider).changePage(1);
-    //           }
-    //           if(mounted){
-    //             ref.read(addProvider).changePlay(change: true);
-    //           }
-    //           if(mounted){
-    //             ref.read(addProvider).playFromPlaylistActive(change: true);
-    //           }
-    //         },
-    //         child: Container(
-    //           decoration: BoxDecoration(
-    //               shape: BoxShape.circle,
-    //               color: Colors.black.withOpacity(0.1)
-    //           ),
-    //           child: const Padding(
-    //             padding: EdgeInsets.all(1.0),
-    //             child: CustomImage(
-    //               imageUrl: playButton,
-    //               height: 30,
-    //               width: 30,
-    //             ),
-    //           ),
-    //         ),
-    //       ),
-    //     ],
-    //   ),
-    // );
-  }
-  Widget mixMusicList({required String musicName,required String musicId,required int index, required String image}) {
-    final height = ScreenSize(context).height;
-    return InkWell(
-      onTap: (){
-        setFuck(){
-          if(mounted){
-            ref.read(playlistProvider).setMixPlaylistMusicId(setMixPlaylistId: musicId);
-          }
-          if(mounted){
-            ref.read(addProvider).changePage(1);
-          }
-          if(mounted){
-            ref.read(playlistProvider).changePlaying(change: true);
-          }
-        }
-
-        Navigator.push(context, MaterialPageRoute(builder: (_)=> PlaylistMixSound2(
-          playlistMixMusicId: musicId,
-          onPressed: setFuck,
-
-        )));
-      },
-      child:
-      Padding(
-        padding: const EdgeInsets.only(left: 20.0, right: 20, top: 5, bottom: 5),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                Container(
-                  height: height * .07,
-                  width: height * .07,
-                  decoration: const BoxDecoration(
-                      color: primaryPinkColor,
-                      borderRadius: BorderRadius.all(Radius.circular(10))),
-                  child: Image.asset('$image'),
-                ),
-                const SizedBox(width: 20),
-                CustomText(
-                  text: musicName,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                ),
-              ],
-            ),
-            deleteShow==true? Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.black.withOpacity(0.05),
+                ],
               ),
-              child: InkWell(
-                onTap: (){
-                  _showDialogdelete(context, firstMusicName: musicName, secondMusicName: musicName, index22: index, id: musicId);
-                },
-                child: Padding(
-                  padding: EdgeInsets.all(15.0),
-                  child: CustomSvg(svg: deleteSvg),
-                ),
-              ),
-            ):    Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.black.withOpacity(0.05),
-                ),
-                child:  Padding(
-                  padding: EdgeInsets.all(15.0),
-                  child: CustomImage(
-                    scale: 0.8,
-                    imageUrl: playButton,
-                  ),
-                )),
-            // Row(
-            //   children: [
-            //     InkWell(
-            //       onTap: (){
-            //         _showDialog(context);
-            //       },
-            //       child: Row(
-            //         children: [
-            //           CustomSvg(
-            //             svg: timer,
-            //             color: blackColor2,
-            //           ),
-            //
-            //           SizedBox(width: 5,),
-            //
-            //           Padding(
-            //               padding: const EdgeInsets.only(top: 4.0),
-            //               child: CustomText(
-            //                   text:
-            //                   "${(selectedTimes[selectedTime] ~/ 60).toString().padLeft(2, "0")} : ${(selectedTimes[selectedTime] % 60).toString().padLeft(2, "0")} min")
-            //           )
-            //         ],
-            //       ),
-            //     ),
-            //     SizedBox(width: 20,),
-            //     InkWell(
-            //       onTap: (){
-            //         _showDialogVolume(context);
-            //       },
-            //       child: Row(
-            //         children: [
-            //           CustomSvg(
-            //             svg: volume,
-            //             color: blackColor2,
-            //           ),
-            //
-            //           SizedBox(width: 5,),
-            //
-            //           Padding(
-            //             padding: const EdgeInsets.only(top: 4.0),
-            //             child: Text("${currentVolume.toString().replaceAll("0.", "")}"),
-            //           )
-            //         ],
-            //       ),
-            //     ),
-            //   ],
-            // ),
-          ],
-        ),
-      ),
-    );
-    // return InkWell(
-    //   onTap: (){
-    //     if(mounted){
-    //       ref.read(mixMusicProvider).setMusicId(mixMusicId: musicId);
-    //     }
-    //     if(mounted){
-    //       ref.read(addProvider).changePage(1);
-    //     }
-    //     if(mounted){
-    //       ref.read(mixMusicProvider).changeMixPlay(change:true);
-    //     }
-    //     if(mounted){
-    //       ref.read(mixMusicProvider).playFromPlayListActive(change:true);
-    //     }
-    //   },
-    //   child: Padding(
-    //     padding: const EdgeInsets.only(left: 20.0, right: 15, top: 5, bottom: 5),
-    //     child: Row(
-    //       //  crossAxisAlignment: CrossAxisAlignment.start,
-    //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //       children: [
-    //         Row(
-    //           children: [
-    //             Container(
-    //               height: height * .07,
-    //               width: height * .07,
-    //               decoration: const BoxDecoration(
-    //                   color: primaryPinkColor,
-    //                   borderRadius: BorderRadius.all(Radius.circular(10))),
-    //             ),
-    //             const SizedBox(width: 20),
-    //             CustomText(
-    //               text: musicName,
-    //               fontSize: 18,
-    //               fontWeight: FontWeight.w600,
-    //             ),
-    //           ],
-    //         ),
-    //         GestureDetector(
-    //           onTap: (){
-    //             setState(() {
-    //               fav[index] = !fav[index];
-    //             });
-    //
-    //
-    //           },
-    //           child: Container(
-    //             decoration: BoxDecoration(
-    //                 shape: BoxShape.circle,
-    //             ),
-    //             child:
-    //             Padding(
-    //                 padding: EdgeInsets.all(15.0),
-    //                 child: !fav[index]
-    //                     ? Icon(
-    //                   Icons.favorite_border,
-    //                   size: 35,
-    //                   color: primaryPinkColor,
-    //                 )
-    //                     : Icon(
-    //                   Icons.favorite,
-    //                   size: 35,
-    //                   color: primaryPinkColor,
-    //                 )),
-    //           ),
-    //         ),
-    //       ],
-    //     ),
-    //   ),
-    // );
-  }
-  Widget mixMixMusicList({required String musicName,required String musicId,required int musicIndex,required String image}) {
-
-    final height = ScreenSize(context).height;
-    return InkWell(
-      onTap: (){
-        setFuck(){
-          if(mounted){
-            ref.read(playlistProvider).setMixPlaylistMusicId(setMixPlaylistId: musicId);
-          }
-          if(mounted){
-            ref.read(addProvider).changePage(1);
-          }
-          if(mounted){
-            ref.read(playlistProvider).changePlaying(change: true);
-          }
-        }
-
-        Navigator.push(context, MaterialPageRoute(builder: (_)=> PlaylistMixSound2(
-          playlistMixMusicId: musicId,
-          onPressed: setFuck,
-
-        )));
-      },
-      child: Padding(
-        padding: const EdgeInsets.only(left: 20.0, right: 20, top: 5, bottom: 5),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                Container(
-                  height: height * .07,
-                  width: height * .07,
-                  decoration: const BoxDecoration(
-                      color: primaryPinkColor,
-                      borderRadius: BorderRadius.all(Radius.circular(10))),
-                  // child: Image.asset("${image}"),
-                ),
-                const SizedBox(width: 20),
-                CustomText(
-                  text: musicName,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                ),
-              ],
             ),
-
-        deleteShow==true? Container(
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.black.withOpacity(0.05),
-          ),
-          child: InkWell(
-            onTap: (){
-              _showDialogdelete(context, firstMusicName: musicName, secondMusicName: musicName, index22: musicIndex, id: musicId,);
-            },
-            child: Padding(
-              padding: EdgeInsets.all(15.0),
-              child: CustomSvg(svg: deleteSvg),
-            ),
-          ),
-        ):    Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.black.withOpacity(0.05),
-              ),
-              child:  Padding(
-                padding: EdgeInsets.all(15.0),
-                child: CustomImage(
-                  scale: 0.8,
-                  imageUrl: playButton,
-                ),
-              )),
-
-
-
-            // Row(
-            //   children: [
-            //     InkWell(
-            //       onTap: (){
-            //         _showDialog(context);
-            //       },
-            //       child: Row(
-            //         children: [
-            //           CustomSvg(
-            //             svg: timer,
-            //             color: blackColor2,
-            //           ),
-            //
-            //           SizedBox(width: 5,),
-            //
-            //           Padding(
-            //             padding: const EdgeInsets.only(top: 4.0),
-            //             child: CustomText(
-            //                 text:
-            //                 "${(selectedTimes[selectedTime] ~/ 60).toString().padLeft(2, "0")} : ${(selectedTimes[selectedTime] % 60).toString().padLeft(2, "0")} min")
-            //           )
-            //         ],
-            //       ),
-            //     ),
-            //     SizedBox(width: 20,),
-            //     InkWell(
-            //       onTap: (){
-            //         _showDialogVolume(context);
-            //       },
-            //       child: Row(
-            //         children: [
-            //           CustomSvg(
-            //             svg: volume,
-            //             color: blackColor2,
-            //           ),
-            //
-            //           SizedBox(width: 5,),
-            //
-            //           Padding(
-            //             padding: const EdgeInsets.only(top: 4.0),
-            //             child: Text("${currentVolume.toString().replaceAll("0.", "")}"),
-            //           )
-            //         ],
-            //       ),
-            //     ),
-            //   ],
-            // ),
-          ],
-        ),
-      ),
-    );
+          );
   }
+  //
+  // Widget musicList(
+  //     {required String musicName,
+  //     required String musicId,
+  //     required int index,
+  //     required String image}) {
+  //   final height = ScreenSize(context).height;
+  //   return InkWell(
+  //     onTap: () {
+  //       setFuck() {
+  //         if (mounted) {
+  //           ref
+  //               .read(playlistProvider)
+  //               .setMixPlaylistMusicId(setMixPlaylistId: musicId);
+  //         }
+  //         if (mounted) {
+  //           ref.read(addProvider).changePage(1);
+  //         }
+  //         if (mounted) {
+  //           ref.read(playlistProvider).changePlaying(change: true);
+  //         }
+  //       }
+  //
+  //       Navigator.push(
+  //           context,
+  //           MaterialPageRoute(
+  //               builder: (_) => SoundDetailsScreen(
+  //                     // playlistMixMusicId: musicId,
+  //                     onPressed: setFuck, musicId: musicId,
+  //                   )));
+  //     },
+  //     child: Padding(
+  //       padding:
+  //           const EdgeInsets.only(left: 20.0, right: 20, top: 5, bottom: 5),
+  //       child: Row(
+  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //         children: [
+  //           Row(
+  //             children: [
+  //               Container(
+  //                 height: height * .07,
+  //                 width: height * .07,
+  //                 decoration: const BoxDecoration(
+  //                   color: primaryPinkColor,
+  //                   borderRadius: BorderRadius.all(Radius.circular(10)),
+  //                 ),
+  //                 child: Image.asset("${image}"),
+  //               ),
+  //               const SizedBox(width: 20),
+  //               CustomText(
+  //                 text: musicName,
+  //                 fontSize: 18,
+  //                 fontWeight: FontWeight.w600,
+  //               ),
+  //             ],
+  //           ),
+  //
+  //           deleteShow == true
+  //               ? Container(
+  //                   decoration: BoxDecoration(
+  //                     shape: BoxShape.circle,
+  //                     color: Colors.black.withOpacity(0.05),
+  //                   ),
+  //                   child: InkWell(
+  //                     onTap: () {
+  //                       _showDialogdelete(context,
+  //                           firstMusicName: musicName,
+  //                           secondMusicName: musicName,
+  //
+  //
+  //
+  //                           id: musicId);
+  //                     },
+  //                     child: Padding(
+  //                       padding: EdgeInsets.all(15.0),
+  //                       child: CustomSvg(svg: deleteSvg),
+  //                     ),
+  //                   ),
+  //                 )
+  //               : Container(
+  //                   decoration: BoxDecoration(
+  //                     shape: BoxShape.circle,
+  //                     color: Colors.black.withOpacity(0.05),
+  //                   ),
+  //                   child: Padding(
+  //                     padding: EdgeInsets.all(15.0),
+  //                     child: CustomImage(
+  //                       scale: 0.8,
+  //                       imageUrl: playButton,
+  //                     ),
+  //                   )),
+  //           // Row(
+  //           //   children: [
+  //           //     InkWell(
+  //           //       onTap: (){
+  //           //         _showDialog(context);
+  //           //       },
+  //           //       child: Row(
+  //           //         children: [
+  //           //           CustomSvg(
+  //           //             svg: timer,
+  //           //             color: blackColor2,
+  //           //           ),
+  //           //
+  //           //           SizedBox(width: 5,),
+  //           //
+  //           //           Padding(
+  //           //               padding: const EdgeInsets.only(top: 4.0),
+  //           //               child: CustomText(
+  //           //                   text:
+  //           //                   "${(selectedTimes[selectedTime] ~/ 60).toString().padLeft(2, "0")} : ${(selectedTimes[selectedTime] % 60).toString().padLeft(2, "0")} min")
+  //           //           )
+  //           //         ],
+  //           //       ),
+  //           //     ),
+  //           //     SizedBox(width: 20,),
+  //           //     InkWell(
+  //           //       onTap: (){
+  //           //         _showDialogVolume(context);
+  //           //       },
+  //           //       child: Row(
+  //           //         children: [
+  //           //           CustomSvg(
+  //           //             svg: volume,
+  //           //             color: blackColor2,
+  //           //           ),
+  //           //
+  //           //           SizedBox(width: 5,),
+  //           //
+  //           //           Padding(
+  //           //             padding: const EdgeInsets.only(top: 4.0),
+  //           //             child: Text("${currentVolume.toString().replaceAll("0.", "")}"),
+  //           //           )
+  //           //         ],
+  //           //       ),
+  //           //     ),
+  //           //   ],
+  //           // ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  //   // return Padding(
+  //   //   padding: const EdgeInsets.only(left: 20.0, right: 20, top: 5, bottom: 5),
+  //   //   child: Row(
+  //   //     //  crossAxisAlignment: CrossAxisAlignment.start,
+  //   //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //   //     children: [
+  //   //       Row(
+  //   //         children: [
+  //   //           Container(
+  //   //             height: height * .07,
+  //   //             width: height * .07,
+  //   //             decoration: const BoxDecoration(
+  //   //                 color: primaryPinkColor,
+  //   //                 borderRadius: BorderRadius.all(Radius.circular(10))),
+  //   //           ),
+  //   //           const SizedBox(width: 20),
+  //   //           CustomText(
+  //   //             text: musicName,
+  //   //             fontSize: 18,
+  //   //             fontWeight: FontWeight.w600,
+  //   //           ),
+  //   //         ],
+  //   //       ),
+  //   //       GestureDetector(
+  //   //         onTap: (){
+  //   //           if(mounted){
+  //   //             ref.read(addProvider).setMusicId(normalMusicId: musicId);
+  //   //           }
+  //   //           if(mounted){
+  //   //             ref.read(addProvider).changePage(1);
+  //   //           }
+  //   //           if(mounted){
+  //   //             ref.read(addProvider).changePlay(change: true);
+  //   //           }
+  //   //           if(mounted){
+  //   //             ref.read(addProvider).playFromPlaylistActive(change: true);
+  //   //           }
+  //   //         },
+  //   //         child: Container(
+  //   //           decoration: BoxDecoration(
+  //   //               shape: BoxShape.circle,
+  //   //               color: Colors.black.withOpacity(0.1)
+  //   //           ),
+  //   //           child: const Padding(
+  //   //             padding: EdgeInsets.all(1.0),
+  //   //             child: CustomImage(
+  //   //               imageUrl: playButton,
+  //   //               height: 30,
+  //   //               width: 30,
+  //   //             ),
+  //   //           ),
+  //   //         ),
+  //   //       ),
+  //   //     ],
+  //   //   ),
+  //   // );
+  // }
+
+  // Widget mixMusicList(
+  //     {required String musicName,
+  //     required String musicId,
+  //     required int index,
+  //     required String image}) {
+  //   final height = ScreenSize(context).height;
+  //   return InkWell(
+  //     onTap: () {
+  //       setFuck() {
+  //         if (mounted) {
+  //           ref
+  //               .read(playlistProvider)
+  //               .setMixPlaylistMusicId(setMixPlaylistId: musicId);
+  //         }
+  //         if (mounted) {
+  //           ref.read(addProvider).changePage(1);
+  //         }
+  //         if (mounted) {
+  //           ref.read(playlistProvider).changePlaying(change: true);
+  //         }
+  //       }
+  //
+  //       Navigator.push(
+  //           context,
+  //           MaterialPageRoute(
+  //               builder: (_) => PlaylistMixSound2(
+  //                     playlistMixMusicId: musicId,
+  //                     onPressed: setFuck,
+  //                   )));
+  //     },
+  //     child: Padding(
+  //       padding:
+  //           const EdgeInsets.only(left: 20.0, right: 20, top: 5, bottom: 5),
+  //       child: Row(
+  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //         children: [
+  //           Row(
+  //             children: [
+  //               Container(
+  //                 height: height * .07,
+  //                 width: height * .07,
+  //                 decoration: const BoxDecoration(
+  //                     color: primaryPinkColor,
+  //                     borderRadius: BorderRadius.all(Radius.circular(10))),
+  //                 child: Image.asset('$image'),
+  //               ),
+  //               const SizedBox(width: 20),
+  //               CustomText(
+  //                 text: musicName,
+  //                 fontSize: 18,
+  //                 fontWeight: FontWeight.w600,
+  //               ),
+  //             ],
+  //           ),
+  //           deleteShow == true
+  //               ? Container(
+  //                   decoration: BoxDecoration(
+  //                     shape: BoxShape.circle,
+  //                     color: Colors.black.withOpacity(0.05),
+  //                   ),
+  //                   child: InkWell(
+  //                     onTap: () {
+  //                       _showDialogdelete(context,
+  //                           firstMusicName: musicName,
+  //                           secondMusicName: musicName,
+  //
+  //                           id: musicId);
+  //                     },
+  //                     child: Padding(
+  //                       padding: EdgeInsets.all(15.0),
+  //                       child: CustomSvg(svg: deleteSvg),
+  //                     ),
+  //                   ),
+  //                 )
+  //               : Container(
+  //                   decoration: BoxDecoration(
+  //                     shape: BoxShape.circle,
+  //                     color: Colors.black.withOpacity(0.05),
+  //                   ),
+  //                   child: Padding(
+  //                     padding: EdgeInsets.all(15.0),
+  //                     child: CustomImage(
+  //                       scale: 0.8,
+  //                       imageUrl: playButton,
+  //                     ),
+  //                   )),
+  //           // Row(
+  //           //   children: [
+  //           //     InkWell(
+  //           //       onTap: (){
+  //           //         _showDialog(context);
+  //           //       },
+  //           //       child: Row(
+  //           //         children: [
+  //           //           CustomSvg(
+  //           //             svg: timer,
+  //           //             color: blackColor2,
+  //           //           ),
+  //           //
+  //           //           SizedBox(width: 5,),
+  //           //
+  //           //           Padding(
+  //           //               padding: const EdgeInsets.only(top: 4.0),
+  //           //               child: CustomText(
+  //           //                   text:
+  //           //                   "${(selectedTimes[selectedTime] ~/ 60).toString().padLeft(2, "0")} : ${(selectedTimes[selectedTime] % 60).toString().padLeft(2, "0")} min")
+  //           //           )
+  //           //         ],
+  //           //       ),
+  //           //     ),
+  //           //     SizedBox(width: 20,),
+  //           //     InkWell(
+  //           //       onTap: (){
+  //           //         _showDialogVolume(context);
+  //           //       },
+  //           //       child: Row(
+  //           //         children: [
+  //           //           CustomSvg(
+  //           //             svg: volume,
+  //           //             color: blackColor2,
+  //           //           ),
+  //           //
+  //           //           SizedBox(width: 5,),
+  //           //
+  //           //           Padding(
+  //           //             padding: const EdgeInsets.only(top: 4.0),
+  //           //             child: Text("${currentVolume.toString().replaceAll("0.", "")}"),
+  //           //           )
+  //           //         ],
+  //           //       ),
+  //           //     ),
+  //           //   ],
+  //           // ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  //   // return InkWell(
+  //   //   onTap: (){
+  //   //     if(mounted){
+  //   //       ref.read(mixMusicProvider).setMusicId(mixMusicId: musicId);
+  //   //     }
+  //   //     if(mounted){
+  //   //       ref.read(addProvider).changePage(1);
+  //   //     }
+  //   //     if(mounted){
+  //   //       ref.read(mixMusicProvider).changeMixPlay(change:true);
+  //   //     }
+  //   //     if(mounted){
+  //   //       ref.read(mixMusicProvider).playFromPlayListActive(change:true);
+  //   //     }
+  //   //   },
+  //   //   child: Padding(
+  //   //     padding: const EdgeInsets.only(left: 20.0, right: 15, top: 5, bottom: 5),
+  //   //     child: Row(
+  //   //       //  crossAxisAlignment: CrossAxisAlignment.start,
+  //   //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //   //       children: [
+  //   //         Row(
+  //   //           children: [
+  //   //             Container(
+  //   //               height: height * .07,
+  //   //               width: height * .07,
+  //   //               decoration: const BoxDecoration(
+  //   //                   color: primaryPinkColor,
+  //   //                   borderRadius: BorderRadius.all(Radius.circular(10))),
+  //   //             ),
+  //   //             const SizedBox(width: 20),
+  //   //             CustomText(
+  //   //               text: musicName,
+  //   //               fontSize: 18,
+  //   //               fontWeight: FontWeight.w600,
+  //   //             ),
+  //   //           ],
+  //   //         ),
+  //   //         GestureDetector(
+  //   //           onTap: (){
+  //   //             setState(() {
+  //   //               fav[index] = !fav[index];
+  //   //             });
+  //   //
+  //   //
+  //   //           },
+  //   //           child: Container(
+  //   //             decoration: BoxDecoration(
+  //   //                 shape: BoxShape.circle,
+  //   //             ),
+  //   //             child:
+  //   //             Padding(
+  //   //                 padding: EdgeInsets.all(15.0),
+  //   //                 child: !fav[index]
+  //   //                     ? Icon(
+  //   //                   Icons.favorite_border,
+  //   //                   size: 35,
+  //   //                   color: primaryPinkColor,
+  //   //                 )
+  //   //                     : Icon(
+  //   //                   Icons.favorite,
+  //   //                   size: 35,
+  //   //                   color: primaryPinkColor,
+  //   //                 )),
+  //   //           ),
+  //   //         ),
+  //   //       ],
+  //   //     ),
+  //   //   ),
+  //   // );
+  // }
+  //
+  // Widget mixMixMusicList(
+  //     {required String musicName,
+  //     required String musicId,
+  //     required int musicIndex,
+  //     required String image}) {
+  //   final height = ScreenSize(context).height;
+  //   return Container(
+  //     color: selectedIndex == musicIndex ? pinkLightColor : null,
+  //     child: InkWell(
+  //       onTap: () {
+  //         setState(() {
+  //           if (selectedIndex == musicIndex) {
+  //             setState(() {
+  //               selectedIndex = -1;
+  //             });
+  //           } else {
+  //             setState(() {
+  //               selectedIndex = musicIndex;
+  //             });
+  //           }
+  //         });
+  //         setFuck() {
+  //           if (mounted) {
+  //             ref
+  //                 .read(playlistProvider)
+  //                 .setMixPlaylistMusicId(setMixPlaylistId: musicId);
+  //           }
+  //           if (mounted) {
+  //             ref.read(addProvider).changePage(1);
+  //           }
+  //           if (mounted) {
+  //             ref.read(playlistProvider).changePlaying(change: true);
+  //           }
+  //         }
+  //
+  //         if (deleteShow == true) {
+  //           return null;
+  //         } else {
+  //           Navigator.push(
+  //             context,
+  //             MaterialPageRoute(
+  //               builder: (_) => PlaylistMixSound2(
+  //                 playlistMixMusicId: musicId,
+  //                 onPressed: setFuck,
+  //               ),
+  //             ),
+  //           );
+  //         }
+  //       },
+  //       child: Padding(
+  //         padding:
+  //             const EdgeInsets.only(left: 20.0, right: 20, top: 5, bottom: 5),
+  //         child: Row(
+  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //           children: [
+  //             Row(
+  //               children: [
+  //                 Container(
+  //                   height: height * .07,
+  //                   width: height * .07,
+  //                   decoration: const BoxDecoration(
+  //                       color: primaryPinkColor,
+  //                       borderRadius: BorderRadius.all(Radius.circular(10))),
+  //                   // child: Image.asset("${image}"),
+  //                 ),
+  //                 const SizedBox(width: 20),
+  //                 CustomText(
+  //                   text: musicName,
+  //                   fontSize: 18,
+  //                   fontWeight: FontWeight.w600,
+  //                 ),
+  //               ],
+  //             ),
+  //
+  //             deleteShow == true
+  //                 ? Container(
+  //                     decoration: BoxDecoration(
+  //                       shape: BoxShape.circle,
+  //                       color: Colors.black.withOpacity(0.05),
+  //                     ),
+  //                     child: InkWell(
+  //                       onTap: () {
+  //                         _showDialogdelete(
+  //                           context,
+  //                           firstMusicName: musicName,
+  //                           secondMusicName: musicName,
+  //                           id: musicId,
+  //                         );
+  //                         print("ID_M__${musicId}");
+  //                       },
+  //                       child: Padding(
+  //                         padding: EdgeInsets.all(15.0),
+  //                         child: CustomSvg(svg: deleteSvg),
+  //                       ),
+  //                     ),
+  //                   )
+  //                 : Container(
+  //                     decoration: BoxDecoration(
+  //                       shape: BoxShape.circle,
+  //                       color: Colors.black.withOpacity(0.05),
+  //                     ),
+  //                     child: Padding(
+  //                       padding: EdgeInsets.all(15.0),
+  //                       child: CustomImage(
+  //                         scale: 0.8,
+  //                         imageUrl: playButton,
+  //                       ),
+  //                     )),
+  //
+  //             // Row(
+  //             //   children: [
+  //             //     InkWell(
+  //             //       onTap: (){
+  //             //         _showDialog(context);
+  //             //       },
+  //             //       child: Row(
+  //             //         children: [
+  //             //           CustomSvg(
+  //             //             svg: timer,
+  //             //             color: blackColor2,
+  //             //           ),
+  //             //
+  //             //           SizedBox(width: 5,),
+  //             //
+  //             //           Padding(
+  //             //             padding: const EdgeInsets.only(top: 4.0),
+  //             //             child: CustomText(
+  //             //                 text:
+  //             //                 "${(selectedTimes[selectedTime] ~/ 60).toString().padLeft(2, "0")} : ${(selectedTimes[selectedTime] % 60).toString().padLeft(2, "0")} min")
+  //             //           )
+  //             //         ],
+  //             //       ),
+  //             //     ),
+  //             //     SizedBox(width: 20,),
+  //             //     InkWell(
+  //             //       onTap: (){
+  //             //         _showDialogVolume(context);
+  //             //       },
+  //             //       child: Row(
+  //             //         children: [
+  //             //           CustomSvg(
+  //             //             svg: volume,
+  //             //             color: blackColor2,
+  //             //           ),
+  //             //
+  //             //           SizedBox(width: 5,),
+  //             //
+  //             //           Padding(
+  //             //             padding: const EdgeInsets.only(top: 4.0),
+  //             //             child: Text("${currentVolume.toString().replaceAll("0.", "")}"),
+  //             //           )
+  //             //         ],
+  //             //       ),
+  //             //     ),
+  //             //   ],
+  //             // ),
+  //           ],
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   void _showDialog(BuildContext context) {
     final height = ScreenSize(context).height;
@@ -745,7 +1011,7 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
                             child: Center(
                                 child: CustomText(
                                     text:
-                                    "${(selectedTimes[selectedTime] ~/ 60).toString().padLeft(2, "0")} : ${(selectedTimes[selectedTime] % 60).toString().padLeft(2, "0")} min")),
+                                        "${(selectedTimes[selectedTime] ~/ 60).toString().padLeft(2, "0")} : ${(selectedTimes[selectedTime] % 60).toString().padLeft(2, "0")} min")),
                           ),
                           SliderTheme(
                             data: const SliderThemeData(
@@ -782,7 +1048,7 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: List.generate(
                                   times.length,
-                                      (index) => CustomText(
+                                  (index) => CustomText(
                                       text: times[index],
                                       fontWeight: FontWeight.w400,
                                       fontSize: 8,
@@ -816,10 +1082,10 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
                           TextButton(
                               onPressed: check
                                   ? () async {
-                                if (mounted) {
-                                  Navigator.pop(context);
-                                }
-                              }
+                                      if (mounted) {
+                                        Navigator.pop(context);
+                                      }
+                                    }
                                   : null,
                               child: const CustomText(
                                 text: "continuous play",
@@ -827,14 +1093,13 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
                                 fontWeight: FontWeight.w400,
                                 color: primaryGreyColor,
                               )),
-
-
-
                         ],
                       ),
-                      SizedBox(height: 6,),
+                      SizedBox(
+                        height: 6,
+                      ),
                       InkWell(
-                        onTap: (){
+                        onTap: () {
                           Navigator.pop(context);
                         },
                         child: Padding(
@@ -846,11 +1111,12 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
                               width: 200,
                               decoration: BoxDecoration(
                                   color: primaryPinkColor,
-                                  borderRadius: BorderRadius.circular(30)
+                                  borderRadius: BorderRadius.circular(30)),
+                              child: Text(
+                                "OK",
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold),
                               ),
-                              child: Text("OK",style: TextStyle(
-                                  fontSize: 18,fontWeight: FontWeight.bold
-                              ),),
                             ),
                           ),
                         ),
@@ -927,120 +1193,11 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
   void resumeSliderTimmer() {
     setSongDuration(sliderEnd.toInt(), initValue: sliderInitial);
   }
-  void _showDialogVolume(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        final width = ScreenSize(context).width;
-        return StatefulBuilder(
-          builder: (BuildContext context,
-              void Function(void Function()) updateState) {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Transform(
-                  transform: Matrix4.identity()..rotateZ(-90 * 3.1415927 / 180),
-                  child: AlertDialog(
-                    alignment: Alignment.centerLeft,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15)),
-                    backgroundColor: Colors.white,
-                    contentPadding: EdgeInsets.zero,
-                    content: Container(
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10)),
-                      child: Stack(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 20.0, top: 15, right: 0, bottom: 0),
-                                child: Transform(
-                                  alignment: Alignment.topCenter,
-                                  transform: Matrix4.identity()
-                                    ..rotateZ(90 * 3.1415927 / 180),
-                                  child: const CustomSvg(
-                                    svg: volume,
-                                    color: Colors.red,
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                child: Slider(
-                                  value: currentVolume,
-                                  min: 0.0,
-                                  max: 1.0,
-                                  divisions: 100,
-                                  activeColor: primaryPinkColor,
-                                  inactiveColor: primaryGreyColor2,
-                                  onChanged: (double newValue) async {
-                                    updateState(() {
-                                      // Screen.setBrightness(newValue);
-                                      currentVolume = newValue;
-                                      print("volume $currentVolume");
-                                    });
-                                    await audioPlayer.setVolume(
-                                        currentVolume);
 
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
-                          Positioned(
-                              right: width * 0.25,
-                              top: 10,
-                              child: Transform(
-                                  transform: Matrix4.identity()
-                                    ..rotateZ(90 * 3.1415927 / 180),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(2),
-                                        boxShadow: [
-                                          BoxShadow(
-                                              color: secondaryBlackColor
-                                                  .withOpacity(0.2),
-                                              blurRadius: 0.2,
-                                              spreadRadius: 0.5)
-                                        ]),
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 4.0, vertical: 5),
-                                      child: Center(
-                                          child: CustomText(
-                                            text:
-                                            "${(currentVolume * 100).toInt().toString().padLeft(2, "0")}%",
-                                            fontSize: 10,
-                                            color: secondaryBlackColor,
-                                            fontWeight: FontWeight.w600,
-                                          )),
-                                    ),
-                                  )))
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            );
-          },
-        );
-      },
-    );
-  }
 
   void _showDialogdelete(BuildContext context,
       {required String firstMusicName,
-        required String secondMusicName,
-        required int index22,
-         required String id
-      }) {
+      required String id}) {
     final width = ScreenSize(context).width;
     showDialog(
       context: context,
@@ -1091,17 +1248,15 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
                     textFontWeight: FontWeight.w600,
                     borderRadius: 48,
                     onPressed: () {
-
-
                       ref.read(addProvider).deleteMix(mixId: id.toString());
-                      ref.read(playlistProvider).deleteMix(mixId: id.toString());
+                      ref
+                          .read(playlistProvider)
+                          .deleteMix(mixId: firstMusicName.toString());
+                      print("ID(((___${id.toString()}");
                       if (mounted) {
                         Navigator.pop(context);
                       }
-                      setState(() {
-
-                      });
-
+                      setState(() {});
                     },
                   ),
                 ],

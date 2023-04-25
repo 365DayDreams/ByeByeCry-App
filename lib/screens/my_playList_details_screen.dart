@@ -18,7 +18,7 @@ import '../compoment/shared/custom_text.dart';
 import '../compoment/shared/screen_size.dart';
 import '../compoment/utils/color_utils.dart';
 import '../compoment/utils/image_link.dart';
-AudioPlayer audioPlayer1 = AudioPlayer();
+
 class PlaylistMixSound2 extends ConsumerStatefulWidget {
   final String? playlistMixMusicId;
   final VoidCallback? onPressed;
@@ -115,6 +115,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
   int setDuration = 0;
   int mixPlaylistIndex = 0;
   AudioCache audioCache = AudioCache();
+  AudioPlayer audioPlayer1 = AudioPlayer();
 
   // AudioPlayer audioPlayer2 = AudioPlayer();
   Duration _duration = Duration.zero;
@@ -214,12 +215,12 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
     super.didChangeDependencies();
   }
 
-  @override
-  void dispose() {
-    audioPlayer1.dispose();
-    //_subscription.cancel();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   audioPlayer1.dispose();
+  //   //_subscription.cancel();
+  //   super.dispose();
+  // }
 
   // changeVolume() {
   //   PerfectVolumeControl.hideUI = true;
@@ -831,6 +832,9 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                             padding: EdgeInsets.zero,
                             onPressed: () async {
                               sliderInitial = 0.0;
+                              selectedTime = 0;
+                              setDuration = 0;
+                              check=true;
                               changeIndex(changeIndex: false);
                               if (mounted) {
                                 playMusic();
@@ -842,50 +846,50 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                             },
                             icon: const CustomSvg(
                                 svg: left_shift, color: primaryPinkColor)),
-                        Container(
-                          // color: Colors.red,
-                          height: width * 0.18,
-                          width: width * 0.18,
-                          clipBehavior: Clip.hardEdge,
-                          decoration: BoxDecoration(
-                              color: secondaryWhiteColor2,
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                  color: Colors.transparent, width: 0),
-                              boxShadow: const [
-                                BoxShadow(
-                                    blurRadius: 10, color: secondaryWhiteColor2)
-                              ]),
-                          child: GestureDetector(
-                            onTap: () async {
-                              if (playPouse) {
-                                await audioPlayer1.pause();
+                        InkWell(
+                          onTap: ()async{
+                            if (playPouse) {
+                              await audioPlayer1.pause();
 
-                                pauseSliderTimmer();
-                              } else {
-                                String url1 = ref
-                                    .watch(playlistProvider)
-                                    .mixMixPlaylist[mixPlaylistIndex]
-                                    .playListList![musicIndex]
-                                    .first
-                                    ?.musicFile ??
-                                    "";
-                                String url2 = ref
-                                    .watch(playlistProvider)
-                                    .mixMixPlaylist[mixPlaylistIndex]
-                                    .playListList![musicIndex]
-                                    .second
-                                    ?.musicFile ??
-                                    "";
-                                await audioPlayer1.play(AssetSource(url1));
-                                resumeSliderTimmer();
-                              }
-                              playPouse = !playPouse;
+                              pauseSliderTimmer();
+                            } else {
+                              String url1 = ref
+                                  .watch(playlistProvider)
+                                  .mixMixPlaylist[mixPlaylistIndex]
+                                  .playListList![musicIndex]
+                                  .first
+                                  ?.musicFile ??
+                                  "";
+                              String url2 = ref
+                                  .watch(playlistProvider)
+                                  .mixMixPlaylist[mixPlaylistIndex]
+                                  .playListList![musicIndex]
+                                  .second
+                                  ?.musicFile ??
+                                  "";
+                              await audioPlayer1.play(AssetSource(url1));
+                              resumeSliderTimmer();
+                            }
+                            playPouse = !playPouse;
 
-                              if (mounted) {
-                                setState(() {});
-                              }
-                            },
+                            if (mounted) {
+                              setState(() {});
+                            }
+                          },
+                          child: Container(
+                            // color: Colors.red,
+                            height: width * 0.18,
+                            width: width * 0.18,
+                            clipBehavior: Clip.hardEdge,
+                            decoration: BoxDecoration(
+                                color: secondaryWhiteColor2,
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                    color: Colors.transparent, width: 0),
+                                boxShadow: const [
+                                  BoxShadow(
+                                      blurRadius: 10, color: secondaryWhiteColor2)
+                                ]),
                             child: Padding(
                               padding: const EdgeInsets.all(22),
                               child: CustomSvg(
@@ -902,6 +906,9 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                             onPressed: () async {
                               sliderInitial = 0.0;
                               changeIndex(changeIndex: true);
+                              selectedTime = 0;
+                              setDuration = 0;
+                              check=true;
                               if (mounted) {
                                 playMusic();
                                 sliderInitial = 0.0;
@@ -1322,13 +1329,35 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                               inactiveColor: primaryGreyColor2,
                               onChanged: (double newValue) async {
                                 state(() {
-                                  setDuration = 1;
-                                  selectedTime = check ? 0 : newValue.toInt();
+                                  selectedTime = newValue.toInt();
                                   setDuration = selectedTimes[selectedTime];
 
                                   setDuration *= 60;
                                   setSongDuration(setDuration);
-                                  print("index $selectedTime");
+                                  // ins.seek(Duration(seconds: setDuration));
+                                  print("index 111 $setDuration");
+                                  print(
+                                      "index 222 ${selectedTimes[selectedTime]}");
+                                  if (selectedTimes[selectedTime] == 0) {
+                                    check = true;
+                                    if(musicIndex==0){
+                                      Savetimer = 120.0;
+                                    }else if(musicIndex==1){
+                                      Savetimer2=120.0;
+                                    }else if(musicIndex==3){
+                                      Savetimer3=120.0;
+                                    }
+
+                                  } else {
+                                    check = false;
+                                  }
+                                  // setDuration = 1;
+                                  // selectedTime = check ? 0 : newValue.toInt();
+                                  // setDuration = selectedTimes[selectedTime];
+                                  //
+                                  // setDuration *= 60;
+                                  // setSongDuration(setDuration);
+                                  // print("index $selectedTime");
                                 });
                                 setState(() {});
                               },

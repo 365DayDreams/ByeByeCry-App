@@ -57,69 +57,55 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
   void initState() {
     initialization();
     startPlayer();
-
-    audioPlayer1.dispose();
+    // audioPlayer1.dispose();
     super.initState();
     print('checkkking--$check');
 
+    Timer.periodic(Duration(seconds: 1), (timer) async {
+      print(_position);
+      if (sliderInitial.toInt() == (sliderEnd - 1).toInt()) {
+        if (check == false) {
+          pageController.nextPage(
+              duration: Duration(milliseconds: 100), curve: Curves.linear);
+          sliderInitial = 0.0;
+          sliderEnd = 120.0;
 
-      Timer.periodic(Duration(seconds: 1), (timer) async {
+          changeIndex(changeIndex: true);
 
-          print(_position);
-          if (sliderInitial.toInt() == (sliderEnd - 1).toInt()) {
-            if (check == false) {
-              pageController.nextPage(
-                  duration: Duration(milliseconds: 100), curve: Curves.linear);
-              sliderInitial = 0.0;
-              sliderEnd = 120.0;
-
-              changeIndex(changeIndex: true);
-
-              if (mounted) {
-                String url = ref
-                    .watch(addProvider)
-                    .musicList[index].musicFile;
-                await ins.playAudio(Duration(minutes: 2), "assets/" + url);
-                // sliderInitial=0.0;
-                print("IF URL __$url");
-              }
-
-              if (mounted) {
-                setState(() {});
-              }
-            }else{
-
-              ins.stop();
-
-              sliderInitial = 0.0;
-              sliderEnd = 120.0;
-
-
-              if (mounted) {
-                String url = ref
-                    .watch(addProvider)
-                    .musicList[index].musicFile;
-                await ins.playAudio(Duration(minutes: 2), "assets/" + url);
-                // sliderInitial=0.0;
-                print("else URL __$url");
-
-              }
-
-              if (mounted) {
-                setState(() {});
-              }
-
-            }
-            if (!mounted) {
-              timer.cancel();
-              return;
-            }
+          if (mounted) {
+            String url = ref.watch(addProvider).musicList[index].musicFile;
+            await ins.playAudio(Duration(minutes: 2), "assets/" + url);
+            // sliderInitial=0.0;
+            print("IF URL __$url");
           }
-      });
 
-    }
+          if (mounted) {
+            setState(() {});
+          }
+        } else {
+          ins.stop();
 
+          sliderInitial = 0.0;
+          sliderEnd = 120.0;
 
+          if (mounted) {
+            String url = ref.watch(addProvider).musicList[index].musicFile;
+            await ins.playAudio(Duration(minutes: 2), "assets/" + url);
+            // sliderInitial=0.0;
+            print("else URL __$url");
+          }
+
+          if (mounted) {
+            setState(() {});
+          }
+        }
+        if (!mounted) {
+          timer.cancel();
+          return;
+        }
+      }
+    });
+  }
 
   @override
   void dispose() {
@@ -186,9 +172,9 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
       setState(() {});
     }
   }
+
   pausePlayMethod2() async {
     if (ins.isPlaying()) {
-
       String url = ref.watch(addProvider).musicList[index].musicFile;
 
       ins.playAudio(Duration(minutes: 2), "assets/$url");
@@ -199,6 +185,7 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
       setState(() {});
     }
   }
+
   changeIndex({bool changeIndex = false}) {
     print("change index");
     if (changeIndex) {
@@ -214,7 +201,6 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
       setState(() {});
     }
   }
-
 
   PageController pageController = PageController();
   int value = 0;
@@ -416,7 +402,7 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                         value: sliderInitial <= sliderEnd
                             ? sliderInitial
                             : sliderEnd,
-                        min: 0,
+                        min: 0.0,
                         max: sliderEnd,
                         divisions: 350,
                         activeColor: primaryPinkColor,
@@ -445,6 +431,9 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                             padding: EdgeInsets.zero,
                             onPressed: () async {
                               changeIndex(changeIndex: false);
+                              selectedTime = 0;
+                              setDuration = 0;
+                              check=true;
                               if (mounted) {
                                 String url = ref
                                     .watch(addProvider)
@@ -524,6 +513,9 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                             padding: EdgeInsets.zero,
                             onPressed: () async {
                               changeIndex(changeIndex: true);
+                              selectedTime = 0;
+                              setDuration = 0;
+                              check=true;
                               if (mounted) {
                                 String url = ref
                                     .watch(addProvider)
@@ -536,6 +528,9 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
 
                                 sliderInitial = 0.0;
                                 sliderEnd = 120.0;
+                                // selected timer....
+
+
                               }
 
                               if (mounted) {
@@ -813,14 +808,22 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                                 inactiveColor: primaryGreyColor2,
                                 onChanged: (double newValue) async {
                                   state(() {
-                                    setDuration = 1;
-                                    selectedTime = check ? 0 : newValue.toInt();
+                                    // setDuration = 1;
+                                    selectedTime = newValue.toInt();
                                     setDuration = selectedTimes[selectedTime];
 
                                     setDuration *= 60;
                                     setSongDuration(setDuration);
                                     ins.seek(Duration(seconds: setDuration));
-                                    print("index $setDuration");
+                                    print("index 111 $setDuration");
+                                    print(
+                                        "index 222 ${selectedTimes[selectedTime]}");
+                                    if (selectedTimes[selectedTime] == 0) {
+                                      check = true;
+                                      sliderEnd = 120.0;
+                                    } else {
+                                      check = false;
+                                    }
                                   });
                                   setState(() {});
                                 },
@@ -860,19 +863,17 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                               onChanged: (newValue) {
                                 state(() {
                                   check = newValue!;
-                                  if (check) {
-                                    selectedTime = 0;
-                                  }
+                                  // if (check) {
+                                  //   selectedTime = 0;
+                                  // }
                                 });
                               }),
                           TextButton(
-                              onPressed: check
-                                  ? () async {
-                                      if (mounted) {
-                                        Navigator.pop(context);
-                                      }
-                                    }
-                                  : null,
+                              onPressed: () async {
+                                // if (mounted) {
+                                //   Navigator.pop(context);
+                                // }
+                              },
                               child: const CustomText(
                                 text: "continuous play",
                                 fontSize: 19,

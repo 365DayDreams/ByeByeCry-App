@@ -107,7 +107,7 @@ class PlaylistProvider  extends ChangeNotifier{
   }
 
   deleteMix({required String mixId})async{
-    int index = mixMixPlaylist.indexWhere((element) => element.id == mixId);
+    int index = mixMixPlaylist.indexWhere((element) => element.title == mixId);
     if(index >= 0){
       if(mixPlayList.contains(mixMixPlaylist[index])){
         mixPlayList.remove(mixMixPlaylist[index]);
@@ -117,7 +117,7 @@ class PlaylistProvider  extends ChangeNotifier{
       mixMixPlaylist.removeAt(index);
       await LocalDB.setMixPlayList(mixMixPlaylist);
     }else{
-      int index = mixPlayList.indexWhere((element) => element.id == mixId);
+      int index = mixPlayList.indexWhere((element) => element.first!.musicName == mixId);
       if(index >= 0){
         mixPlayList.remove(mixMixPlaylist[index]);
         mixPlayList.remove(mixId);

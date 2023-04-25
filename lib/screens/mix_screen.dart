@@ -208,6 +208,7 @@ class _MixScreenState extends ConsumerState<MixScreen> {
       //   },
       // ),
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         elevation: 0,
         backgroundColor: secondaryPinkColor,
 
