@@ -60,14 +60,7 @@ void main() async {
   }
 
   PurchasListener.init();
-/*
-  print(StoreConfig.instance.apiKey);
-  //audioPlayer.setReleaseMode(ReleaseMode.loop);
-  await JustAudioBackground.init(
-    androidNotificationChannelId: 'com.ryanheise.bg_demo.channel.audio',
-    androidNotificationChannelName: 'Audio playback',
-    androidNotificationOngoing: true,
-  );*/
+
 
   runApp(const ProviderScope(child: MyApp()));
 }
@@ -90,7 +83,7 @@ class _MyAppState extends State<MyApp> {
          () {
           return Container(
             child:
-            !PurchasListener.isSubscribe.value ?
+            PurchasListener.isSubscribe.value ?
             StartPage() : InitialHomePage()
           );
         }

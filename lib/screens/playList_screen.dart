@@ -75,16 +75,7 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
             },
           )
         : Scaffold(
-            // appBar: AppBar(
-            //   elevation: 0,
-            //   automaticallyImplyLeading: false,
-            //   centerTitle: true,
-            //   backgroundColor: primaryPinkColor,
-            //   title: Text("My Playlist",style: TextStyle(
-            //     fontSize: 22,color: Colors.black,
-            //     fontWeight: FontWeight.w700
-            //   ),),
-            // ),
+
             appBar: AppBar(
 
                 leading:
@@ -97,7 +88,7 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
                     margin: const EdgeInsets.all(5.0),
                     padding: const EdgeInsets.all(2.0),
                     decoration: const BoxDecoration(
-                        color: Colors.white, shape: BoxShape.circle),
+                        color: primaryPinkColor, shape: BoxShape.circle),
                     child: IconButton(
                       iconSize: 15,
                       icon: const Icon(
@@ -108,9 +99,7 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
                         setState(() {
                           deleteShow = !deleteShow;
                         });
-                        // ref.read(addProvider).changePage(1);
 
-                        // Navigator.push(context, MaterialPageRoute(builder: (_)=> StartPage()));
                       },
                     ),
                   ),
@@ -128,9 +117,9 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
                         child: Text(
                           'Edit',
                           style: TextStyle(
-                              fontSize: 18,
-                              color: secondaryBlackColor,
-                              fontWeight: FontWeight.bold),
+                              fontSize: 16,
+                              color: Colors.black,
+                              fontWeight: FontWeight.w500),
                         ),
                       ),
                     ),
@@ -138,7 +127,7 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
                 ],
                 elevation: 0,
                 centerTitle: true,
-                backgroundColor: primaryPinkColor,
+                backgroundColor: secondaryPinkColor,
 
                 title: Text(
                   'My Playlist',
@@ -184,14 +173,14 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
                                     });
                                   }
                                 });
-                                setFuck() {
+                                setData() {
                                   if (mounted) {
                                     ref
                                         .read(playlistProvider)
                                         .setMixPlaylistMusicId(setMixPlaylistId: ref
                                         .watch(playlistProvider)
                                         .mixMixPlaylist[indexdddd]
-                                        .id);
+                                        .title.toString());
                                   }
                                   if (mounted) {
                                     ref.read(addProvider).changePage(1);
@@ -204,6 +193,7 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
                                 if (deleteShow == true) {
                                   return null;
                                 } else {
+                                  print("Set ID __${data.id}");
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -211,8 +201,8 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
                                         playlistMixMusicId: ref
                                             .watch(playlistProvider)
                                             .mixMixPlaylist[indexdddd]
-                                            .id,
-                                        onPressed: setFuck,
+                                            .title,
+                                        onPressed: setData,
                                       ),
                                     ),
                                   );

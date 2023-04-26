@@ -72,7 +72,7 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
     //.//audioPlayer1.dispose();
     // startPlayer1();
     // startPlayer2();
-    changeVolume();
+
     //brightNess();
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -165,22 +165,7 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
     super.dispose();
   }
 
-  changeVolume() {
-    PerfectVolumeControl.hideUI = true;
-    Future.delayed(Duration.zero, () async {
-      currentVolume = await PerfectVolumeControl.getVolume();
-      setState(() {
-        //refresh UI
-      });
-    });
-    _subscription = PerfectVolumeControl.stream.listen((volume) {
-      currentVolume = volume;
-      if (mounted) {
-        print('sound $currentVolume');
-        setState(() {});
-      }
-    });
-  }
+
 
   Future<void> brightNess() async {
     try {
@@ -199,73 +184,7 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
     if (!mounted) return;
   }
 
-  //
-  // startPlayer1()async{
-  //   audioPlayer1.onPlayerStateChanged.listen((state){
-  //     issongplaying1 = state == PlayerState.playing;
-  //     if(!issongplaying1 || !issongplaying2){
-  //       if(setDuration > 0){
-  //         setDuration -= _duration.inSeconds;
-  //         if(mounted){
-  //           setState(() {});
-  //           pausePlayMethod();
-  //         }
-  //       }
-  //     }
-  //     if(mounted){
-  //       setState(() {});
-  //     }
-  //   });
-  //   audioPlayer1.onDurationChanged.listen((newDuration) {
-  //     _duration = newDuration;
-  //    print("first music duration ${_duration.inSeconds}");
-  //     if(mounted){
-  //       setState(() {});
-  //     }
-  //   });
-  //   audioPlayer1.onPositionChanged.listen((newPositions) {
-  //     _position = newPositions;
-  //     if(mounted){
-  //       setState(() {});
-  //     }
-  //   });
-  //   if(mounted){
-  //     setState(() {});
-  //   }
-  // }
-  // startPlayer2()async{
-  //   audioPlayer2.onPlayerStateChanged.listen((state){
-  //     issongplaying2 = state == PlayerState.playing;
-  //     if(!issongplaying1 || !issongplaying2){
-  //       if(setDuration > 0){
-  //         setDuration -= _duration.inSeconds;
-  //         if(mounted){
-  //           setState(() {});
-  //           pausePlayMethod();
-  //         }
-  //       }
-  //     }
-  //     if(mounted){
-  //       setState(() {});
-  //     }
-  //   });
-  //   audioPlayer2.onDurationChanged.listen((newDuration) {
-  //     _duration2 = newDuration;
-  //     print("second music duration ${_duration2.inSeconds}");
-  //     if(mounted){
-  //       setState(() {});
-  //     }
-  //   });
-  //   audioPlayer2.onPositionChanged.listen((newPositions) {
-  //     _position2 = newPositions;
-  //     if(mounted){
-  //       setState(() {});
-  //     }
-  //   });
-  //   if(mounted){
-  //     setState(() {});
-  //   }
-  // }
+
   initialization() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       musicIndex = ref
@@ -960,9 +879,9 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                                       currentVolume = newValue;
                                       print("volume $currentVolume");
                                     });
-                                    await ins.setVolume(currentVolume);
+                                    // await ins.setVolume(0.5);
 
-                                    //  ins.setVolume(currentVolume * 0.001);
+                                     ins.setVolume(currentVolume * 0.01);
                                     // await PerfectVolumeControl.setVolume(currentVolume);
                                   },
                                 ),

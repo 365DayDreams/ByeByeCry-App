@@ -144,98 +144,102 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
     getVol2();
     getVol3();
     startPlayer1();
-    startPlayer2();
+
     //changeVolume();
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      Timer.periodic(Duration(seconds: 1), (timer) async {
-        // if(sliderTimer==120.0|| sliderInitial==120.0){
-        //   timer.cancel();
-        // }
-        if (sliderInitial.toInt() == (Savetimer! - 1).toInt() ||
-            sliderInitial == 120.0 ||
-            sliderInitial.toInt() == (Savetimer2! - 1).toInt() ||
-            sliderInitial == 120.0 ||
-            sliderInitial.toInt() == (Savetimer3! - 1).toInt() ||
-            sliderInitial == 120.0) {
-          print("play next================");
-          if(check==false) {
-            changeIndex(changeIndex: true);
-            pageController.nextPage(
-                duration: Duration(milliseconds: 100), curve: Curves.linear);
-            changeIndex(changeIndex: true);
+    Timer.periodic(Duration(seconds: 1), (timer) async {
+      // if(sliderTimer==120.0|| sliderInitial==120.0){
+      //   timer.cancel();
+      // }
+      if (sliderInitial.toInt() == (Savetimer! - 1).toInt() ||
+          sliderInitial == 120.0 ||
+          sliderInitial.toInt() == (Savetimer2! - 1).toInt() ||
+          sliderInitial == 120.0 ||
+          sliderInitial.toInt() == (Savetimer3! - 1).toInt() ||
+          sliderInitial == 120.0) {
+        print("play next================");
+        if(check==false) {
+          changeIndex(changeIndex: true);
+          pageController.nextPage(
+              duration: Duration(milliseconds: 100), curve: Curves.linear);
+          changeIndex(changeIndex: true);
 
-            sliderInitial = 0.0;
-            if(musicIndex==0){
-              Savetimer = 120.0;
+          sliderInitial = 0.0;
+          if(musicIndex==0){
+            Savetimer = 120.0;
 
-            }else if(musicIndex==1){
-              Savetimer2 = 120.0;
+          }else if(musicIndex==1){
+            Savetimer2 = 120.0;
 
-            }else if(musicIndex==2){
-              Savetimer3 = 120.0;
-
-            }
-            selectedTime = 0;
-            setDuration = 0;
-            check=true;
-
-            if (mounted) {
-              String url = ref
-                  .watch(playlistProvider)
-                  .mixMixPlaylist[mixPlaylistIndex]
-                  .playListList![musicIndex]
-                  .first!
-                  .musicFile;
-              await audioPlayer1.play(AssetSource(url));
-              sliderInitial = 0.0;
-            }
-
-            if (mounted) {
-              setState(() {});
-            }
-          }else{
-            audioPlayer1.stop();
-
-            sliderInitial = 0.0;
-            if(musicIndex==0){
-              Savetimer = 120.0;
-
-            }else if(musicIndex==1){
-              Savetimer2 = 120.0;
-
-            }else if(musicIndex==2){
-              Savetimer3 = 120.0;
-
-            }
-            selectedTime = 0;
-            setDuration = 0;
-            check=true;
-
-            if (mounted) {
-              String url = ref
-                  .watch(playlistProvider)
-                  .mixMixPlaylist[mixPlaylistIndex]
-                  .playListList![musicIndex]
-                  .first!
-                  .musicFile;
-              await audioPlayer1.play(AssetSource(url));
-              sliderInitial = 0.0;
-            }
-
-            if (mounted) {
-              setState(() {});
-            }
+          }else if(musicIndex==2){
+            Savetimer3 = 120.0;
 
           }
-          if (!mounted) {
-            timer.cancel();
-            return;
+          selectedTime = 0;
+          setDuration = 0;
+          check=true;
+          print("IFFF");
+
+          if (mounted) {
+            String url = ref
+                .watch(playlistProvider)
+                .mixMixPlaylist[mixPlaylistIndex]
+                .playListList![musicIndex]
+                .first!
+                .musicFile;
+            await audioPlayer1.play(AssetSource(url));
+            sliderInitial = 0.0;
           }
+
+          if (mounted) {
+            setState(() {});
+          }
+        }else{
+         await audioPlayer1.stop();
+          print("Else");
+
+
+          sliderInitial = 0.0;
+          if(musicIndex==0){
+            Savetimer = 120.0;
+
+          }else if(musicIndex==1){
+            Savetimer2 = 120.0;
+
+          }else if(musicIndex==2){
+            Savetimer3 = 120.0;
+
+          }
+          playPouse=true;
+          selectedTime = 0;
+          setDuration = 0;
+          check=true;
+
+
+
+          if (mounted) {
+            String url = ref
+                .watch(playlistProvider)
+                .mixMixPlaylist[mixPlaylistIndex]
+                .playListList![musicIndex]
+                .first!
+                .musicFile;
+            await audioPlayer1.play(AssetSource(url));
+            sliderInitial = 0.0;
+          }
+
+          if (mounted) {
+            setState(() {});
+          }
+
         }
-      });
-
+        if (!mounted) {
+          timer.cancel();
+          return;
+        }
+      }
     });
+
   }
 
   @override
@@ -244,29 +248,14 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
     super.didChangeDependencies();
   }
 
-  // @override
-  // void dispose() {
-  //   audioPlayer1.dispose();
-  //   //_subscription.cancel();
-  //   super.dispose();
-  // }
+  @override
+  void dispose() {
+    audioPlayer1.dispose();
+    //_subscription.cancel();
+    super.dispose();
+  }
 
-  // changeVolume() {
-  //   PerfectVolumeControl.hideUI = true;
-  //   Future.delayed(Duration.zero, () async {
-  //     currentVolume = await PerfectVolumeControl.getVolume();
-  //     setState(() {
-  //       //refresh UI
-  //     });
-  //   });
-  //   _subscription = PerfectVolumeControl.stream.listen((volume) {
-  //     currentVolume = volume;
-  //     if (mounted) {
-  //       print('sound $currentVolume');
-  //       setState(() {});
-  //     }
-  //   });
-  // }
+
 
   startPlayer1() async {
     audioPlayer1.onPlayerStateChanged.listen((state) {
@@ -304,47 +293,13 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
     }
   }
 
-  startPlayer2() async {
-    // audioPlayer2.onPlayerStateChanged.listen((state) {
-    //   issongplaying2 = state == PlayerState.playing;
-    //   if (!issongplaying1 || !issongplaying2) {
-    //     if (setDuration > 0) {
-    //       setDuration -= _duration.inSeconds;
-    //       if (mounted) {
-    //         pausePlayMethod();
-    //       }
-    //       if (mounted) {
-    //         setState(() {});
-    //       }
-    //     }
-    //   }
-    //   if (mounted) {
-    //     setState(() {});
-    //   }
-    // });
-    // audioPlayer2.onDurationChanged.listen((newDuration) {
-    //   _duration2 = newDuration;
-    //   if (mounted) {
-    //     setState(() {});
-    //   }
-    // });
-    // audioPlayer2.onPositionChanged.listen((newPositions) {
-    //   _position2 = newPositions;
-    //   if (mounted) {
-    //     setState(() {});
-    //   }
-    // });
-    if (mounted) {
-      setState(() {});
-    }
-  }
 
   initialization() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       mixPlaylistIndex = ref
           .watch(playlistProvider)
           .mixMixPlaylist
-          .indexWhere((element) => element.id == widget.playlistMixMusicId);
+          .indexWhere((element) => element.title == widget.playlistMixMusicId);
       if (mounted) {
         setState(() {});
       }
@@ -374,7 +329,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
   }
 
   pausePlayMethod() async {
-    if (issongplaying1 || issongplaying2) {
+    if (issongplaying1) {
       await audioPlayer1.pause();
 
       ///await audioPlayer2.pause();
@@ -642,13 +597,14 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                       InkWell(
                         onTap: (){
                           ref.read(mixMusicProvider).alertDialogStart();
-                          if (mounted) {
-                            setState(() {
-                              check = false;
-                              selectedTime = 0;
-                            });
-                            _showDialog(context);
-                          }
+                          _showDialog(context);
+                          // if (mounted) {
+                          //   setState(() {
+                          //     check = false;
+                          //     selectedTime = 0;
+                          //   });
+                          //
+                          // }
                         },
                         child: Row(
                           children: [
@@ -797,49 +753,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                   ),
                 ],
 
-                // SizedBox(
-                //   //color: Colors.green,
-                //   width: width * .95,
-                //   child: SliderTheme(
-                //     data: const SliderThemeData(
-                //         trackShape: RectangularSliderTrackShape(),
-                //         thumbShape:
-                //             RoundSliderThumbShape(enabledThumbRadius: 10)),
-                //     child: Slider(
-                //         value: _position.inSeconds.toDouble() >
-                //                 _position2.inSeconds.toDouble()
-                //             ? _position.inSeconds.toDouble()
-                //             : _position2.inSeconds.toDouble(),
-                //         min: 0,
-                //         max: _duration.inSeconds.toDouble() >
-                //                 _duration2.inSeconds.toDouble()
-                //             ? _duration.inSeconds.toDouble()
-                //             : _duration2.inSeconds.toDouble(),
-                //         divisions: 100,
-                //         activeColor: primaryPinkColor,
-                //         inactiveColor: primaryGreyColor2,
-                //         onChanged: (double newValue) async {
-                //           print("aaaa${_duration.inSeconds}");
-                //           print("nnnnn${_position.inSeconds}");
-                //           if (newValue.toInt() <= _duration.inSeconds) {
-                //             await audioPlayer1
-                //                 .seek(Duration(seconds: newValue.toInt()));
-                //           }
-                //           if (newValue.toInt() <= _duration2.inSeconds) {
-                //             await audioPlayer2
-                //                 .seek(Duration(seconds: newValue.toInt()));
-                //           }
-                //           await audioPlayer1.resume();
-                //           await audioPlayer2.resume();
-                //           if (mounted) {
-                //             setState(() {});
-                //           }
-                //         },
-                //         semanticFormatterCallback: (double newValue) {
-                //           return '${newValue.round()} dollars';
-                //         }),
-                //   ),
-                // ),
+
                 Container(
                   color: Colors.transparent,
                   child: Padding(
@@ -848,15 +762,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        // IconButton(
-                        //     padding: const EdgeInsets.only(left: 10),
-                        //     onPressed: () {
-                        //       _showDialogVolume(context);
-                        //     },
-                        //     icon: Container(
-                        //         color: Colors.transparent,
-                        //         child: const CustomSvg(
-                        //             svg: volume, color: blackColor2))),
+
                         IconButton(
                             padding: EdgeInsets.zero,
                             onPressed: () async {
@@ -880,6 +786,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                             if (playPouse) {
                               await audioPlayer1.pause();
 
+
                               pauseSliderTimmer();
                             } else {
                               String url1 = ref
@@ -889,17 +796,13 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                   .first
                                   ?.musicFile ??
                                   "";
-                              String url2 = ref
-                                  .watch(playlistProvider)
-                                  .mixMixPlaylist[mixPlaylistIndex]
-                                  .playListList![musicIndex]
-                                  .second
-                                  ?.musicFile ??
-                                  "";
+
                               await audioPlayer1.play(AssetSource(url1));
                               resumeSliderTimmer();
                             }
-                            playPouse = !playPouse;
+                           setState(() {
+                             playPouse = !playPouse;
+                           });
 
                             if (mounted) {
                               setState(() {});
@@ -923,7 +826,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                               padding: const EdgeInsets.all(22),
                               child: CustomSvg(
                                 color: primaryPinkColor,
-                                svg: (issongplaying1 || issongplaying2)
+                                svg: (issongplaying1)
                                     ? pouseButton
                                     : playButtonSvg,
                               ),
@@ -949,25 +852,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                             },
                             icon: const CustomSvg(
                                 svg: right_shift, color: primaryPinkColor)),
-                        // IconButton(
-                        //     padding: EdgeInsets.zero,
-                        //     onPressed: () {
-                        //       ref.read(mixMusicProvider).alertDialogStart();
-                        //       if (mounted) {
-                        //         setState(() {
-                        //           check = false;
-                        //           selectedTime = 0;
-                        //         });
-                        //         _showDialog(context);
-                        //       }
-                        //     },
-                        //     icon: Container(
-                        //         color: Colors.transparent,
-                        //         child: const Padding(
-                        //           padding: EdgeInsets.symmetric(vertical: 8.0),
-                        //           child:
-                        //           CustomSvg(svg: timer, color: blackColor2),
-                        //         ))),
+
                       ],
                     ),
                   ),
@@ -1117,7 +1002,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                         // Screen.setBrightness(newValue);
                                         volume1 = newValue;
                                       });
-                                      await audioPlayer1.setVolume(volume1!);
+                                      await audioPlayer1.setVolume(volume1! * 0.01);
                                     },
                                   ),
                                 ),
@@ -1135,7 +1020,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                         // Screen.setBrightness(newValue);
                                         volume2 = newValue;
                                       });
-                                      await audioPlayer1.setVolume(volume2!);
+                                      await audioPlayer1.setVolume(volume2! * 0.01);
                                     },
                                   ),
                                 ),
@@ -1153,7 +1038,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                         // Screen.setBrightness(newValue);
                                         volume3 = newValue;
                                       });
-                                      await audioPlayer1.setVolume(volume3!);
+                                      await audioPlayer1.setVolume(volume3! * 0.01);
                                     },
                                   ),
                                 ),
@@ -1318,32 +1203,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                   text:
                                   "${(selectedTimes[selectedTime] ~/ 60).toString().padLeft(2, "0")} : ${(selectedTimes[selectedTime] % 60).toString().padLeft(2, "0")} min")),
                         ),
-                        // SliderTheme(
-                        //   data: const SliderThemeData(
-                        //       trackShape: RectangularSliderTrackShape(),
-                        //       thumbShape: RoundSliderThumbShape(
-                        //           enabledThumbRadius: 10)),
-                        //   child: Slider.adaptive(
-                        //       value: selectedTime.toDouble(),
-                        //       min: 0,
-                        //       max: 7,
-                        //       divisions: 7,
-                        //       activeColor: primaryPinkColor,
-                        //       inactiveColor: primaryGreyColor2,
-                        //       onChanged: (double newValue) async {
-                        //         state(() {
-                        //           setDuration = 1;
-                        //           selectedTime = check ? 0 : newValue.toInt();
-                        //           setDuration = selectedTimes[selectedTime];
-                        //           setDuration *= 60;
-                        //           print("index $selectedTime");
-                        //         });
-                        //         setState(() {});
-                        //       },
-                        //       semanticFormatterCallback: (double newValue) {
-                        //         return '${newValue.round()} dollars';
-                        //       }),
-                        // ),
+
                         SliderTheme(
                           data: const SliderThemeData(
                               trackShape: RectangularSliderTrackShape(),
@@ -1915,8 +1775,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                                     width: 30,
                                                     color: blackColor97,
                                                   )
-                                                      : issongplaying1 ||
-                                                      issongplaying2
+                                                      : issongplaying1
                                                       ? const Padding(
                                                     padding:
                                                     EdgeInsets

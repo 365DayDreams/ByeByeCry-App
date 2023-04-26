@@ -695,7 +695,7 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                                       currentVolume = newValue;
                                       print("volume $currentVolume");
                                     });
-                                    await ins.setVolume(currentVolume);
+                                    await ins.setVolume(currentVolume * 0.01);
                                   },
                                 ),
                               ),
@@ -892,7 +892,7 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                       SizedBox(
                         height: 6,
                       ),
-                      InkWell(
+                      GestureDetector(
                         onTap: () {
                           Navigator.pop(context);
                         },

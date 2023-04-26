@@ -445,28 +445,29 @@ class _MixScreenState extends ConsumerState<MixScreen> {
             ),
             Column(
               children: [
-                Container(
-                  // color: Colors.red,
-                  height: width * 0.18,
-                  width: width * 0.18,
-                  clipBehavior: Clip.hardEdge,
-                  decoration: BoxDecoration(
-                      color: secondaryWhiteColor2,
-                      shape: BoxShape.circle,
-                      border: Border.all(color: Colors.transparent, width: 0),
-                      boxShadow: [
-                        BoxShadow(
-                            blurRadius: 2,
-                            spreadRadius: 2,
-                            color: primaryPinkColor.withOpacity(0.2),
-                            offset: const Offset(0, 3))
-                      ]),
-                  child: Padding(
-                    padding: const EdgeInsets.all(22),
-                    child: GestureDetector(
-                      onTap: () async {
-                        pausePlayMethod();
-                      },
+                GestureDetector(
+                  onTap: ()async{
+                    pausePlayMethod();
+
+                  },
+                  child: Container(
+                    // color: Colors.red,
+                    height: width * 0.18,
+                    width: width * 0.18,
+                    clipBehavior: Clip.hardEdge,
+                    decoration: BoxDecoration(
+                        color: secondaryWhiteColor2,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.transparent, width: 0),
+                        boxShadow: [
+                          BoxShadow(
+                              blurRadius: 2,
+                              spreadRadius: 2,
+                              color: primaryPinkColor.withOpacity(0.2),
+                              offset: const Offset(0, 3))
+                        ]),
+                    child: Padding(
+                      padding: const EdgeInsets.all(22),
                       child: CustomSvg(
                         //color: Colors.blue,
                         svg: (playPause1 || playPause2)
