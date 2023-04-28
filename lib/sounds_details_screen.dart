@@ -377,55 +377,114 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                   ),
                 ),
                 SizedBox(height: width * 0.1),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      CustomText(
-                        text: '${getHumanTimeBySecond(sliderInitial.toInt())}',
-                        fontSize: 10,
-                        color: blackColor2,
-                        fontWeight: FontWeight.w700,
-                      ),
-                      CustomText(
-                        text: '${getHumanTimeBySecond(sliderEnd.toInt())}',
-                        fontSize: 10,
-                        color: blackColor2,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ],
+                if(check==true)...[
+                  Container()
+                  // Padding(
+                  //   padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                  //   child: Row(
+                  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //     children: [
+                  //       CustomText(
+                  //         text: '${getHumanTimeBySecond(sliderInitial.toInt())}',
+                  //         fontSize: 10,
+                  //         color: blackColor2,
+                  //         fontWeight: FontWeight.w700,
+                  //       ),
+                  //       CustomText(
+                  //         text: '${getHumanTimeBySecond(sliderEnd.toInt())}',
+                  //         fontSize: 10,
+                  //         color: blackColor2,
+                  //         fontWeight: FontWeight.w700,
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
+
+                ]else...[
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        CustomText(
+                          text: '${getHumanTimeBySecond(sliderInitial.toInt())}',
+                          fontSize: 10,
+                          color: blackColor2,
+                          fontWeight: FontWeight.w700,
+                        ),
+                        CustomText(
+                          text: '${getHumanTimeBySecond(sliderEnd.toInt())}',
+                          fontSize: 10,
+                          color: blackColor2,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                SizedBox(
-                  //color: Colors.green,
-                  width: width * .95,
-                  child: SliderTheme(
-                    data: const SliderThemeData(
-                        trackShape: RectangularSliderTrackShape(),
-                        thumbShape:
-                            RoundSliderThumbShape(enabledThumbRadius: 10)),
-                    child: Slider(
-                        value: sliderInitial <= sliderEnd
-                            ? sliderInitial
-                            : sliderEnd,
-                        min: 0.0,
-                        max: sliderEnd,
-                        divisions: 350,
-                        activeColor: primaryPinkColor,
-                        inactiveColor: primaryGreyColor2,
-                        onChanged: (double newValue) async {
-                          print("slider");
-                          updateSlider(newValue);
-                          ins.seek(Duration(
-                              seconds: (sliderEnd - sliderInitial).toInt()));
-                          setState(() {});
-                        },
-                        semanticFormatterCallback: (double newValue) {
-                          return '${newValue.round()} dollars';
-                        }),
+                ],
+                if(check==true)...[
+                  SizedBox(
+                    //color: Colors.green,
+                    width: width * .95,
+                    child: SliderTheme(
+                      data: const SliderThemeData(
+                          trackShape: RectangularSliderTrackShape(),
+                          thumbShape:
+                          RoundSliderThumbShape(enabledThumbRadius: 10)),
+                      child: Slider(
+                          value: 0.0,
+                          min: 0.0,
+                          max: 30000000000000000.0,
+                          divisions: 40000000000000000,
+                          activeColor: primaryPinkColor,
+                          inactiveColor: primaryGreyColor2,
+                          onChanged: (double newValue) async {
+                            print("slider");
+                            // updateSlider(newValue);
+                            // ins.seek(Duration(
+                            //     seconds: (sliderEnd - sliderInitial).toInt()));
+                            // setState(() {});
+                          },
+                          semanticFormatterCallback: (double newValue) {
+                            return '${newValue.round()} dollars';
+                          }),
+                    ),
                   ),
-                ),
+
+                ]else...[
+                  SizedBox(
+                    //color: Colors.green,
+                    width: width * .95,
+                    child: SliderTheme(
+                      data: const SliderThemeData(
+                          trackShape: RectangularSliderTrackShape(),
+                          thumbShape:
+                          RoundSliderThumbShape(enabledThumbRadius: 10)),
+                      child: Slider(
+                          value: sliderInitial <= sliderEnd
+                              ? sliderInitial
+                              : sliderEnd,
+                          min: 0.0,
+                          max: sliderEnd,
+                          divisions: 350,
+                          activeColor: primaryPinkColor,
+                          inactiveColor: primaryGreyColor2,
+                          onChanged: (double newValue) async {
+                            print("slider");
+                            updateSlider(newValue);
+                            ins.seek(Duration(
+                                seconds: (sliderEnd - sliderInitial).toInt()));
+                            setState(() {});
+                          },
+                          semanticFormatterCallback: (double newValue) {
+                            return '${newValue.round()} dollars';
+                          }),
+                    ),
+                  ),
+
+                ],
+
+
                 Container(
                   color: Colors.transparent,
                   child: Padding(

@@ -83,7 +83,7 @@ class _MyAppState extends State<MyApp> {
          () {
           return Container(
             child:
-            PurchasListener.isSubscribe.value ?
+            !PurchasListener.isSubscribe.value ?
             StartPage() : InitialHomePage()
           );
         }
