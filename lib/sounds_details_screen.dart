@@ -59,59 +59,61 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
     super.initState();
     print('checkkking--$check');
 
-  WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-    Timer.periodic(Duration(seconds: 1), (timer) async {
-      print(_position);
-      if (sliderInitial.toInt() == (sliderEnd - 1).toInt()) {
-        if (check == false) {
-          pageController.nextPage(
-              duration: Duration(milliseconds: 100), curve: Curves.linear);
-          sliderInitial = 0.0;
-          sliderEnd = 120.0;
-          selectedTime = 0;
-          setDuration = 0;
-          check=true;
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      Timer.periodic(Duration(seconds: 1), (timer) async {
+        print(_position);
+        if (sliderInitial.toInt() == (sliderEnd - 1).toInt()) {
+          if (check == false) {
+            pageController.nextPage(
+                duration: Duration(milliseconds: 100), curve: Curves.linear);
+            sliderInitial = 0.0;
+            sliderEnd = 120.0;
+            selectedTime = 0;
+            setDuration = 0;
+            check = true;
 
-          changeIndex(changeIndex: true);
 
-          if (mounted) {
-            String url = ref.watch(addProvider).musicList[index].musicFile;
-            await ins.playAudio(Duration(minutes: 2), "assets/" + url);
-            // sliderInitial=0.0;
-            print("IF URL __$url");
+            if (mounted) {
+              changeIndex(changeIndex: true);
+              String url = ref.watch(addProvider).musicList[index].musicFile;
+              await ins.playAudio(Duration(minutes: 2), "assets/" + url);
+              setState(() {
+
+              });
+              // sliderInitial=0.0;
+              print("IF URL __$url");
+            }
+
+            if (mounted) {
+              setState(() {});
+            }
+          } else {
+          await  ins.stop();
+
+            sliderInitial = 0.0;
+            sliderEnd = 120.0;
+            selectedTime = 0;
+            setDuration = 0;
+            check = true;
+
+            if (mounted) {
+              String url = ref.watch(addProvider).musicList[index].musicFile;
+              await ins.playAudio(Duration(minutes: 2), "assets/" + url);
+              // sliderInitial=0.0;
+              print("else URL __$url");
+            }
+
+            if (mounted) {
+              setState(() {});
+            }
           }
-
-          if (mounted) {
-            setState(() {});
-          }
-        } else {
-          ins.stop();
-
-          sliderInitial = 0.0;
-          sliderEnd = 120.0;
-          selectedTime = 0;
-          setDuration = 0;
-          check=true;
-
-          if (mounted) {
-            String url = ref.watch(addProvider).musicList[index].musicFile;
-            await ins.playAudio(Duration(minutes: 2), "assets/" + url);
-            // sliderInitial=0.0;
-            print("else URL __$url");
-          }
-
-          if (mounted) {
-            setState(() {});
+          if (!mounted) {
+            timer.cancel();
+            return;
           }
         }
-        if (!mounted) {
-          timer.cancel();
-          return;
-        }
-      }
+      });
     });
-
-  });
   }
 
   @override
@@ -171,7 +173,7 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
     } else {
       String url = ref.watch(addProvider).musicList[index].musicFile;
 
-      ins.playAudio(Duration(minutes: 2), "assets/$url");
+      ins.playAudio(Duration(hours: 8), "assets/$url");
       resumeSliderTimmer();
       print("play");
     }
@@ -180,18 +182,6 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
     }
   }
 
-  pausePlayMethod2() async {
-    if (ins.isPlaying()) {
-      String url = ref.watch(addProvider).musicList[index].musicFile;
-
-      ins.playAudio(Duration(minutes: 2), "assets/$url");
-
-      print("play");
-    }
-    if (mounted) {
-      setState(() {});
-    }
-  }
 
   changeIndex({bool changeIndex = false}) {
     print("change index");
@@ -377,41 +367,25 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                   ),
                 ),
                 SizedBox(height: width * 0.1),
-                if(check==true)...[
-                  Container()
-                  // Padding(
-                  //   padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                  //   child: Row(
-                  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //     children: [
-                  //       CustomText(
-                  //         text: '${getHumanTimeBySecond(sliderInitial.toInt())}',
-                  //         fontSize: 10,
-                  //         color: blackColor2,
-                  //         fontWeight: FontWeight.w700,
-                  //       ),
-                  //       CustomText(
-                  //         text: '${getHumanTimeBySecond(sliderEnd.toInt())}',
-                  //         fontSize: 10,
-                  //         color: blackColor2,
-                  //         fontWeight: FontWeight.w700,
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),
-
-                ]else...[
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CustomText(
+                        text: '${getHumanTimeBySecond(sliderInitial.toInt())}',
+                        fontSize: 10,
+                        color: blackColor2,
+                        fontWeight: FontWeight.w700,
+                      ),
+                      if(check==true)...[
                         CustomText(
-                          text: '${getHumanTimeBySecond(sliderInitial.toInt())}',
+                          text: '${getHumanTimeBySecond(120.0.toInt())}',
                           fontSize: 10,
                           color: blackColor2,
                           fontWeight: FontWeight.w700,
                         ),
+                      ]else...[
                         CustomText(
                           text: '${getHumanTimeBySecond(sliderEnd.toInt())}',
                           fontSize: 10,
@@ -419,72 +393,42 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                           fontWeight: FontWeight.w700,
                         ),
                       ],
-                    ),
-                  ),
-                ],
-                if(check==true)...[
-                  SizedBox(
-                    //color: Colors.green,
-                    width: width * .95,
-                    child: SliderTheme(
-                      data: const SliderThemeData(
-                          trackShape: RectangularSliderTrackShape(),
-                          thumbShape:
-                          RoundSliderThumbShape(enabledThumbRadius: 10)),
-                      child: Slider(
-                          value: 0.0,
-                          min: 0.0,
-                          max: 30000000000000000.0,
-                          divisions: 40000000000000000,
-                          activeColor: primaryPinkColor,
-                          inactiveColor: primaryGreyColor2,
-                          onChanged: (double newValue) async {
-                            print("slider");
-                            // updateSlider(newValue);
-                            // ins.seek(Duration(
-                            //     seconds: (sliderEnd - sliderInitial).toInt()));
-                            // setState(() {});
-                          },
-                          semanticFormatterCallback: (double newValue) {
-                            return '${newValue.round()} dollars';
-                          }),
-                    ),
-                  ),
 
-                ]else...[
-                  SizedBox(
-                    //color: Colors.green,
-                    width: width * .95,
-                    child: SliderTheme(
-                      data: const SliderThemeData(
-                          trackShape: RectangularSliderTrackShape(),
-                          thumbShape:
-                          RoundSliderThumbShape(enabledThumbRadius: 10)),
-                      child: Slider(
-                          value: sliderInitial <= sliderEnd
-                              ? sliderInitial
-                              : sliderEnd,
-                          min: 0.0,
-                          max: sliderEnd,
-                          divisions: 350,
-                          activeColor: primaryPinkColor,
-                          inactiveColor: primaryGreyColor2,
-                          onChanged: (double newValue) async {
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  //color: Colors.green,
+                  width: width * .95,
+                  child: SliderTheme(
+                    data: const SliderThemeData(
+                        trackShape: RectangularSliderTrackShape(),
+                        thumbShape:
+                            RoundSliderThumbShape(enabledThumbRadius: 10)),
+                    child: Slider(
+                        value: sliderInitial <= sliderEnd
+                            ? sliderInitial
+                            : sliderEnd,
+                        min: 0.0,
+                        max: sliderEnd,
+                        divisions: 350,
+                        activeColor: primaryPinkColor,
+                        inactiveColor: primaryGreyColor2,
+                        onChanged: (double newValue) async {
+                          if(check==false){
                             print("slider");
                             updateSlider(newValue);
                             ins.seek(Duration(
                                 seconds: (sliderEnd - sliderInitial).toInt()));
                             setState(() {});
-                          },
-                          semanticFormatterCallback: (double newValue) {
-                            return '${newValue.round()} dollars';
-                          }),
-                    ),
+                          }
+
+                        },
+                        semanticFormatterCallback: (double newValue) {
+                          return '${newValue.round()} dollars';
+                        }),
                   ),
-
-                ],
-
-
+                ),
                 Container(
                   color: Colors.transparent,
                   child: Padding(
@@ -499,7 +443,7 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                               changeIndex(changeIndex: false);
                               selectedTime = 0;
                               setDuration = 0;
-                              check=true;
+                              check = true;
                               if (mounted) {
                                 String url = ref
                                     .watch(addProvider)
@@ -581,7 +525,7 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                               changeIndex(changeIndex: true);
                               selectedTime = 0;
                               setDuration = 0;
-                              check=true;
+                              check = true;
                               if (mounted) {
                                 String url = ref
                                     .watch(addProvider)
@@ -595,8 +539,6 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                                 sliderInitial = 0.0;
                                 sliderEnd = 120.0;
                                 // selected timer....
-
-
                               }
 
                               if (mounted) {
@@ -1044,6 +986,12 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
   }
 
   void resumeSliderTimmer() {
-    setSongDuration(sliderEnd.toInt(), initValue: sliderInitial);
+    if (check == true) {
+      setSongDuration(1000000000000000000, initValue: sliderInitial);
+
+    } else {
+      setSongDuration(sliderEnd.toInt(), initValue: sliderInitial);
+
+    }
   }
 }
