@@ -1061,26 +1061,54 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
         print(_position);
         if (sliderInitial.toInt() == (sliderEnd - 1).toInt()) {
           if (check == false) {
-            pageController.nextPage(
-                duration: Duration(milliseconds: 100), curve: Curves.linear);
+
             sliderInitial = 0.0;
             sliderEnd = 120.0;
             selectedTime = 0;
             setDuration = 0;
             check=true;
 
-            changeIndex(changeIndex: true);
+
 
             if (mounted) {
               if(check==true){
-                String url = ref.watch(addProvider).musicList[index].musicFile;
-                await ins.playAudio(Duration(hours: 8), "assets/" + url);
-                // sliderInitial=0.0;
-                print("IF URL __$url");
+                changeIndex(changeIndex: true);
+                selectedTime = 0;
+                setDuration = 0;
+                check=true;
+                if (mounted) {
+                  String url = ref
+                      .watch(addProvider)
+                      .musicList[index]
+                      .musicFile;
+
+                  await ins.stop();
+                  if(check==true){
+                    ins.playAudio(
+                        Duration(hours: 8), "assets/$url");
+                  }else{
+                    ins.playAudio(
+                        Duration(minutes: 2), "assets/$url");
+                  }
+
+
+                  sliderInitial = 0.0;
+                  sliderEnd = 120.0;
+                  // selected timer....
+
+
+                }
+
+                if (mounted) {
+                  setState(() {});
+                }
               }else{
                 String url = ref.watch(addProvider).musicList[index].musicFile;
                 await ins.playAudio(Duration(minutes: 2), "assets/" + url);
                 // sliderInitial=0.0;
+                changeIndex(changeIndex: true);
+                pageController.nextPage(
+                    duration: Duration(milliseconds: 100), curve: Curves.linear);
                 print("IF URL __$url");
               }
 
@@ -1174,11 +1202,20 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
       pauseSliderTimmer();
       print("pause");
     } else {
-      String url = ref.watch(addProvider).musicList[index].musicFile;
+      if(check==true){
+        String url = ref.watch(addProvider).musicList[index].musicFile;
 
-      ins.playAudio(Duration(minutes: 2), "assets/$url");
-      resumeSliderTimmer();
-      print("play");
+        ins.playAudio(Duration(hours: 8), "assets/$url");
+        resumeSliderTimmer();
+        print("play");
+      }else{
+        String url = ref.watch(addProvider).musicList[index].musicFile;
+
+        ins.playAudio(Duration(minutes: 2), "assets/$url");
+        resumeSliderTimmer();
+        print("play");
+      }
+
     }
     if (mounted) {
       setState(() {});
@@ -1269,21 +1306,8 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
         padEnds: false,
         controller: pageController,
         onPageChanged: (value) async {
-          changeIndex(changeIndex: true);
-          if (mounted) {
-            // playMusic();
-          }
-          if (mounted) {
-            setState(() {});
-          }
-          // // setState(() {
-          // //   musicIndex = value;
-          // //   print("Music List ===${musicIndex}");
-          // // });
-          //
-          // pageController.animateToPage(
-          //   value,
-          //     duration: Duration(seconds: 1), curve: Curves.easeIn);
+
+
         },
         itemCount: ref.watch(addProvider).musicList.length,
         itemBuilder: (_, indexxxx) {
@@ -1514,13 +1538,8 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                                     .musicList[index]
                                     .musicFile;
                                 await ins.stop();
-                                if(check==true){
-                                  ins.playAudio(
-                                      Duration(hours: 8), "assets/$url");
-                                }else{
-                                  ins.playAudio(
-                                      Duration(minutes: 2), "assets/$url");
-                                }
+                                ins.playAudio(
+                                    Duration(minutes: 2), "assets/$url");
                                 sliderInitial = 0.0;
                                 sliderEnd = 120.0;
                               }
@@ -1552,11 +1571,17 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                               print("play");
                               resumeSliderTimmer();
                               //  ins.silenceIncomingCalls();
-                              ins.playAudio(
-                                  Duration(
-                                      seconds:
-                                      (sliderEnd - sliderInitial).toInt()),
-                                  "assets/$url");
+                              if(check==true){
+                                ins.playAudio(
+                                    Duration(hours: 8),
+                                    "assets/$url");
+                              }else{
+                                ins.playAudio(
+                                    Duration(
+                                        seconds:
+                                        (sliderEnd - sliderInitial).toInt()),
+                                    "assets/$url");
+                              }
                               //  ins.silenceIncomingCalls();
                             }
                             setState(() {});
