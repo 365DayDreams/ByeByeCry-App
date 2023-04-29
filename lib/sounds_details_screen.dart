@@ -1073,35 +1073,12 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
             if (mounted) {
               if(check==true){
                 changeIndex(changeIndex: true);
-                selectedTime = 0;
-                setDuration = 0;
-                check=true;
-                if (mounted) {
-                  String url = ref
-                      .watch(addProvider)
-                      .musicList[index]
-                      .musicFile;
-
-                  await ins.stop();
-                  if(check==true){
-                    ins.playAudio(
-                        Duration(hours: 8), "assets/$url");
-                  }else{
-                    ins.playAudio(
-                        Duration(minutes: 2), "assets/$url");
-                  }
+                String url = ref.watch(addProvider).musicList[index].musicFile;
+                await ins.playAudio(Duration(hours: 8), "assets/" + url);
+                // sliderInitial=0.0;
 
 
-                  sliderInitial = 0.0;
-                  sliderEnd = 120.0;
-                  // selected timer....
-
-
-                }
-
-                if (mounted) {
-                  setState(() {});
-                }
+                print("IF URL __$url");
               }else{
                 String url = ref.watch(addProvider).musicList[index].musicFile;
                 await ins.playAudio(Duration(minutes: 2), "assets/" + url);
@@ -1222,18 +1199,7 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
     }
   }
 
-  pausePlayMethod2() async {
-    if (ins.isPlaying()) {
-      String url = ref.watch(addProvider).musicList[index].musicFile;
 
-      ins.playAudio(Duration(minutes: 2), "assets/$url");
-
-      print("play");
-    }
-    if (mounted) {
-      setState(() {});
-    }
-  }
 
   changeIndex({bool changeIndex = false}) {
     print("change index");
@@ -2088,6 +2054,12 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
   }
 
   void resumeSliderTimmer() {
-    setSongDuration(sliderEnd.toInt(), initValue: sliderInitial);
+    if(check==true){
+      setSongDuration(4554545445545454, initValue: sliderInitial);
+
+    }else{
+      setSongDuration(sliderEnd.toInt(), initValue: sliderInitial);
+
+    }
   }
 }
