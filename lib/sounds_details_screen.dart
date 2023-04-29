@@ -1506,9 +1506,9 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                                       .musicFile;
                                   await ins.stop();
                                   ins.playAudio(
-                                      Duration(minutes: 8), "assets/$url");
+                                      Duration(hours: 8), "assets/$url");
                                   sliderInitial = 0.0;
-                                  sliderEnd = 47474747420.0;
+                                  sliderEnd = 522222222220.0;
                                 }else{
                                   String url = ref
                                       .watch(addProvider)
