@@ -1072,10 +1072,18 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
             changeIndex(changeIndex: true);
 
             if (mounted) {
-              String url = ref.watch(addProvider).musicList[index].musicFile;
-              await ins.playAudio(Duration(minutes: 2), "assets/" + url);
-              // sliderInitial=0.0;
-              print("IF URL __$url");
+              if(check==true){
+                String url = ref.watch(addProvider).musicList[index].musicFile;
+                await ins.playAudio(Duration(hours: 8), "assets/" + url);
+                // sliderInitial=0.0;
+                print("IF URL __$url");
+              }else{
+                String url = ref.watch(addProvider).musicList[index].musicFile;
+                await ins.playAudio(Duration(minutes: 2), "assets/" + url);
+                // sliderInitial=0.0;
+                print("IF URL __$url");
+              }
+
             }
 
             if (mounted) {
@@ -1506,8 +1514,13 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                                     .musicList[index]
                                     .musicFile;
                                 await ins.stop();
-                                ins.playAudio(
-                                    Duration(minutes: 2), "assets/$url");
+                                if(check==true){
+                                  ins.playAudio(
+                                      Duration(hours: 8), "assets/$url");
+                                }else{
+                                  ins.playAudio(
+                                      Duration(minutes: 2), "assets/$url");
+                                }
                                 sliderInitial = 0.0;
                                 sliderEnd = 120.0;
                               }
@@ -1589,8 +1602,14 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                                     .musicFile;
 
                                 await ins.stop();
-                                ins.playAudio(
-                                    Duration(minutes: 2), "assets/$url");
+                                if(check==true){
+                                  ins.playAudio(
+                                      Duration(hours: 8), "assets/$url");
+                                }else{
+                                  ins.playAudio(
+                                      Duration(minutes: 2), "assets/$url");
+                                }
+
 
                                 sliderInitial = 0.0;
                                 sliderEnd = 120.0;
