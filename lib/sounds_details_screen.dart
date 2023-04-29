@@ -1499,15 +1499,28 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                               setDuration = 0;
                               check=true;
                               if (mounted) {
-                                String url = ref
-                                    .watch(addProvider)
-                                    .musicList[index]
-                                    .musicFile;
-                                await ins.stop();
-                                ins.playAudio(
-                                    Duration(minutes: 2), "assets/$url");
-                                sliderInitial = 0.0;
-                                sliderEnd = 120.0;
+                                if(check==true){
+                                  String url = ref
+                                      .watch(addProvider)
+                                      .musicList[index]
+                                      .musicFile;
+                                  await ins.stop();
+                                  ins.playAudio(
+                                      Duration(minutes: 8), "assets/$url");
+                                  sliderInitial = 0.0;
+                                  sliderEnd = 47474747420.0;
+                                }else{
+                                  String url = ref
+                                      .watch(addProvider)
+                                      .musicList[index]
+                                      .musicFile;
+                                  await ins.stop();
+                                  ins.playAudio(
+                                      Duration(minutes: 2), "assets/$url");
+                                  sliderInitial = 0.0;
+                                  sliderEnd = 120.0;
+                                }
+
                               }
 
                               if (mounted) {
@@ -1596,14 +1609,17 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                                 if(check==true){
                                   ins.playAudio(
                                       Duration(hours: 8), "assets/$url");
+                                  sliderInitial = 0.0;
+                                  sliderEnd = 522222222220.0;
                                 }else{
                                   ins.playAudio(
                                       Duration(minutes: 2), "assets/$url");
+                                  sliderInitial = 0.0;
+                                  sliderEnd = 120.0;
                                 }
 
 
-                                sliderInitial = 0.0;
-                                sliderEnd = 120.0;
+
                                 // selected timer....
 
 
