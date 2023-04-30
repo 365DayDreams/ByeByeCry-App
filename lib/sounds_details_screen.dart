@@ -1079,7 +1079,8 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
 
 
                 print("IF URL __$url");
-              }else{
+              }
+              else{
                 String url = ref.watch(addProvider).musicList[index].musicFile;
                 await ins.playAudio(Duration(minutes: 2), "assets/" + url);
                 // sliderInitial=0.0;
@@ -1094,7 +1095,8 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
             if (mounted) {
               setState(() {});
             }
-          } else {
+          }
+          else {
             ins.stop();
 
             sliderInitial = 0.0;
@@ -1281,6 +1283,27 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Container(
+                      color: Colors.transparent,
+                      child: GestureDetector(
+                        onTap: () {
+                          _showDialogBrightNess(context);
+                        },
+                        child: Padding(
+                          padding: EdgeInsets.only(right: width * .07),
+                          child: CustomImage(
+                            imageUrl:
+                            'asset/images/icon_png/now_playing_icon/Sun.png',
+                            color: Colors.orangeAccent.shade100,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
                 CustomImage(
                   imageUrl: ref.watch(addProvider).musicList[index].image,
                   height: 300,
