@@ -2526,7 +2526,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                     mixPlaylistIndex]
                         .playListList!
                         .length -
-                        1 || check==false)...[
+                        1)...[
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 30.0),
                     child: Row(
@@ -2582,7 +2582,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                     mixPlaylistIndex]
                         .playListList!
                         .length -
-                        1|| check==false)...[
+                        1)...[
 
                   if (index == 0) ...[
                     SizedBox(
