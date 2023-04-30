@@ -130,7 +130,7 @@ class _MyPlayListNewSoundScreenState extends ConsumerState<MyPlayListNewSoundScr
 
   @override
   void dispose() {
-    //audioPlayer.dispose();
+    audioPlayer.dispose();
     super.dispose();
   }
 
@@ -150,6 +150,8 @@ class _MyPlayListNewSoundScreenState extends ConsumerState<MyPlayListNewSoundScr
           title:  'Add Sounds',
           onPressed: () {
             Navigator.pop(context);
+            audioPlayer.dispose();
+            audioPlayer.stop();
           }),
       body: SingleChildScrollView(
         child: Column(

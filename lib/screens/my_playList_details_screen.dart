@@ -2083,16 +2083,26 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
     initialization();
 
     super.initState();
+
     Timer.periodic(Duration(seconds: 1), (timer) async {
       // if(sliderTimer==120.0|| sliderInitial==120.0){
       //   timer.cancel();
       // }
+      // if(musicIndex <
+      //     ref
+      //         .watch(playlistProvider)
+      //         .mixMixPlaylist[
+      //     mixPlaylistIndex]
+      //         .playListList!
+      //         .length -
+      //         1)
       if (sliderInitial.toInt() == (Savetimer! - 1).toInt() ||
           sliderInitial == 120.0 ||
           sliderInitial.toInt() == (Savetimer2! - 1).toInt() ||
           sliderInitial == 120.0 ||
           sliderInitial.toInt() == (Savetimer3! - 1).toInt() ||
-          sliderInitial == 120.0) {
+          sliderInitial == 120.0 ) {
+
         print("play next================");
 
           await ins.stop();
