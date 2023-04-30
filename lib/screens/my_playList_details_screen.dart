@@ -2102,24 +2102,66 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
           sliderInitial == 120.0 ||
           sliderInitial.toInt() == (Savetimer3! - 1).toInt() ||
           sliderInitial == 120.0 ) {
+        if(check==true){
+          print("play next================");
 
-        print("play next================");
+          // await ins.stop();
+          // print("Else");
+          //
+          //
+          // sliderInitial = 0.0;
+          // if(musicIndex==0){
+          //   Savetimer = 120.0;
+          //
+          // }else if(musicIndex==1){
+          //   Savetimer2 = 120.0;
+          //
+          // }else if(musicIndex==2){
+          //   Savetimer3 = 120.0;
+          //
+          // }
+
+          // selectedTime = 0;
+          // setDuration = 0;
+          // check=true;
+
+
+
+          if (mounted) {
+            changeIndex(changeIndex: false);
+
+            String url = ref
+                .watch(playlistProvider)
+                .mixMixPlaylist[mixPlaylistIndex]
+                .playListList![musicIndex]
+                .first!
+                .musicFile;
+            await ins.playAudio(Duration(hours: 10), "assets/$url");
+            //sliderInitial = 0.0;
+          }
+
+          if (mounted) {
+            setState(() {});
+          }
+        }else{
+          print("play next================");
 
           await ins.stop();
           print("Else");
 
 
           sliderInitial = 0.0;
-          if(musicIndex==0){
-            Savetimer = 120.0;
 
-          }else if(musicIndex==1){
-            Savetimer2 = 120.0;
-
-          }else if(musicIndex==2){
-            Savetimer3 = 120.0;
-
-          }
+          // if(musicIndex==0){
+          //   Savetimer = 120.0;
+          //
+          // }else if(musicIndex==1){
+          //   Savetimer2 = 120.0;
+          //
+          // }else if(musicIndex==2){
+          //   Savetimer3 = 120.0;
+          //
+          // }
 
           selectedTime = 0;
           setDuration = 0;
@@ -2135,13 +2177,25 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                 .playListList![musicIndex]
                 .first!
                 .musicFile;
-            await ins.playAudio(Duration(minutes: 2), "assets/$url");
+            if(musicIndex==0){
+              await ins.playAudio(Duration(minutes: 2), "assets/$url");
+
+            } else if(musicIndex==1){
+              await ins.playAudio(Duration(hours: 12), "assets/$url");
+
+            }else if(musicIndex==2){
+              await ins.playAudio(Duration(hours: 12), "assets/$url");
+
+            }
             sliderInitial = 0.0;
           }
 
           if (mounted) {
             setState(() {});
           }
+        }
+
+
 
         }
         if (!mounted) {
@@ -2696,10 +2750,21 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                       .first
                                       ?.musicFile ??
                                   "";
+                              if(index==0 || musicIndex==0){
+                                await ins.playAudio(
+                                    Duration(minutes: 2), "assets/$url1");
+                                resumeSliderTimmer();
+                              }else if(index==1|| musicIndex==1){
+                                await ins.playAudio(
+                                    Duration(hours: 12), "assets/$url1");
+                                resumeSliderTimmer();
+                              }else if(index==2|| musicIndex==2){
+                                await ins.playAudio(
+                                    Duration(hours: 12), "assets/$url1");
+                                resumeSliderTimmer();
+                              }
 
-                              await ins.playAudio(
-                                  Duration(minutes: 2), "assets/$url1");
-                              resumeSliderTimmer();
+
                             }
 
                             if (mounted) {
