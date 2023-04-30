@@ -1949,8 +1949,6 @@
 // }
 //
 import 'dart:async';
-import 'dart:math';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:bye_bye_cry_new/compoment/shared/custom_image.dart';
 import 'package:bye_bye_cry_new/compoment/shared/custom_svg.dart';
 import 'package:bye_bye_cry_new/local_db/local_db.dart';
@@ -2065,19 +2063,6 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
   // bool playPouse = true;
   int setDuration = 0;
   int mixPlaylistIndex = 0;
-  // AudioCache audioCache = AudioCache();
-  // AudioPlayer audioPlayer1 = AudioPlayer();
-  //
-  // // AudioPlayer audioPlayer2 = AudioPlayer();
-  // Duration _duration = Duration.zero;
-  // Duration _position = Duration.zero;
-  // Duration _duration2 = Duration.zero;
-  // Duration _position2 = Duration.zero;
-  // Duration position = Duration.zero;
-  // Duration duration = Duration.zero;
-  // double currentVolume = 0.0;
-  // bool issongplaying1 = false;
-  // bool issongplaying2 = false;
   double brightness = 0.5;
   late StreamSubscription<double> _subscription;
   int musicIndex = 0;
@@ -2094,9 +2079,9 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
     getVol1();
     getVol2();
     getVol3();
-    // startPlayer1();
+
     initialization();
-    //changeVolume();
+
     super.initState();
     Timer.periodic(Duration(seconds: 1), (timer) async {
       // if(sliderTimer==120.0|| sliderInitial==120.0){
@@ -2109,80 +2094,51 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
           sliderInitial.toInt() == (Savetimer3! - 1).toInt() ||
           sliderInitial == 120.0) {
         print("play next================");
-        if (check == false) {
-          changeIndex(changeIndex: true);
-          pageController.nextPage(
-              duration: Duration(milliseconds: 100), curve: Curves.linear);
-          changeIndex(changeIndex: true);
 
-          sliderInitial = 0.0;
-          if (musicIndex == 0) {
-            Savetimer = 120.0;
-          } else if (musicIndex == 1) {
-            Savetimer2 = 120.0;
-          } else if (musicIndex == 2) {
-            Savetimer3 = 120.0;
-          }
-          selectedTime = 0;
-          setDuration = 0;
-          check = true;
-          print("IFFF");
-
-          if (mounted) {
-            String url = ref
-                .watch(playlistProvider)
-                .mixMixPlaylist[mixPlaylistIndex]
-                .playListList![musicIndex]
-                .first!
-                .musicFile;
-            await ins.playAudio(Duration(hours: 8), "assets/$url");
-
-            //  await audioPlayer1.play(AssetSource(url));
-            sliderInitial = 0.0;
-          }
-
-          if (mounted) {
-            setState(() {});
-          }
-        } else {
           await ins.stop();
-          // await audioPlayer1.stop();
           print("Else");
 
+
           sliderInitial = 0.0;
-          if (musicIndex == 0) {
+          if(musicIndex==0){
             Savetimer = 120.0;
-          } else if (musicIndex == 1) {
+
+          }else if(musicIndex==1){
             Savetimer2 = 120.0;
-          } else if (musicIndex == 2) {
+
+          }else if(musicIndex==2){
             Savetimer3 = 120.0;
+
           }
-          //playPouse=true;
+
           selectedTime = 0;
           setDuration = 0;
-          check = true;
+          check=true;
+
+
 
           if (mounted) {
+            changeIndex(changeIndex: true);
             String url = ref
                 .watch(playlistProvider)
                 .mixMixPlaylist[mixPlaylistIndex]
                 .playListList![musicIndex]
                 .first!
                 .musicFile;
-            await ins.playAudio(Duration(hours: 8), "assets/$url");
-
+            await ins.playAudio(Duration(minutes: 2), "assets/$url");
             sliderInitial = 0.0;
           }
 
           if (mounted) {
             setState(() {});
           }
+
         }
         if (!mounted) {
           timer.cancel();
           return;
         }
-      }
+
     });
   }
 
@@ -2226,54 +2182,44 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
       pauseSliderTimmer();
       print("pause");
     } else {
-      if (check == true) {
+      if( musicIndex <
+          ref
+              .watch(playlistProvider)
+              .mixMixPlaylist[
+          mixPlaylistIndex]
+              .playListList!
+              .length -
+              1){
         String url = ref
-                .watch(playlistProvider)
-                .mixMixPlaylist[mixPlaylistIndex]
-                .playListList![musicIndex]
-                .first
-                ?.musicFile ??
-            "";
-
-        await ins.playAudio(Duration(hours: 8), "assets/$url");
-        resumeSliderTimmer();
-        print("play");
-      } else {
-        String url = ref
-                .watch(playlistProvider)
-                .mixMixPlaylist[mixPlaylistIndex]
-                .playListList![musicIndex]
-                .first
-                ?.musicFile ??
+            .watch(playlistProvider)
+            .mixMixPlaylist[mixPlaylistIndex]
+            .playListList![musicIndex]
+            .first
+            ?.musicFile ??
             "";
 
         ins.playAudio(Duration(minutes: 2), "assets/$url");
         resumeSliderTimmer();
-        print("play");
+      }else{
+        String url = ref
+            .watch(playlistProvider)
+            .mixMixPlaylist[mixPlaylistIndex]
+            .playListList![musicIndex]
+            .first
+            ?.musicFile ??
+            "";
+
+        ins.playAudio(Duration(hours: 12), "assets/$url");
+        resumeSliderTimmer();
       }
+
+      print("play");
     }
+
     if (mounted) {
       setState(() {});
     }
   }
-
-  // playMusic() async {
-  //   String url1 = ref
-  //           .watch(playlistProvider)
-  //           .mixMixPlaylist[mixPlaylistIndex]
-  //           .playListList![musicIndex]
-  //           .first
-  //           ?.musicFile ??
-  //       "";
-  //
-  //   ins.playAudio(Duration(minutes: 2), "assets/$url1");
-  //
-  //   sliderInitial = 0.0;
-  //   if (mounted) {
-  //     setState(() {});
-  //     //resumeSliderTimmer();
-  //   }
-  // }
 
   checkMounted() async {
     if (mounted) {
@@ -2291,13 +2237,12 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
         .mixMixPlaylist[mixPlaylistIndex]
         .playListList!
         .indexWhere((element) => element.id == id);
-
     if (_index >= 0) {
       if (_index == musicIndex) {
         if (ins.isPlaying()) {
           await ins.stop();
+
           pauseSliderTimmer();
-          //playPouse=false;
         } else {
           String url1 = ref
                   .watch(playlistProvider)
@@ -2306,13 +2251,14 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                   .first
                   ?.musicFile ??
               "";
+
           await ins.playAudio(Duration(minutes: 2), "assets/$url1");
-          //  playPouse=true;
           resumeSliderTimmer();
         }
-        setState(() {});
       } else {
+        sliderInitial = 0.0;
         musicIndex = _index;
+
         String url1 = ref
                 .watch(playlistProvider)
                 .mixMixPlaylist[mixPlaylistIndex]
@@ -2321,9 +2267,9 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                 ?.musicFile ??
             "";
 
-        ins.playAudio(Duration(minutes: 2), "assets/$url1");
+        await ins.playAudio(Duration(minutes: 2), "assets/$url1");
+        resumeSliderTimmer();
       }
-      setState(() {});
     }
     if (mounted) {
       updateState(() {});
@@ -2416,14 +2362,14 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                           Expanded(
                             child: GestureDetector(
                               onTap: () {
-                                // CustomBottomSheet.bottomSheet(context,
-                                //     isDismiss: true, child: StatefulBuilder(
-                                //   builder: (BuildContext context,
-                                //       void Function(void Function())
-                                //           updateState) {
-                                //     return bottomSheet(context: context);
-                                //   },
-                                // ));
+                                CustomBottomSheet.bottomSheet(context,
+                                    isDismiss: true, child: StatefulBuilder(
+                                  builder: (BuildContext context,
+                                      void Function(void Function())
+                                          updateState) {
+                                    return bottomSheet(context: context);
+                                  },
+                                ));
                               },
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -2509,43 +2455,26 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                     ],
                   ),
                 ),
-
-                if (check == true) ...[
-                  Container()
-                  // Padding(
-                  //   padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                  //   child: Row(
-                  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //     children: [
-                  //       CustomText(
-                  //         text: '${getHumanTimeBySecond(sliderInitial.toInt())}',
-                  //         fontSize: 10,
-                  //         color: blackColor2,
-                  //         fontWeight: FontWeight.w700,
-                  //       ),
-                  //       CustomText(
-                  //         text: '${getHumanTimeBySecond(sliderEnd.toInt())}',
-                  //         fontSize: 10,
-                  //         color: blackColor2,
-                  //         fontWeight: FontWeight.w700,
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),
-                ] else ...[
+                if(   musicIndex <
+                    ref
+                        .watch(playlistProvider)
+                        .mixMixPlaylist[
+                    mixPlaylistIndex]
+                        .playListList!
+                        .length -
+                        1)...[
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 30.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         CustomText(
-                          text:
-                              '${getHumanTimeBySecond(sliderInitial.toInt())} ',
+                          text: '${getHumanTimeBySecond(sliderInitial.toInt())} ',
                           fontSize: 10,
                           color: blackColor2,
                           fontWeight: FontWeight.w700,
                         ),
-                        if (musicIndex == 0) ...[
+                        if (index == 0) ...[
                           CustomText(
                             text: Savetimer == 0.0
                                 ? "2:00"
@@ -2554,7 +2483,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                             color: blackColor2,
                             fontWeight: FontWeight.w700,
                           ),
-                        ] else if (musicIndex == 1) ...[
+                        ] else if (index == 1) ...[
                           CustomText(
                             text: Savetimer2 == 0.0
                                 ? "2:00"
@@ -2563,7 +2492,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                             color: blackColor2,
                             fontWeight: FontWeight.w700,
                           ),
-                        ] else if (musicIndex == 2) ...[
+                        ] else if (index == 2) ...[
                           CustomText(
                             text: Savetimer3 == 0.0
                                 ? "2:00"
@@ -2576,13 +2505,22 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                       ],
                     ),
                   ),
-                ],
-                if(check==true)...[
-                   Container(),
                 ]else...[
+                  Container()
+                ],
 
-                  if (musicIndex == 0) ...[
 
+
+                if(   musicIndex <
+                    ref
+                        .watch(playlistProvider)
+                        .mixMixPlaylist[
+                    mixPlaylistIndex]
+                        .playListList!
+                        .length -
+                        1)...[
+
+                  if (index == 0) ...[
                     SizedBox(
                       //color: Colors.green,
                       width: width * .95,
@@ -2608,9 +2546,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                             }),
                       ),
                     ),
-
-                  ] else if (musicIndex == 1) ...[
-
+                  ] else if (index == 1) ...[
                     SizedBox(
                       //color: Colors.green,
                       width: width * .95,
@@ -2636,9 +2572,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                             }),
                       ),
                     ),
-
-                  ] else if (musicIndex == 2) ...[
-
+                  ] else if (index == 2) ...[
                     SizedBox(
                       //color: Colors.green,
                       width: width * .95,
@@ -2664,9 +2598,42 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                             }),
                       ),
                     ),
-
                   ],
+
+                ]else...[
+
+                  Visibility(
+                    visible: false,
+                    child: SizedBox(
+                      //color: Colors.green,
+                      width: width * .95,
+                      child: SliderTheme(
+                        data: const SliderThemeData(
+                            trackShape: RectangularSliderTrackShape(),
+                            thumbShape:
+                            RoundSliderThumbShape(enabledThumbRadius: 10)),
+                        child: Slider(
+                            value: 0.0,
+                            min: 0.0,
+                            max: 30000000000000000.0,
+                            divisions: 40000000000000000,
+                            activeColor: primaryPinkColor,
+                            inactiveColor: primaryGreyColor2,
+                            onChanged: (double newValue) async {
+                              print("slider");
+                              // updateSlider(newValue);
+                              // ins.seek(Duration(
+                              //     seconds: (sliderEnd - sliderInitial).toInt()));
+                              // setState(() {});
+                            },
+                            semanticFormatterCallback: (double newValue) {
+                              return '${newValue.round()} dollars';
+                            }),
+                      ),
+                    ),
+                  ),
                 ],
+
 
 
                 Container(
@@ -2678,111 +2645,56 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         IconButton(
-                            padding: EdgeInsets.zero,
-                            onPressed: () async {
-                              changeIndex(changeIndex: false);
-                              selectedTime = 0;
-                              setDuration = 0;
-                              check = true;
-                              if (mounted) {
-                                if (check == true) {
-                                  String url = ref
-                                          .watch(playlistProvider)
-                                          .mixMixPlaylist[mixPlaylistIndex]
-                                          .playListList![musicIndex]
-                                          .first
-                                          ?.musicFile ??
-                                      "";
-                                  await ins.stop();
-                                  ins.playAudio(
-                                      Duration(hours: 8), "assets/$url");
-                                  sliderInitial = 0.0;
-                                  if (musicIndex == 0) {
-                                    Savetimer = 522222222220.0;
-                                  } else if (musicIndex == 1) {
-                                    Savetimer2 = 522222222220.0;
-                                  } else if (musicIndex == 2) {
-                                    Savetimer3 = 522222222220.0;
-                                  }
-                                } else {
-                                  String url = ref
-                                          .watch(playlistProvider)
-                                          .mixMixPlaylist[mixPlaylistIndex]
-                                          .playListList![musicIndex]
-                                          .first
-                                          ?.musicFile ??
-                                      "";
-                                  await ins.stop();
-                                  ins.playAudio(
-                                      Duration(minutes: 2), "assets/$url");
-                                  sliderInitial = 0.0;
-                                  if (musicIndex == 0) {
-                                    Savetimer = 522222222220.0;
-                                  } else if (musicIndex == 1) {
-                                    Savetimer2 = 522222222220.0;
-                                  } else if (musicIndex == 2) {
-                                    Savetimer3 = 522222222220.0;
-                                  }
-                                }
-                              }
+                          padding: EdgeInsets.zero,
+                          onPressed: () async {
+                            changeIndex(changeIndex: false);
+                            selectedTime = 0;
+                            setDuration = 0;
 
-                              if (mounted) {
-                                setState(() {});
-                              }
-                            },
-                            icon: const CustomSvg(
-                                svg: left_shift, color: primaryPinkColor)),
+                            if (mounted) {
+                              String url = ref
+                                      .watch(playlistProvider)
+                                      .mixMixPlaylist[mixPlaylistIndex]
+                                      .playListList![musicIndex]
+                                      .first
+                                      ?.musicFile ??
+                                  "";
+                              await ins.stop();
+                              ins.playAudio(
+                                  Duration(minutes: 2), "assets/$url");
+                              sliderInitial = 0.0;
+                            }
+
+                            if (mounted) {
+                              setState(() {});
+                            }
+                          },
+                          icon: const CustomSvg(
+                              svg: left_shift, color: primaryPinkColor),
+                        ),
                         GestureDetector(
                           onTap: () async {
-
                             if (ins.isPlaying()) {
+                              await ins.stop();
 
-                              ins.stop();
                               pauseSliderTimmer();
-                              print("pause solution");
                             } else {
-
-                              String url = ref
-                                  .watch(playlistProvider)
-                                  .mixMixPlaylist[mixPlaylistIndex]
-                                  .playListList![musicIndex]
-                                  .first
-                                  ?.musicFile ??
+                              String url1 = ref
+                                      .watch(playlistProvider)
+                                      .mixMixPlaylist[mixPlaylistIndex]
+                                      .playListList![musicIndex]
+                                      .first
+                                      ?.musicFile ??
                                   "";
-                             //await audioPlayer.play(AssetSource(url));
-                              print("play");
+
+                              await ins.playAudio(
+                                  Duration(minutes: 2), "assets/$url1");
                               resumeSliderTimmer();
-                              //  ins.silenceIncomingCalls();
-                              if(check==true){
-                                ins.playAudio(
-                                    Duration(hours: 8),
-                                    "assets/$url");
-                              }else{
-                                if(musicIndex==0){
-                                  ins.playAudio(
-                                      Duration(
-                                          seconds:
-                                          (Savetimer! - sliderInitial).toInt()),
-                                      "assets/$url");
-                                }else if(musicIndex==1){
-                                  ins.playAudio(
-                                      Duration(
-                                          seconds:
-                                          (Savetimer2! - sliderInitial).toInt()),
-                                      "assets/$url");
-                                }else if(musicIndex==2){
-                                  ins.playAudio(
-                                      Duration(
-                                          seconds:
-                                          (Savetimer3! - sliderInitial).toInt()),
-                                      "assets/$url");
-                                }
-
-                              }
-                              //  ins.silenceIncomingCalls();
                             }
-                            setState(() {});
 
+                            if (mounted) {
+                              setState(() {});
+                            }
                           },
                           child: Container(
                             // color: Colors.red,
@@ -2813,10 +2725,12 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                         IconButton(
                             padding: EdgeInsets.zero,
                             onPressed: () async {
+
+
                               changeIndex(changeIndex: true);
                               selectedTime = 0;
                               setDuration = 0;
-                              check = true;
+
                               if (mounted) {
                                 String url = ref
                                         .watch(playlistProvider)
@@ -2827,29 +2741,23 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                     "";
 
                                 await ins.stop();
-                                if (check == true) {
-                                  ins.playAudio(
-                                      Duration(hours: 8), "assets/$url");
-                                  sliderInitial = 0.0;
-                                  if (musicIndex == 0) {
-                                    Savetimer = 522222222220.0;
-                                  } else if (musicIndex == 1) {
-                                    Savetimer2 = 522222222220.0;
-                                  } else if (musicIndex == 2) {
-                                    Savetimer3 = 522222222220.0;
-                                  }
-                                } else {
+                                if( musicIndex <
+                                    ref
+                                        .watch(playlistProvider)
+                                        .mixMixPlaylist[
+                                    mixPlaylistIndex]
+                                        .playListList!
+                                        .length -
+                                        1){
                                   ins.playAudio(
                                       Duration(minutes: 2), "assets/$url");
-                                  sliderInitial = 0.0;
-                                  if (musicIndex == 0) {
-                                    Savetimer = 522222222220.0;
-                                  } else if (musicIndex == 1) {
-                                    Savetimer2 = 522222222220.0;
-                                  } else if (musicIndex == 2) {
-                                    Savetimer3 = 522222222220.0;
-                                  }
+                                }else{
+                                  ins.playAudio(
+                                      Duration(hours: 12), "assets/$url");
                                 }
+
+
+                                sliderInitial = 0.0;
                               }
 
                               if (mounted) {
@@ -3227,7 +3135,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
 
                                   setDuration *= 60;
                                   setSongDuration(setDuration);
-                                  // ins.seek(Duration(seconds: setDuration));
+                                  ins.seek(Duration(seconds: setDuration));
                                   print("index 111 $setDuration");
                                   print(
                                       "index 222 ${selectedTimes[selectedTime]}");
@@ -3277,7 +3185,6 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                     actionsPadding: const EdgeInsets.only(left: 48, bottom: 30),
                     actions: <Widget>[
                       Row(
-
                         children: [
                           Checkbox(
                               side: const BorderSide(color: blackColorA0),
@@ -3285,18 +3192,21 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                 borderRadius: BorderRadius.circular(5),
                               ),
                               activeColor: primaryPinkColor,
-                              value: check,
+                              value:     musicIndex <
+                ref
+                    .watch(playlistProvider)
+                    .mixMixPlaylist[
+                mixPlaylistIndex]
+                    .playListList!
+                    .length -
+                1 ?false : true,
                               onChanged: (newValue) {
                                 state(() {
                                   check = newValue!;
-
                                 });
                               }),
                           TextButton(
-                              onPressed: () async {
-                                     
-                                    },
-
+                              onPressed: () async {},
                               child: const CustomText(
                                 text: "continuous play",
                                 fontSize: 16,
@@ -3570,82 +3480,14 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                                   ],
                                                 ),
                                               ),
-                                              // SizedBox(height: width * 0.03),
-                                              // Container(
-                                              //   color: Colors.transparent,
-                                              //   child: Row(
-                                              //     mainAxisAlignment:
-                                              //     MainAxisAlignment.start,
-                                              //     children: [
-                                              //       SizedBox(
-                                              //         width: width * 0.44,
-                                              //         child: Row(
-                                              //           mainAxisAlignment:
-                                              //           MainAxisAlignment
-                                              //               .start,
-                                              //           children: [
-                                              //             SizedBox(
-                                              //                 height:
-                                              //                 width * 0.1,
-                                              //                 width:
-                                              //                 width * 0.1,
-                                              //                 child: CustomImage(
-                                              //                     imageUrl:
-                                              //                     "${ref.watch(playlistProvider).mixMixPlaylist[mixPlaylistIndex].playListList![index].second?.image}",
-                                              //                     boxFit: BoxFit
-                                              //                         .fill)),
-                                              //             Padding(
-                                              //               padding:
-                                              //               const EdgeInsets
-                                              //                   .all(10.0),
-                                              //               child: CustomText(
-                                              //                   text:
-                                              //                   "${ref.watch(playlistProvider).mixMixPlaylist[mixPlaylistIndex].playListList![index].second?.musicName}",
-                                              //                   fontSize: 16,
-                                              //                   fontWeight:
-                                              //                   FontWeight
-                                              //                       .w600,
-                                              //                   color:
-                                              //                   blackColor50),
-                                              //             ),
-                                              //           ],
-                                              //         ),
-                                              //       ),
-                                              //       Row(
-                                              //         mainAxisAlignment:
-                                              //         MainAxisAlignment
-                                              //             .start,
-                                              //         children: [
-                                              //           const CustomSvg(
-                                              //               svg: volume),
-                                              //           Padding(
-                                              //             padding:
-                                              //             const EdgeInsets
-                                              //                 .symmetric(
-                                              //                 horizontal:
-                                              //                 5.0),
-                                              //             child: CustomText(
-                                              //                 text:
-                                              //                 "${(currentVolume * 100).toInt().toString().padLeft(2, "0")}%",
-                                              //                 fontSize: 12,
-                                              //                 fontWeight:
-                                              //                 FontWeight
-                                              //                     .w600,
-                                              //                 color:
-                                              //                 blackColor50),
-                                              //           ),
-                                              //         ],
-                                              //       ),
-                                              //     ],
-                                              //   ),
-                                              // ),
                                             ],
                                           ),
                                           Row(
                                             children: [
                                               CustomSvg(svg: timer),
                                               if (musicIndex == 0) ...[
-                                                if (Savetimer == 0.0 || Savetimer==120.0) ...[
+                                                if (Savetimer == 0.0 ||
+                                                    Savetimer == 120.0) ...[
                                                   Padding(
                                                     padding:
                                                         EdgeInsets.symmetric(
@@ -3673,7 +3515,8 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                                     ),
                                                   )
                                                 ]
-                                              ] else if (musicIndex == 1 || Savetimer2==120.0) ...[
+                                              ] else if (musicIndex == 1 ||
+                                                  Savetimer2 == 120.0) ...[
                                                 if (Savetimer2 == 0.0) ...[
                                                   Padding(
                                                     padding:
@@ -3703,7 +3546,8 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                                   )
                                                 ]
                                               ] else if (musicIndex == 2) ...[
-                                                if (Savetimer3 == 0.0 || Savetimer3==120.0) ...[
+                                                if (Savetimer3 == 0.0 ||
+                                                    Savetimer3 == 120.0) ...[
                                                   Padding(
                                                     padding:
                                                         EdgeInsets.symmetric(
@@ -3736,17 +3580,17 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                           ),
                                           GestureDetector(
                                             onTap: () async {
-                                              // await playMusicForBottomSheet(
-                                              //   id: ref
-                                              //       .watch(playlistProvider)
-                                              //       .mixMixPlaylist[
-                                              //           mixPlaylistIndex]
-                                              //       .playListList![index]
-                                              //       .id,
-                                              //   updateState: updateState,
-                                              // );
-                                              // updateState(() {});
-                                              // setState(() {});
+                                              await playMusicForBottomSheet(
+                                                id: ref
+                                                    .watch(playlistProvider)
+                                                    .mixMixPlaylist[
+                                                        mixPlaylistIndex]
+                                                    .playListList![index]
+                                                    .id,
+                                                updateState: updateState,
+                                              );
+                                              updateState(() {});
+                                              setState(() {});
                                             },
                                             child: Container(
                                                 clipBehavior: Clip.hardEdge,
@@ -3942,24 +3786,26 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
   }
 
   void resumeSliderTimmer() {
-    if (musicIndex == 0) {
-      if (check == true) {
-        setSongDuration(4554545445545454, initValue: sliderInitial);
-      } else {
+
+    if( musicIndex <
+        ref
+            .watch(playlistProvider)
+            .mixMixPlaylist[
+        mixPlaylistIndex]
+            .playListList!
+            .length -
+            1){
+      if (musicIndex == 0) {
         setSongDuration(Savetimer!.toInt(), initValue: sliderInitial);
-      }
-    } else if (musicIndex == 1) {
-      if (check == true) {
-        setSongDuration(4554545445545454, initValue: sliderInitial);
-      } else {
+      } else if (musicIndex == 1) {
         setSongDuration(Savetimer2!.toInt(), initValue: sliderInitial);
-      }
-    } else if (musicIndex == 2) {
-      if (check == true) {
-        setSongDuration(4554545445545454, initValue: sliderInitial);
-      } else {
+      } else if (musicIndex == 2) {
         setSongDuration(Savetimer3!.toInt(), initValue: sliderInitial);
       }
+    }else{
+      setSongDuration(4554545445545454, initValue: sliderInitial);
+
     }
+
   }
 }
