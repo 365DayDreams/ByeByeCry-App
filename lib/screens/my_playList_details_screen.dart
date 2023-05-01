@@ -2088,19 +2088,19 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
 
     Timer.periodic(Duration(seconds: 1), (timer) async {
 
-      // if (musicIndex ==
-      //     ref
-      //         .watch(playlistProvider)
-      //         .mixMixPlaylist[mixPlaylistIndex]
-      //         .playListList!
-      //         .length -
-      //         1){
-      //   /*initialTime=4564645645;
-      //   ins.seek(Duration(days: 1));*/
-      //   sliderInitial=0;
-      //
-      //
-      // }
+      if (musicIndex ==
+          ref
+              .watch(playlistProvider)
+              .mixMixPlaylist[mixPlaylistIndex]
+              .playListList!
+              .length -
+              1){
+        /*initialTime=4564645645;
+        ins.seek(Duration(days: 1));*/
+        sliderInitial=0;
+
+
+      }
 
       if (sliderInitial.toInt() == (Savetimer! - 1).toInt() ||
           sliderInitial == initialTime ||
@@ -2691,6 +2691,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                   "";
 
                               await ins.stop();
+                              resumeSliderTimmer();
                               if (musicIndex <
                                   ref
                                       .watch(playlistProvider)
@@ -2777,8 +2778,9 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
 
                             if (ins.isPlaying()) {
                               await ins.stop();
-
                               pauseSliderTimmer();
+
+
                             } else {
 
                               String url1 = ref
@@ -2846,6 +2848,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
 
 
 
+
                               if (mounted) {
                                 String url = ref
                                         .watch(playlistProvider)
@@ -2855,7 +2858,9 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                         ?.musicFile ??
                                     "";
 
+
                                 await ins.stop();
+                                resumeSliderTimmer();
                                 if (musicIndex <
                                     ref
                                             .watch(playlistProvider)
@@ -2871,6 +2876,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                 }
 
                                 sliderInitial = 0.0;
+
 
 
                               }
