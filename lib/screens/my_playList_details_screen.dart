@@ -2675,9 +2675,9 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                             changeIndex(changeIndex: true);
                             selectedTime = 0;
                             setDuration = 0;
-                            Savetimer=120.0;
-                            Savetimer2=120.0;
-                            Savetimer3=120.0;
+                            // Savetimer=120.0;
+                            // Savetimer2=120.0;
+                            // Savetimer3=120.0;
 
 
 
@@ -2842,9 +2842,9 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                               changeIndex(changeIndex: true);
                               selectedTime = 0;
                               setDuration = 0;
-                              Savetimer=120.0;
-                              Savetimer2=120.0;
-                              Savetimer3=120.0;
+                              // Savetimer=120.0;
+                              // Savetimer2=120.0;
+                              // Savetimer3=120.0;
 
 
 
