@@ -2088,19 +2088,19 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
 
     Timer.periodic(Duration(seconds: 1), (timer) async {
 
-      if (musicIndex ==
-          ref
-              .watch(playlistProvider)
-              .mixMixPlaylist[mixPlaylistIndex]
-              .playListList!
-              .length -
-              1){
-        /*initialTime=4564645645;
-        ins.seek(Duration(days: 1));*/
-        sliderInitial=0;
-
-
-      }
+      // if (musicIndex ==
+      //     ref
+      //         .watch(playlistProvider)
+      //         .mixMixPlaylist[mixPlaylistIndex]
+      //         .playListList!
+      //         .length -
+      //         1){
+      //   /*initialTime=4564645645;
+      //   ins.seek(Duration(days: 1));*/
+      //   sliderInitial=0;
+      //
+      //
+      // }
 
       if (sliderInitial.toInt() == (Savetimer! - 1).toInt() ||
           sliderInitial == initialTime ||
@@ -2112,8 +2112,12 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
 
         if (check == true) {
           if (mounted) {
-            changeIndex(changeIndex: false);
+            changeIndex(changeIndex: true);
+            sliderInitial = 0.0;
 
+            selectedTime = 0;
+            setDuration = 0;
+            check = true;
             String url = ref
                 .watch(playlistProvider)
                 .mixMixPlaylist[mixPlaylistIndex]
@@ -2123,6 +2127,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
 
             await ins.playAudio(Duration(days: 1), "assets/$url");
             //sliderInitial = 0.0;
+
           }
 
           if (mounted) {
@@ -2667,38 +2672,115 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                         IconButton(
                           padding: EdgeInsets.zero,
                           onPressed: () async {
-                            changeIndex(changeIndex: false);
+                            changeIndex(changeIndex: true);
                             selectedTime = 0;
                             setDuration = 0;
+                            Savetimer=120.0;
+                            Savetimer2=120.0;
+                            Savetimer3=120.0;
+
+
 
                             if (mounted) {
                               String url = ref
+                                  .watch(playlistProvider)
+                                  .mixMixPlaylist[mixPlaylistIndex]
+                                  .playListList![musicIndex]
+                                  .first
+                                  ?.musicFile ??
+                                  "";
+
+                              await ins.stop();
+                              if (musicIndex <
+                                  ref
                                       .watch(playlistProvider)
                                       .mixMixPlaylist[mixPlaylistIndex]
-                                      .playListList![musicIndex]
-                                      .first
-                                      ?.musicFile ??
-                                  "";
-                              await ins.stop();
-                              ins.playAudio(
-                                  Duration(minutes: 2), "assets/$url");
+                                      .playListList!
+                                      .length -
+                                      1) {
+                                ins.playAudio(
+                                    Duration(minutes: 2), "assets/$url");
+                              } else {
+                                ins.playAudio(
+                                    Duration(hours: 12), "assets/$url");
+                              }
+
                               sliderInitial = 0.0;
+
+
                             }
 
                             if (mounted) {
                               setState(() {});
                             }
+                            // changeIndex(changeIndex: true);
+                            // selectedTime = 0;
+                            // setDuration = 0;
+                            //
+                            // if (mounted) {
+                            //   String url = ref
+                            //       .watch(playlistProvider)
+                            //       .mixMixPlaylist[mixPlaylistIndex]
+                            //       .playListList![musicIndex]
+                            //       .first
+                            //       ?.musicFile ??
+                            //       "";
+                            //
+                            //   await ins.stop();
+                            //   if (musicIndex <
+                            //       ref
+                            //           .watch(playlistProvider)
+                            //           .mixMixPlaylist[mixPlaylistIndex]
+                            //           .playListList!
+                            //           .length -
+                            //           1) {
+                            //     ins.playAudio(
+                            //         Duration(minutes: 2), "assets/$url");
+                            //   } else {
+                            //     ins.playAudio(
+                            //         Duration(hours: 12), "assets/$url");
+                            //   }
+                            //
+                            //   sliderInitial = 0.0;
+                            // }
+                            //
+                            // if (mounted) {
+                            //   setState(() {});
+                            // }
+                            // changeIndex(changeIndex: false);
+                            // selectedTime = 0;
+                            // setDuration = 0;
+                            //
+                            // if (mounted) {
+                            //   String url = ref
+                            //           .watch(playlistProvider)
+                            //           .mixMixPlaylist[mixPlaylistIndex]
+                            //           .playListList![musicIndex]
+                            //           .first
+                            //           ?.musicFile ??
+                            //       "";
+                            //   await ins.stop();
+                            //   ins.playAudio(
+                            //       Duration(minutes: 2), "assets/$url");
+                            //   sliderInitial = 0.0;
+                            // }
+                            //
+                            // if (mounted) {
+                            //   setState(() {});
+                            // }
                           },
                           icon: const CustomSvg(
                               svg: left_shift, color: primaryPinkColor),
                         ),
                         GestureDetector(
                           onTap: () async {
+
                             if (ins.isPlaying()) {
                               await ins.stop();
 
                               pauseSliderTimmer();
                             } else {
+
                               String url1 = ref
                                       .watch(playlistProvider)
                                       .mixMixPlaylist[mixPlaylistIndex]
@@ -2754,9 +2836,15 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                         IconButton(
                             padding: EdgeInsets.zero,
                             onPressed: () async {
+
                               changeIndex(changeIndex: true);
                               selectedTime = 0;
                               setDuration = 0;
+                              Savetimer=120.0;
+                              Savetimer2=120.0;
+                              Savetimer3=120.0;
+
+
 
                               if (mounted) {
                                 String url = ref
@@ -2783,6 +2871,8 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                 }
 
                                 sliderInitial = 0.0;
+
+
                               }
 
                               if (mounted) {
