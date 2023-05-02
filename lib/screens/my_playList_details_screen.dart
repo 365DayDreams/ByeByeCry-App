@@ -1984,6 +1984,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
   double? Savetimer = 120.0;
   double? Savetimer2 = 120.0;
   double? Savetimer3 = 120.0;
+  bool infinity = false;
 
   getTimer() async {
     await LocalDB().getTimer().then((value) {
@@ -2085,8 +2086,21 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
     initialization();
 
     super.initState();
+   Future.delayed(Duration(seconds: 1),(){
+     if (musicIndex ==
+         ref
+             .watch(playlistProvider)
+             .mixMixPlaylist[mixPlaylistIndex]
+             .playListList!
+             .length -
+             1){
+       infinity=true;
+     }
+   });
 
     Timer.periodic(Duration(seconds: 1), (timer) async {
+      print("[[[[[[[[[[[[[[[[[[[[[[[");
+      print(infinity);
 
       if (musicIndex ==
           ref
@@ -2097,7 +2111,13 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
               1){
         /*initialTime=4564645645;
         ins.seek(Duration(days: 1));*/
+        if(!infinity)
         sliderInitial=0;
+
+
+      }else{
+        initialTime=120.0;
+        infinity=false;
 
 
       }
@@ -2494,7 +2514,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                             .mixMixPlaylist[mixPlaylistIndex]
                             .playListList!
                             .length -
-                        1) ...[
+                        1 || infinity) ...[
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 30.0),
                     child: Row(
@@ -2548,7 +2568,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                             .mixMixPlaylist[mixPlaylistIndex]
                             .playListList!
                             .length -
-                        1) ...[
+                        1|| infinity) ...[
                   if (index == 0) ...[
                     SizedBox(
                       //color: Colors.green,
@@ -2566,8 +2586,10 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                             activeColor: primaryPinkColor,
                             inactiveColor: primaryGreyColor2,
                             onChanged: (double newValue) async {
-                              print("slider");
+
+
                               updateSlider(newValue.floorToDouble());
+
                               setState(() {});
                             },
                             semanticFormatterCallback: (double newValue) {
@@ -2675,9 +2697,16 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                             changeIndex(changeIndex: true);
                             selectedTime = 0;
                             setDuration = 0;
-                            // Savetimer=120.0;
-                            // Savetimer2=120.0;
-                            // Savetimer3=120.0;
+
+                            if(musicIndex==0){
+                              setSongDuration(Savetimer!.toInt());
+
+                            }else if(musicIndex==1){
+                              setSongDuration(Savetimer2!.toInt());
+
+                            }else{
+                              setSongDuration(Savetimer3!.toInt());
+                            }
 
 
 
@@ -2714,61 +2743,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                             if (mounted) {
                               setState(() {});
                             }
-                            // changeIndex(changeIndex: true);
-                            // selectedTime = 0;
-                            // setDuration = 0;
-                            //
-                            // if (mounted) {
-                            //   String url = ref
-                            //       .watch(playlistProvider)
-                            //       .mixMixPlaylist[mixPlaylistIndex]
-                            //       .playListList![musicIndex]
-                            //       .first
-                            //       ?.musicFile ??
-                            //       "";
-                            //
-                            //   await ins.stop();
-                            //   if (musicIndex <
-                            //       ref
-                            //           .watch(playlistProvider)
-                            //           .mixMixPlaylist[mixPlaylistIndex]
-                            //           .playListList!
-                            //           .length -
-                            //           1) {
-                            //     ins.playAudio(
-                            //         Duration(minutes: 2), "assets/$url");
-                            //   } else {
-                            //     ins.playAudio(
-                            //         Duration(hours: 12), "assets/$url");
-                            //   }
-                            //
-                            //   sliderInitial = 0.0;
-                            // }
-                            //
-                            // if (mounted) {
-                            //   setState(() {});
-                            // }
-                            // changeIndex(changeIndex: false);
-                            // selectedTime = 0;
-                            // setDuration = 0;
-                            //
-                            // if (mounted) {
-                            //   String url = ref
-                            //           .watch(playlistProvider)
-                            //           .mixMixPlaylist[mixPlaylistIndex]
-                            //           .playListList![musicIndex]
-                            //           .first
-                            //           ?.musicFile ??
-                            //       "";
-                            //   await ins.stop();
-                            //   ins.playAudio(
-                            //       Duration(minutes: 2), "assets/$url");
-                            //   sliderInitial = 0.0;
-                            // }
-                            //
-                            // if (mounted) {
-                            //   setState(() {});
-                            // }
+
                           },
                           icon: const CustomSvg(
                               svg: left_shift, color: primaryPinkColor),
@@ -2839,14 +2814,21 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                             padding: EdgeInsets.zero,
                             onPressed: () async {
 
+
                               changeIndex(changeIndex: true);
                               selectedTime = 0;
                               setDuration = 0;
-                              Savetimer=120.0;
-                              Savetimer2=120.0;
-                              Savetimer3=120.0;
 
 
+                              if(musicIndex==0){
+                                setSongDuration(Savetimer!.toInt());
+
+                              }else if(musicIndex==1){
+                                setSongDuration(Savetimer2!.toInt());
+
+                              }else{
+                                setSongDuration(Savetimer3!.toInt());
+                              }
 
 
                               if (mounted) {
@@ -3254,6 +3236,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                   selectedTime = newValue.toInt();
                                   setDuration = selectedTimes[selectedTime];
 
+                                  infinity=true;
                                   setDuration *= 60;
                                   setSongDuration(setDuration);
                                   ins.seek(Duration(seconds: setDuration));
@@ -3262,13 +3245,13 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                       "index 222 ${selectedTimes[selectedTime]}");
                                   if (selectedTimes[selectedTime] == 0) {
                                     check = true;
-                                    if (musicIndex == 0) {
-                                      Savetimer = 120.0;
-                                    } else if (musicIndex == 1) {
-                                      Savetimer2 = 120.0;
-                                    } else if (musicIndex == 3) {
-                                      Savetimer3 = 120.0;
-                                    }
+                                    // if (musicIndex == 0) {
+                                    //   Savetimer = 120.0;
+                                    // } else if (musicIndex == 1) {
+                                    //   Savetimer2 = 120.0;
+                                    // } else if (musicIndex == 3) {
+                                    //   Savetimer3 = 120.0;
+                                    // }
                                   } else {
                                     check = false;
                                   }
@@ -3313,15 +3296,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                 borderRadius: BorderRadius.circular(5),
                               ),
                               activeColor: primaryPinkColor,
-                              value: musicIndex <
-                                      ref
-                                              .watch(playlistProvider)
-                                              .mixMixPlaylist[mixPlaylistIndex]
-                                              .playListList!
-                                              .length -
-                                          1
-                                  ? false
-                                  : true,
+                              value: check,
                               onChanged: (newValue) {
                                 state(() {
                                   check = newValue!;
@@ -3834,6 +3809,16 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
   void setSongDuration(int setDuration, {double initValue = 0}) {
     sliderInitial = initValue;
     Savetimer = setDuration.toDouble();
+    if(musicIndex==0){
+
+
+    }else if(musicIndex==1){
+      Savetimer2 = setDuration.toDouble();
+
+    }else if(musicIndex==2){
+      Savetimer3 = setDuration.toDouble();
+
+    }
 
     if (sliderTimer != null) {
       sliderTimer!.cancel();
@@ -3848,7 +3833,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
         timer.cancel();
       }
 
-      if (Savetimer == 0.0 || sliderInitial == 120.0) {
+      if (Savetimer == 0.0 ) {
         if (Savetimer! > sliderInitial) {
           timer.cancel();
           sliderInitial = 0.0;
@@ -3862,7 +3847,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
         }
       }
 
-      if (Savetimer2 == 0.0 || sliderInitial == 120.0) {
+      if (Savetimer2 == 0.0 ) {
         if (Savetimer2! > sliderInitial) {
           timer.cancel();
           sliderInitial = 0.0;
@@ -3876,7 +3861,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
         }
       }
 
-      if (Savetimer3 == 0.0 || sliderInitial == 120.0) {
+      if (Savetimer3 == 0.0 ) {
         if (Savetimer3! > sliderInitial) {
           timer.cancel();
           sliderInitial = 0.0;
@@ -3892,6 +3877,8 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
       }
 
       sliderInitial++;
+      print("sliderInitial=-=-=-=-=-=-=-=-");
+      print(sliderInitial);
       setState(() {});
     });
   }
@@ -3909,7 +3896,14 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
   }
 
   void resumeSliderTimmer() {
-    if (musicIndex <
+    if (musicIndex == 0) {
+      setSongDuration(Savetimer!.toInt(), initValue: sliderInitial);
+    } else if (musicIndex == 1) {
+      setSongDuration(Savetimer2!.toInt(), initValue: sliderInitial);
+    } else if (musicIndex == 2) {
+      setSongDuration(Savetimer3!.toInt(), initValue: sliderInitial);
+    }
+  /*  if (musicIndex <
         ref
                 .watch(playlistProvider)
                 .mixMixPlaylist[mixPlaylistIndex]
@@ -3924,8 +3918,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
         setSongDuration(Savetimer3!.toInt(), initValue: sliderInitial);
       }
     } else {
-      initialTime=34535434534;
       setSongDuration(4554545445545454, initValue: sliderInitial);
-    }
+    }*/
   }
 }

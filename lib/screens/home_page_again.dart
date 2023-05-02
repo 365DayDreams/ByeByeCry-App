@@ -159,107 +159,110 @@ class _HomePageAgainPageState extends ConsumerState<HomePageAgain> {
                                     width: width,
                                     child: Container(
                                         color: Colors.white,
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.end,
-                                          children: [
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                GestureDetector(
-                                                    onTap: () {
-                                                      buttonCarouselController
-                                                          .previousPage(
-                                                              duration:
-                                                                  const Duration(
-                                                                      milliseconds:
-                                                                          500),
-                                                              curve: Curves
-                                                                  .easeIn);
-                                                    },
-                                                    child: Container(
-                                                        color:
-                                                            Colors.transparent,
-                                                        child: const Padding(
-                                                          padding:
-                                                              EdgeInsets.all(
-                                                                  6.0),
-                                                          child: CustomSvg(
-                                                              svg:
-                                                                  leftDirection),
-                                                        ))),
-                                                Expanded(
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.only(top: 38.0),
-                                                    child: CarouselSlider.builder(
-                                                      carouselController:
-                                                          buttonCarouselController,
-                                                      itemCount: dummyText.length,
-                                                      itemBuilder:
-                                                          (BuildContext context,
-                                                              int itemIndex,
-                                                              int pageViewIndex) {
-                                                        fav.add(false);
+                                        child: SingleChildScrollView(
 
-                                                        return Container(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.end,
+                                            children: [
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  GestureDetector(
+                                                      onTap: () {
+                                                        buttonCarouselController
+                                                            .previousPage(
+                                                                duration:
+                                                                    const Duration(
+                                                                        milliseconds:
+                                                                            500),
+                                                                curve: Curves
+                                                                    .easeIn);
+                                                      },
+                                                      child: Container(
                                                           color:
                                                               Colors.transparent,
-                                                          child: CustomText(
-                                                            text:
-                                                                "${dummyText[itemIndex].text}",
-                                                            fontWeight:
-                                                                FontWeight.w600,
-                                                            fontSize: 18,
+                                                          child: const Padding(
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                    6.0),
+                                                            child: CustomSvg(
+                                                                svg:
+                                                                    leftDirection),
+                                                          ))),
+                                                  Expanded(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.only(top: 38.0),
+                                                      child: CarouselSlider.builder(
+                                                        carouselController:
+                                                            buttonCarouselController,
+                                                        itemCount: dummyText.length,
+                                                        itemBuilder:
+                                                            (BuildContext context,
+                                                                int itemIndex,
+                                                                int pageViewIndex) {
+                                                          fav.add(false);
+
+                                                          return Container(
                                                             color:
-                                                                secondaryBlackColor,
-                                                            textAlign:
-                                                                TextAlign.center,
-                                                            height: 1.3,
-                                                          ),
-                                                        );
-                                                      },
-                                                      options: CarouselOptions(
-                                                          aspectRatio: 2.6,
-                                                          viewportFraction: 1,
-                                                          autoPlay: true,
-                                                          enableInfiniteScroll:
-                                                              false,
-                                                          onPageChanged:
-                                                              (index, reasons) {
-                                                            setState(() {
-                                                              itemIndex = index;
-                                                            });
-                                                          }),
+                                                                Colors.transparent,
+                                                            child: CustomText(
+                                                              text:
+                                                                  "${dummyText[itemIndex].text}",
+                                                              fontWeight:
+                                                                  FontWeight.w600,
+                                                              fontSize: 18,
+                                                              color:
+                                                                  secondaryBlackColor,
+                                                              textAlign:
+                                                                  TextAlign.center,
+                                                              height: 1.3,
+                                                            ),
+                                                          );
+                                                        },
+                                                        options: CarouselOptions(
+                                                            aspectRatio: 2.6,
+                                                            viewportFraction: 1,
+                                                            autoPlay: true,
+                                                            enableInfiniteScroll:
+                                                                false,
+                                                            onPageChanged:
+                                                                (index, reasons) {
+                                                              setState(() {
+                                                                itemIndex = index;
+                                                              });
+                                                            }),
+                                                      ),
                                                     ),
                                                   ),
-                                                ),
-                                                GestureDetector(
-                                                    onTap: () {
-                                                      buttonCarouselController
-                                                          .nextPage(
-                                                              duration:
-                                                                  const Duration(
-                                                                      milliseconds:
-                                                                          500),
-                                                              curve: Curves
-                                                                  .easeIn);
-                                                    },
-                                                    child: Container(
-                                                        color:
-                                                            Colors.transparent,
-                                                        child: const Padding(
-                                                          padding:
-                                                              EdgeInsets.all(
-                                                                  6.0),
-                                                          child: CustomSvg(
-                                                              svg:
-                                                                  rightDirection),
-                                                        ))),
-                                              ],
-                                            )
-                                          ],
+                                                  GestureDetector(
+                                                      onTap: () {
+                                                        buttonCarouselController
+                                                            .nextPage(
+                                                                duration:
+                                                                    const Duration(
+                                                                        milliseconds:
+                                                                            500),
+                                                                curve: Curves
+                                                                    .easeIn);
+                                                      },
+                                                      child: Container(
+                                                          color:
+                                                              Colors.transparent,
+                                                          child: const Padding(
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                    6.0),
+                                                            child: CustomSvg(
+                                                                svg:
+                                                                    rightDirection),
+                                                          ))),
+                                                ],
+                                              )
+                                            ],
+                                          ),
                                         )),
                                   ),
                                 ),
