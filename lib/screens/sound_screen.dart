@@ -2462,7 +2462,7 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
                     borderRadius: BorderRadius.circular(15)),
                 backgroundColor: Colors.white,
                 title: const CustomText(
-                  text: 'You ave going to remove',
+                  text: 'You are going to remove',
                   textAlign: TextAlign.center,
                   fontSize: 20,
                   fontWeight: FontWeight.w400,

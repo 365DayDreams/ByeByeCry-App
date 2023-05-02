@@ -3309,7 +3309,8 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                 fontSize: 16,
                                 fontWeight: FontWeight.w400,
                                 color: primaryGreyColor,
-                              ))
+                              ),
+                          ),
                         ],
                       ),
                       SizedBox(

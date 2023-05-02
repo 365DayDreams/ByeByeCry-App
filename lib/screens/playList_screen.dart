@@ -1234,7 +1234,7 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
                     borderRadius: BorderRadius.circular(15)),
                 backgroundColor: Colors.white,
                 title: const CustomText(
-                  text: 'You ave removed',
+                  text: 'You are going to removed',
                   textAlign: TextAlign.center,
                   fontSize: 20,
                   fontWeight: FontWeight.w400,
@@ -1252,7 +1252,7 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
                       height: 13,
                     ),
                     const CustomText(
-                      text: 'from Sound List',
+                      text: 'from the Sound List',
                       fontSize: 20,
                       color: secondaryBlackColor,
                       fontWeight: FontWeight.w400,
