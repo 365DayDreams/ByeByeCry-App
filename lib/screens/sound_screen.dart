@@ -1461,6 +1461,7 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
 
           title: deleteShow ? 'Edit My Sounds' : 'My Sounds',
           actionTitle: deleteShow ? "" : 'Edit',
+
           onPressedButton: () {
             deleteShow = true;
             if (mounted) {
@@ -1496,7 +1497,7 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
               },
               child: Text(deleteShow ? "" : 'Edit',style: TextStyle(
                 fontSize: 16,color: Colors.black,
-                fontWeight: FontWeight.w500
+                fontWeight: FontWeight.w600
               ),),
             ),
           )
@@ -2461,7 +2462,7 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
                     borderRadius: BorderRadius.circular(15)),
                 backgroundColor: Colors.white,
                 title: const CustomText(
-                  text: 'You ave removed',
+                  text: 'You ave going to remove',
                   textAlign: TextAlign.center,
                   fontSize: 20,
                   fontWeight: FontWeight.w400,
@@ -2479,7 +2480,7 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
                       height: 13,
                     ),
                     const CustomText(
-                      text: 'from Sound List',
+                      text: 'from the Sound List',
                       fontSize: 20,
                       color: secondaryBlackColor,
                       fontWeight: FontWeight.w400,

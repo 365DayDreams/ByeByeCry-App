@@ -297,7 +297,7 @@ class _MixScreenState extends ConsumerState<MixScreen> {
                                       "Add a Sound",
                                   textAlign: TextAlign.center,
                                   fontSize: 20,
-                                  fontWeight: FontWeight.w400,
+                                  fontWeight: FontWeight.w700,
                                   color: primaryGreyColor,
                                 ),
                               )
@@ -358,7 +358,7 @@ class _MixScreenState extends ConsumerState<MixScreen> {
                                             ?.musicName ??
                                         "Add a Sound",
                                     fontSize: 20,
-                                    fontWeight: FontWeight.w400,
+                                    fontWeight: FontWeight.w700,
                                     color: primaryGreyColor,
                                   ),
                                 ),
@@ -396,7 +396,7 @@ class _MixScreenState extends ConsumerState<MixScreen> {
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                          padding: const EdgeInsets.only(left: 22.0),
                           child: CustomText(
                             text:
                                 'Set sound ${(currentVolume).toInt().toString().padLeft(2, "0")} level',
@@ -429,7 +429,7 @@ class _MixScreenState extends ConsumerState<MixScreen> {
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                          padding: const EdgeInsets.only(left: 22.0),
                           child: CustomText(
                             text:
                                 'Set sound ${(currentVolume1).toInt().toString().padLeft(2, "0")} level',

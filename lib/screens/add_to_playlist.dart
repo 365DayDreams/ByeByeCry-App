@@ -213,7 +213,7 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
                                                         "Add a Sound",
                                                     textAlign: TextAlign.center,
                                                     fontSize: 18,
-                                                    fontWeight: FontWeight.w500,
+                                                    fontWeight: FontWeight.w600,
                                                     color: primaryGreyColor,
                                                   ),
                                                 )
@@ -300,61 +300,64 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
                     if (index ==
                         ref.watch(playlistProvider).mixPlayList.length - 1)
                       ref.watch(playlistProvider).mixPlayList.length < 3
-                          ? GestureDetector(
-                              onTap: () {
-                                ref.read(playlistProvider).createMusic();
-                                ref
-                                    .read(addProvider)
-                                    .showPlusPlaylist(playlistPlusBottom: true);
-                                if (mounted) {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (_) =>
-                                              MyPlayListNewSoundScreen()));
+                          ? Padding(
+                            padding: const EdgeInsets.only(top: 22.0),
+                            child: GestureDetector(
+                                onTap: () {
+                                  ref.read(playlistProvider).createMusic();
+                                  ref
+                                      .read(addProvider)
+                                      .showPlusPlaylist(playlistPlusBottom: true);
+                                  if (mounted) {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (_) =>
+                                                MyPlayListNewSoundScreen()));
 
-                                  //   ref.read(addProvider).changePage(1);
-                                }
-                                if (mounted) {
-                                  ref
-                                      .read(playlistProvider)
-                                      .addInPlaylistTrue();
-                                }
-                                if (mounted) {
-                                  ref
-                                      .read(playlistProvider)
-                                      .setIndex(setIndex: index + 1);
-                                }
-                                if (mounted) {
-                                  ref
-                                      .read(playlistProvider)
-                                      .setMusicFirstOrSecond(
-                                          setFirstOrSecondMusic: true);
-                                }
-                                selectedIndex= index+1;
+                                    //   ref.read(addProvider).changePage(1);
+                                  }
+                                  if (mounted) {
+                                    ref
+                                        .read(playlistProvider)
+                                        .addInPlaylistTrue();
+                                  }
+                                  if (mounted) {
+                                    ref
+                                        .read(playlistProvider)
+                                        .setIndex(setIndex: index + 1);
+                                  }
+                                  if (mounted) {
+                                    ref
+                                        .read(playlistProvider)
+                                        .setMusicFirstOrSecond(
+                                            setFirstOrSecondMusic: true);
+                                  }
+                                  selectedIndex= index+1;
 
-                                if (mounted) {
-                                  setState(() {});
-                                }
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.only(left: 18.0),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: const [
-                                    Icon(
-                                      Icons.add,
-                                      color: primaryGreyColor,
-                                    ),
-                                    CustomText(
-                                        text: "Add another Sound Set",
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600,
-                                        color: primaryGreyColor),
-                                  ],
+                                  if (mounted) {
+                                    setState(() {});
+                                  }
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 18.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: const [
+                                      Icon(
+                                        Icons.add,
+                                        color: primaryGreyColor,
+                                      ),
+                                      CustomText(
+                                          text: "Add another Sound Set",
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                          color: primaryGreyColor),
+                                    ],
+                                  ),
                                 ),
                               ),
-                            )
+                          )
                           : const SizedBox(),
                   ],
                 );

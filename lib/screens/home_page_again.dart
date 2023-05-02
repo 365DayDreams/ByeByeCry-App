@@ -32,24 +32,19 @@ class _HomePageAgainPageState extends ConsumerState<HomePageAgain> {
   List<HomePageFavModel> dummyText = [
     HomePageFavModel(
         id: 1,
-        text:
-            "Does baby have gas? Try This Lay baby on their back and bring their knees to their chest.Does baby have gas? Try This Lay baby on their back and bring their knees to their chest."),
+        text:"Does baby have gas? Try This Lay baby on their back and bring their knees to their chest.Does baby have gas? Try This Lay baby on their back and bring their knees to their chest."),
     HomePageFavModel(
         id: 2,
-        text:
-            "Abcd? Try This Lay baby on their back and bring their knees to their chest.Does baby have gas? Try This Lay baby on their back and bring their knees to their chest."),
+        text:"Abcd? Try This Lay baby on their back and bring their knees to their chest.Does baby have gas? Try This Lay baby on their back and bring their knees to their chest."),
     HomePageFavModel(
         id: 3,
-        text:
-            "Efg? Try This Lay baby on their back and bring their knees to their chest.Does baby have gas? Try This Lay baby on their back and bring their knees to their chest."),
+        text:"Efg? Try This Lay baby on their back and bring their knees to their chest.Does baby have gas? Try This Lay baby on their back and bring their knees to their chest."),
     HomePageFavModel(
         id: 4,
-        text:
-            "1234? Try This Lay baby on their back and bring their knees to their chest.Does baby have gas? Try This Lay baby on their back and bring their knees to their chest."),
+        text:"1234? Try This Lay baby on their back and bring their knees to their chest.Does baby have gas? Try This Lay baby on their back and bring their knees to their chest."),
     HomePageFavModel(
         id: 5,
-        text:
-            "dghasdghdsghsd Try This Lay baby on their back and bring their knees to their chest.Does baby have gas? Try This Lay baby on their back and bring their knees to their chest."),
+        text:"dghasdghdsghsd Try This Lay baby on their back and bring their knees to their chest.Does baby have gas? Try This Lay baby on their back and bring their knees to their chest."),
   ];
 
   @override
@@ -58,6 +53,7 @@ class _HomePageAgainPageState extends ConsumerState<HomePageAgain> {
     final height = ScreenSize(context).height;
     return SafeArea(
       child: Scaffold(
+        backgroundColor: secondaryGreenColor,
         body: SingleChildScrollView(
              physics: NeverScrollableScrollPhysics(),
           child: Column(
@@ -152,21 +148,22 @@ class _HomePageAgainPageState extends ConsumerState<HomePageAgain> {
                             clipBehavior: Clip.none,
                             children: [
                               Container(
+                                height: 200,
+                                width: double.infinity,
                                 color: secondaryGreenColor,
-                                width: width,
                                 child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 21.0),
+                                  padding: const EdgeInsets.only(top: 18.0,left: 0,right:0),
                                   child: Container(
-                                      color: Colors.white,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 15.0, vertical: 30),
-                                            child: Row(
+
+                                    color: secondaryGreenColor,
+                                    width: width,
+                                    child: Container(
+                                        color: Colors.white,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
+                                          children: [
+                                            Row(
                                               mainAxisAlignment:
                                                   MainAxisAlignment
                                                       .spaceBetween,
@@ -194,45 +191,48 @@ class _HomePageAgainPageState extends ConsumerState<HomePageAgain> {
                                                                   leftDirection),
                                                         ))),
                                                 Expanded(
-                                                  child: CarouselSlider.builder(
-                                                    carouselController:
-                                                        buttonCarouselController,
-                                                    itemCount: dummyText.length,
-                                                    itemBuilder:
-                                                        (BuildContext context,
-                                                            int itemIndex,
-                                                            int pageViewIndex) {
-                                                      fav.add(false);
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.only(top: 38.0),
+                                                    child: CarouselSlider.builder(
+                                                      carouselController:
+                                                          buttonCarouselController,
+                                                      itemCount: dummyText.length,
+                                                      itemBuilder:
+                                                          (BuildContext context,
+                                                              int itemIndex,
+                                                              int pageViewIndex) {
+                                                        fav.add(false);
 
-                                                      return Container(
-                                                        color:
-                                                            Colors.transparent,
-                                                        child: CustomText(
-                                                          text:
-                                                              "${dummyText[itemIndex].text}",
-                                                          fontWeight:
-                                                              FontWeight.w600,
-                                                          fontSize: 18,
+                                                        return Container(
                                                           color:
-                                                              secondaryBlackColor,
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          height: 1.3,
-                                                        ),
-                                                      );
-                                                    },
-                                                    options: CarouselOptions(
-                                                        aspectRatio: 2.6,
-                                                        viewportFraction: 1,
-                                                        autoPlay: true,
-                                                        enableInfiniteScroll:
-                                                            false,
-                                                        onPageChanged:
-                                                            (index, reasons) {
-                                                          setState(() {
-                                                            itemIndex = index;
-                                                          });
-                                                        }),
+                                                              Colors.transparent,
+                                                          child: CustomText(
+                                                            text:
+                                                                "${dummyText[itemIndex].text}",
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            fontSize: 18,
+                                                            color:
+                                                                secondaryBlackColor,
+                                                            textAlign:
+                                                                TextAlign.center,
+                                                            height: 1.3,
+                                                          ),
+                                                        );
+                                                      },
+                                                      options: CarouselOptions(
+                                                          aspectRatio: 2.6,
+                                                          viewportFraction: 1,
+                                                          autoPlay: true,
+                                                          enableInfiniteScroll:
+                                                              false,
+                                                          onPageChanged:
+                                                              (index, reasons) {
+                                                            setState(() {
+                                                              itemIndex = index;
+                                                            });
+                                                          }),
+                                                    ),
                                                   ),
                                                 ),
                                                 GestureDetector(
@@ -258,15 +258,15 @@ class _HomePageAgainPageState extends ConsumerState<HomePageAgain> {
                                                                   rightDirection),
                                                         ))),
                                               ],
-                                            ),
-                                          )
-                                        ],
-                                      )),
+                                            )
+                                          ],
+                                        )),
+                                  ),
                                 ),
                               ),
                               Positioned(
                                 right: 35,
-                                bottom: 165,
+                                bottom: 140,
                                 child: IconButton(
                                     onPressed: () {
                                       setState(() {

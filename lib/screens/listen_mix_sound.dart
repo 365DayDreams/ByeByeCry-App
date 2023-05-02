@@ -1810,6 +1810,7 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
@@ -1831,6 +1832,7 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                       ),
                     ],
                   ),
+                  SizedBox(height: 10,),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -1853,6 +1855,7 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                           ),
                         ),
                       ),
+
                       Expanded(
                         child: Center(
                           child: Padding(
@@ -1876,6 +1879,7 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
 
                     ],
                   ),
+                  SizedBox(height: 30,),
                   Container(
                     color: Colors.transparent,
                     child: Padding(
@@ -1891,7 +1895,7 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                                   text:
                                   "${ref.watch(mixMusicProvider).combinationList[musicIndex].first?.musicName}+${ref.watch(mixMusicProvider).combinationList[musicIndex].second?.musicName}",
                                   fontSize: 20,
-                                  fontWeight: FontWeight.w400,
+                                  fontWeight: FontWeight.w600,
                                   color: secondaryBlackColor,
                                 ),
                               ],
@@ -1918,7 +1922,9 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                                   child: const CustomSvg(
                                       svg: volume, color: blackColor2)),
                               SizedBox(width: 6,),
-                              Text("Set Volume"),
+                              Text("Set Volume",style: TextStyle(
+                                fontWeight: FontWeight.w500
+                              ),),
                               // GestureDetector(
                               //     onTap: () {
                               //       ref.read(addProvider).addOrRemovePlayList(
@@ -1957,7 +1963,9 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                               const SizedBox(
                                 width: 10,
                               ),
-                              Text("Set Timer"),
+                              Text("Set Timer",style: TextStyle(
+                                  fontWeight: FontWeight.w500
+                              ),),
                             ],
                           ),
                         ),
