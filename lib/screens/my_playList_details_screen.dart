@@ -1984,14 +1984,13 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
   double? Savetimer = 120.0;
   double? Savetimer2 = 120.0;
   double? Savetimer3 = 120.0;
-  bool infinity = false;
+  bool infinity_view = false;
 
   getTimer() async {
     await LocalDB().getTimer().then((value) {
       setState(() {
         Savetimer = double.parse(value) * 60;
 
-        print("Val_111_${Savetimer}");
       });
     });
   }
@@ -2001,7 +2000,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
       setState(() {
         Savetimer2 = double.parse(value) * 60;
 
-        print("Val_111_${Savetimer2}");
+
       });
     });
   }
@@ -2011,7 +2010,6 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
       setState(() {
         Savetimer3 = double.parse(value) * 60;
 
-        print("Val_111_${Savetimer3}");
       });
     });
   }
@@ -2025,7 +2023,6 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
       setState(() {
         volume1 = double.parse(value);
 
-        print("Volume${volume1}");
       });
     });
   }
@@ -2035,7 +2032,6 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
       setState(() {
         volume2 = double.parse(value);
 
-        print("Volume 2${volume2}");
       });
     });
   }
@@ -2045,7 +2041,6 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
       setState(() {
         volume3 = double.parse(value);
 
-        print("Volume 3 ${volume3}");
       });
     });
   }
@@ -2068,7 +2063,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
   late StreamSubscription<double> _subscription;
   int musicIndex = 0;
   List<MusicModel> musicList = [];
-  bool check = true;
+  bool check = false;
   TextEditingController minController = TextEditingController();
   TextEditingController secController = TextEditingController();
 
@@ -2094,13 +2089,13 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
              .playListList!
              .length -
              1){
-       infinity=true;
+       infinity_view=true;
+       check=true;
      }
    });
 
     Timer.periodic(Duration(seconds: 1), (timer) async {
-      print("[[[[[[[[[[[[[[[[[[[[[[[");
-      print(infinity);
+
 
       if (musicIndex ==
           ref
@@ -2111,14 +2106,16 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
               1){
         /*initialTime=4564645645;
         ins.seek(Duration(days: 1));*/
-        if(!infinity)
-        sliderInitial=0;
+        if(!infinity_view) {
+          sliderInitial=0;
+          check=true;
+        }
 
 
       }else{
         initialTime=120.0;
-        infinity=false;
-
+        infinity_view=false;
+        check=false;
 
       }
 
@@ -2155,10 +2152,8 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
           }
         }
         else {
-          print("play next================");
 
           await ins.stop();
-          print("Else");
 
           sliderInitial = 0.0;
 
@@ -2234,7 +2229,6 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
     if (ins.isPlaying()) {
       await ins.stop();
       pauseSliderTimmer();
-      print("pause");
     } else {
       if (musicIndex <
           ref
@@ -2266,7 +2260,6 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
         resumeSliderTimmer();
       }
 
-      print("play");
     }
 
     if (mounted) {
@@ -2284,7 +2277,6 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
   playMusicForBottomSheet(
       {required String id,
       required Function(void Function()) updateState}) async {
-    print("playlist play button click");
     int _index = ref
         .watch(playlistProvider)
         .mixMixPlaylist[mixPlaylistIndex]
@@ -2297,31 +2289,88 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
 
           pauseSliderTimmer();
         } else {
-          String url1 = ref
-                  .watch(playlistProvider)
-                  .mixMixPlaylist[mixPlaylistIndex]
-                  .playListList![_index]
-                  .first
-                  ?.musicFile ??
-              "";
-
-          await ins.playAudio(Duration(minutes: 2), "assets/$url1");
-          resumeSliderTimmer();
-        }
-      } else {
-        sliderInitial = 0.0;
-        musicIndex = _index;
-
-        String url1 = ref
+          if(_index == ref
+              .watch(playlistProvider)
+              .mixMixPlaylist[
+          mixPlaylistIndex]
+              .playListList!.length -1){
+            String url1 = ref
                 .watch(playlistProvider)
                 .mixMixPlaylist[mixPlaylistIndex]
                 .playListList![_index]
                 .first
                 ?.musicFile ??
-            "";
+                "";
 
-        await ins.playAudio(Duration(minutes: 2), "assets/$url1");
-        resumeSliderTimmer();
+            await ins.playAudio(Duration(days: 11), "assets/$url1");
+            resumeSliderTimmer();
+
+            check=true;
+            selectedTime=0;
+            infinity_view=false;
+
+
+
+          }else{
+            String url1 = ref
+                .watch(playlistProvider)
+                .mixMixPlaylist[mixPlaylistIndex]
+                .playListList![_index]
+                .first
+                ?.musicFile ??
+                "";
+
+            await ins.playAudio(Duration(minutes: 2), "assets/$url1");
+            resumeSliderTimmer();
+          }
+
+        }
+      } else {
+        sliderInitial = 0.0;
+        musicIndex = _index;
+        if(_index == ref
+            .watch(playlistProvider)
+            .mixMixPlaylist[
+        mixPlaylistIndex]
+            .playListList!.length -1){
+          String url1 = ref
+              .watch(playlistProvider)
+              .mixMixPlaylist[mixPlaylistIndex]
+              .playListList![_index]
+              .first
+              ?.musicFile ??
+              "";
+
+          await ins.playAudio(Duration(hours: 10), "assets/$url1");
+          resumeSliderTimmer();
+
+
+
+        }else{
+          String url1 = ref
+              .watch(playlistProvider)
+              .mixMixPlaylist[mixPlaylistIndex]
+              .playListList![_index]
+              .first
+              ?.musicFile ??
+              "";
+
+          await ins.playAudio(Duration(minutes: 2), "assets/$url1");
+          resumeSliderTimmer();
+        }
+        // sliderInitial = 0.0;
+        // musicIndex = _index;
+        //
+        // String url1 = ref
+        //         .watch(playlistProvider)
+        //         .mixMixPlaylist[mixPlaylistIndex]
+        //         .playListList![_index]
+        //         .first
+        //         ?.musicFile ??
+        //     "";
+        //
+        // await ins.playAudio(Duration(minutes: 2), "assets/$url1");
+        // resumeSliderTimmer();
       }
     }
     if (mounted) {
@@ -2514,7 +2563,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                             .mixMixPlaylist[mixPlaylistIndex]
                             .playListList!
                             .length -
-                        1 || infinity) ...[
+                        1 || infinity_view) ...[
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 30.0),
                     child: Row(
@@ -2568,7 +2617,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                             .mixMixPlaylist[mixPlaylistIndex]
                             .playListList!
                             .length -
-                        1|| infinity) ...[
+                        1|| infinity_view) ...[
                   if (index == 0) ...[
                     SizedBox(
                       //color: Colors.green,
@@ -2614,7 +2663,6 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                             activeColor: primaryPinkColor,
                             inactiveColor: primaryGreyColor2,
                             onChanged: (double newValue) async {
-                              print("slider");
                               updateSlider(newValue.floorToDouble());
                               setState(() {});
                             },
@@ -2640,7 +2688,6 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                             activeColor: primaryPinkColor,
                             inactiveColor: primaryGreyColor2,
                             onChanged: (double newValue) async {
-                              print("slider");
                               updateSlider(newValue.floorToDouble());
                               setState(() {});
                             },
@@ -2669,7 +2716,6 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                             activeColor: primaryPinkColor,
                             inactiveColor: primaryGreyColor2,
                             onChanged: (double newValue) async {
-                              print("slider");
                               // updateSlider(newValue);
                               // ins.seek(Duration(
                               //     seconds: (sliderEnd - sliderInitial).toInt()));
@@ -2923,7 +2969,6 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                       updateState(() {
                                         // Screen.setBrightness(newValue);
                                         brightness = newValue;
-                                        print("$brightness");
                                       });
                                       await ScreenBrightness()
                                           .setScreenBrightness(brightness);
@@ -3236,15 +3281,15 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                   selectedTime = newValue.toInt();
                                   setDuration = selectedTimes[selectedTime];
 
-                                  infinity=true;
+                                  infinity_view=true;
                                   setDuration *= 60;
                                   setSongDuration(setDuration);
                                   ins.seek(Duration(seconds: setDuration));
-                                  print("index 111 $setDuration");
-                                  print(
-                                      "index 222 ${selectedTimes[selectedTime]}");
+
                                   if (selectedTimes[selectedTime] == 0) {
+                                    infinity_view=false;
                                     check = true;
+
                                     // if (musicIndex == 0) {
                                     //   Savetimer = 120.0;
                                     // } else if (musicIndex == 1) {
@@ -3255,6 +3300,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                   } else {
                                     check = false;
                                   }
+                                  ins.pauseAudio();
                                   // setDuration = 1;
                                   // selectedTime = check ? 0 : newValue.toInt();
                                   // setDuration = selectedTimes[selectedTime];
@@ -3300,6 +3346,8 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                               onChanged: (newValue) {
                                 state(() {
                                   check = newValue!;
+                                  selectedTime=0;
+                                  infinity_view=false;
                                 });
                               }),
                           TextButton(
@@ -3354,7 +3402,6 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
           setState(() {
             secController.text = "";
             minController.text = "";
-            print("asche");
           });
         }
       }
@@ -3580,104 +3627,11 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                               ),
                                             ],
                                           ),
-                                          Row(
-                                            children: [
-                                              CustomSvg(svg: timer),
-                                              if (musicIndex == 0) ...[
-                                                if (Savetimer == 0.0 ||
-                                                    Savetimer == 120.0) ...[
-                                                  Padding(
-                                                    padding:
-                                                        EdgeInsets.symmetric(
-                                                            horizontal: 8.0),
-                                                    child: CustomText(
-                                                      text: "2.00",
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      fontSize: 12,
-                                                      color: primaryGreyColor,
-                                                    ),
-                                                  )
-                                                ] else ...[
-                                                  Padding(
-                                                    padding:
-                                                        EdgeInsets.symmetric(
-                                                            horizontal: 8.0),
-                                                    child: CustomText(
-                                                      text:
-                                                          "${getHumanTimeBySecond(Savetimer!.toInt())}",
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      fontSize: 12,
-                                                      color: primaryGreyColor,
-                                                    ),
-                                                  )
-                                                ]
-                                              ] else if (musicIndex == 1 ||
-                                                  Savetimer2 == 120.0) ...[
-                                                if (Savetimer2 == 0.0) ...[
-                                                  Padding(
-                                                    padding:
-                                                        EdgeInsets.symmetric(
-                                                            horizontal: 8.0),
-                                                    child: CustomText(
-                                                      text: "2.00",
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      fontSize: 12,
-                                                      color: primaryGreyColor,
-                                                    ),
-                                                  )
-                                                ] else ...[
-                                                  Padding(
-                                                    padding:
-                                                        EdgeInsets.symmetric(
-                                                            horizontal: 8.0),
-                                                    child: CustomText(
-                                                      text:
-                                                          "${getHumanTimeBySecond(Savetimer2!.toInt())}",
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      fontSize: 12,
-                                                      color: primaryGreyColor,
-                                                    ),
-                                                  )
-                                                ]
-                                              ] else if (musicIndex == 2) ...[
-                                                if (Savetimer3 == 0.0 ||
-                                                    Savetimer3 == 120.0) ...[
-                                                  Padding(
-                                                    padding:
-                                                        EdgeInsets.symmetric(
-                                                            horizontal: 8.0),
-                                                    child: CustomText(
-                                                      text: "2.00",
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      fontSize: 12,
-                                                      color: primaryGreyColor,
-                                                    ),
-                                                  )
-                                                ] else ...[
-                                                  Padding(
-                                                    padding:
-                                                        EdgeInsets.symmetric(
-                                                            horizontal: 8.0),
-                                                    child: CustomText(
-                                                      text:
-                                                          "${getHumanTimeBySecond(Savetimer3!.toInt())}",
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      fontSize: 12,
-                                                      color: primaryGreyColor,
-                                                    ),
-                                                  )
-                                                ]
-                                              ],
-                                            ],
-                                          ),
+
                                           GestureDetector(
                                             onTap: () async {
+
+
                                               await playMusicForBottomSheet(
                                                 id: ref
                                                     .watch(playlistProvider)
@@ -3825,10 +3779,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
       sliderTimer!.cancel();
     }
     sliderTimer = Timer.periodic(Duration(seconds: 1), (timer) {
-      print("Savetimer===========================");
-      print(Savetimer);
-      print(Savetimer2);
-      print(Savetimer3);
+
 
       if (!mounted) {
         timer.cancel();
@@ -3878,8 +3829,6 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
       }
 
       sliderInitial++;
-      print("sliderInitial=-=-=-=-=-=-=-=-");
-      print(sliderInitial);
       setState(() {});
     });
   }
@@ -3890,8 +3839,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
   }
 
   void pauseSliderTimmer() {
-    print("=========${sliderTimer!.isActive}");
-    print("=========");
+
 
     sliderTimer!.cancel();
   }

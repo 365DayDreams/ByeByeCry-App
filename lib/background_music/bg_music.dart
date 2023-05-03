@@ -73,8 +73,6 @@ class AudioPlayerBG {
     _timerDuration = Timer.periodic(Duration(seconds: 1), (timer) {
       _limit = _limit! - 1;
 
-      print("_limit===========${_player!.playing}");
-      print(_limit);
 
       if (_limit! <= 0) {
         _player!.stop();
@@ -100,8 +98,6 @@ class AudioPlayerBG {
     _timerDuration = Timer.periodic(Duration(seconds: 1), (timer) {
       _limit = _limit! - 1;
 
-      print("_limit===========${_player!.playing}");
-      print(_limit);
 
       if (_limit! <= 0) {
         _player!.stop();
@@ -177,19 +173,14 @@ class AudioPlayerBG {
 if(!IsSilenCall){
   return;
 }
-      print("==============dasfsdfsd==");
-      print(event.begin);
       if (event.begin) {
-        print("================");
-        print(event.type);
+
 
         await _player!.stop();
-        print("_player!.playing==sss");
-        print(_player!.playing);
+
         await Future.delayed(Duration(milliseconds: 100));
         _player!.play();
-        print("_player!.playing=======");
-        print(_player!.playing);
+
       }
     });
   }
