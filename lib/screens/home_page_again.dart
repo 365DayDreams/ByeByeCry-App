@@ -263,33 +263,36 @@ class _HomePageAgainPageState extends ConsumerState<HomePageAgain> {
                           ),
                         ),
 
-                        Positioned(
-                          right: 35,
-                          // bottom: 185,
-                          child: IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  if (box.containsKey(
-                                      dummyText[itemIndex].id)) {
-                                    box.delete(dummyText[itemIndex].id);
-                                  } else {
-                                    box.put(dummyText[itemIndex].id,
-                                        dummyText[itemIndex]);
-                                  }
-                                });
-                              },
-                              icon: Hive.box("homeFav").containsKey(
-                                  dummyText[itemIndex].id)
-                                  ? Icon(
-                                Icons.favorite,
-                                size: 40,
-                                color: primaryPinkColor,
-                              )
-                                  : Icon(
-                                Icons.favorite_border,
-                                size: 40,
-                                color: primaryPinkColor,
-                              )),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 18.0,top: 8),
+                          child: Align(
+                            alignment: Alignment.topRight,
+                            // bottom: 185,
+                            child: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    if (box.containsKey(
+                                        dummyText[itemIndex].id)) {
+                                      box.delete(dummyText[itemIndex].id);
+                                    } else {
+                                      box.put(dummyText[itemIndex].id,
+                                          dummyText[itemIndex]);
+                                    }
+                                  });
+                                },
+                                icon: Hive.box("homeFav").containsKey(
+                                    dummyText[itemIndex].id)
+                                    ? Icon(
+                                  Icons.favorite,
+                                  size: 40,
+                                  color: primaryPinkColor,
+                                )
+                                    : Icon(
+                                  Icons.favorite_border,
+                                  size: 40,
+                                  color: primaryPinkColor,
+                                )),
+                          ),
                         )
                       ],
                     );
