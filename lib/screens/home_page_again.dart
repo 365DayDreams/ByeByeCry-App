@@ -50,6 +50,13 @@ class _HomePageAgainPageState extends ConsumerState<HomePageAgain> {
         text:"dghasdghdsghsd Try This Lay baby on their back and bring their knees to their chest.Does baby have gas? Try This Lay baby on their back and bring their knees to their chest."),
   ];
 
+
+  @override
+  void initState() {
+    super.initState();
+    _sliderController = CarouselSliderController();
+  }
+
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
@@ -163,16 +170,74 @@ class _HomePageAgainPageState extends ConsumerState<HomePageAgain> {
                                       unlimitedMode: true,
                                       controller: _sliderController,
                                       slideBuilder: (index) {
-                                        return Padding(
-                                          padding: const EdgeInsets.only(left: 18.0,right: 10),
-                                          child: Container(
-                                            alignment: Alignment.center,
-                                            // color: colors[index],
-                                            child: Text(
-                                              dummyText[index].text.toString(),
-                                              style: TextStyle(fontSize: 18, color: Colors.black,height:  1.5),
+                                        return Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            GestureDetector(
+                                                onTap: () {
+                                                  _sliderController!.previousPage();
+
+                                                  // buttonCarouselController
+                                                  //     .previousPage(
+                                                  //     duration:
+                                                  //     const Duration(
+                                                  //         milliseconds:
+                                                  //         500),
+                                                  //     curve: Curves
+                                                  //         .easeIn);
+                                                },
+                                                child: Container(
+                                                    color:
+                                                    Colors.transparent,
+                                                    child: const Padding(
+                                                      padding:
+                                                      EdgeInsets.all(
+                                                          6.0),
+                                                      child: CustomSvg(
+                                                          svg:
+                                                          leftDirection),
+                                                    ))),
+
+
+
+                                            Expanded(
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(left: 18.0,right: 10),
+                                                child: Container(
+                                                  alignment: Alignment.center,
+                                                  // color: colors[index],
+                                                  child: Text(
+                                                    dummyText[index].text.toString(),
+                                                    style: TextStyle(fontSize: 18, color: Colors.black,height:  1.5),
+                                                  ),
+                                                ),
+                                              ),
                                             ),
-                                          ),
+                                            GestureDetector(
+                                                onTap: () {
+                                                  _sliderController!.nextPage();
+
+                                                  // buttonCarouselController
+                                                  //     .nextPage(
+                                                  //     duration:
+                                                  //     const Duration(
+                                                  //         milliseconds:
+                                                  //         500),
+                                                  //     curve: Curves
+                                                  //         .easeIn);
+                                                },
+                                                child: Container(
+                                                    color:
+                                                    Colors.transparent,
+                                                    child: const Padding(
+                                                      padding:
+                                                      EdgeInsets.all(
+                                                          6.0),
+                                                      child: CustomSvg(
+                                                          svg:
+                                                          rightDirection),
+                                                    ))),
+                                          ],
                                         );
                                       },
                                       // slideTransform: CubeTransform(),
