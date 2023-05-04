@@ -52,7 +52,7 @@ class _HomePageAgainPageState extends ConsumerState<HomePageAgain> {
     final height = MediaQuery.of(context).size.height;
     return SafeArea(
       child: Scaffold(
-   //   backgroundColor: secondaryGreenColor,
+        //   backgroundColor: secondaryGreenColor,
         body:Container(
           child: Column(
             children: [
@@ -219,7 +219,7 @@ class _HomePageAgainPageState extends ConsumerState<HomePageAgain> {
                                                   );
                                                 },
                                                 options: CarouselOptions(
-                                                    aspectRatio: 2.1,
+                                                    // aspectRatio: 2.1,
                                                     viewportFraction: 1,
                                                     autoPlay: true,
                                                     enableInfiniteScroll:
