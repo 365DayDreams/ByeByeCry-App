@@ -1,11 +1,13 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:bye_bye_cry_new/compoment/shared/custom_svg.dart';
 import 'package:bye_bye_cry_new/compoment/shared/custom_text.dart';
 import 'package:bye_bye_cry_new/screens/models/home_page_fav_model.dart';
 import 'package:bye_bye_cry_new/screens/provider/add_music_provider.dart';
-import 'package:carousel_slider/carousel_slider.dart';
+// import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_carousel_slider/carousel_slider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
@@ -24,10 +26,11 @@ class HomePageAgain extends ConsumerStatefulWidget {
 }
 
 class _HomePageAgainPageState extends ConsumerState<HomePageAgain> {
-  CarouselController buttonCarouselController = CarouselController();
+  // CarouselController buttonCarouselController = CarouselController();
 
   final List<bool> fav = [false];
   int itemIndex = 0;
+  CarouselSliderController ? _sliderController;
 
   List<HomePageFavModel> dummyText = [
     HomePageFavModel(
@@ -150,116 +153,219 @@ class _HomePageAgainPageState extends ConsumerState<HomePageAgain> {
                             color: secondaryGreenColor,
                             width: double.infinity,
                             child: Container(
+                                // alignment: Alignment.center,
+
                                 color: Colors.white,
-                                child: SingleChildScrollView(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                    CrossAxisAlignment.end,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                        MainAxisAlignment
-                                            .spaceBetween,
-                                        children: [
-                                          GestureDetector(
-                                              onTap: () {
-                                                buttonCarouselController
-                                                    .previousPage(
-                                                    duration:
-                                                    const Duration(
-                                                        milliseconds:
-                                                        500),
-                                                    curve: Curves
-                                                        .easeIn);
-                                              },
-                                              child: Container(
-                                                  color:
-                                                  Colors.transparent,
-                                                  child: const Padding(
-                                                    padding:
-                                                    EdgeInsets.all(
-                                                        6.0),
-                                                    child: CustomSvg(
-                                                        svg:
-                                                        leftDirection),
-                                                  ))),
-                                          Expanded(
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(top: 18.0),
-                                              child: CarouselSlider.builder(
-                                                carouselController:
-                                                buttonCarouselController,
-                                                itemCount: dummyText.length,
-                                                itemBuilder:
-                                                    (BuildContext context,
-                                                    int itemIndex,
-                                                    int pageViewIndex) {
-                                                  fav.add(false);
-
-                                                  return Padding(
-                                                    padding: const EdgeInsets.only(top: 33.0),
-                                                    child: Container(
-                                                      color:
-                                                      Colors.transparent,
-                                                      child: Text(
-                                                        "${dummyText[itemIndex].text}",
-                                                        style: TextStyle(
-                                                          fontWeight:
-                                                          FontWeight.w600,
-                                                          fontSize: 18,
-                                                          color:
-                                                          secondaryBlackColor,
-                                                        ),
-                                                        textAlign:
-                                                        TextAlign.center,
-
-                                                        // height: 1.3,
-                                                      ),
-                                                    ),
-                                                  );
-                                                },
-                                                options: CarouselOptions(
-                                                    // aspectRatio: 2.1,
-                                                    viewportFraction: 1,
-                                                    autoPlay: true,
-                                                    enableInfiniteScroll:
-                                                    false,
-                                                    onPageChanged:
-                                                        (index, reasons) {
-                                                      setState(() {
-                                                        itemIndex = index;
-                                                      });
-                                                    }),
-                                              ),
+                                child:     Padding(
+                                  padding: const EdgeInsets.only(top: 18.0),
+                                  child: Container(
+                                    child: CarouselSlider.builder(
+                                      unlimitedMode: true,
+                                      controller: _sliderController,
+                                      slideBuilder: (index) {
+                                        return Padding(
+                                          padding: const EdgeInsets.only(left: 18.0,right: 10),
+                                          child: Container(
+                                            alignment: Alignment.center,
+                                            // color: colors[index],
+                                            child: Text(
+                                              dummyText[index].text.toString(),
+                                              style: TextStyle(fontSize: 18, color: Colors.black,height:  1.5),
                                             ),
                                           ),
-                                          GestureDetector(
-                                              onTap: () {
-                                                buttonCarouselController
-                                                    .nextPage(
-                                                    duration:
-                                                    const Duration(
-                                                        milliseconds:
-                                                        500),
-                                                    curve: Curves
-                                                        .easeIn);
-                                              },
-                                              child: Container(
-                                                  color:
-                                                  Colors.transparent,
-                                                  child: const Padding(
-                                                    padding:
-                                                    EdgeInsets.all(
-                                                        6.0),
-                                                    child: CustomSvg(
-                                                        svg:
-                                                        rightDirection),
-                                                  ))),
-                                        ],
-                                      )
-                                    ],
+                                        );
+                                      },
+                                      // slideTransform: CubeTransform(),
+                                      // slideIndicator: CircularSlideIndicator(
+                                      //   padding: EdgeInsets.only(bottom: 32),
+                                      //   indicatorBorderColor: Colors.black,
+                                      // ),
+                                      itemCount: dummyText.length,
+                                      initialPage: 0,
+                                      enableAutoSlider: true,
+                                    ),
                                   ),
-                                )),
+                                  // CarouselSlider.builder(
+                                  //   carouselController:
+                                  //   buttonCarouselController,
+                                  //   itemCount: dummyText.length,
+                                  //   itemBuilder:
+                                  //       (BuildContext context,
+                                  //       int itemIndex,
+                                  //       int pageViewIndex) {
+                                  //     fav.add(false);
+                                  //
+                                  //     return Padding(
+                                  //       padding: const EdgeInsets.only(top: 33.0),
+                                  //       child: Container(
+                                  //         color:
+                                  //         Colors.transparent,
+                                  //         child: Text(
+                                  //           "${dummyText[itemIndex].text}",
+                                  //           style: TextStyle(
+                                  //             fontWeight:
+                                  //             FontWeight.w600,
+                                  //             fontSize: 18,
+                                  //             color:
+                                  //             secondaryBlackColor,
+                                  //             // height: 1.4
+                                  //           ),
+                                  //           textAlign:
+                                  //           TextAlign.center,
+                                  //
+                                  //           // height: 1.3,
+                                  //         ),
+                                  //       ),
+                                  //     );
+                                  //   },
+                                  //   options: CarouselOptions(
+                                  //       // aspectRatio: 2.1,
+                                  //       viewportFraction:1,
+                                  //       enableInfiniteScroll:
+                                  //       false,
+                                  //       onPageChanged:
+                                  //           (index, reasons) {
+                                  //         setState(() {
+                                  //           itemIndex = index;
+                                  //         });
+                                  //       }),
+                                  // ),
+                                ),
+                                // child: SingleChildScrollView(
+                                //   child: Column(
+                                //     crossAxisAlignment:
+                                //     CrossAxisAlignment.end,
+                                //     children: [
+                                //       Row(
+                                //         mainAxisAlignment:
+                                //         MainAxisAlignment
+                                //             .spaceBetween,
+                                //         crossAxisAlignment: CrossAxisAlignment.center,
+                                //         children: [
+                                //           GestureDetector(
+                                //               onTap: () {
+                                //                 // buttonCarouselController
+                                //                 //     .previousPage(
+                                //                 //     duration:
+                                //                 //     const Duration(
+                                //                 //         milliseconds:
+                                //                 //         500),
+                                //                 //     curve: Curves
+                                //                 //         .easeIn);
+                                //               },
+                                //               child: Container(
+                                //                   color:
+                                //                   Colors.transparent,
+                                //                   child: const Padding(
+                                //                     padding:
+                                //                     EdgeInsets.all(
+                                //                         6.0),
+                                //                     child: CustomSvg(
+                                //                         svg:
+                                //                         leftDirection),
+                                //                   ))),
+                                //           Padding(
+                                //             padding: const EdgeInsets.only(top: 18.0),
+                                //             child: Container(
+                                //               child: CarouselSlider.builder(
+                                //                 unlimitedMode: true,
+                                //                 controller: _sliderController,
+                                //                 slideBuilder: (index) {
+                                //                   return Expanded(
+                                //                     child: Container(
+                                //                       alignment: Alignment.center,
+                                //                       // color: colors[index],
+                                //                       child: Text(
+                                //                         dummyText[index].text.toString(),
+                                //                         style: TextStyle(fontSize: 200, color: Colors.white),
+                                //                       ),
+                                //                     ),
+                                //                   );
+                                //                 },
+                                //                 slideTransform: CubeTransform(),
+                                //                 slideIndicator: CircularSlideIndicator(
+                                //                   padding: EdgeInsets.only(bottom: 32),
+                                //                   indicatorBorderColor: Colors.black,
+                                //                 ),
+                                //                 itemCount: dummyText.length,
+                                //                 initialPage: 0,
+                                //                 enableAutoSlider: true,
+                                //               ),
+                                //             ),
+                                //             // CarouselSlider.builder(
+                                //             //   carouselController:
+                                //             //   buttonCarouselController,
+                                //             //   itemCount: dummyText.length,
+                                //             //   itemBuilder:
+                                //             //       (BuildContext context,
+                                //             //       int itemIndex,
+                                //             //       int pageViewIndex) {
+                                //             //     fav.add(false);
+                                //             //
+                                //             //     return Padding(
+                                //             //       padding: const EdgeInsets.only(top: 33.0),
+                                //             //       child: Container(
+                                //             //         color:
+                                //             //         Colors.transparent,
+                                //             //         child: Text(
+                                //             //           "${dummyText[itemIndex].text}",
+                                //             //           style: TextStyle(
+                                //             //             fontWeight:
+                                //             //             FontWeight.w600,
+                                //             //             fontSize: 18,
+                                //             //             color:
+                                //             //             secondaryBlackColor,
+                                //             //             // height: 1.4
+                                //             //           ),
+                                //             //           textAlign:
+                                //             //           TextAlign.center,
+                                //             //
+                                //             //           // height: 1.3,
+                                //             //         ),
+                                //             //       ),
+                                //             //     );
+                                //             //   },
+                                //             //   options: CarouselOptions(
+                                //             //       // aspectRatio: 2.1,
+                                //             //       viewportFraction:1,
+                                //             //       enableInfiniteScroll:
+                                //             //       false,
+                                //             //       onPageChanged:
+                                //             //           (index, reasons) {
+                                //             //         setState(() {
+                                //             //           itemIndex = index;
+                                //             //         });
+                                //             //       }),
+                                //             // ),
+                                //           ),
+                                //           GestureDetector(
+                                //               onTap: () {
+                                //                 // buttonCarouselController
+                                //                 //     .nextPage(
+                                //                 //     duration:
+                                //                 //     const Duration(
+                                //                 //         milliseconds:
+                                //                 //         500),
+                                //                 //     curve: Curves
+                                //                 //         .easeIn);
+                                //               },
+                                //               child: Container(
+                                //                   color:
+                                //                   Colors.transparent,
+                                //                   child: const Padding(
+                                //                     padding:
+                                //                     EdgeInsets.all(
+                                //                         6.0),
+                                //                     child: CustomSvg(
+                                //                         svg:
+                                //                         rightDirection),
+                                //                   ))),
+                                //         ],
+                                //       )
+                                //     ],
+                                //   ),
+                                // ),
+                            ),
                           ),
                         ),
 
