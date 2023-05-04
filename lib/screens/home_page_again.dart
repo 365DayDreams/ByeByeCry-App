@@ -67,7 +67,7 @@ class _HomePageAgainPageState extends ConsumerState<HomePageAgain> {
                     decoration: BoxDecoration(
                       color: primaryWhiteColor,
                     ),
-                    child: Image.asset("asset/images/Logo.png",height:  height * .09,width: 350,),
+                    child: Image.asset("asset/images/Logo.png",height:  height * .10,width: 350,),
                   ),
                 ),
               ),
@@ -265,7 +265,7 @@ class _HomePageAgainPageState extends ConsumerState<HomePageAgain> {
 
                         Positioned(
                           right: 35,
-                          bottom: 185,
+                          // bottom: 185,
                           child: IconButton(
                               onPressed: () {
                                 setState(() {
