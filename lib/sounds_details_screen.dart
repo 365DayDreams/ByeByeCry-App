@@ -987,7 +987,8 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                                         "index 222 ${selectedTimes[selectedTime]}");
                                     if (selectedTimes[selectedTime] == 0) {
                                       check = true;
-                                      sliderEnd = 120.0;
+
+                                      // sliderEnd = 120.0;
                                     } else {
                                       check = false;
                                     }
@@ -1030,9 +1031,10 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                               onChanged: (newValue) {
                                 state(() {
                                   check = newValue!;
-                                  // if (check) {
-                                  //   selectedTime = 0;
-                                  // }
+
+                                  if (check) {
+                                    selectedTime = 0;
+                                  }
                                 });
                               }),
                           TextButton(
