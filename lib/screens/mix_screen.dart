@@ -581,7 +581,8 @@ class _MixScreenState extends ConsumerState<MixScreen> {
                          ref.watch(mixMusicProvider).musicModelFirst= null;
                          audioPlayer1.stop();
                          audioPlayer2.stop();
-                         Navigator.push(context, MaterialPageRoute(builder: (_)=> StartPage()));
+                         Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>
+                             StartPage()));
 
 
                          // Navigator.push(

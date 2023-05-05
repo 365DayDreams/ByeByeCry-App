@@ -1693,8 +1693,9 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
 
                   if(deleteShow==true){
                     return null;
-                  }else
-                  Navigator.push(
+                  }else {
+                    print("did-----------${musicModel.id.runtimeType}");
+                    Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (_) => SoundDetailsScreen(
@@ -1715,6 +1716,7 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
                               }
                             },
                           )));
+                  }
                 },
                 leading:Padding(
                   padding: const EdgeInsets.only(left: 0.0,right: 18),
@@ -1959,8 +1961,9 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
                   onTap: ()async{
                     if(deleteShow==true){
                       return null;
-                    }else
-                    Navigator.push(
+                    }else {
+                      print("did-----------${musicModel.id}");
+                      Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (_) => SoundDetailsScreen(
@@ -1968,7 +1971,8 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
                               onPressed: () async {
                                 if (ref.watch(addProvider).playFromPlayList) {
                                   if (mounted) {
-                                    ref.read(addProvider).changePage(3);
+                                    ref.read(addProvider)
+                                        .changePage(3);
                                   }
                                   if (mounted) {
                                     changeToPlayNow = false;
@@ -1981,6 +1985,7 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
                                 }
                               },
                             )));
+                    }
                   },
                   leading:Padding(
                     padding: const EdgeInsets.only(left: 0.0,right: 18),
@@ -2153,14 +2158,35 @@ class _SoundScreenState extends ConsumerState<SoundScreen> {
                 ref.read(mixMusicProvider).playFromPlayListActive(change: false);
               }
               if (mounted) {
-                setState(() {
-                  mixMusicId = mixMusicModel.id;
-                  changeToMixPlayNow = ref.watch(addProvider).showAddPlaylist
-                      ? false
-                      : deleteShow
-                      ? false
-                      : true;
-                });
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => ListenMixSound(
+                          mixMusicModelId: mixMusicModel.id,
+                          onPressed: () async {
+                            if (ref.watch(mixMusicProvider).playFromPlayList) {
+                              if (mounted) {
+                                ref.read(addProvider).changePage(3);
+                              }
+                              if (mounted) {
+                                //  changeToPlayNow = false;
+                                setState(() {});
+                              }
+                            } else {
+                              setState(() {
+                                //changeToPlayNow = false;
+                              });
+                            }
+                          },
+                        )));
+                // setState(() {
+                //   mixMusicId = mixMusicModel.id;
+                //   changeToMixPlayNow = ref.watch(addProvider).showAddPlaylist
+                //       ? false
+                //       : deleteShow
+                //       ? false
+                //       : true;
+                // });
               }
             },
             child: Row(

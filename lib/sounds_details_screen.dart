@@ -2,6 +2,7 @@
 import 'dart:async';
 import 'package:bye_bye_cry_new/compoment/shared/custom_image.dart';
 import 'package:bye_bye_cry_new/compoment/shared/custom_svg.dart';
+import 'package:bye_bye_cry_new/local_db/local_db.dart';
 import 'package:bye_bye_cry_new/main.dart';
 import 'package:bye_bye_cry_new/screens/provider/add_music_provider.dart';
 import 'package:bye_bye_cry_new/screens/provider/mix_music_provider.dart';
@@ -19,7 +20,9 @@ import '../compoment/utils/image_link.dart';
 class SoundDetailsScreen extends ConsumerStatefulWidget {
   final String musicId;
   final VoidCallback? onPressed;
-  const SoundDetailsScreen({Key? key, required this.musicId, this.onPressed})
+  const SoundDetailsScreen({Key? key,
+    required this.musicId,
+    this.onPressed})
       : super(key: key);
 
   @override
@@ -60,77 +63,91 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
     super.initState();
     print('checkkking--$check');
 
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      Timer.periodic(Duration(seconds: 1), (timer) async {
-        print(_position);
-        if (sliderInitial.toInt() == (sliderEnd - 1).toInt()) {
-          if (check == false) {
+    Timer.periodic(Duration(seconds: 1), (timer) async {
+      print(_position);
+      if (sliderInitial.toInt() == (sliderEnd - 1).toInt()) {
+        if (check == false) {
 
-            sliderInitial = 0.0;
-            sliderEnd = 120.0;
-            selectedTime = 0;
-            setDuration = 0;
-            check=true;
+          sliderInitial = 0.0;
+          sliderEnd = 120.0;
+          selectedTime = 0;
+          setDuration = 0;
+          check=true;
+
+          if (mounted) {
+            if(check==true){
+              changeIndex(changeIndex: true);
+              String url = ref.watch(addProvider).musicList[index].musicFile;
+              await ins.playAudio(Duration(hours: 8), "assets/" + url);
+
+              LocalDB.setCurrentPlayingMusic(title:
+              ref.watch(addProvider).musicList[index].musicName,
+                  id: ref.watch(addProvider).musicList[index].id, type: "single");
+              // sliderInitial=0.0;
 
 
-
-            if (mounted) {
-              if(check==true){
-                changeIndex(changeIndex: true);
-                String url = ref.watch(addProvider).musicList[index].musicFile;
-                await ins.playAudio(Duration(hours: 8), "assets/" + url);
-                // sliderInitial=0.0;
-
-
-                print("IF URL __$url");
-              }else{
-                String url = ref.watch(addProvider).musicList[index].musicFile;
-                await ins.playAudio(Duration(minutes: 2), "assets/" + url);
-                // sliderInitial=0.0;
-                changeIndex(changeIndex: true);
-                pageController.nextPage(
-                    duration: Duration(milliseconds: 100), curve: Curves.linear);
-                print("IF URL __$url");
-              }
-
-            }
-
-            if (mounted) {
-              setState(() {});
-            }
-          } else {
-            ins.stop();
-
-            sliderInitial = 0.0;
-            sliderEnd = 120.0;
-            selectedTime = 0;
-            setDuration = 0;
-            check=true;
-
-            if (mounted) {
+              print("IF URL __$url");
+            }else{
               String url = ref.watch(addProvider).musicList[index].musicFile;
               await ins.playAudio(Duration(minutes: 2), "assets/" + url);
+              LocalDB.setCurrentPlayingMusic(title:
+              ref.watch(addProvider).musicList[index].musicName,
+                  id: ref.watch(addProvider).musicList[index].id, type: "single");
+
               // sliderInitial=0.0;
-              print("else URL __$url");
+              changeIndex(changeIndex: true);
+              pageController.nextPage(
+                  duration: Duration(milliseconds: 100), curve: Curves.linear);
+              print("IF URL __$url");
             }
 
-            if (mounted) {
-              setState(() {});
-            }
           }
-          if (!mounted) {
-            timer.cancel();
-            return;
+
+          if (mounted) {
+            setState(() {});
+          }
+        } else {
+          ins.stop();
+
+          sliderInitial = 0.0;
+          sliderEnd = 120.0;
+          selectedTime = 0;
+          setDuration = 0;
+          check=true;
+
+          if (mounted) {
+            String url = ref.watch(addProvider).musicList[index].musicFile;
+            await ins.playAudio(Duration(minutes: 2), "assets/" + url);
+            LocalDB.setCurrentPlayingMusic(title:
+            ref.watch(addProvider).musicList[index].musicName,
+                id: ref.watch(addProvider).musicList[index].id, type: "single");
+
+            // sliderInitial=0.0;
+            print("else URL __$url");
+          }
+
+          if (mounted) {
+            setState(() {});
           }
         }
-      });
-
+        if (!mounted) {
+          timer.cancel();
+          return;
+        }
+      }
     });
+
+    print('checkkking--"rrrrrrrrrrrrrrrrrrr"');
   }
 
   @override
   void dispose() {
-    _subscription.cancel();
+
+    try {
+      _subscription.cancel();
+    } catch (e) {
+      // TODO
+    }
     super.dispose();
   }
 
@@ -172,9 +189,9 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
 
     pausePlayMethod();
 
-    if (mounted) {
+  /*  if (mounted) {
       setState(() {});
-    }
+    }*/
   }
 
   pausePlayMethod() async {
@@ -187,12 +204,20 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
         String url = ref.watch(addProvider).musicList[index].musicFile;
 
         ins.playAudio(Duration(hours: 8), "assets/$url");
+        LocalDB.setCurrentPlayingMusic(title:
+        ref.watch(addProvider).musicList[index].musicName,
+            id: ref.watch(addProvider).musicList[index].id, type: "single");
+
         resumeSliderTimmer();
         print("play");
       }else{
         String url = ref.watch(addProvider).musicList[index].musicFile;
 
         ins.playAudio(Duration(minutes: 2), "assets/$url");
+        LocalDB.setCurrentPlayingMusic(title:
+        ref.watch(addProvider).musicList[index].musicName,
+            id: ref.watch(addProvider).musicList[index].id, type: "single");
+
         resumeSliderTimmer();
         print("play");
       }
@@ -532,6 +557,10 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                                 await ins.stop();
                                 ins.playAudio(
                                     Duration(hours: 8), "assets/$url");
+                                LocalDB.setCurrentPlayingMusic(title:
+                                ref.watch(addProvider).musicList[index].musicName,
+                                    id: ref.watch(addProvider).musicList[index].id, type: "single");
+
                                 sliderInitial = 0.0;
                                 sliderEnd = 522222222220.0;
                               }else{
@@ -542,6 +571,10 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                                 await ins.stop();
                                 ins.playAudio(
                                     Duration(minutes: 2), "assets/$url");
+                                LocalDB.setCurrentPlayingMusic(title:
+                                ref.watch(addProvider).musicList[index].musicName,
+                                    id: ref.watch(addProvider).musicList[index].id, type: "single");
+
                                 sliderInitial = 0.0;
                                 sliderEnd = 120.0;
                               }
@@ -580,12 +613,20 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                                 ins.playAudio(
                                     Duration(hours: 8),
                                     "assets/$url");
+                                LocalDB.setCurrentPlayingMusic(title:
+                                ref.watch(addProvider).musicList[index].musicName,
+                                    id: ref.watch(addProvider).musicList[index].id, type: "single");
+
                               }else{
                                 ins.playAudio(
                                     Duration(
                                         seconds:
                                         (sliderEnd - sliderInitial).toInt()),
                                     "assets/$url");
+                                LocalDB.setCurrentPlayingMusic(title:
+                                ref.watch(addProvider).musicList[index].musicName,
+                                    id: ref.watch(addProvider).musicList[index].id, type: "single");
+
                               }
                               //  ins.silenceIncomingCalls();
                             }
@@ -635,11 +676,19 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                                 if(check==true){
                                   ins.playAudio(
                                       Duration(hours: 8), "assets/$url");
+                                  LocalDB.setCurrentPlayingMusic(title:
+                                  ref.watch(addProvider).musicList[index].musicName,
+                                      id: ref.watch(addProvider).musicList[index].id, type: "single");
+
                                   sliderInitial = 0.0;
                                   sliderEnd = 522222222220.0;
                                 }else{
                                   ins.playAudio(
                                       Duration(minutes: 2), "assets/$url");
+                                  LocalDB.setCurrentPlayingMusic(title:
+                                  ref.watch(addProvider).musicList[index].musicName,
+                                      id: ref.watch(addProvider).musicList[index].id, type: "single");
+
                                   sliderInitial = 0.0;
                                   sliderEnd = 120.0;
                                 }
@@ -1080,8 +1129,9 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
         ins.stop();
       }
       sliderInitial++;
-      setState(() {});
-    });
+      if (mounted) {
+        setState(() {});
+      }});
   }
 
   void updateSlider(double newValue) {

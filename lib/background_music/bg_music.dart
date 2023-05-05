@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:audio_session/audio_session.dart';
+import 'package:bye_bye_cry_new/screens/models/AppData.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:lecle_volume_flutter/lecle_volume_flutter.dart';
 
@@ -50,6 +51,7 @@ class AudioPlayerBG {
     _player!.setLoopMode(LoopMode.one);
 
     _player!.play();
+    AppData.isPlaying.value=true;
   }
 
   seek(Duration durationLeft) {
@@ -61,6 +63,7 @@ class AudioPlayerBG {
     _limit = durationMax.inSeconds;
 
     if (_timerDuration != null) {
+      AppData.isPlaying.value=false;
       _timerDuration!.cancel();
       try {
      // await _player!.stop();
@@ -73,8 +76,9 @@ class AudioPlayerBG {
     _timerDuration = Timer.periodic(Duration(seconds: 1), (timer) {
       _limit = _limit! - 1;
 
-
+      AppData.isPlaying.value=true;
       if (_limit! <= 0) {
+        AppData.isPlaying.value=false;
         _player!.stop();
         _timerDuration!.cancel();
       }
@@ -85,11 +89,13 @@ class AudioPlayerBG {
 
   Future<void> stop() async {
     await _player!.stop();
+    AppData.isPlaying.value=false;
     //_player!.dispose();
     if (_timerDuration != null) _timerDuration!.cancel();
   }
   void pauseAudio() async {
     await _player!.pause;
+    AppData.isPlaying.value=false;
     if (_timerDuration != null) _timerDuration!.cancel();
   }
   void resumeAudio() async {
@@ -97,14 +103,16 @@ class AudioPlayerBG {
     if (_timerDuration != null) _timerDuration!.cancel();
     _timerDuration = Timer.periodic(Duration(seconds: 1), (timer) {
       _limit = _limit! - 1;
-
+      AppData.isPlaying.value=true;
 
       if (_limit! <= 0) {
+        AppData.isPlaying.value=false;
         _player!.stop();
         _timerDuration!.cancel();
       }
     });
   }
+
 
   bool isPlaying() {
     return _player!.playing;

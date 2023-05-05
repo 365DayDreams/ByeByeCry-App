@@ -21,9 +21,10 @@ import '../main.dart';
 
 class PlaylistMixSound2 extends ConsumerStatefulWidget {
   final String? playlistMixMusicId;
+  final int songIndex;
   final VoidCallback? onPressed;
   const PlaylistMixSound2(
-      {Key? key, required this.playlistMixMusicId, this.onPressed})
+      {Key? key, required this.playlistMixMusicId, this.onPressed,this.songIndex=0})
       : super(key: key);
 
   @override
@@ -122,17 +123,23 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
 
   @override
   void initState() {
+    ins.stop();
     getTimer();
     getTimer2();
     getTimer3();
     getVol1();
     getVol2();
     getVol3();
+    musicIndex=widget.songIndex;
 
     initialization();
 
+
+
     super.initState();
    Future.delayed(Duration(seconds: 1),(){
+
+     changeIndex(changeIndex: false);
      if (musicIndex ==
          ref
              .watch(playlistProvider)
@@ -140,7 +147,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
              .playListList!
              .length -
              1){
-       infinity_view=true;
+       infinity_view=false;
        check=true;
      }
    });
@@ -194,6 +201,12 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                 .musicFile;
 
             await ins.playAudio(Duration(days: 1), "assets/$url");
+            LocalDB.setCurrentPlayingMusic(title: ref
+                .watch(playlistProvider)
+                .mixMixPlaylist[mixPlaylistIndex]
+                .playListList![musicIndex]
+                .first!.musicName,
+                type: "Playlist", id: widget.playlistMixMusicId, songIndex: musicIndex);
             //sliderInitial = 0.0;
 
           }
@@ -222,13 +235,21 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                 .musicFile;
             if (musicIndex == 0) {
               await ins.playAudio(Duration(minutes: 2), "assets/$url");
+
             } else if (musicIndex == 1) {
               await ins.playAudio(Duration(hours: 12), "assets/$url");
             } else if (musicIndex == 2) {
               await ins.playAudio(Duration(hours: 12), "assets/$url");
             }
+            LocalDB.setCurrentPlayingMusic(title: ref
+                .watch(playlistProvider)
+                .mixMixPlaylist[mixPlaylistIndex]
+                .playListList![musicIndex]
+                .first!.musicName,
+                type: "Playlist", id:  widget.playlistMixMusicId, songIndex: musicIndex);
             sliderInitial = 0.0;
           }
+
 
           if (mounted) {
             setState(() {});
@@ -247,7 +268,8 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
       mixPlaylistIndex = ref
           .watch(playlistProvider)
           .mixMixPlaylist
-          .indexWhere((element) => element.title == widget.playlistMixMusicId);
+          .indexWhere((element) => element.title
+          == widget.playlistMixMusicId);
       if (mounted) {
         setState(() {});
       }
@@ -264,15 +286,21 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
               .playListList!
               .length;
     } else {
-      musicIndex = (musicIndex - 1);
-      if (musicIndex < 0) {
+      musicIndex = (musicIndex ) %
+          ref
+              .watch(playlistProvider)
+              .mixMixPlaylist[mixPlaylistIndex]
+              .playListList!
+              .length;
+      //musicIndex = (musicIndex - 1);
+     /* if (musicIndex < 0) {
         musicIndex = ref
                 .watch(playlistProvider)
                 .mixMixPlaylist[mixPlaylistIndex]
                 .playListList!
                 .length -
             1;
-      }
+      }*/
     }
   }
 
@@ -297,7 +325,15 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
             "";
 
         ins.playAudio(Duration(minutes: 2), "assets/$url");
+
         resumeSliderTimmer();
+        LocalDB.setCurrentPlayingMusic(title: ref
+            .watch(playlistProvider)
+            .mixMixPlaylist[mixPlaylistIndex]
+            .playListList![musicIndex]
+            .first!.musicName,
+            type: "Playlist", id:  widget.playlistMixMusicId
+            , songIndex: musicIndex);
       } else {
         String url = ref
                 .watch(playlistProvider)
@@ -308,7 +344,15 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
             "";
 
         ins.playAudio(Duration(hours: 12), "assets/$url");
+
         resumeSliderTimmer();
+        LocalDB.setCurrentPlayingMusic(title: ref
+            .watch(playlistProvider)
+            .mixMixPlaylist[mixPlaylistIndex]
+            .playListList![musicIndex]
+            .first!.musicName,
+            type: "Playlist", id:  widget.playlistMixMusicId
+            , songIndex: musicIndex);
       }
 
     }
@@ -355,6 +399,12 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
 
             await ins.playAudio(Duration(days: 11), "assets/$url1");
             resumeSliderTimmer();
+            LocalDB.setCurrentPlayingMusic(title: ref
+                .watch(playlistProvider)
+                .mixMixPlaylist[mixPlaylistIndex]
+                .playListList![musicIndex]
+                .first!.musicName,
+                type: "Playlist", id:  widget.playlistMixMusicId, songIndex: musicIndex);
 
             check=true;
             selectedTime=0;
@@ -373,6 +423,12 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
 
             await ins.playAudio(Duration(minutes: 2), "assets/$url1");
             resumeSliderTimmer();
+            LocalDB.setCurrentPlayingMusic(title: ref
+                .watch(playlistProvider)
+                .mixMixPlaylist[mixPlaylistIndex]
+                .playListList![musicIndex]
+                .first!.musicName,
+                type: "Playlist", id:  widget.playlistMixMusicId, songIndex: musicIndex);
           }
 
         }
@@ -394,6 +450,12 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
 
           await ins.playAudio(Duration(hours: 10), "assets/$url1");
           resumeSliderTimmer();
+          LocalDB.setCurrentPlayingMusic(title: ref
+              .watch(playlistProvider)
+              .mixMixPlaylist[mixPlaylistIndex]
+              .playListList![musicIndex]
+              .first!.musicName,
+              type: "Playlist", id:  widget.playlistMixMusicId, songIndex: musicIndex);
 
 
 
@@ -408,6 +470,12 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
 
           await ins.playAudio(Duration(minutes: 2), "assets/$url1");
           resumeSliderTimmer();
+          LocalDB.setCurrentPlayingMusic(title: ref
+              .watch(playlistProvider)
+              .mixMixPlaylist[mixPlaylistIndex]
+              .playListList![musicIndex]
+              .first!.musicName,
+              type: "Playlist", id:  widget.playlistMixMusicId, songIndex: musicIndex);
         }
         // sliderInitial = 0.0;
         // musicIndex = _index;
@@ -831,6 +899,12 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                 ins.playAudio(
                                     Duration(hours: 12), "assets/$url");
                               }
+                              LocalDB.setCurrentPlayingMusic(title: ref
+                                  .watch(playlistProvider)
+                                  .mixMixPlaylist[mixPlaylistIndex]
+                                  .playListList![musicIndex]
+                                  .first!.musicName,
+                                  type: "Playlist", id:  widget.playlistMixMusicId, songIndex: musicIndex);
 
                               sliderInitial = 0.0;
 
@@ -875,6 +949,12 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                     Duration(hours: 12), "assets/$url1");
                                 resumeSliderTimmer();
                               }
+                              LocalDB.setCurrentPlayingMusic(title: ref
+                                  .watch(playlistProvider)
+                                  .mixMixPlaylist[mixPlaylistIndex]
+                                  .playListList![musicIndex]
+                                  .first!.musicName,
+                                  type: "Playlist", id:  widget.playlistMixMusicId, songIndex: musicIndex);
                             }
 
                             if (mounted) {
@@ -953,7 +1033,12 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                   ins.playAudio(
                                       Duration(hours: 12), "assets/$url");
                                 }
-
+                                LocalDB.setCurrentPlayingMusic(title: ref
+                                    .watch(playlistProvider)
+                                    .mixMixPlaylist[mixPlaylistIndex]
+                                    .playListList![musicIndex]
+                                    .first!.musicName,
+                                    type: "Playlist", id:  widget.playlistMixMusicId, songIndex: musicIndex);
                                 sliderInitial = 0.0;
 
 

@@ -5,20 +5,50 @@ import '../screens/models/music_models.dart';
 class LocalDB {
   static setMixMusicListItem(List<MixMusicModel> mixMusicList) async {
     final prefs = await SharedPreferences.getInstance();
-    if (prefs.containsKey("mixMusicList")) {
-      prefs.remove("mixMusicList");
-    }
+
     prefs.setString("mixMusicList", jsonEncode(mixMusicList));
+  }
+
+  static setCurrentPlayingMusic({required title,
+    required type,
+    required id,
+    int songIndex=0,
+    isPlaying = true}) async {
+    // music title, type, isplaying,
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString("currentPlaying", jsonEncode({
+      "title":  title,
+      "type":type,
+      "id":id,
+      "musicIndex":songIndex,
+    "isPlaying": isPlaying
+    }));
+  }
+  static Future<Map<String, dynamic>> getCurrentPlayingMusic() async {
+    // music title, type, isplaying,
+    final prefs = await SharedPreferences.getInstance();
+    var data=prefs.getString("currentPlaying")??"";
+    try {
+      Map<String, dynamic> map= jsonDecode(data);
+      return map;
+    }  catch (e) {
+      return {};
+    }
+
   }
 
   static Future<List<MixMusicModel>?> getMixMusicListItem() async {
     final prefs = await SharedPreferences.getInstance();
-    if (prefs.containsKey("mixMusicList")) {
-      List<dynamic> jsonData =
-          jsonDecode(prefs.getString("mixMusicList") ?? "[]");
-      List<MixMusicModel> realData =
-          jsonData.map((e) => MixMusicModel.fromJson(e)).toList();
-      return realData;
+    try {
+      if (prefs.containsKey("mixMusicList")) {
+        List<dynamic> jsonData =
+            jsonDecode(prefs.getString("mixMusicList") ?? "[]");
+        List<MixMusicModel> realData =
+            jsonData.map((e) => MixMusicModel.fromJson(e)).toList();
+        return realData;
+      }
+    }  catch (e) {
+      // TODO
     }
     return null;
   }
