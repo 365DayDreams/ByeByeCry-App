@@ -1,4 +1,3 @@
-
 import 'dart:async';
 import 'package:bye_bye_cry_new/compoment/shared/custom_image.dart';
 import 'package:bye_bye_cry_new/compoment/shared/custom_svg.dart';
@@ -18,82 +17,69 @@ import '../compoment/shared/screen_size.dart';
 import '../compoment/utils/color_utils.dart';
 import '../compoment/utils/image_link.dart';
 import '../main.dart';
+import 'models/AppData.dart';
 
 class PlaylistMixSound2 extends ConsumerStatefulWidget {
   final String? playlistMixMusicId;
   final int songIndex;
   final VoidCallback? onPressed;
   const PlaylistMixSound2(
-      {Key? key, required this.playlistMixMusicId, this.onPressed,this.songIndex=0})
+      {Key? key,
+      required this.playlistMixMusicId,
+      this.onPressed,
+      this.songIndex = 0})
       : super(key: key);
 
   @override
   ConsumerState<PlaylistMixSound2> createState() => _PlaylistMixSound2State();
 }
 
+var sliderEnd = 120;
+var sliderInitial = 0.0;
+var check = false;
+var songTimer;
+var volumePlayer = 50.0;
+var selectedTime = 0;
+Timer? sliderTimer;
+
 class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
     with TickerProviderStateMixin {
-  double? Savetimer = 120.0;
-  double? Savetimer2 = 120.0;
-  double? Savetimer3 = 120.0;
-  bool infinity_view = false;
-
   getTimer() async {
-    await LocalDB().getTimer().then((value) {
-      setState(() {
-        Savetimer = double.parse(value) * 60;
-
+    if (musicIndex == 0)
+      await LocalDB().getTimer().then((value) {
+        sliderEnd = int.parse(value == "00" ? "120" : value);
       });
-    });
-  }
-
-  getTimer2() async {
-    await LocalDB().getTimer2().then((value) {
-      setState(() {
-        Savetimer2 = double.parse(value) * 60;
-
-
+    if (musicIndex == 1)
+      await LocalDB().getTimer2().then((value) {
+        sliderEnd = int.parse(value == "00" ? "120" : value);
       });
-    });
-  }
-
-  getTimer3() async {
-    await LocalDB().getTimer3().then((value) {
-      setState(() {
-        Savetimer3 = double.parse(value) * 60;
-
+    if (musicIndex == 3)
+      await LocalDB().getTimer3().then((value) {
+        sliderEnd = int.parse(value == "00" ? "120" : value);
       });
-    });
-  }
 
-  double? volume1;
-  double? volume2;
-  double? volume3;
+    print("sliderEnd=======================");
+    print(sliderEnd);
+  }
 
   getVol1() async {
     await LocalDB().getVolume().then((value) {
-      setState(() {
-        volume1 = double.parse(value);
-
-      });
+      ins.setVolume(double.parse(value) * 0.01);
+      volumePlayer = double.parse(value);
     });
   }
 
   getVol2() async {
     await LocalDB().getVolume2().then((value) {
-      setState(() {
-        volume2 = double.parse(value);
-
-      });
+      ins.setVolume(double.parse(value) * 0.01);
+      volumePlayer = double.parse(value);
     });
   }
 
   getVol3() async {
     await LocalDB().getVolume3().then((value) {
-      setState(() {
-        volume3 = double.parse(value);
-
-      });
+      ins.setVolume(double.parse(value) * 0.01);
+      volumePlayer = double.parse(value);
     });
   }
 
@@ -107,193 +93,111 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
     "150 min",
   ];
   List<int> selectedTimes = [0, 10, 30, 60, 90, 120, 150];
-  int selectedTime = 0;
-  // bool playPouse = true;
-  int setDuration = 0;
-  int mixPlaylistIndex = 0;
-  double brightness = 0.5;
-  late StreamSubscription<double> _subscription;
-  int musicIndex = 0;
-  List<MusicModel> musicList = [];
-  bool check = false;
-  TextEditingController minController = TextEditingController();
-  TextEditingController secController = TextEditingController();
 
-  double initialTime=120.0;
+  int musicIndex = 0;
+
+  var mixPlaylistIndex = 0;
+  List<PlayListModel>? playingMusic;
+
+  isOldSong() {
+    print("ins.currentAudio()");
+    print(widget.songIndex);
+    print(AppData.musicIndexData);
+
+    if ((widget.playlistMixMusicId == AppData.idCurrentMusic) &&
+        ins.isPlaying()) {
+      var value = (widget.songIndex == AppData.musicIndexData) &&
+          AppData.isPlaying.value;
+      if (!value) {
+        // check = true;
+      }
+      return value;
+    }
+    return false;
+  }
+
+  bool isLastSong() {
+    try {
+      if (musicIndex ==
+          playingMusic![mixPlaylistIndex].playListList!.length - 1) {
+        print("last song play0000000000000000000000000");
+
+        return true;
+      }
+    } catch (e) {
+      if (musicIndex ==
+          ref
+                  .watch(playlistProvider)
+                  .mixMixPlaylist[mixPlaylistIndex]
+                  .playListList!
+                  .length -
+              1) {
+        print("last song play0000000000000000000000000");
+
+        return true;
+      }
+    }
+    return false;
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
 
   @override
   void initState() {
-    ins.stop();
-    getTimer();
-    getTimer2();
-    getTimer3();
+    super.initState();
+
     getVol1();
     getVol2();
     getVol3();
-    musicIndex=widget.songIndex;
-
+    musicIndex = widget.songIndex;
     initialization();
 
+    if (songTimer != null) {
+      songTimer!.cancel();
+    }
 
-
-    super.initState();
-   Future.delayed(Duration(seconds: 1),(){
-
-     changeIndex(changeIndex: false);
-     if (musicIndex ==
-         ref
-             .watch(playlistProvider)
-             .mixMixPlaylist[mixPlaylistIndex]
-             .playListList!
-             .length -
-             1){
-       infinity_view=false;
-       check=true;
-     }
-   });
-
-    Timer.periodic(Duration(seconds: 1), (timer) async {
-
-
-      if (musicIndex ==
-          ref
-              .watch(playlistProvider)
-              .mixMixPlaylist[mixPlaylistIndex]
-              .playListList!
-              .length -
-              1){
-        /*initialTime=4564645645;
-        ins.seek(Duration(days: 1));*/
-        if(!infinity_view) {
-          sliderInitial=0;
-          check=true;
-        }
-
-
-      }else{
-        initialTime=120.0;
-        infinity_view=false;
-        check=false;
-
-      }
-
-      if (sliderInitial.toInt() == (Savetimer! - 1).toInt() ||
-          sliderInitial == initialTime ||
-          sliderInitial.toInt() == (Savetimer2! - 1).toInt() ||
-          sliderInitial == initialTime ||
-          sliderInitial.toInt() == (Savetimer3! - 1).toInt() ||
-          sliderInitial == initialTime) {
-
-
-        if (check == true) {
-          if (mounted) {
-            changeIndex(changeIndex: true);
-            sliderInitial = 0.0;
-
-            selectedTime = 0;
-            setDuration = 0;
-            check = true;
-            String url = ref
-                .watch(playlistProvider)
-                .mixMixPlaylist[mixPlaylistIndex]
-                .playListList![musicIndex]
-                .first!
-                .musicFile;
-
-            await ins.playAudio(Duration(days: 1), "assets/$url");
-            LocalDB.setCurrentPlayingMusic(title: ref
-                .watch(playlistProvider)
-                .mixMixPlaylist[mixPlaylistIndex]
-                .playListList![musicIndex]
-                .first!.musicName,
-                type: "Playlist", id: widget.playlistMixMusicId, songIndex: musicIndex);
-            //sliderInitial = 0.0;
-
-          }
-
-          if (mounted) {
-            setState(() {});
-          }
-        }
-        else {
-
-          await ins.stop();
-
-          sliderInitial = 0.0;
-
-          selectedTime = 0;
-          setDuration = 0;
-          check = true;
-
-          if (mounted) {
-            changeIndex(changeIndex: true);
-            String url = ref
-                .watch(playlistProvider)
-                .mixMixPlaylist[mixPlaylistIndex]
-                .playListList![musicIndex]
-                .first!
-                .musicFile;
-            if (musicIndex == 0) {
-              await ins.playAudio(Duration(minutes: 2), "assets/$url");
-
-            } else if (musicIndex == 1) {
-              await ins.playAudio(Duration(hours: 12), "assets/$url");
-            } else if (musicIndex == 2) {
-              await ins.playAudio(Duration(hours: 12), "assets/$url");
-            }
-            LocalDB.setCurrentPlayingMusic(title: ref
-                .watch(playlistProvider)
-                .mixMixPlaylist[mixPlaylistIndex]
-                .playListList![musicIndex]
-                .first!.musicName,
-                type: "Playlist", id:  widget.playlistMixMusicId, songIndex: musicIndex);
-            sliderInitial = 0.0;
-          }
-
-
-          if (mounted) {
-            setState(() {});
-          }
-        }
-      }
-      if (!mounted) {
-        timer.cancel();
-        return;
+    songTimer = Timer.periodic(Duration(seconds: 1), (timer) async {
+      if (check) {
+        selectedTime=0;
+        sliderInitial = 0;
+        ins.seek(Duration(seconds: 120));
       }
     });
   }
 
-  initialization() {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+  initialization() async {
+    await Future.delayed(Duration(microseconds: 1));
+
+    setState(() {
       mixPlaylistIndex = ref
           .watch(playlistProvider)
           .mixMixPlaylist
-          .indexWhere((element) => element.title
-          == widget.playlistMixMusicId);
-      if (mounted) {
-        setState(() {});
-      }
-      checkMounted();
+          .indexWhere((element) => element.title == widget.playlistMixMusicId);
     });
+    playingMusic = ref.watch(playlistProvider).mixMixPlaylist;
+    if (isOldSong()) {
+      resumeSliderTimmer();
+    } else {
+      await getTimer();
+      ins.stop();
+      pausePlayMethod();
+      sliderInitial = 0;
+    }
   }
 
   changeIndex({bool changeIndex = false}) {
     if (changeIndex) {
       musicIndex = (musicIndex + 1) %
-          ref
-              .watch(playlistProvider)
-              .mixMixPlaylist[mixPlaylistIndex]
-              .playListList!
-              .length;
+          playingMusic![mixPlaylistIndex].playListList!.length;
     } else {
-      musicIndex = (musicIndex ) %
-          ref
-              .watch(playlistProvider)
-              .mixMixPlaylist[mixPlaylistIndex]
-              .playListList!
-              .length;
+      musicIndex =
+          (musicIndex) % playingMusic![mixPlaylistIndex].playListList!.length;
       //musicIndex = (musicIndex - 1);
-     /* if (musicIndex < 0) {
+      /* if (musicIndex < 0) {
         musicIndex = ref
                 .watch(playlistProvider)
                 .mixMixPlaylist[mixPlaylistIndex]
@@ -305,67 +209,36 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
   }
 
   pausePlayMethod() async {
+    await getTimer();
+
     if (ins.isPlaying()) {
       await ins.stop();
       pauseSliderTimmer();
     } else {
-      if (musicIndex <
-          ref
-                  .watch(playlistProvider)
-                  .mixMixPlaylist[mixPlaylistIndex]
-                  .playListList!
-                  .length -
-              1) {
-        String url = ref
-                .watch(playlistProvider)
-                .mixMixPlaylist[mixPlaylistIndex]
-                .playListList![musicIndex]
-                .first
-                ?.musicFile ??
-            "";
+      String url = ref
+              .watch(playlistProvider)
+              .mixMixPlaylist[mixPlaylistIndex]
+              .playListList![musicIndex]
+              .first
+              ?.musicFile ??
+          "";
 
-        ins.playAudio(Duration(minutes: 2), "assets/$url");
-
-        resumeSliderTimmer();
-        LocalDB.setCurrentPlayingMusic(title: ref
-            .watch(playlistProvider)
-            .mixMixPlaylist[mixPlaylistIndex]
-            .playListList![musicIndex]
-            .first!.musicName,
-            type: "Playlist", id:  widget.playlistMixMusicId
-            , songIndex: musicIndex);
-      } else {
-        String url = ref
-                .watch(playlistProvider)
-                .mixMixPlaylist[mixPlaylistIndex]
-                .playListList![musicIndex]
-                .first
-                ?.musicFile ??
-            "";
-
-        ins.playAudio(Duration(hours: 12), "assets/$url");
-
-        resumeSliderTimmer();
-        LocalDB.setCurrentPlayingMusic(title: ref
-            .watch(playlistProvider)
-            .mixMixPlaylist[mixPlaylistIndex]
-            .playListList![musicIndex]
-            .first!.musicName,
-            type: "Playlist", id:  widget.playlistMixMusicId
-            , songIndex: musicIndex);
-      }
-
+      ins.playAudio(Duration(seconds: sliderEnd), "assets/$url");
+      resumeSliderTimmer();
+      LocalDB.setCurrentPlayingMusic(
+          title: ref
+              .watch(playlistProvider)
+              .mixMixPlaylist[mixPlaylistIndex]
+              .playListList![musicIndex]
+              .first!
+              .musicName,
+          type: "Playlist",
+          id: widget.playlistMixMusicId,
+          songIndex: musicIndex);
     }
 
     if (mounted) {
       setState(() {});
-    }
-  }
-
-  checkMounted() async {
-    if (mounted) {
-      setState(() {});
-      pausePlayMethod();
     }
   }
 
@@ -377,6 +250,67 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
         .mixMixPlaylist[mixPlaylistIndex]
         .playListList!
         .indexWhere((element) => element.id == id);
+
+    if (_index == musicIndex) {
+      if(ins.isPlaying()){
+        ins.stop();
+        pauseSliderTimmer();
+      }else{
+
+
+
+        String url1 = ref
+            .watch(playlistProvider)
+            .mixMixPlaylist[mixPlaylistIndex]
+            .playListList![_index]
+            .first
+            ?.musicFile ??
+            "";
+
+        await ins.playAudio(Duration(seconds: sliderEnd), "assets/$url1");
+        resumeSliderTimmer();
+      }
+
+    } else {
+
+      String url1 = ref
+              .watch(playlistProvider)
+              .mixMixPlaylist[mixPlaylistIndex]
+              .playListList![_index]
+              .first
+              ?.musicFile ??
+          "";
+      sliderEnd= await getTimeByIndex(_index);
+      print("sliderEnd==============asdasdasdasd=");
+
+      print(sliderEnd);
+      await ins.playAudio(Duration(seconds: sliderEnd), "assets/$url1");
+      resumeSliderTimmer();
+    }
+    musicIndex = _index;
+
+    if(isLastSong()){
+      check=true;
+    }else{
+      check=false;
+    }
+
+    LocalDB.setCurrentPlayingMusic(
+        title: ref
+            .watch(playlistProvider)
+            .mixMixPlaylist[mixPlaylistIndex]
+            .playListList![musicIndex]
+            .first!
+            .musicName,
+        type: "Playlist",
+        id: widget.playlistMixMusicId,
+        songIndex: musicIndex);
+
+    /*  int _index = ref
+        .watch(playlistProvider)
+        .mixMixPlaylist[mixPlaylistIndex]
+        .playListList!
+        .indexWhere((element) => element.id == id);
     if (_index >= 0) {
       if (_index == musicIndex) {
         if (ins.isPlaying()) {
@@ -384,98 +318,83 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
 
           pauseSliderTimmer();
         } else {
-          if(_index == ref
-              .watch(playlistProvider)
-              .mixMixPlaylist[
-          mixPlaylistIndex]
-              .playListList!.length -1){
-            String url1 = ref
-                .watch(playlistProvider)
-                .mixMixPlaylist[mixPlaylistIndex]
-                .playListList![_index]
-                .first
-                ?.musicFile ??
-                "";
-
-            await ins.playAudio(Duration(days: 11), "assets/$url1");
-            resumeSliderTimmer();
-            LocalDB.setCurrentPlayingMusic(title: ref
-                .watch(playlistProvider)
-                .mixMixPlaylist[mixPlaylistIndex]
-                .playListList![musicIndex]
-                .first!.musicName,
-                type: "Playlist", id:  widget.playlistMixMusicId, songIndex: musicIndex);
-
-            check=true;
-            selectedTime=0;
-            infinity_view=false;
+          if (_index ==
+              ref
+                      .watch(playlistProvider)
+                      .mixMixPlaylist[mixPlaylistIndex]
+                      .playListList!
+                      .length -
+                  1) {
 
 
+          } else {
 
-          }else{
-            String url1 = ref
-                .watch(playlistProvider)
-                .mixMixPlaylist[mixPlaylistIndex]
-                .playListList![_index]
-                .first
-                ?.musicFile ??
-                "";
 
             await ins.playAudio(Duration(minutes: 2), "assets/$url1");
             resumeSliderTimmer();
-            LocalDB.setCurrentPlayingMusic(title: ref
-                .watch(playlistProvider)
-                .mixMixPlaylist[mixPlaylistIndex]
-                .playListList![musicIndex]
-                .first!.musicName,
-                type: "Playlist", id:  widget.playlistMixMusicId, songIndex: musicIndex);
+            LocalDB.setCurrentPlayingMusic(
+                title: ref
+                    .watch(playlistProvider)
+                    .mixMixPlaylist[mixPlaylistIndex]
+                    .playListList![musicIndex]
+                    .first!
+                    .musicName,
+                type: "Playlist",
+                id: widget.playlistMixMusicId,
+                songIndex: musicIndex);
           }
-
         }
       } else {
         sliderInitial = 0.0;
         musicIndex = _index;
-        if(_index == ref
-            .watch(playlistProvider)
-            .mixMixPlaylist[
-        mixPlaylistIndex]
-            .playListList!.length -1){
+        if (_index ==
+            ref
+                    .watch(playlistProvider)
+                    .mixMixPlaylist[mixPlaylistIndex]
+                    .playListList!
+                    .length -
+                1) {
           String url1 = ref
-              .watch(playlistProvider)
-              .mixMixPlaylist[mixPlaylistIndex]
-              .playListList![_index]
-              .first
-              ?.musicFile ??
+                  .watch(playlistProvider)
+                  .mixMixPlaylist[mixPlaylistIndex]
+                  .playListList![_index]
+                  .first
+                  ?.musicFile ??
               "";
 
           await ins.playAudio(Duration(hours: 10), "assets/$url1");
           resumeSliderTimmer();
-          LocalDB.setCurrentPlayingMusic(title: ref
-              .watch(playlistProvider)
-              .mixMixPlaylist[mixPlaylistIndex]
-              .playListList![musicIndex]
-              .first!.musicName,
-              type: "Playlist", id:  widget.playlistMixMusicId, songIndex: musicIndex);
-
-
-
-        }else{
+          LocalDB.setCurrentPlayingMusic(
+              title: ref
+                  .watch(playlistProvider)
+                  .mixMixPlaylist[mixPlaylistIndex]
+                  .playListList![musicIndex]
+                  .first!
+                  .musicName,
+              type: "Playlist",
+              id: widget.playlistMixMusicId,
+              songIndex: musicIndex);
+        } else {
           String url1 = ref
-              .watch(playlistProvider)
-              .mixMixPlaylist[mixPlaylistIndex]
-              .playListList![_index]
-              .first
-              ?.musicFile ??
+                  .watch(playlistProvider)
+                  .mixMixPlaylist[mixPlaylistIndex]
+                  .playListList![_index]
+                  .first
+                  ?.musicFile ??
               "";
 
           await ins.playAudio(Duration(minutes: 2), "assets/$url1");
           resumeSliderTimmer();
-          LocalDB.setCurrentPlayingMusic(title: ref
-              .watch(playlistProvider)
-              .mixMixPlaylist[mixPlaylistIndex]
-              .playListList![musicIndex]
-              .first!.musicName,
-              type: "Playlist", id:  widget.playlistMixMusicId, songIndex: musicIndex);
+          LocalDB.setCurrentPlayingMusic(
+              title: ref
+                  .watch(playlistProvider)
+                  .mixMixPlaylist[mixPlaylistIndex]
+                  .playListList![musicIndex]
+                  .first!
+                  .musicName,
+              type: "Playlist",
+              id: widget.playlistMixMusicId,
+              songIndex: musicIndex);
         }
         // sliderInitial = 0.0;
         // musicIndex = _index;
@@ -491,7 +410,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
         // await ins.playAudio(Duration(minutes: 2), "assets/$url1");
         // resumeSliderTimmer();
       }
-    }
+    }*/
     if (mounted) {
       updateState(() {});
       setState(() {});
@@ -676,13 +595,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                     ],
                   ),
                 ),
-                if (musicIndex <
-                    ref
-                            .watch(playlistProvider)
-                            .mixMixPlaylist[mixPlaylistIndex]
-                            .playListList!
-                            .length -
-                        1 || infinity_view) ...[
+                if (!check) ...[
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 30.0),
                     child: Row(
@@ -695,34 +608,12 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                           color: blackColor2,
                           fontWeight: FontWeight.w700,
                         ),
-                        if (index == 0) ...[
-                          CustomText(
-                            text: Savetimer == 0.0
-                                ? "2:00"
-                                : '${getHumanTimeBySecond(Savetimer!.toInt())}',
-                            fontSize: 10,
-                            color: blackColor2,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ] else if (index == 1) ...[
-                          CustomText(
-                            text: Savetimer2 == 0.0
-                                ? "2:00"
-                                : '${getHumanTimeBySecond(Savetimer2!.toInt())}',
-                            fontSize: 10,
-                            color: blackColor2,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ] else if (index == 2) ...[
-                          CustomText(
-                            text: Savetimer3 == 0.0
-                                ? "2:00"
-                                : '${getHumanTimeBySecond(Savetimer3!.toInt())}',
-                            fontSize: 10,
-                            color: blackColor2,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ]
+                        CustomText(
+                          text: getHumanTimeBySecond(sliderEnd!.toInt()),
+                          fontSize: 10,
+                          color: blackColor2,
+                          fontWeight: FontWeight.w700,
+                        ),
                       ],
                     ),
                   ),
@@ -730,122 +621,36 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                   Container()
                 ],
 
-                if (musicIndex <
-                    ref
-                            .watch(playlistProvider)
-                            .mixMixPlaylist[mixPlaylistIndex]
-                            .playListList!
-                            .length -
-                        1|| infinity_view) ...[
-                  if (index == 0) ...[
-                    SizedBox(
-                      //color: Colors.green,
-                      width: width * .95,
-                      child: SliderTheme(
-                        data: const SliderThemeData(
-                            trackShape: RectangularSliderTrackShape(),
-                            thumbShape:
-                                RoundSliderThumbShape(enabledThumbRadius: 10)),
-                        child: Slider(
-                            value: sliderInitial.floorToDouble(),
-                            min: 0,
-                            max: Savetimer == 0.0 ? 120.00 : Savetimer!,
-                            divisions: 350,
-                            activeColor: primaryPinkColor,
-                            inactiveColor: primaryGreyColor2,
-                            onChanged: (double newValue) async {
-
-
-                              updateSlider(newValue.floorToDouble());
-
-                              setState(() {});
-                            },
-                            semanticFormatterCallback: (double newValue) {
-                              return '${newValue.round()} dollars';
-                            }),
-                      ),
-                    ),
-                  ] else if (index == 1) ...[
-                    SizedBox(
-                      //color: Colors.green,
-                      width: width * .95,
-                      child: SliderTheme(
-                        data: const SliderThemeData(
-                            trackShape: RectangularSliderTrackShape(),
-                            thumbShape:
-                                RoundSliderThumbShape(enabledThumbRadius: 10)),
-                        child: Slider(
-                            value: sliderInitial.floorToDouble(),
-                            min: 0,
-                            max: Savetimer2 == 0.0 ? 120.00 : Savetimer2!,
-                            divisions: 350,
-                            activeColor: primaryPinkColor,
-                            inactiveColor: primaryGreyColor2,
-                            onChanged: (double newValue) async {
-                              updateSlider(newValue.floorToDouble());
-                              setState(() {});
-                            },
-                            semanticFormatterCallback: (double newValue) {
-                              return '${newValue.round()} dollars';
-                            }),
-                      ),
-                    ),
-                  ] else if (index == 2) ...[
-                    SizedBox(
-                      //color: Colors.green,
-                      width: width * .95,
-                      child: SliderTheme(
-                        data: const SliderThemeData(
-                            trackShape: RectangularSliderTrackShape(),
-                            thumbShape:
-                                RoundSliderThumbShape(enabledThumbRadius: 10)),
-                        child: Slider(
-                            value: sliderInitial.floorToDouble(),
-                            min: 0,
-                            max: Savetimer3 == 0.0 ? 120.00 : Savetimer3!,
-                            divisions: 350,
-                            activeColor: primaryPinkColor,
-                            inactiveColor: primaryGreyColor2,
-                            onChanged: (double newValue) async {
-                              updateSlider(newValue.floorToDouble());
-                              setState(() {});
-                            },
-                            semanticFormatterCallback: (double newValue) {
-                              return '${newValue.round()} dollars';
-                            }),
-                      ),
-                    ),
-                  ],
-                ] else ...[
-                  Visibility(
-                    visible: false,
-                    child: SizedBox(
-                      //color: Colors.green,
-                      width: width * .95,
-                      child: SliderTheme(
-                        data: const SliderThemeData(
-                            trackShape: RectangularSliderTrackShape(),
-                            thumbShape:
-                                RoundSliderThumbShape(enabledThumbRadius: 10)),
-                        child: Slider(
-                            value: 0.0,
-                            min: 0.0,
-                            max: 30000000000000000.0,
-                            divisions: 40000000000000000,
-                            activeColor: primaryPinkColor,
-                            inactiveColor: primaryGreyColor2,
-                            onChanged: (double newValue) async {
-                              // updateSlider(newValue);
-                              // ins.seek(Duration(
-                              //     seconds: (sliderEnd - sliderInitial).toInt()));
-                              // setState(() {});
-                            },
-                            semanticFormatterCallback: (double newValue) {
-                              return '${newValue.round()} dollars';
-                            }),
-                      ),
+                if (!check) ...[
+                  SizedBox(
+                    //color: Colors.green,
+                    width: width * .95,
+                    child: SliderTheme(
+                      data: const SliderThemeData(
+                          trackShape: RectangularSliderTrackShape(),
+                          thumbShape:
+                              RoundSliderThumbShape(enabledThumbRadius: 10)),
+                      child: Slider(
+                          value: (sliderInitial <= sliderEnd
+                                  ? sliderInitial
+                                  : sliderEnd)
+                              .toDouble(),
+                          min: 0,
+                          max: sliderEnd.toDouble(),
+                          divisions: 350,
+                          activeColor: primaryPinkColor,
+                          inactiveColor: primaryGreyColor2,
+                          onChanged: (double newValue) async {
+                            updateSlider(newValue.floorToDouble());
+                            setState(() {});
+                          },
+                          semanticFormatterCallback: (double newValue) {
+                            return '${newValue.round()} dollars';
+                          }),
                     ),
                   ),
+                ] else ...[
+                  Container()
                 ],
 
                 Container(
@@ -860,106 +665,51 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                           padding: EdgeInsets.zero,
                           onPressed: () async {
                             changeIndex(changeIndex: true);
-                            selectedTime = 0;
-                            setDuration = 0;
 
-                            if(musicIndex==0){
-                              setSongDuration(Savetimer!.toInt());
+                            String url = ref
+                                    .watch(playlistProvider)
+                                    .mixMixPlaylist[mixPlaylistIndex]
+                                    .playListList![musicIndex]
+                                    .first
+                                    ?.musicFile ??
+                                "";
 
-                            }else if(musicIndex==1){
-                              setSongDuration(Savetimer2!.toInt());
+                            await ins.stop();
+                            await getTimer();
 
-                            }else{
-                              setSongDuration(Savetimer3!.toInt());
+                            if (isLastSong()) {
+                              check = true;
+                              setState(() {});
+                            } else{
+                              check = false;
                             }
+                            ins.playAudio(
+                                Duration(seconds: sliderEnd), "assets/$url");
+                            resumeSliderTimmer();
 
+                            LocalDB.setCurrentPlayingMusic(
+                                title: ref
+                                    .watch(playlistProvider)
+                                    .mixMixPlaylist[mixPlaylistIndex]
+                                    .playListList![musicIndex]
+                                    .first!
+                                    .musicName,
+                                type: "Playlist",
+                                id: widget.playlistMixMusicId,
+                                songIndex: musicIndex);
 
-
-                            if (mounted) {
-                              String url = ref
-                                  .watch(playlistProvider)
-                                  .mixMixPlaylist[mixPlaylistIndex]
-                                  .playListList![musicIndex]
-                                  .first
-                                  ?.musicFile ??
-                                  "";
-
-                              await ins.stop();
-                              resumeSliderTimmer();
-                              if (musicIndex <
-                                  ref
-                                      .watch(playlistProvider)
-                                      .mixMixPlaylist[mixPlaylistIndex]
-                                      .playListList!
-                                      .length -
-                                      1) {
-                                ins.playAudio(
-                                    Duration(minutes: 2), "assets/$url");
-                              } else {
-                                ins.playAudio(
-                                    Duration(hours: 12), "assets/$url");
-                              }
-                              LocalDB.setCurrentPlayingMusic(title: ref
-                                  .watch(playlistProvider)
-                                  .mixMixPlaylist[mixPlaylistIndex]
-                                  .playListList![musicIndex]
-                                  .first!.musicName,
-                                  type: "Playlist", id:  widget.playlistMixMusicId, songIndex: musicIndex);
-
-                              sliderInitial = 0.0;
-
-
-                            }
+                            sliderInitial = 0.0;
 
                             if (mounted) {
                               setState(() {});
                             }
-
                           },
                           icon: const CustomSvg(
                               svg: left_shift, color: primaryPinkColor),
                         ),
                         GestureDetector(
                           onTap: () async {
-
-                            if (ins.isPlaying()) {
-                              await ins.stop();
-                              pauseSliderTimmer();
-
-
-                            } else {
-
-                              String url1 = ref
-                                      .watch(playlistProvider)
-                                      .mixMixPlaylist[mixPlaylistIndex]
-                                      .playListList![musicIndex]
-                                      .first
-                                      ?.musicFile ??
-                                  "";
-                              if (index == 0 || musicIndex == 0) {
-                                await ins.playAudio(
-                                    Duration(minutes: 2), "assets/$url1");
-                                resumeSliderTimmer();
-                              } else if (index == 1 || musicIndex == 1) {
-                                await ins.playAudio(
-                                    Duration(hours: 12), "assets/$url1");
-                                resumeSliderTimmer();
-                              } else if (index == 2 || musicIndex == 2) {
-                                await ins.playAudio(
-                                    Duration(hours: 12), "assets/$url1");
-                                resumeSliderTimmer();
-                              }
-                              LocalDB.setCurrentPlayingMusic(title: ref
-                                  .watch(playlistProvider)
-                                  .mixMixPlaylist[mixPlaylistIndex]
-                                  .playListList![musicIndex]
-                                  .first!.musicName,
-                                  type: "Playlist", id:  widget.playlistMixMusicId, songIndex: musicIndex);
-                            }
-
-                            if (mounted) {
-                              setState(() {});
-                            }
+                            pausePlayMethod();
                           },
                           child: Container(
                             // color: Colors.red,
@@ -990,60 +740,40 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                         IconButton(
                             padding: EdgeInsets.zero,
                             onPressed: () async {
-
-
                               changeIndex(changeIndex: true);
-                              selectedTime = 0;
-                              setDuration = 0;
 
+                              String url = ref
+                                      .watch(playlistProvider)
+                                      .mixMixPlaylist[mixPlaylistIndex]
+                                      .playListList![musicIndex]
+                                      .first
+                                      ?.musicFile ??
+                                  "";
 
-                              if(musicIndex==0){
-                                setSongDuration(Savetimer!.toInt());
-
-                              }else if(musicIndex==1){
-                                setSongDuration(Savetimer2!.toInt());
-
-                              }else{
-                                setSongDuration(Savetimer3!.toInt());
+                              await ins.stop();
+                              await getTimer();
+                              if (isLastSong()) {
+                                check = true;
+                                setState(() {});
+                              } else{
+                                check = false;
                               }
+                              ins.playAudio(
+                                  Duration(seconds: sliderEnd), "assets/$url");
+                              resumeSliderTimmer();
 
+                              LocalDB.setCurrentPlayingMusic(
+                                  title: ref
+                                      .watch(playlistProvider)
+                                      .mixMixPlaylist[mixPlaylistIndex]
+                                      .playListList![musicIndex]
+                                      .first!
+                                      .musicName,
+                                  type: "Playlist",
+                                  id: widget.playlistMixMusicId,
+                                  songIndex: musicIndex);
 
-                              if (mounted) {
-                                String url = ref
-                                        .watch(playlistProvider)
-                                        .mixMixPlaylist[mixPlaylistIndex]
-                                        .playListList![musicIndex]
-                                        .first
-                                        ?.musicFile ??
-                                    "";
-
-
-                                await ins.stop();
-                                resumeSliderTimmer();
-                                if (musicIndex <
-                                    ref
-                                            .watch(playlistProvider)
-                                            .mixMixPlaylist[mixPlaylistIndex]
-                                            .playListList!
-                                            .length -
-                                        1) {
-                                  ins.playAudio(
-                                      Duration(minutes: 2), "assets/$url");
-                                } else {
-                                  ins.playAudio(
-                                      Duration(hours: 12), "assets/$url");
-                                }
-                                LocalDB.setCurrentPlayingMusic(title: ref
-                                    .watch(playlistProvider)
-                                    .mixMixPlaylist[mixPlaylistIndex]
-                                    .playListList![musicIndex]
-                                    .first!.musicName,
-                                    type: "Playlist", id:  widget.playlistMixMusicId, songIndex: musicIndex);
-                                sliderInitial = 0.0;
-
-
-
-                              }
+                              sliderInitial = 0.0;
 
                               if (mounted) {
                                 setState(() {});
@@ -1063,6 +793,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
     );
   }
 
+  var brightness = 0.6;
   void _showDialogBrightNess(BuildContext context) {
     final height = ScreenSize(context).height;
     final width = ScreenSize(context).width;
@@ -1185,157 +916,54 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                   ),
                                 ),
                               ),
-                              if (musicIndex == 0) ...[
-                                Expanded(
-                                  child: Slider(
-                                    value: volume1!,
-                                    min: 0.0,
-                                    max: 100.0,
-                                    divisions: 100,
-                                    activeColor: primaryPinkColor,
-                                    inactiveColor: primaryGreyColor2,
-                                    onChanged: (double newValue) async {
-                                      updateState(() {
-                                        // Screen.setBrightness(newValue);
-                                        volume1 = newValue;
-                                      });
-                                      await ins.setVolume(volume1! * 0.01);
-                                    },
-                                  ),
+                              Expanded(
+                                child: Slider(
+                                  value: volumePlayer,
+                                  min: 0.0,
+                                  max: 100.0,
+                                  divisions: 100,
+                                  activeColor: primaryPinkColor,
+                                  inactiveColor: primaryGreyColor2,
+                                  onChanged: (double newValue) async {
+                                    await ins.setVolume(volumePlayer * 0.01);
+                                    updateState(() {
+                                      // Screen.setBrightness(newValue);
+                                      volumePlayer = newValue;
+                                    });
+                                  },
                                 ),
-                              ] else if (musicIndex == 1) ...[
-                                Expanded(
-                                  child: Slider(
-                                    value: volume2!,
-                                    min: 0.0,
-                                    max: 100.0,
-                                    divisions: 100,
-                                    activeColor: primaryPinkColor,
-                                    inactiveColor: primaryGreyColor2,
-                                    onChanged: (double newValue) async {
-                                      updateState(() {
-                                        // Screen.setBrightness(newValue);
-                                        volume2 = newValue;
-                                      });
-                                      await ins.setVolume(volume2! * 0.01);
-                                    },
-                                  ),
-                                ),
-                              ] else if (musicIndex == 2) ...[
-                                Expanded(
-                                  child: Slider(
-                                    value: volume3!,
-                                    min: 0.0,
-                                    max: 100.0,
-                                    divisions: 100,
-                                    activeColor: primaryPinkColor,
-                                    inactiveColor: primaryGreyColor2,
-                                    onChanged: (double newValue) async {
-                                      updateState(() {
-                                        // Screen.setBrightness(newValue);
-                                        volume3 = newValue;
-                                      });
-                                      await ins.setVolume(volume3! * 0.01);
-                                    },
-                                  ),
-                                ),
-                              ],
+                              ),
                             ],
                           ),
-                          if (musicIndex == 0) ...[
-                            Positioned(
-                                right: width * 0.25,
-                                top: 10,
-                                child: Transform(
-                                    transform: Matrix4.identity()
-                                      ..rotateZ(90 * 3.1415927 / 180),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(2),
-                                          boxShadow: [
-                                            BoxShadow(
-                                                color: secondaryBlackColor
-                                                    .withOpacity(0.2),
-                                                blurRadius: 0.2,
-                                                spreadRadius: 0.5)
-                                          ]),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 4.0, vertical: 5),
-                                        child: Center(
-                                            child: CustomText(
-                                          text: "${volume1!.floor()}%",
-                                          fontSize: 10,
-                                          color: secondaryBlackColor,
-                                          fontWeight: FontWeight.w600,
-                                        )),
-                                      ),
-                                    )))
-                          ] else if (musicIndex == 1) ...[
-                            Positioned(
-                                right: width * 0.25,
-                                top: 10,
-                                child: Transform(
-                                    transform: Matrix4.identity()
-                                      ..rotateZ(90 * 3.1415927 / 180),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(2),
-                                          boxShadow: [
-                                            BoxShadow(
-                                                color: secondaryBlackColor
-                                                    .withOpacity(0.2),
-                                                blurRadius: 0.2,
-                                                spreadRadius: 0.5)
-                                          ]),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 4.0, vertical: 5),
-                                        child: Center(
-                                            child: CustomText(
-                                          text: "${volume2!.floor()}%",
-                                          fontSize: 10,
-                                          color: secondaryBlackColor,
-                                          fontWeight: FontWeight.w600,
-                                        )),
-                                      ),
-                                    )))
-                          ] else if (musicIndex == 2) ...[
-                            Positioned(
-                                right: width * 0.25,
-                                top: 10,
-                                child: Transform(
-                                    transform: Matrix4.identity()
-                                      ..rotateZ(90 * 3.1415927 / 180),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(2),
-                                          boxShadow: [
-                                            BoxShadow(
-                                                color: secondaryBlackColor
-                                                    .withOpacity(0.2),
-                                                blurRadius: 0.2,
-                                                spreadRadius: 0.5)
-                                          ]),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 4.0, vertical: 5),
-                                        child: Center(
-                                            child: CustomText(
-                                          text: "${volume3!.floor()}%",
-                                          fontSize: 10,
-                                          color: secondaryBlackColor,
-                                          fontWeight: FontWeight.w600,
-                                        )),
-                                      ),
-                                    )))
-                          ],
+                          Positioned(
+                              right: width * 0.25,
+                              top: 10,
+                              child: Transform(
+                                  transform: Matrix4.identity()
+                                    ..rotateZ(90 * 3.1415927 / 180),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(2),
+                                        boxShadow: [
+                                          BoxShadow(
+                                              color: secondaryBlackColor
+                                                  .withOpacity(0.2),
+                                              blurRadius: 0.2,
+                                              spreadRadius: 0.5)
+                                        ]),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 4.0, vertical: 5),
+                                      child: Center(
+                                          child: CustomText(
+                                        text: "${volumePlayer.floor()}%",
+                                        fontSize: 10,
+                                        color: secondaryBlackColor,
+                                        fontWeight: FontWeight.w600,
+                                      )),
+                                    ),
+                                  )))
                         ],
                       ),
                     ),
@@ -1408,42 +1036,24 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                           child: Slider.adaptive(
                               value: selectedTime.toDouble(),
                               min: 0,
-                              max: 7,
-                              divisions: 7,
+                              max: 6,
+                              divisions: 6,
                               activeColor: primaryPinkColor,
                               inactiveColor: primaryGreyColor2,
                               onChanged: (double newValue) async {
                                 state(() {
                                   selectedTime = newValue.toInt();
-                                  setDuration = selectedTimes[selectedTime];
-
-                                  infinity_view=true;
-                                  setDuration *= 60;
-                                  setSongDuration(setDuration);
-                                  ins.seek(Duration(seconds: setDuration));
-
-                                  if (selectedTimes[selectedTime] == 0) {
-                                    infinity_view=false;
+                                  if (selectedTime == 0) {
                                     check = true;
-
-                                    // if (musicIndex == 0) {
-                                    //   Savetimer = 120.0;
-                                    // } else if (musicIndex == 1) {
-                                    //   Savetimer2 = 120.0;
-                                    // } else if (musicIndex == 3) {
-                                    //   Savetimer3 = 120.0;
-                                    // }
+                                    getTimer();
                                   } else {
                                     check = false;
+                                    setSongDuration(
+                                        selectedTimes[selectedTime] * 60);
+                                    ins.seek(Duration(
+                                        seconds:
+                                            selectedTimes[selectedTime] * 60));
                                   }
-                                  ins.pauseAudio();
-                                  // setDuration = 1;
-                                  // selectedTime = check ? 0 : newValue.toInt();
-                                  // setDuration = selectedTimes[selectedTime];
-                                  //
-                                  // setDuration *= 60;
-                                  // setSongDuration(setDuration);
-                                  // print("index $selectedTime");
                                 });
                                 setState(() {});
                               },
@@ -1482,18 +1092,18 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                               onChanged: (newValue) {
                                 state(() {
                                   check = newValue!;
-                                  selectedTime=0;
-                                  infinity_view=false;
+                                  selectedTime = 0;
+                                  getTimer();
                                 });
                               }),
                           TextButton(
-                              onPressed: () async {},
-                              child: const CustomText(
-                                text: "continuous play",
-                                fontSize: 16,
-                                fontWeight: FontWeight.w400,
-                                color: primaryGreyColor,
-                              ),
+                            onPressed: () async {},
+                            child: const CustomText(
+                              text: "continuous play",
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400,
+                              color: primaryGreyColor,
+                            ),
                           ),
                         ],
                       ),
@@ -1535,10 +1145,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
       if (mounted) {
         ref.read(mixMusicProvider).alertDialogStop();
         if (mounted) {
-          setState(() {
-            secController.text = "";
-            minController.text = "";
-          });
+          setState(() {});
         }
       }
     });
@@ -1701,61 +1308,45 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                                       children: [
                                                         const CustomSvg(
                                                             svg: volume),
-                                                        if (musicIndex ==
-                                                            0) ...[
-                                                          Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                        .symmetric(
-                                                                    horizontal:
-                                                                        5.0),
-                                                            child: CustomText(
-                                                                text:
-                                                                    "${(volume1!).toInt().toString().padLeft(2, "0")}%",
-                                                                fontSize: 12,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600,
-                                                                color:
-                                                                    blackColor50),
-                                                          ),
-                                                        ] else if (musicIndex ==
-                                                            1) ...[
-                                                          Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                        .symmetric(
-                                                                    horizontal:
-                                                                        5.0),
-                                                            child: CustomText(
-                                                                text:
-                                                                    "${(volume2!).toInt().toString().padLeft(2, "0")}%",
-                                                                fontSize: 12,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600,
-                                                                color:
-                                                                    blackColor50),
-                                                          ),
-                                                        ] else if (musicIndex ==
-                                                            2) ...[
-                                                          Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                        .symmetric(
-                                                                    horizontal:
-                                                                        5.0),
-                                                            child: CustomText(
-                                                                text:
-                                                                    "${(volume3!).toInt().toString().padLeft(2, "0")}%",
-                                                                fontSize: 12,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600,
-                                                                color:
-                                                                    blackColor50),
-                                                          ),
-                                                        ],
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .symmetric(
+                                                                  horizontal:
+                                                                      5.0),
+                                                          child: CustomText(
+                                                              text:
+                                                                  "${(volumePlayer).toInt().toString().padLeft(2, "0")}%",
+                                                              fontSize: 12,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600,
+                                                              color:
+                                                                  blackColor50),
+                                                        ),
+                                                        SizedBox(
+                                                          width: 20,
+                                                        ),
+                                                        FutureBuilder<dynamic>(
+                                                            future:
+                                                                getTimeByIndex(
+                                                                    index),
+                                                            builder: (context,
+                                                                snapshot) {
+                                                              if (!snapshot
+                                                                  .hasData) {
+                                                                return Container();
+                                                              }
+                                                              return CustomText(
+                                                                  text:
+                                                                      "${getHumanTimeBySecond(snapshot.data)}",
+                                                                  fontSize: 12,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600,
+                                                                  color:
+                                                                      blackColor50);
+                                                            }),
                                                       ],
                                                     ),
                                                   ],
@@ -1763,11 +1354,8 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                               ),
                                             ],
                                           ),
-
                                           GestureDetector(
                                             onTap: () async {
-
-
                                               await playMusicForBottomSheet(
                                                 id: ref
                                                     .watch(playlistProvider)
@@ -1893,117 +1481,116 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
     return "$hoursStr:$minutesStr:$secondsStr";
   }
 
-  var sliderInitial = 0.0;
-  //var sliderEnd =120.0;
-  Timer? sliderTimer;
-
-  void setSongDuration(int setDuration, {double initValue = 0}) {
-    sliderInitial = initValue;
-    Savetimer = setDuration.toDouble();
-    if(musicIndex==0){
-
-
-    }else if(musicIndex==1){
-      Savetimer2 = setDuration.toDouble();
-
-    }else if(musicIndex==2){
-      Savetimer3 = setDuration.toDouble();
-
+  Future<void> setSongDuration(int setDuration, {double initValue = 0}) async {
+    if (setDuration == 0) {
+      return;
     }
+
+    sliderInitial = initValue;
+    sliderEnd = setDuration;
+    ins.seek(Duration(seconds: (setDuration - initValue).toInt()));
 
     if (sliderTimer != null) {
       sliderTimer!.cancel();
     }
-    sliderTimer = Timer.periodic(Duration(seconds: 1), (timer) {
-
-
-      if (!mounted) {
-        timer.cancel();
-      }
-
-      if (Savetimer == 0.0 ) {
-        if (Savetimer! > sliderInitial) {
-          timer.cancel();
-          sliderInitial = 0.0;
-          ins.stop();
-        }
-      } else {
-        if (Savetimer! <= sliderInitial) {
-          timer.cancel();
-          sliderInitial = 0.0;
-          ins.stop();
-        }
-      }
-
-      if (Savetimer2 == 0.0 ) {
-        if (Savetimer2! > sliderInitial) {
-          timer.cancel();
-          sliderInitial = 0.0;
-          ins.stop();
-        }
-      } else {
-        if (Savetimer2! <= sliderInitial) {
-          timer.cancel();
-          sliderInitial = 0.0;
-          ins.stop();
-        }
-      }
-
-      if (Savetimer3 == 0.0 ) {
-        if (Savetimer3! > sliderInitial) {
-          timer.cancel();
-          sliderInitial = 0.0;
-
-          ins.stop();
-        }
-      } else {
-        if (Savetimer3! <= sliderInitial) {
-          timer.cancel();
-          sliderInitial = 0.0;
-          ins.stop();
-        }
-      }
-
+    sliderTimer = Timer.periodic(Duration(seconds: 1), (timer) async {
       sliderInitial++;
-      setState(() {});
+
+      print("sliderInitial======");
+      print(sliderInitial);
+
+      if (sliderInitial >= sliderEnd) {
+        await playSong();
+      }
+
+      if (mounted) setState(() {});
     });
   }
 
   void updateSlider(double newValue) {
     sliderInitial = newValue;
+    setSongDuration(sliderEnd, initValue: sliderInitial);
+    /* ins.seek(Duration(
+        seconds: (setDuration - sliderInitial)
+            .toInt()));*/
     setState(() {});
   }
 
   void pauseSliderTimmer() {
-
-
     sliderTimer!.cancel();
   }
 
-  void resumeSliderTimmer() {
-    if (musicIndex == 0) {
-      setSongDuration(Savetimer!.toInt(), initValue: sliderInitial);
-    } else if (musicIndex == 1) {
-      setSongDuration(Savetimer2!.toInt(), initValue: sliderInitial);
-    } else if (musicIndex == 2) {
-      setSongDuration(Savetimer3!.toInt(), initValue: sliderInitial);
+  Future<void> resumeSliderTimmer() async {
+    setSongDuration(sliderEnd, initValue: sliderInitial);
+  }
+
+  getTimeByIndex(int index) async {
+
+    print("indexmusicIndex=====================+++++++++++++");
+    print(index);
+    print(musicIndex);
+
+    var time;
+
+    if (index == musicIndex) {
+
+      return  (sliderEnd);
     }
-  /*  if (musicIndex <
-        ref
-                .watch(playlistProvider)
-                .mixMixPlaylist[mixPlaylistIndex]
-                .playListList!
-                .length -
-            1) {
-      if (musicIndex == 0) {
-        setSongDuration(Savetimer!.toInt(), initValue: sliderInitial);
-      } else if (musicIndex == 1) {
-        setSongDuration(Savetimer2!.toInt(), initValue: sliderInitial);
-      } else if (musicIndex == 2) {
-        setSongDuration(Savetimer3!.toInt(), initValue: sliderInitial);
-      }
-    } else {
-      setSongDuration(4554545445545454, initValue: sliderInitial);
-    }*/
+
+    if (index == 0) {
+      await LocalDB().getTimer().then((value) {
+        time = int.parse(value == "00" ? "120" : value);
+      });
+    }
+    if (index == 1) {
+      await LocalDB().getTimer2().then((value) {
+        time = int.parse(value == "00" ? "120" : value);
+      });
+    }
+    if (index == 2) {
+      await LocalDB().getTimer3().then((value) {
+        time = int.parse(value == "00" ? "120" : value);
+      });
+    }
+
+    return (time);
+  }
+
+  Future<void> playSong() async {
+    sliderInitial = 0;
+
+    changeIndex(changeIndex: true);
+
+    String url = playingMusic![mixPlaylistIndex]
+            .playListList![musicIndex]
+            .first
+            ?.musicFile ??
+        "";
+
+    await ins.stop();
+    await getTimer();
+    if (isLastSong()) {
+      check = true;
+      if (mounted) setState(() {});
+    }else{
+      check = false;
+    }
+    ins.playAudio(Duration(seconds: sliderEnd), "assets/$url");
+    resumeSliderTimmer();
+
+    LocalDB.setCurrentPlayingMusic(
+        title: playingMusic![mixPlaylistIndex]
+            .playListList![musicIndex]
+            .first!
+            .musicName,
+        type: "Playlist",
+        id: widget.playlistMixMusicId,
+        songIndex: musicIndex);
+
+    sliderInitial = 0.0;
+
+    if (mounted) {
+      setState(() {});
+    }
   }
 }

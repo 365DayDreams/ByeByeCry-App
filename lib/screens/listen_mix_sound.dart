@@ -1,4 +1,3 @@
-
 import 'dart:async';
 import 'package:bye_bye_cry_new/compoment/shared/custom_image.dart';
 import 'package:bye_bye_cry_new/compoment/shared/custom_svg.dart';
@@ -18,6 +17,7 @@ import '../compoment/utils/color_utils.dart';
 import '../compoment/utils/image_link.dart';
 import '../local_db/local_db.dart';
 import '../main.dart';
+import 'models/AppData.dart';
 import 'my_playList_details_screen.dart';
 
 class ListenMixSound extends ConsumerStatefulWidget {
@@ -30,6 +30,12 @@ class ListenMixSound extends ConsumerStatefulWidget {
   @override
   ConsumerState<ListenMixSound> createState() => _ListenMixSoundState();
 }
+
+var sliderInitial = 0.0;
+var sliderEnd = 120.0;
+bool check = true;
+int setDuration = 120;
+Timer? timerSong;
 
 class _ListenMixSoundState extends ConsumerState<ListenMixSound>
     with TickerProviderStateMixin {
@@ -47,7 +53,7 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
 
   int selectedTime = 0;
   bool playPouse = true;
-  int setDuration = 0;
+
   // AudioCache audioCache = AudioCache();
   // AudioPlayer audioPlayer1 = AudioPlayer();
   // AudioPlayer audioPlayer2 = AudioPlayer();
@@ -65,7 +71,7 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
   int musicIndex = 0;
   List<MusicModel> musicList = [];
   int index = 0;
-  bool check = true;
+
   TextEditingController minController = TextEditingController();
   TextEditingController secController = TextEditingController();
 
@@ -74,129 +80,141 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
     //.//audioPlayer1.dispose();
     // startPlayer1();
     // startPlayer2();
-    ins.stop();
+    //ins.stop();
 
     //brightNess();
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      Timer.periodic(Duration(seconds: 1), (timer) async {
-        print(_position);
-        if (sliderInitial.toInt() == (sliderEnd - 1).toInt()) {
 
-          if (check == false) {
+    if(timerSong!=null){
+      timerSong!.cancel();
+    }
 
-            sliderInitial = 0.0;
-            sliderEnd = 120.0;
-            selectedTime = 0;
-            setDuration = 0;
-            check=true;
+    timerSong=  Timer.periodic(Duration(seconds: 1), (timer) async {
+      print(_position);
+      if (sliderInitial.toInt() == (sliderEnd - 1).toInt()) {
+        if (check == false) {
+          sliderInitial = 0.0;
+          sliderEnd = 120.0;
+          selectedTime = 0;
+          setDuration = 0;
+          check = true;
 
-
-
-            if (mounted) {
-              if(check==true){
-                changeIndex(changeIndex: true);
-                String url1 = ref
-                    .watch(mixMusicProvider)
-                    .combinationList[index]
-                    .first!
-                    .musicFile;
-                String url2 = ref
-                    .watch(mixMusicProvider)
-                    .combinationList[index]
-                    .first!
-                    .musicFile;
-                // await audioPlayer1.play(AssetSource(url1));
-                await ins.playAudio(Duration(hours: 10), "assets/" + url1);
-
-                // await audioPlayer2.play(AssetSource(url2));
-                await ins.playAudio(Duration(hours: 10), "assets/" + url2);
-                // sliderInitial=0.0;
-
-                LocalDB.setCurrentPlayingMusic(title:
-                ref
-                    .watch(mixMusicProvider)
-                    .combinationList[index].first!.musicName +  " + "  + ref
-                    .watch(mixMusicProvider)
-                    .combinationList[index].second!.musicName,
-                    id: ref
-                        .watch(mixMusicProvider)
-                        .combinationList[index].id, type: "mixSound");
-                print("IF URL __$url1");
-              }
-              else{
-                String url1 = ref
-                    .watch(mixMusicProvider)
-                    .combinationList[index]
-                    .first!
-                    .musicFile;
-                String url2 = ref
-                    .watch(mixMusicProvider)
-                    .combinationList[index]
-                    .first!
-                    .musicFile;
-                // await audioPlayer1.play(AssetSource(url1));
-                await ins.playAudio(Duration(minutes: 2), "assets/" + url1);
-                // await audioPlayer2.play(AssetSource(url2));
-                await ins.playAudio(Duration(minutes: 2), "assets/" + url2);
-                LocalDB.setCurrentPlayingMusic(title:
-                ref
-                    .watch(mixMusicProvider)
-                    .combinationList[index].first!.musicName +  " + "  + ref
-                    .watch(mixMusicProvider)
-                    .combinationList[index].second!.musicName,
-                    id: ref
-                        .watch(mixMusicProvider)
-                        .combinationList[index].id, type: "mixSound");
-                // sliderInitial=0.0;
-                changeIndex(changeIndex: true);
-                pageController.nextPage(
-                    duration: Duration(milliseconds: 100), curve: Curves.linear);
-                print("IF URL __$url1");
-              }
-
-            }
-
-            if (mounted) {
-              setState(() {});
-            }
-          }
-          else {
-            ins.stop();
-
-            sliderInitial = 0.0;
-            sliderEnd = 120.0;
-            selectedTime = 0;
-            setDuration = 0;
-            check=true;
-
-            if (mounted) {
-              String url = ref.watch(addProvider).musicList[index].musicFile;
-              await ins.playAudio(Duration(minutes: 2), "assets/" + url);
-              LocalDB.setCurrentPlayingMusic(title:
-              ref
+          if (mounted) {
+            if (check == true) {
+              changeIndex(changeIndex: true);
+              String url1 = ref
                   .watch(mixMusicProvider)
-                  .combinationList[index].first!.musicName  +  " + "  +  ref
+                  .combinationList[index]
+                  .first!
+                  .musicFile;
+              String url2 = ref
                   .watch(mixMusicProvider)
-                  .combinationList[index].second!.musicName,
-                  id: ref
-                      .watch(mixMusicProvider)
-                      .combinationList[index].id, type: "mixSound");
+                  .combinationList[index]
+                  .first!
+                  .musicFile;
+              // await audioPlayer1.play(AssetSource(url1));
+              await ins.stop();
+
+              await ins.playAudio(Duration(hours: 10), "assets/" + url1);
+
+              // await audioPlayer2.play(AssetSource(url2));
+              await ins.playAudio(Duration(hours: 10), "assets/" + url2);
               // sliderInitial=0.0;
-              print("else URL __$url");
-            }
 
-            if (mounted) {
-              setState(() {});
+              LocalDB.setCurrentPlayingMusic(
+                  title: ref
+                          .watch(mixMusicProvider)
+                          .combinationList[index]
+                          .first!
+                          .musicName +
+                      " + " +
+                      ref
+                          .watch(mixMusicProvider)
+                          .combinationList[index]
+                          .second!
+                          .musicName,
+                  id: ref.watch(mixMusicProvider).combinationList[index].id,
+                  type: "mixSound");
+              print("IF URL __$url1");
+            } else {
+              String url1 = ref
+                  .watch(mixMusicProvider)
+                  .combinationList[index]
+                  .first!
+                  .musicFile;
+              String url2 = ref
+                  .watch(mixMusicProvider)
+                  .combinationList[index]
+                  .first!
+                  .musicFile;
+              // await audioPlayer1.play(AssetSource(url1));
+              await ins.playAudio(Duration(minutes: 2), "assets/" + url1);
+              // await audioPlayer2.play(AssetSource(url2));
+              await ins.playAudio(Duration(minutes: 2), "assets/" + url2);
+              LocalDB.setCurrentPlayingMusic(
+                  title: ref
+                          .watch(mixMusicProvider)
+                          .combinationList[index]
+                          .first!
+                          .musicName +
+                      " + " +
+                      ref
+                          .watch(mixMusicProvider)
+                          .combinationList[index]
+                          .second!
+                          .musicName,
+                  id: ref.watch(mixMusicProvider).combinationList[index].id,
+                  type: "mixSound");
+              // sliderInitial=0.0;
+              changeIndex(changeIndex: true);
+              pageController.nextPage(
+                  duration: Duration(milliseconds: 500), curve: Curves.linear);
+              print("IF URL __$url1");
             }
           }
-          if (!mounted) {
-            timer.cancel();
-            return;
+
+          if (mounted) {
+            setState(() {});
+          }
+        } else {
+          ins.stop();
+
+          sliderInitial = 0.0;
+          sliderEnd = 120.0;
+          selectedTime = 0;
+          setDuration = 0;
+          check = true;
+
+          if (mounted) {
+            String url = ref.watch(addProvider).musicList[index].musicFile;
+            await ins.playAudio(Duration(minutes: 2), "assets/" + url);
+            LocalDB.setCurrentPlayingMusic(
+                title: ref
+                        .watch(mixMusicProvider)
+                        .combinationList[index]
+                        .first!
+                        .musicName +
+                    " + " +
+                    ref
+                        .watch(mixMusicProvider)
+                        .combinationList[index]
+                        .second!
+                        .musicName,
+                id: ref.watch(mixMusicProvider).combinationList[index].id,
+                type: "mixSound");
+            // sliderInitial=0.0;
+            print("else URL __$url");
+          }
+
+          if (mounted) {
+            setState(() {});
           }
         }
-      });
-
+        if (!mounted) {
+          timer.cancel();
+          return;
+        }
+      }
     });
   }
 
@@ -211,8 +229,6 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
     _subscription.cancel();
     super.dispose();
   }
-
-
 
   Future<void> brightNess() async {
     try {
@@ -231,6 +247,19 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
     if (!mounted) return;
   }
 
+  isOldSong() {
+    print("ins.currentAudio()");
+    print(widget.mixMusicModelId);
+    print(AppData.idCurrentMusic);
+
+    var value = (widget.mixMusicModelId == AppData.idCurrentMusic) && ins.isPlaying();
+
+    if (!value) {
+      check = true;
+    }
+
+    return value;
+  }
 
   initialization() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -242,7 +271,15 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
       if (mounted) {
         setState(() {});
       }
-      checkMounted();
+      if (isOldSong()) {
+
+        setSongDuration(setDuration, initValue:(setDuration- ins.getRemainingDuration()).toDouble());
+
+      }else{
+        ins.stop();
+        checkMounted();
+      }
+
     });
   }
 
@@ -271,69 +308,75 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
 
       pauseSliderTimmer();
     } else {
-      if(check==true){
+      if (check == true) {
         String url1 = ref
-            .watch(mixMusicProvider)
-            .combinationList[musicIndex]
-            .first
-            ?.musicFile ??
+                .watch(mixMusicProvider)
+                .combinationList[musicIndex]
+                .first
+                ?.musicFile ??
             "";
         String url2 = ref
-            .watch(mixMusicProvider)
-            .combinationList[musicIndex]
-            .second
-            ?.musicFile ??
+                .watch(mixMusicProvider)
+                .combinationList[musicIndex]
+                .second
+                ?.musicFile ??
             "";
         // print("${audioPlayer1.getDuration().then((value) => print("duration value$value"))}");
         // await audioPlayer1.play(AssetSource(url1));
         await ins.playAudio(Duration(hours: 10), "assets/" + url1);
         // await audioPlayer2.play(AssetSource(url2));
         await ins.playAudio(Duration(hours: 10), "assets/" + url2);
-        LocalDB.setCurrentPlayingMusic(title:
-        ref
-            .watch(mixMusicProvider)
-            .combinationList[musicIndex].first!.musicName +  " + "  +  ref
-            .watch(mixMusicProvider)
-            .combinationList[musicIndex].second!.musicName,
-            id: ref
-                .watch(mixMusicProvider)
-                .combinationList[musicIndex].id, type: "mixSound");
+        LocalDB.setCurrentPlayingMusic(
+            title: ref
+                    .watch(mixMusicProvider)
+                    .combinationList[musicIndex]
+                    .first!
+                    .musicName +
+                " + " +
+                ref
+                    .watch(mixMusicProvider)
+                    .combinationList[musicIndex]
+                    .second!
+                    .musicName,
+            id: ref.watch(mixMusicProvider).combinationList[musicIndex].id,
+            type: "mixSound");
         resumeSliderTimmer();
         print("play");
-      }else{
+      } else {
         String url1 = ref
-            .watch(mixMusicProvider)
-            .combinationList[musicIndex]
-            .first
-            ?.musicFile ??
+                .watch(mixMusicProvider)
+                .combinationList[musicIndex]
+                .first
+                ?.musicFile ??
             "";
         String url2 = ref
-            .watch(mixMusicProvider)
-            .combinationList[musicIndex]
-            .second
-            ?.musicFile ??
+                .watch(mixMusicProvider)
+                .combinationList[musicIndex]
+                .second
+                ?.musicFile ??
             "";
         // print("${audioPlayer1.getDuration().then((value) => print("duration value$value"))}");
         // await audioPlayer1.play(AssetSource(url1));
         await ins.playAudio(Duration(minutes: 2), "assets/" + url1);
         // await audioPlayer2.play(AssetSource(url2));
         await ins.playAudio(Duration(minutes: 2), "assets/" + url2);
-        LocalDB.setCurrentPlayingMusic(title:
-        ref
-            .watch(mixMusicProvider)
-            .combinationList[musicIndex].first!.musicName +  " + "  +  ref
-            .watch(mixMusicProvider)
-            .combinationList[musicIndex].second!.musicName,
-            id: ref
-                .watch(mixMusicProvider)
-                .combinationList[musicIndex].id, type: "mixSound");
+        LocalDB.setCurrentPlayingMusic(
+            title: ref
+                    .watch(mixMusicProvider)
+                    .combinationList[musicIndex]
+                    .first!
+                    .musicName +
+                " + " +
+                ref
+                    .watch(mixMusicProvider)
+                    .combinationList[musicIndex]
+                    .second!
+                    .musicName,
+            id: ref.watch(mixMusicProvider).combinationList[musicIndex].id,
+            type: "mixSound");
         resumeSliderTimmer();
         print("play");
       }
-
-
-
-
     }
     if (mounted) {
       setState(() {});
@@ -380,7 +423,7 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
           title: 'Mix sound playing',
           iconButton: false,
           onPressedButton: null,
-          onPressed: (){
+          onPressed: () {
             Navigator.pop(context);
           },
         ),
@@ -401,7 +444,6 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
@@ -415,7 +457,7 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                             padding: EdgeInsets.only(right: width * .07),
                             child: CustomImage(
                               imageUrl:
-                              'asset/images/icon_png/now_playing_icon/Sun.png',
+                                  'asset/images/icon_png/now_playing_icon/Sun.png',
                               color: Colors.orangeAccent.shade100,
                             ),
                           ),
@@ -423,7 +465,9 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                       ),
                     ],
                   ),
-                  SizedBox(height: 10,),
+                  SizedBox(
+                    height: 10,
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -434,10 +478,10 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                             padding: const EdgeInsets.only(left: 8.0),
                             child: CustomImage(
                               imageUrl: ref
-                                  .watch(mixMusicProvider)
-                                  .combinationList[musicIndex]
-                                  .first
-                                  ?.image ??
+                                      .watch(mixMusicProvider)
+                                      .combinationList[musicIndex]
+                                      .first
+                                      ?.image ??
                                   "",
                               // height: width * .7,
                               // width: width * .5,
@@ -446,18 +490,16 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                           ),
                         ),
                       ),
-
                       Expanded(
                         child: Center(
                           child: Padding(
                             padding: const EdgeInsets.only(right: 8.0),
                             child: CustomImage(
-
                               imageUrl: ref
-                                  .watch(mixMusicProvider)
-                                  .combinationList[musicIndex]
-                                  .second
-                                  ?.image ??
+                                      .watch(mixMusicProvider)
+                                      .combinationList[musicIndex]
+                                      .second
+                                      ?.image ??
                                   "",
                               // height: width * .7,
                               // width: width * .4,
@@ -466,11 +508,11 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                           ),
                         ),
                       ),
-
-
                     ],
                   ),
-                  SizedBox(height: 30,),
+                  SizedBox(
+                    height: 30,
+                  ),
                   Container(
                     color: Colors.transparent,
                     child: Padding(
@@ -484,7 +526,7 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                               children: [
                                 CustomText(
                                   text:
-                                  "${ref.watch(mixMusicProvider).combinationList[musicIndex].first?.musicName}+${ref.watch(mixMusicProvider).combinationList[musicIndex].second?.musicName}",
+                                      "${ref.watch(mixMusicProvider).combinationList[musicIndex].first?.musicName}+${ref.watch(mixMusicProvider).combinationList[musicIndex].second?.musicName}",
                                   fontSize: 20,
                                   fontWeight: FontWeight.w600,
                                   color: secondaryBlackColor,
@@ -503,7 +545,7 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         InkWell(
-                          onTap: (){
+                          onTap: () {
                             _showDialogVolume(context);
                           },
                           child: Row(
@@ -512,10 +554,13 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                                   color: Colors.transparent,
                                   child: const CustomSvg(
                                       svg: volume, color: blackColor2)),
-                              SizedBox(width: 6,),
-                              Text("Set Volume",style: TextStyle(
-                                fontWeight: FontWeight.w500
-                              ),),
+                              SizedBox(
+                                width: 6,
+                              ),
+                              Text(
+                                "Set Volume",
+                                style: TextStyle(fontWeight: FontWeight.w500),
+                              ),
                               // GestureDetector(
                               //     onTap: () {
                               //       ref.read(addProvider).addOrRemovePlayList(
@@ -531,12 +576,11 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                               // const SizedBox(
                               //   width: 10,
                               // ),
-
                             ],
                           ),
                         ),
                         InkWell(
-                          onTap: (){
+                          onTap: () {
                             _showDialog(context);
                           },
                           child: Row(
@@ -554,18 +598,18 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                               const SizedBox(
                                 width: 10,
                               ),
-                              Text("Set Timer",style: TextStyle(
-                                  fontWeight: FontWeight.w500
-                              ),),
+                              Text(
+                                "Set Timer",
+                                style: TextStyle(fontWeight: FontWeight.w500),
+                              ),
                             ],
                           ),
                         ),
                       ],
                     ),
                   ),
-
                   SizedBox(height: width * 0.1),
-                  if(check==true)...[
+                  if (check == true) ...[
                     Container()
                     // Padding(
                     //   padding: const EdgeInsets.symmetric(horizontal: 30.0),
@@ -587,15 +631,15 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                     //     ],
                     //   ),
                     // ),
-
-                  ]else...[
+                  ] else ...[
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 30.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           CustomText(
-                            text: '${getHumanTimeBySecond(sliderInitial.toInt())}',
+                            text:
+                                '${getHumanTimeBySecond(sliderInitial.toInt())}',
                             fontSize: 10,
                             color: blackColor2,
                             fontWeight: FontWeight.w700,
@@ -610,7 +654,7 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                       ),
                     ),
                   ],
-                  if(check==true)...[
+                  if (check == true) ...[
                     Visibility(
                       visible: false,
                       child: SizedBox(
@@ -619,8 +663,8 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                         child: SliderTheme(
                           data: const SliderThemeData(
                               trackShape: RectangularSliderTrackShape(),
-                              thumbShape:
-                              RoundSliderThumbShape(enabledThumbRadius: 10)),
+                              thumbShape: RoundSliderThumbShape(
+                                  enabledThumbRadius: 10)),
                           child: Slider(
                               value: 0.0,
                               min: 0.0,
@@ -641,8 +685,7 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                         ),
                       ),
                     ),
-
-                  ]else...[
+                  ] else ...[
                     SizedBox(
                       //color: Colors.green,
                       width: width * .95,
@@ -650,7 +693,7 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                         data: const SliderThemeData(
                             trackShape: RectangularSliderTrackShape(),
                             thumbShape:
-                            RoundSliderThumbShape(enabledThumbRadius: 10)),
+                                RoundSliderThumbShape(enabledThumbRadius: 10)),
                         child: Slider(
                             value: sliderInitial <= sliderEnd
                                 ? sliderInitial
@@ -664,7 +707,8 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                               print("slider");
                               updateSlider(newValue);
                               ins.seek(Duration(
-                                  seconds: (sliderEnd - sliderInitial).toInt()));
+                                  seconds:
+                                      (sliderEnd - sliderInitial).toInt()));
                               setState(() {});
                             },
                             semanticFormatterCallback: (double newValue) {
@@ -672,9 +716,7 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                             }),
                       ),
                     ),
-
                   ],
-
                   Container(
                     color: Colors.transparent,
                     child: Padding(
@@ -683,80 +725,96 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-
                           IconButton(
                               padding: EdgeInsets.zero,
                               onPressed: () async {
                                 changeIndex(changeIndex: false);
                                 selectedTime = 0;
                                 setDuration = 0;
-                                check=true;
+                                check = true;
                                 if (mounted) {
-                                  if(check==true){
-
+                                  if (check == true) {
                                     await ins.stop();
                                     String url1 = ref
-                                        .watch(mixMusicProvider)
-                                        .combinationList[musicIndex]
-                                        .first
-                                        ?.musicFile ??
+                                            .watch(mixMusicProvider)
+                                            .combinationList[musicIndex]
+                                            .first
+                                            ?.musicFile ??
                                         "";
                                     String url2 = ref
-                                        .watch(mixMusicProvider)
-                                        .combinationList[musicIndex]
-                                        .second
-                                        ?.musicFile ??
+                                            .watch(mixMusicProvider)
+                                            .combinationList[musicIndex]
+                                            .second
+                                            ?.musicFile ??
                                         "";
                                     // await audioPlayer1.play(AssetSource(url1));
-                                    await ins.playAudio(Duration(hours: 10), "assets/" + url1);
+                                    await ins.playAudio(
+                                        Duration(hours: 10), "assets/" + url1);
                                     // await audioPlayer2.play(AssetSource(url2));
-                                    await ins.playAudio(Duration(hours: 10), "assets/" + url2);
-                                    LocalDB.setCurrentPlayingMusic(title:
-                                    ref
-                                        .watch(mixMusicProvider)
-                                        .combinationList[musicIndex].first!.musicName +  " + "  +  ref
-                                        .watch(mixMusicProvider)
-                                        .combinationList[musicIndex].second!.musicName,
+                                    await ins.playAudio(
+                                        Duration(hours: 10), "assets/" + url2);
+                                    LocalDB.setCurrentPlayingMusic(
+                                        title: ref
+                                                .watch(mixMusicProvider)
+                                                .combinationList[musicIndex]
+                                                .first!
+                                                .musicName +
+                                            " + " +
+                                            ref
+                                                .watch(mixMusicProvider)
+                                                .combinationList[musicIndex]
+                                                .second!
+                                                .musicName,
                                         id: ref
                                             .watch(mixMusicProvider)
-                                            .combinationList[musicIndex].id, type: "mixSound");
+                                            .combinationList[musicIndex]
+                                            .id,
+                                        type: "mixSound");
                                     sliderInitial = 0.0;
                                     sliderEnd = 522222222220.0;
-                                  }else{
-
+                                  } else {
                                     await ins.stop();
                                     String url1 = ref
-                                        .watch(mixMusicProvider)
-                                        .combinationList[musicIndex]
-                                        .first
-                                        ?.musicFile ??
+                                            .watch(mixMusicProvider)
+                                            .combinationList[musicIndex]
+                                            .first
+                                            ?.musicFile ??
                                         "";
                                     String url2 = ref
-                                        .watch(mixMusicProvider)
-                                        .combinationList[musicIndex]
-                                        .second
-                                        ?.musicFile ??
+                                            .watch(mixMusicProvider)
+                                            .combinationList[musicIndex]
+                                            .second
+                                            ?.musicFile ??
                                         "";
                                     // await audioPlayer1.play(AssetSource(url1));
-                                    await ins.playAudio(Duration(minutes: 2), "assets/" + url1);
+                                    await ins.playAudio(
+                                        Duration(minutes: 2), "assets/" + url1);
                                     // await audioPlayer2.play(AssetSource(url2));
-                                    await ins.playAudio(Duration(minutes: 2), "assets/" + url2);
-                                    LocalDB.setCurrentPlayingMusic(title:
-                                    ref
-                                        .watch(mixMusicProvider)
-                                        .combinationList[musicIndex].first!.musicName +  " + "  +  ref
-                                        .watch(mixMusicProvider)
-                                        .combinationList[musicIndex].second!.musicName,
+                                    await ins.playAudio(
+                                        Duration(minutes: 2), "assets/" + url2);
+                                    LocalDB.setCurrentPlayingMusic(
+                                        title: ref
+                                                .watch(mixMusicProvider)
+                                                .combinationList[musicIndex]
+                                                .first!
+                                                .musicName +
+                                            " + " +
+                                            ref
+                                                .watch(mixMusicProvider)
+                                                .combinationList[musicIndex]
+                                                .second!
+                                                .musicName,
                                         id: ref
                                             .watch(mixMusicProvider)
-                                            .combinationList[musicIndex].id, type: "mixSound");
+                                            .combinationList[musicIndex]
+                                            .id,
+                                        type: "mixSound");
                                     if (mounted) {
                                       setState(() {});
                                     }
                                     sliderInitial = 0.0;
                                     sliderEnd = 120.0;
                                   }
-
                                 }
 
                                 if (mounted) {
@@ -766,7 +824,7 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                               icon: const CustomSvg(
                                   svg: left_shift, color: primaryPinkColor)),
                           GestureDetector(
-                            onTap: ()async{
+                            onTap: () async {
                               // if (ins.isPlaying()) {
                               //   await ins.stop();
                               //   // await audioPlayer2.pause();
@@ -816,18 +874,18 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                                 print("play");
                                 resumeSliderTimmer();
                                 //  ins.silenceIncomingCalls();
-                                if(check==true){
+                                if (check == true) {
                                   String url1 = ref
-                                      .watch(mixMusicProvider)
-                                      .combinationList[musicIndex]
-                                      .first
-                                      ?.musicFile ??
+                                          .watch(mixMusicProvider)
+                                          .combinationList[musicIndex]
+                                          .first
+                                          ?.musicFile ??
                                       "";
                                   String url2 = ref
-                                      .watch(mixMusicProvider)
-                                      .combinationList[musicIndex]
-                                      .second
-                                      ?.musicFile ??
+                                          .watch(mixMusicProvider)
+                                          .combinationList[musicIndex]
+                                          .second
+                                          ?.musicFile ??
                                       "";
                                   //   await audioPlayer1.play(AssetSource(url1));
                                   await ins.playAudio(
@@ -835,28 +893,36 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                                   // await audioPlayer2.play(AssetSource(url2));
                                   await ins.playAudio(
                                       Duration(hours: 10), "assets/" + url2);
-                                  LocalDB.setCurrentPlayingMusic(title:
-                                  ref
-                                      .watch(mixMusicProvider)
-                                      .combinationList[musicIndex].first!.musicName +  " + "  +  ref
-                                      .watch(mixMusicProvider)
-                                      .combinationList[musicIndex].second!.musicName,
+                                  LocalDB.setCurrentPlayingMusic(
+                                      title: ref
+                                              .watch(mixMusicProvider)
+                                              .combinationList[musicIndex]
+                                              .first!
+                                              .musicName +
+                                          " + " +
+                                          ref
+                                              .watch(mixMusicProvider)
+                                              .combinationList[musicIndex]
+                                              .second!
+                                              .musicName,
                                       id: ref
                                           .watch(mixMusicProvider)
-                                          .combinationList[musicIndex].id, type: "mixSound");
+                                          .combinationList[musicIndex]
+                                          .id,
+                                      type: "mixSound");
                                   resumeSliderTimmer();
-                                }else{
+                                } else {
                                   String url1 = ref
-                                      .watch(mixMusicProvider)
-                                      .combinationList[musicIndex]
-                                      .first
-                                      ?.musicFile ??
+                                          .watch(mixMusicProvider)
+                                          .combinationList[musicIndex]
+                                          .first
+                                          ?.musicFile ??
                                       "";
                                   String url2 = ref
-                                      .watch(mixMusicProvider)
-                                      .combinationList[musicIndex]
-                                      .second
-                                      ?.musicFile ??
+                                          .watch(mixMusicProvider)
+                                          .combinationList[musicIndex]
+                                          .second
+                                          ?.musicFile ??
                                       "";
                                   //   await audioPlayer1.play(AssetSource(url1));
                                   await ins.playAudio(
@@ -864,15 +930,23 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                                   // await audioPlayer2.play(AssetSource(url2));
                                   await ins.playAudio(
                                       Duration(minutes: 2), "assets/" + url2);
-                                  LocalDB.setCurrentPlayingMusic(title:
-                                  ref
-                                      .watch(mixMusicProvider)
-                                      .combinationList[musicIndex].first!.musicName +  " + "  +  ref
-                                      .watch(mixMusicProvider)
-                                      .combinationList[musicIndex].second!.musicName,
+                                  LocalDB.setCurrentPlayingMusic(
+                                      title: ref
+                                              .watch(mixMusicProvider)
+                                              .combinationList[musicIndex]
+                                              .first!
+                                              .musicName +
+                                          " + " +
+                                          ref
+                                              .watch(mixMusicProvider)
+                                              .combinationList[musicIndex]
+                                              .second!
+                                              .musicName,
                                       id: ref
                                           .watch(mixMusicProvider)
-                                          .combinationList[musicIndex].id, type: "mixSound");
+                                          .combinationList[musicIndex]
+                                          .id,
+                                      type: "mixSound");
                                   resumeSliderTimmer();
                                 }
                                 playPouse = !playPouse;
@@ -915,68 +989,86 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                                 changeIndex(changeIndex: true);
                                 selectedTime = 0;
                                 setDuration = 0;
-                                check=true;
+                                check = true;
                                 if (mounted) {
-
-
                                   await ins.stop();
-                                  if(check==true){
+                                  if (check == true) {
                                     String url1 = ref
-                                        .watch(mixMusicProvider)
-                                        .combinationList[musicIndex]
-                                        .first
-                                        ?.musicFile ??
+                                            .watch(mixMusicProvider)
+                                            .combinationList[musicIndex]
+                                            .first
+                                            ?.musicFile ??
                                         "";
                                     String url2 = ref
-                                        .watch(mixMusicProvider)
-                                        .combinationList[musicIndex]
-                                        .second
-                                        ?.musicFile ??
+                                            .watch(mixMusicProvider)
+                                            .combinationList[musicIndex]
+                                            .second
+                                            ?.musicFile ??
                                         "";
                                     // await audioPlayer1.play(AssetSource(url1));
-                                    await ins.playAudio(Duration(hours: 10), "assets/" + url1);
+                                    await ins.playAudio(
+                                        Duration(hours: 10), "assets/" + url1);
                                     // await audioPlayer2.play(AssetSource(url2));
-                                    await ins.playAudio(Duration(hours: 10), "assets/" + url2);
-                                    LocalDB.setCurrentPlayingMusic(title:
-                                    ref
-                                        .watch(mixMusicProvider)
-                                        .combinationList[musicIndex].first!.musicName +  " + "  +  ref
-                                        .watch(mixMusicProvider)
-                                        .combinationList[musicIndex].second!.musicName,
+                                    await ins.playAudio(
+                                        Duration(hours: 10), "assets/" + url2);
+                                    LocalDB.setCurrentPlayingMusic(
+                                        title: ref
+                                                .watch(mixMusicProvider)
+                                                .combinationList[musicIndex]
+                                                .first!
+                                                .musicName +
+                                            " + " +
+                                            ref
+                                                .watch(mixMusicProvider)
+                                                .combinationList[musicIndex]
+                                                .second!
+                                                .musicName,
                                         id: ref
                                             .watch(mixMusicProvider)
-                                            .combinationList[musicIndex].id, type: "mixSound");
+                                            .combinationList[musicIndex]
+                                            .id,
+                                        type: "mixSound");
                                     if (mounted) {
                                       setState(() {});
                                     }
                                     sliderInitial = 0.0;
                                     sliderEnd = 522222222220.0;
-                                  }else{
+                                  } else {
                                     String url1 = ref
-                                        .watch(mixMusicProvider)
-                                        .combinationList[musicIndex]
-                                        .first
-                                        ?.musicFile ??
+                                            .watch(mixMusicProvider)
+                                            .combinationList[musicIndex]
+                                            .first
+                                            ?.musicFile ??
                                         "";
                                     String url2 = ref
-                                        .watch(mixMusicProvider)
-                                        .combinationList[musicIndex]
-                                        .second
-                                        ?.musicFile ??
+                                            .watch(mixMusicProvider)
+                                            .combinationList[musicIndex]
+                                            .second
+                                            ?.musicFile ??
                                         "";
                                     // await audioPlayer1.play(AssetSource(url1));
-                                    await ins.playAudio(Duration(minutes: 2), "assets/" + url1);
+                                    await ins.playAudio(
+                                        Duration(minutes: 2), "assets/" + url1);
                                     // await audioPlayer2.play(AssetSource(url2));
-                                    await ins.playAudio(Duration(minutes: 2), "assets/" + url2);
-                                    LocalDB.setCurrentPlayingMusic(title:
-                                    ref
-                                        .watch(mixMusicProvider)
-                                        .combinationList[musicIndex].first!.musicName+  " + "  +ref
-                                        .watch(mixMusicProvider)
-                                        .combinationList[musicIndex].first!.musicName,
+                                    await ins.playAudio(
+                                        Duration(minutes: 2), "assets/" + url2);
+                                    LocalDB.setCurrentPlayingMusic(
+                                        title: ref
+                                                .watch(mixMusicProvider)
+                                                .combinationList[musicIndex]
+                                                .first!
+                                                .musicName +
+                                            " + " +
+                                            ref
+                                                .watch(mixMusicProvider)
+                                                .combinationList[musicIndex]
+                                                .first!
+                                                .musicName,
                                         id: ref
                                             .watch(mixMusicProvider)
-                                            .combinationList[musicIndex].id, type: "mixSound");
+                                            .combinationList[musicIndex]
+                                            .id,
+                                        type: "mixSound");
                                     if (mounted) {
                                       setState(() {});
                                     }
@@ -984,10 +1076,7 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                                     sliderEnd = 120.0;
                                   }
 
-
-
                                   // selected timer....
-
 
                                 }
 
@@ -1010,7 +1099,6 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                               },
                               icon: const CustomSvg(
                                   svg: right_shift, color: primaryPinkColor)),
-
                         ],
                       ),
                     ),
@@ -1083,7 +1171,7 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                                 child: const CustomImage(
                                   boxFit: BoxFit.fill,
                                   imageUrl:
-                                  'asset/images/icon_png/now_playing_icon/Sun.png',
+                                      'asset/images/icon_png/now_playing_icon/Sun.png',
                                   color: primaryPinkColor,
                                 ),
                               ),
@@ -1190,12 +1278,12 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                                           horizontal: 4.0, vertical: 5),
                                       child: Center(
                                           child: CustomText(
-                                            text:
+                                        text:
                                             "${(currentVolume).toInt().toString().padLeft(2, "0")}%",
-                                            fontSize: 10,
-                                            color: secondaryBlackColor,
-                                            fontWeight: FontWeight.w600,
-                                          )),
+                                        fontSize: 10,
+                                        color: secondaryBlackColor,
+                                        fontWeight: FontWeight.w600,
+                                      )),
                                     ),
                                   )))
                         ],
@@ -1210,6 +1298,7 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
       },
     );
   }
+
   void _showDialog(BuildContext context) {
     final height = ScreenSize(context).height;
     final width = ScreenSize(context).width;
@@ -1264,7 +1353,7 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                             child: Center(
                                 child: CustomText(
                                     text:
-                                    "${(selectedTimes[selectedTime] ~/ 60).toString().padLeft(2, "0")} : ${(selectedTimes[selectedTime] % 60).toString().padLeft(2, "0")} min")),
+                                        "${(selectedTimes[selectedTime] ~/ 60).toString().padLeft(2, "0")} : ${(selectedTimes[selectedTime] % 60).toString().padLeft(2, "0")} min")),
                           ),
                           SliderTheme(
                             data: const SliderThemeData(
@@ -1275,8 +1364,8 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                             child: Slider.adaptive(
                                 value: selectedTime.toDouble(),
                                 min: 0,
-                                max: 7,
-                                divisions: 7,
+                                max: 6,
+                                divisions: 6,
                                 activeColor: primaryPinkColor,
                                 inactiveColor: primaryGreyColor2,
                                 onChanged: (double newValue) async {
@@ -1309,7 +1398,7 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: List.generate(
                                   times.length,
-                                      (index) => CustomText(
+                                  (index) => CustomText(
                                       text: times[index],
                                       fontWeight: FontWeight.w400,
                                       fontSize: 8,
@@ -1343,10 +1432,10 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                           TextButton(
                               onPressed: check
                                   ? () async {
-                                if (mounted) {
-                                  Navigator.pop(context);
-                                }
-                              }
+                                      if (mounted) {
+                                        Navigator.pop(context);
+                                      }
+                                    }
                                   : null,
                               child: const CustomText(
                                 text: "continuous play",
@@ -1402,7 +1491,6 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
     });
   }
 
-
   String getHumanTimeBySecond(int seconds) {
     int hours = (seconds / 3600).floor();
     int minutes = ((seconds - (hours * 3600)) / 60).floor();
@@ -1414,9 +1502,6 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
 
     return "$hoursStr:$minutesStr:$secondsStr";
   }
-
-  var sliderInitial = 0.0;
-  var sliderEnd = 120.0;
 
   Timer? sliderTimer;
 
@@ -1453,12 +1538,10 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
   }
 
   void resumeSliderTimmer() {
-    if(check==true){
+    if (check == true) {
       setSongDuration(4554545445545454, initValue: sliderInitial);
-
-    }else{
+    } else {
       setSongDuration(sliderEnd.toInt(), initValue: sliderInitial);
-
     }
   }
 }

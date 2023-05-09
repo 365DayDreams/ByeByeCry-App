@@ -108,8 +108,8 @@ return "";
               Obx(
                  () {
                    AppData.isPlaying.value;
-                  return FutureBuilder(
-                    future: LocalDB.getCurrentPlayingMusic() ,
+                  return FutureBuilder<Map<String, dynamic>>(
+                    future: AppData().getMusicTitle() ,
                     builder: (_,snapshot){
                       if(AppData.isPlaying.value)
                       return InkWell(

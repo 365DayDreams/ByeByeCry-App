@@ -16,13 +16,20 @@ class AppData{
   static String titleCurrentMusic="";
   static String typeCurrentMusic="";
   static String idCurrentMusic="";
+  static int? musicIndexData;
   static RxBool isPlaying=false.obs;
 
-  getMusicTitle() async{
+  Future<Map<String, dynamic>> getMusicTitle() async{
    var data= await LocalDB.getCurrentPlayingMusic();
    titleCurrentMusic=data["title"];
    typeCurrentMusic=data["type"];
-   typeCurrentMusic=data["id"];
+   idCurrentMusic=data["id"];
+   try {
+     musicIndexData=data["musicIndex"];
+   } catch (e) {
+     // TODO
+   }
+   print(data);
   return data;
   }
 

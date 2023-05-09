@@ -14,6 +14,7 @@ class AudioPlayerBG {
   int? _limit = 0;
 
   Timer? _timerDuration;
+  String? srcUrl;
 
   AudioPlayerBG._internal() {
 
@@ -47,6 +48,7 @@ class AudioPlayerBG {
     await _player!.setAsset(src,
 
     );
+    srcUrl=src;
 
     _player!.setLoopMode(LoopMode.one);
 
@@ -60,6 +62,7 @@ class AudioPlayerBG {
 
   Future<void> playAudio(
       Duration durationMax, String src) async {
+    print("_limit");
     _limit = durationMax.inSeconds;
 
     if (_timerDuration != null) {
@@ -75,12 +78,14 @@ class AudioPlayerBG {
 
     _timerDuration = Timer.periodic(Duration(seconds: 1), (timer) {
       _limit = _limit! - 1;
-
+      print("_limit");
+      print(_limit);
       AppData.isPlaying.value=true;
       if (_limit! <= 0) {
         AppData.isPlaying.value=false;
         _player!.stop();
         _timerDuration!.cancel();
+        _limit=0;
       }
     });
     await _packagePlayer(src);
@@ -105,6 +110,8 @@ class AudioPlayerBG {
       _limit = _limit! - 1;
       AppData.isPlaying.value=true;
 
+
+
       if (_limit! <= 0) {
         AppData.isPlaying.value=false;
         _player!.stop();
@@ -118,9 +125,9 @@ class AudioPlayerBG {
     return _player!.playing;
   }
 
-  IcyInfo? currentAudio() {
+  String? currentAudio() {
     try {
-      return _player!.icyMetadata!.info;
+      return srcUrl;
     } catch (e) {
       return null;
     }
