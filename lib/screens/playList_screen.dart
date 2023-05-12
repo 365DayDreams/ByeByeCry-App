@@ -1058,6 +1058,7 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
                                     setDuration = selectedTimes[selectedTime];
 
                                     setDuration *= 60;
+                                    print(setDuration);
                                     setSongDuration(setDuration);
                                     print("index $selectedTime");
                                   });

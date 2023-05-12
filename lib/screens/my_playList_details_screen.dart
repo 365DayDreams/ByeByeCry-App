@@ -186,6 +186,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
       ins.stop();
       pausePlayMethod();
       sliderInitial = 0;
+      check=false;
     }
   }
 
@@ -436,6 +437,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
       ),
       body: PageView.builder(
         padEnds: false,
+        physics: NeverScrollableScrollPhysics(),
         controller: pageController,
         onPageChanged: (value) async {},
         itemCount: ref
@@ -793,7 +795,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
     );
   }
 
-  var brightness = 0.6;
+  var brightness = 0.5;
   void _showDialogBrightNess(BuildContext context) {
     final height = ScreenSize(context).height;
     final width = ScreenSize(context).width;
@@ -1501,6 +1503,12 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
 
       if (sliderInitial >= sliderEnd) {
         await playSong();
+      }else{
+        if(!mounted){
+          if(!ins.isPlaying()){
+            timer.cancel();
+          }
+        }
       }
 
       if (mounted) setState(() {});

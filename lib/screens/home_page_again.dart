@@ -31,21 +31,25 @@ class _HomePageAgainPageState extends ConsumerState<HomePageAgain> {
   List<HomePageFavModel> dummyText = [
     HomePageFavModel(
         id: 1,
-        text:"Does baby have gas? Try This Lay baby on their back and bring their knees to their chest.Does baby have gas? Try This Lay baby on their back and bring their knees to their chest."),
+        text:
+            "Does baby have gas? Try This Lay baby on their back and bring their knees to their chest.Does baby have gas? Try This Lay baby on their back and bring their knees to their chest."),
     HomePageFavModel(
         id: 2,
-        text:"Abcd? Try This Lay baby on their back and bring their knees to their chest.Does baby have gas? Try This Lay baby on their back and bring their knees to their chest."),
+        text:
+            "Abcd? Try This Lay baby on their back and bring their knees to their chest.Does baby have gas? Try This Lay baby on their back and bring their knees to their chest."),
     HomePageFavModel(
         id: 3,
-        text:"Efg? Try This Lay baby on their back and bring their knees to their chest.Does baby have gas? Try This Lay baby on their back and bring their knees to their chest."),
+        text:
+            "Efg? Try This Lay baby on their back and bring their knees to their chest.Does baby have gas? Try This Lay baby on their back and bring their knees to their chest."),
     HomePageFavModel(
         id: 4,
-        text:"1234? Try This Lay baby on their back and bring their knees to their chest.Does baby have gas? Try This Lay baby on their back and bring their knees to their chest."),
+        text:
+            "1234? Try This Lay baby on their back and bring their knees to their chest.Does baby have gas? Try This Lay baby on their back and bring their knees to their chest."),
     HomePageFavModel(
         id: 5,
-        text:"dghasdghdsghsd Try This Lay baby on their back and bring their knees to their chest.Does baby have gas? Try This Lay baby on their back and bring their knees to their chest."),
+        text:
+            "dghasdghdsghsd Try This Lay baby on their back and bring their knees to their chest.Does baby have gas? Try This Lay baby on their back and bring their knees to their chest."),
   ];
-
 
   @override
   void initState() {
@@ -59,7 +63,7 @@ class _HomePageAgainPageState extends ConsumerState<HomePageAgain> {
     return SafeArea(
       child: Scaffold(
         //   backgroundColor: secondaryGreenColor,
-        body:Container(
+        body: Container(
           child: Column(
             children: [
               Padding(
@@ -73,11 +77,17 @@ class _HomePageAgainPageState extends ConsumerState<HomePageAgain> {
                     decoration: BoxDecoration(
                       color: primaryWhiteColor,
                     ),
-                    child: Image.asset("asset/images/Logo.png",height:  height * .10,width: 350,),
+                    child: Image.asset(
+                      "asset/images/Logo.png",
+                      height: height * .10,
+                      width: 350,
+                    ),
                   ),
                 ),
               ),
-              SizedBox(height: 6,),
+              SizedBox(
+                height: 6,
+              ),
               Container(
                 width: double.infinity,
                 color: primaryPinkColor,
@@ -101,27 +111,26 @@ class _HomePageAgainPageState extends ConsumerState<HomePageAgain> {
                             fontSize: 64,
                             color: secondaryBlackColor)),
                   ),
-
-
                 ],
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: 28.0, right: 28),
-                child: Container(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20.0),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
-                          spreadRadius: 2,
-                          blurRadius: 4,
-                          offset:
-                          Offset(0, 3), // changes position of shadow
-                        ),
-                      ]),
-                  child: Image.asset(
-                    "asset/images/homeslwwp_baby.jpg",
-                    fit: BoxFit.cover,
+              Flexible(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 28.0, right: 28),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20.0),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 2,
+                            blurRadius: 4,
+                            offset: Offset(0, 3), // changes position of shadow
+                          ),
+                        ]),
+                    child: Image.asset(
+                      "asset/images/homeslwwp_baby.jpg",
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
               ),
@@ -140,88 +149,80 @@ class _HomePageAgainPageState extends ConsumerState<HomePageAgain> {
                 textPaddingHorizontal: 57,
               ),
               SizedBox(height: 18),
-
-              Expanded(child: Container(color: secondaryGreenColor,child:
-              ValueListenableBuilder(
-                  valueListenable: Hive.box("homeFav").listenable(),
-                  builder: (context, box, _) {
-                    return Stack(
-                      clipBehavior: Clip.none,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 12.0,left: 0,right:0,bottom: 10),
-                          child: Container(
-                            alignment: Alignment.center,
-
-                            color: secondaryGreenColor,
-                            width: double.infinity,
+              Container(
+                color: secondaryGreenColor,
+                child: ValueListenableBuilder(
+                    valueListenable: Hive.box("homeFav").listenable(),
+                    builder: (context, box, _) {
+                      return Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                top: 12.0, left: 0, right: 0, bottom: 10),
                             child: Container(
+                              alignment: Alignment.center,
+                              color: secondaryGreenColor,
+                              width: double.infinity,
+                              child: Container(
                                 // alignment: Alignment.center,
 
                                 color: Colors.white,
-                                child:     Padding(
+                                child: Padding(
                                   padding: const EdgeInsets.only(top: 18.0),
                                   child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       GestureDetector(
                                           onTap: () {
-
                                             buttonCarouselController
                                                 .previousPage(
-                                                duration:
-                                                const Duration(
-                                                    milliseconds:
-                                                    500),
-                                                curve: Curves
-                                                    .easeIn);
+                                                    duration: const Duration(
+                                                        milliseconds: 500),
+                                                    curve: Curves.easeIn);
                                           },
                                           child: Container(
-                                              color:
-                                              Colors.transparent,
+                                              color: Colors.transparent,
                                               child: const Padding(
-                                                padding:
-                                                EdgeInsets.all(
-                                                    6.0),
+                                                padding: EdgeInsets.all(6.0),
                                                 child: CustomSvg(
-                                                    svg:
-                                                    leftDirection),
+                                                    svg: leftDirection),
                                               ))),
-
-
-
                                       Expanded(
                                         child: Container(
-                                          child:     CarouselSlider.builder(
+                                          child: CarouselSlider.builder(
                                             carouselController:
-                                            buttonCarouselController,
+                                                buttonCarouselController,
                                             itemCount: dummyText.length,
                                             itemBuilder:
                                                 (BuildContext context,
-                                                int itemIndex,
-                                                int pageViewIndex) {
+                                                    int itemIndex,
+                                                    int pageViewIndex) {
                                               fav.add(false);
 
                                               return Padding(
-                                                padding: const EdgeInsets.only(left: 28,right: 18,top: 20),
+                                                padding:
+                                                    const EdgeInsets.only(
+                                                        left: 28,
+                                                        right: 18,
+                                                        top: 20),
                                                 child: Container(
-                                                  color:
-                                                  Colors.transparent,
+                                                  color: Colors.transparent,
                                                   child: Text(
                                                     "${dummyText[itemIndex].text}",
                                                     style: TextStyle(
                                                       fontWeight:
-                                                      FontWeight.w600,
+                                                          FontWeight.w600,
                                                       fontSize: 18,
                                                       color:
-                                                      secondaryBlackColor,
+                                                          secondaryBlackColor,
                                                       height: 1.5,
-
                                                     ),
                                                     maxLines: 5,
 
                                                     textAlign:
-                                                    TextAlign.start,
+                                                        TextAlign.start,
 
                                                     // height: 1.3,
                                                   ),
@@ -229,10 +230,9 @@ class _HomePageAgainPageState extends ConsumerState<HomePageAgain> {
                                               );
                                             },
                                             options: CarouselOptions(
-                                              // aspectRatio: 2.1,
-                                                viewportFraction:1,
-                                                enableInfiniteScroll:
-                                                false,
+                                                // aspectRatio: 2.1,
+                                                viewportFraction: 1,
+                                                enableInfiniteScroll: false,
                                                 onPageChanged:
                                                     (index, reasons) {
                                                   setState(() {
@@ -282,28 +282,18 @@ class _HomePageAgainPageState extends ConsumerState<HomePageAgain> {
                                       ),
                                       GestureDetector(
                                           onTap: () {
-
-                                            buttonCarouselController
-                                                .nextPage(
-                                                duration:
-                                                const Duration(
-                                                    milliseconds:
-                                                    500),
-                                                curve: Curves
-                                                    .easeIn);
+                                            buttonCarouselController.nextPage(
+                                                duration: const Duration(
+                                                    milliseconds: 500),
+                                                curve: Curves.easeIn);
                                           },
                                           child: Container(
-                                              color:
-                                              Colors.transparent,
+                                              color: Colors.transparent,
                                               child: const Padding(
-                                                padding:
-                                                EdgeInsets.all(
-                                                    6.0),
+                                                padding: EdgeInsets.all(6.0),
                                                 child: CustomSvg(
-                                                    svg:
-                                                    rightDirection),
+                                                    svg: rightDirection),
                                               ))),
-
                                     ],
                                   ),
                                   // CarouselSlider.builder(
@@ -486,52 +476,48 @@ class _HomePageAgainPageState extends ConsumerState<HomePageAgain> {
                                 //     ],
                                 //   ),
                                 // ),
+                              ),
                             ),
                           ),
-                        ),
-
-                        Padding(
-                          padding: const EdgeInsets.only(right: 18.0,top: 8),
-                          child: Align(
-                            alignment: Alignment.topRight,
-                            // bottom: 185,
-                            child: IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                    if (box.containsKey(
-                                        dummyText[itemIndex].id)) {
-                                      box.delete(dummyText[itemIndex].id);
-                                    } else {
-                                      box.put(dummyText[itemIndex].id,
-                                          dummyText[itemIndex]);
-                                    }
-                                  });
-                                },
-                                icon: Hive.box("homeFav").containsKey(
-                                    dummyText[itemIndex].id)
-                                    ? Icon(
-                                  Icons.favorite,
-                                  size: 40,
-                                  color: primaryPinkColor,
-                                )
-                                    : Icon(
-                                  Icons.favorite_border,
-                                  size: 40,
-                                  color: primaryPinkColor,
-                                )),
-                          ),
-                        )
-                      ],
-                    );
-
-                  }),
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(right: 18.0, top: 8),
+                            child: Align(
+                              alignment: Alignment.topRight,
+                              // bottom: 185,
+                              child: IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      if (box.containsKey(
+                                          dummyText[itemIndex].id)) {
+                                        box.delete(dummyText[itemIndex].id);
+                                      } else {
+                                        box.put(dummyText[itemIndex].id,
+                                            dummyText[itemIndex]);
+                                      }
+                                    });
+                                  },
+                                  icon: Hive.box("homeFav").containsKey(
+                                          dummyText[itemIndex].id)
+                                      ? Icon(
+                                          Icons.favorite,
+                                          size: 40,
+                                          color: primaryPinkColor,
+                                        )
+                                      : Icon(
+                                          Icons.favorite_border,
+                                          size: 40,
+                                          color: primaryPinkColor,
+                                        )),
+                            ),
+                          )
+                        ],
+                      );
+                    }),
               ),
-              ),
-
             ],
           ),
         ),
-
       ),
     );
   }

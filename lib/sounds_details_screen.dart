@@ -4,6 +4,7 @@ import 'package:bye_bye_cry_new/compoment/shared/custom_svg.dart';
 import 'package:bye_bye_cry_new/local_db/local_db.dart';
 import 'package:bye_bye_cry_new/main.dart';
 import 'package:bye_bye_cry_new/screens/models/AppData.dart';
+import 'package:bye_bye_cry_new/screens/models/music_models.dart';
 import 'package:bye_bye_cry_new/screens/provider/add_music_provider.dart';
 import 'package:bye_bye_cry_new/screens/provider/mix_music_provider.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +21,11 @@ import '../compoment/utils/image_link.dart';
 
 bool check = true;
 Timer? songTimer;
+
 int selectedDuration = 120;
+var sliderInitial = 0.0;
+var sliderEnd = 120.0;
+Timer? sliderTimer;
 
 class SoundDetailsScreen extends ConsumerStatefulWidget {
   final String musicId;
@@ -46,10 +51,9 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
   ];
   List<int> selectedTimes = [0, 10, 30, 60, 90, 120, 150];
 
-  Duration _duration = Duration.zero;
   Duration _position = Duration.zero;
   Duration _slider = Duration(seconds: 0);
-  double currentVolume = 40.0;
+  double currentVolume = 50.0;
   bool issongplaying = false;
   double brightness = 0.5;
   late StreamSubscription<double> _subscription;
@@ -85,9 +89,8 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
       if (check == true) {
         ins.seek(Duration(seconds: 120));
         setSongDuration(120, initValue: 0);
-        sliderEnd = 120.0;
       }
-
+/*
       print(_position);
       if (sliderInitial.toInt() == (sliderEnd - 1).toInt()) {
         if (check == false) {
@@ -99,34 +102,22 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
 
           if (check == true) {
             changeIndex(changeIndex: true);
-            String url = ref
-                .watch(addProvider)
-                .musicList[index].musicFile;
+            String url = ref.watch(addProvider).musicList[index].musicFile;
             await ins.playAudio(Duration(hours: 8), "assets/" + url);
 
             LocalDB.setCurrentPlayingMusic(
-                title: ref
-                    .watch(addProvider)
-                    .musicList[index].musicName,
-                id: ref
-                    .watch(addProvider)
-                    .musicList[index].id,
+                title: ref.watch(addProvider).musicList[index].musicName,
+                id: ref.watch(addProvider).musicList[index].id,
                 type: "single");
             // sliderInitial=0.0;
 
             print("IF URL __$url");
           } else {
-            String url = ref
-                .watch(addProvider)
-                .musicList[index].musicFile;
+            String url = ref.watch(addProvider).musicList[index].musicFile;
             await ins.playAudio(Duration(minutes: 2), "assets/" + url);
             LocalDB.setCurrentPlayingMusic(
-                title: ref
-                    .watch(addProvider)
-                    .musicList[index].musicName,
-                id: ref
-                    .watch(addProvider)
-                    .musicList[index].id,
+                title: ref.watch(addProvider).musicList[index].musicName,
+                id: ref.watch(addProvider).musicList[index].id,
                 type: "single");
 
             // sliderInitial=0.0;
@@ -149,17 +140,11 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
           check = true;
 
           if (mounted) {
-            String url = ref
-                .watch(addProvider)
-                .musicList[index].musicFile;
+            String url = ref.watch(addProvider).musicList[index].musicFile;
             await ins.playAudio(Duration(minutes: 2), "assets/" + url);
             LocalDB.setCurrentPlayingMusic(
-                title: ref
-                    .watch(addProvider)
-                    .musicList[index].musicName,
-                id: ref
-                    .watch(addProvider)
-                    .musicList[index].id,
+                title: ref.watch(addProvider).musicList[index].musicName,
+                id: ref.watch(addProvider).musicList[index].id,
                 type: "single");
 
             // sliderInitial=0.0;
@@ -174,7 +159,7 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
           timer.cancel();
           return;
         }
-      }
+      }*/
     });
 
     print('checkkking--"rrrrrrrrrrrrrrrrrrr"');
@@ -190,8 +175,15 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
     super.dispose();
   }
 
+  List<MusicModel>? musicList;
+
   initialization() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+
+      musicList= ref
+          .watch(addProvider)
+          .musicList;
+
       int _index = ref
           .watch(addProvider)
           .musicList
@@ -203,13 +195,12 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
             pausePlayMethod();
           } else {
             if (isOldSong()) {
-              setSongDuration(
-                  selectedDuration,
-                  initValue: (selectedDuration - ins.getRemainingDuration())
-                      .toDouble());
+              resumeSliderTimmer();
             } else {
+              check=true;
               ins.stop();
               pausePlayMethod();
+              setSongDuration(120, initValue: 0);
             }
           }
           setState(() {});
@@ -252,35 +243,23 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
       print("pause");
     } else {
       if (check == true) {
-        String url = ref
-            .watch(addProvider)
-            .musicList[index].musicFile;
+        String url = ref.watch(addProvider).musicList[index].musicFile;
 
         ins.playAudio(Duration(hours: 8), "assets/$url");
         LocalDB.setCurrentPlayingMusic(
-            title: ref
-                .watch(addProvider)
-                .musicList[index].musicName,
-            id: ref
-                .watch(addProvider)
-                .musicList[index].id,
+            title: ref.watch(addProvider).musicList[index].musicName,
+            id: ref.watch(addProvider).musicList[index].id,
             type: "single");
 
         resumeSliderTimmer();
         print("play");
       } else {
-        String url = ref
-            .watch(addProvider)
-            .musicList[index].musicFile;
+        String url = ref.watch(addProvider).musicList[index].musicFile;
 
         ins.playAudio(Duration(minutes: 2), "assets/$url");
         LocalDB.setCurrentPlayingMusic(
-            title: ref
-                .watch(addProvider)
-                .musicList[index].musicName,
-            id: ref
-                .watch(addProvider)
-                .musicList[index].id,
+            title: ref.watch(addProvider).musicList[index].musicName,
+            id: ref.watch(addProvider).musicList[index].id,
             type: "single");
 
         resumeSliderTimmer();
@@ -295,17 +274,11 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
   changeIndex({bool changeIndex = false}) {
     print("change index");
     if (changeIndex) {
-      index = (index + 1) % ref
-          .watch(addProvider)
-          .musicList
-          .length;
+      index = (index + 1) % ref.watch(addProvider).musicList.length;
     } else {
       index = (index - 1);
       if (index < 0) {
-        index = ref
-            .watch(addProvider)
-            .musicList
-            .length - 1;
+        index = ref.watch(addProvider).musicList.length - 1;
       }
     }
     print('new index $index');
@@ -367,12 +340,10 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
       // ),
       body: PageView.builder(
         padEnds: false,
+        physics: NeverScrollableScrollPhysics(),
         controller: pageController,
         onPageChanged: (value) async {},
-        itemCount: ref
-            .watch(addProvider)
-            .musicList
-            .length,
+        itemCount: ref.watch(addProvider).musicList.length,
         itemBuilder: (_, indexxxx) {
           return SingleChildScrollView(
             child: Column(
@@ -391,7 +362,7 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                           padding: EdgeInsets.only(right: width * .07),
                           child: CustomImage(
                             imageUrl:
-                            'asset/images/icon_png/now_playing_icon/Sun.png',
+                                'asset/images/icon_png/now_playing_icon/Sun.png',
                             color: Colors.orangeAccent.shade100,
                           ),
                         ),
@@ -400,9 +371,7 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                   ],
                 ),
                 CustomImage(
-                  imageUrl: ref
-                      .watch(addProvider)
-                      .musicList[index].image,
+                  imageUrl: ref.watch(addProvider).musicList[index].image,
                   height: 300,
                   width: 380,
                   // height: width * .7,
@@ -418,9 +387,7 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                       children: [
                         CustomText(
                           text:
-                          ref
-                              .watch(addProvider)
-                              .musicList[index].musicName,
+                              ref.watch(addProvider).musicList[index].musicName,
                           fontSize: 20,
                           fontWeight: FontWeight.w400,
                           color: secondaryBlackColor,
@@ -516,30 +483,29 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                   //     ],
                   //   ),
                   // ),
-                ] else
-                  ...[
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          CustomText(
-                            text:
-                            '${getHumanTimeBySecond(sliderInitial.toInt())}',
-                            fontSize: 10,
-                            color: blackColor2,
-                            fontWeight: FontWeight.w700,
-                          ),
-                          CustomText(
-                            text: '${getHumanTimeBySecond(sliderEnd.toInt())}',
-                            fontSize: 10,
-                            color: blackColor2,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ],
-                      ),
+                ] else ...[
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        CustomText(
+                          text:
+                              '${getHumanTimeBySecond(sliderInitial.toInt())}',
+                          fontSize: 10,
+                          color: blackColor2,
+                          fontWeight: FontWeight.w700,
+                        ),
+                        CustomText(
+                          text: '${getHumanTimeBySecond(sliderEnd.toInt())}',
+                          fontSize: 10,
+                          color: blackColor2,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
+                ],
                 if (check == true) ...[
                   Visibility(
                     visible: false,
@@ -550,7 +516,7 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                         data: const SliderThemeData(
                             trackShape: RectangularSliderTrackShape(),
                             thumbShape:
-                            RoundSliderThumbShape(enabledThumbRadius: 10)),
+                                RoundSliderThumbShape(enabledThumbRadius: 10)),
                         child: Slider(
                             value: 0.0,
                             min: 0.0,
@@ -571,48 +537,45 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                       ),
                     ),
                   ),
-                ] else
-                  ...[
-                    SizedBox(
-                      //color: Colors.green,
-                      width: width * .95,
-                      child: SliderTheme(
-                        data: const SliderThemeData(
-                            trackShape: RectangularSliderTrackShape(),
-                            thumbShape:
-                            RoundSliderThumbShape(enabledThumbRadius: 10)),
-                        child: Builder(
-                            builder: (context) {
-                              print(
-                                  "sliderInitial==end=========================================-0=-=00=-0=0=");
-                              print(sliderInitial);
-                              print(sliderEnd);
+                ] else ...[
+                  SizedBox(
+                    //color: Colors.green,
+                    width: width * .95,
+                    child: SliderTheme(
+                      data: const SliderThemeData(
+                          trackShape: RectangularSliderTrackShape(),
+                          thumbShape:
+                              RoundSliderThumbShape(enabledThumbRadius: 10)),
+                      child: Builder(builder: (context) {
+                        print(
+                            "sliderInitial==end=========================================-0=-=00=-0=0=");
+                        print(sliderInitial);
+                        print(sliderEnd);
 
-                              return Slider(
-                                  value: sliderInitial <= sliderEnd
-                                      ? sliderInitial
-                                      : sliderEnd,
-                                  min: 0.0,
-                                  max: sliderEnd,
-                                  divisions: 350,
-                                  activeColor: primaryPinkColor,
-                                  inactiveColor: primaryGreyColor2,
-                                  onChanged: (double newValue) async {
-                                    print("slider");
-                                    updateSlider(newValue);
-                                    ins.seek(Duration(
-                                        seconds: (sliderEnd - sliderInitial)
-                                            .toInt()));
-                                    setState(() {});
-                                  },
-                                  semanticFormatterCallback: (double newValue) {
-                                    return '${newValue.round()} dollars';
-                                  });
-                            }
-                        ),
-                      ),
+                        return Slider(
+                            value: sliderInitial <= sliderEnd
+                                ? sliderInitial
+                                : sliderEnd,
+                            min: 0.0,
+                            max: sliderEnd,
+                            divisions: 350,
+                            activeColor: primaryPinkColor,
+                            inactiveColor: primaryGreyColor2,
+                            onChanged: (double newValue) async {
+                              print("slider");
+                              updateSlider(newValue);
+                              ins.seek(Duration(
+                                  seconds:
+                                      (sliderEnd - sliderInitial).toInt()));
+                              setState(() {});
+                            },
+                            semanticFormatterCallback: (double newValue) {
+                              return '${newValue.round()} dollars';
+                            });
+                      }),
                     ),
-                  ],
+                  ),
+                ],
                 Container(
                   color: Colors.transparent,
                   child: Padding(
@@ -752,7 +715,7 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                                       color: secondaryWhiteColor2)
                                 ]),
                             child: Padding(
-                              padding:  EdgeInsets.all(22),
+                              padding: EdgeInsets.all(22),
                               child: Obx(() {
                                 AppData.isPlaying.value;
                                 return CustomSvg(
@@ -897,7 +860,7 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                                 child: const CustomImage(
                                   boxFit: BoxFit.fill,
                                   imageUrl:
-                                  'asset/images/icon_png/now_playing_icon/Sun.png',
+                                      'asset/images/icon_png/now_playing_icon/Sun.png',
                                   color: primaryPinkColor,
                                 ),
                               ),
@@ -929,8 +892,7 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Transform(
-                  transform: Matrix4.identity()
-                    ..rotateZ(-90 * 3.1415927 / 180),
+                  transform: Matrix4.identity()..rotateZ(-90 * 3.1415927 / 180),
                   child: AlertDialog(
                     alignment: Alignment.centerLeft,
                     shape: RoundedRectangleBorder(
@@ -1002,15 +964,12 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                                           horizontal: 4.0, vertical: 5),
                                       child: Center(
                                           child: CustomText(
-                                            text:
-                                            "${(currentVolume)
-                                                .toInt()
-                                                .toString()
-                                                .padLeft(2, "0")}%",
-                                            fontSize: 10,
-                                            color: secondaryBlackColor,
-                                            fontWeight: FontWeight.w600,
-                                          )),
+                                        text:
+                                            "${(currentVolume).toInt().toString().padLeft(2, "0")}%",
+                                        fontSize: 10,
+                                        color: secondaryBlackColor,
+                                        fontWeight: FontWeight.w600,
+                                      )),
                                     ),
                                   )))
                         ],
@@ -1080,11 +1039,7 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                             child: Center(
                                 child: CustomText(
                                     text:
-                                    "${(selectedTimes[selectedTime] ~/ 60)
-                                        .toString()
-                                        .padLeft(2,
-                                        "0")} : ${(selectedTimes[selectedTime] %
-                                        60).toString().padLeft(2, "0")} min")),
+                                        "${(selectedTimes[selectedTime] ~/ 60).toString().padLeft(2, "0")} : ${(selectedTimes[selectedTime] % 60).toString().padLeft(2, "0")} min")),
                           ),
                           SliderTheme(
                             data: const SliderThemeData(
@@ -1104,19 +1059,25 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                                     // setDuration = 1;
                                     selectedTime = newValue.toInt();
                                     selectedDuration =
-                                    selectedTimes[selectedTime]==0?120:selectedTimes[selectedTime]*60;
+                                        selectedTimes[selectedTime] == 0
+                                            ? 120
+                                            : selectedTimes[selectedTime];
 
                                     selectedDuration *= 60;
-                                    setSongDuration(selectedDuration==0?120:selectedDuration);
-                                    ins.seek(
-                                        Duration(seconds: selectedDuration==0?120:selectedDuration));
+                                    setSongDuration(selectedDuration == 0
+                                        ? 120
+                                        : selectedDuration);
+                                    ins.seek(Duration(
+                                        seconds: selectedDuration == 0
+                                            ? 120
+                                            : selectedDuration));
                                     print("index 111 $selectedDuration");
                                     print(
                                         "index 222 ${selectedTimes[selectedTime]}");
                                     if (selectedTimes[selectedTime] == 0) {
                                       check = true;
 
-                                       sliderEnd = 120.0;
+                                      sliderEnd = 120.0;
                                     } else {
                                       check = false;
                                     }
@@ -1133,12 +1094,11 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: List.generate(
                                   times.length,
-                                      (index) =>
-                                      CustomText(
-                                          text: times[index],
-                                          fontWeight: FontWeight.w400,
-                                          fontSize: 8,
-                                          color: secondaryBlackColor)),
+                                  (index) => CustomText(
+                                      text: times[index],
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 8,
+                                      color: secondaryBlackColor)),
                             ),
                           ),
                           const SizedBox(height: 15),
@@ -1164,7 +1124,7 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
                                   if (check) {
                                     selectedTime = 0;
                                     setSongDuration(120, initValue: 0);
-                                    selectedDuration=120;
+                                    selectedDuration = 120;
                                   }
                                 });
                               }),
@@ -1240,10 +1200,7 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
     return "$hoursStr:$minutesStr:$secondsStr";
   }
 
-  var sliderInitial = 0.0;
-  var sliderEnd = 120.0;
 
-  Timer? sliderTimer;
 
   void setSongDuration(int setDuration, {double initValue = 0}) {
     sliderInitial = initValue;
@@ -1252,16 +1209,23 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
       sliderTimer!.cancel();
     }
     sliderTimer = Timer.periodic(Duration(seconds: 1), (timer) {
-      if (!mounted) {
-        timer.cancel();
-      }
+
+      print("sliderInitial===========================================single");
+      sliderInitial++;
+      print(sliderInitial);
+      print(sliderEnd);
 
       if (sliderEnd <= sliderInitial) {
-        timer.cancel();
-        sliderInitial = 0.0;
-        ins.stop();
+        playnext();
+        check=true;
+      }else{
+        if(!mounted){
+          if(!ins.isPlaying()){
+            timer.cancel();
+          }
+        }
       }
-      sliderInitial++;
+
       if (mounted) {
         setState(() {});
       }
@@ -1287,4 +1251,30 @@ class _SoundDetailsScreenState extends ConsumerState<SoundDetailsScreen>
       setSongDuration(sliderEnd.toInt(), initValue: sliderInitial);
     }
   }
+
+  playnext() async {
+    if(index<musicList!.length){
+      index++;
+    }else{
+      index=0;
+    }
+
+    String url = musicList![index]
+        .musicFile;
+
+    await ins.stop();
+
+    ins.playAudio(
+        Duration(minutes: 2), "assets/$url");
+    LocalDB.setCurrentPlayingMusic(
+        title:  musicList![index]
+            .musicName,
+        id:  musicList![index]
+            .id,
+        type: "single");
+
+    sliderInitial = 0.0;
+    sliderEnd = 120.0;
+  }
+
 }

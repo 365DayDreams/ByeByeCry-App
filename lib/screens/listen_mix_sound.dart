@@ -36,6 +36,7 @@ var sliderEnd = 120.0;
 bool check = true;
 int setDuration = 120;
 Timer? timerSong;
+Timer? sliderTimer;
 
 class _ListenMixSoundState extends ConsumerState<ListenMixSound>
     with TickerProviderStateMixin {
@@ -54,16 +55,9 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
   int selectedTime = 0;
   bool playPouse = true;
 
-  // AudioCache audioCache = AudioCache();
-  // AudioPlayer audioPlayer1 = AudioPlayer();
-  // AudioPlayer audioPlayer2 = AudioPlayer();
-  Duration _duration = Duration.zero;
-  Duration _position = Duration.zero;
-  Duration _duration2 = Duration.zero;
-  Duration _position2 = Duration.zero;
   Duration position = Duration.zero;
   Duration duration = Duration.zero;
-  double currentVolume = 40.0;
+  double currentVolume = 50.0;
   bool issongplaying1 = false;
   bool issongplaying2 = false;
   double brightness = 0.5;
@@ -85,12 +79,18 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
     //brightNess();
     super.initState();
 
-    if(timerSong!=null){
+    if (timerSong != null) {
       timerSong!.cancel();
     }
+    initialization();
+    timerSong = Timer.periodic(Duration(seconds: 1), (timer) async {
+      if (check == true) {
+        selectedTime = 0;
+        sliderInitial = 0;
+        ins.seek(Duration(seconds: 120));
+      }
 
-    timerSong=  Timer.periodic(Duration(seconds: 1), (timer) async {
-      print(_position);
+      /*print(_position);
       if (sliderInitial.toInt() == (sliderEnd - 1).toInt()) {
         if (check == false) {
           sliderInitial = 0.0;
@@ -214,19 +214,17 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
           timer.cancel();
           return;
         }
-      }
+      }*/
     });
   }
 
   @override
-  void didChangeDependencies() {
-    initialization();
-    super.didChangeDependencies();
-  }
-
-  @override
   void dispose() {
-    _subscription.cancel();
+    try {
+      _subscription.cancel();
+    } catch (e) {
+      // TODO
+    }
     super.dispose();
   }
 
@@ -252,7 +250,8 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
     print(widget.mixMusicModelId);
     print(AppData.idCurrentMusic);
 
-    var value = (widget.mixMusicModelId == AppData.idCurrentMusic) && ins.isPlaying();
+    var value =
+        (widget.mixMusicModelId == AppData.idCurrentMusic) && ins.isPlaying();
 
     if (!value) {
       check = true;
@@ -262,35 +261,38 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
   }
 
   initialization() {
+
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      musicIndex = ref
-          .read(mixMusicProvider)
-          .combinationList
-          .indexWhere((element) => element.id == widget.mixMusicModelId);
-      print("music index $musicIndex");
-      if (mounted) {
+      playingMusic= ref.watch(mixMusicProvider).combinationList;
+      musicIndex = playingMusic!.indexWhere((element) => element.id == widget.mixMusicModelId);
+
+      if (musicIndex >= 0) {
+        index = musicIndex;
+        if (!ins.isPlaying()) {
+          pausePlayMethod();
+        } else {
+          if (isOldSong()) {
+            resumeSliderTimmer();
+          } else {
+            ins.stop();
+            pausePlayMethod();
+            setSongDuration(120, initValue: 0);
+            check=true;
+          }
+        }
         setState(() {});
       }
-      if (isOldSong()) {
-
-        setSongDuration(setDuration, initValue:(setDuration- ins.getRemainingDuration()).toDouble());
-
-      }else{
-        ins.stop();
-        checkMounted();
-      }
-
     });
   }
 
   changeIndex({bool changeIndex = false}) {
     if (changeIndex) {
       musicIndex =
-          (musicIndex + 1) % ref.watch(mixMusicProvider).combinationList.length;
+          (musicIndex + 1) % playingMusic!.length;
     } else {
       musicIndex = (musicIndex - 1);
       if (musicIndex < 0) {
-        musicIndex = ref.watch(mixMusicProvider).combinationList.length - 1;
+        musicIndex = playingMusic!.length - 1;
       }
     }
     /*if(mounted){
@@ -305,113 +307,48 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
   pausePlayMethod() async {
     if (ins.isPlaying()) {
       await ins.stop();
-
       pauseSliderTimmer();
     } else {
-      if (check == true) {
-        String url1 = ref
-                .watch(mixMusicProvider)
-                .combinationList[musicIndex]
-                .first
-                ?.musicFile ??
-            "";
-        String url2 = ref
-                .watch(mixMusicProvider)
-                .combinationList[musicIndex]
-                .second
-                ?.musicFile ??
-            "";
-        // print("${audioPlayer1.getDuration().then((value) => print("duration value$value"))}");
-        // await audioPlayer1.play(AssetSource(url1));
-        await ins.playAudio(Duration(hours: 10), "assets/" + url1);
-        // await audioPlayer2.play(AssetSource(url2));
-        await ins.playAudio(Duration(hours: 10), "assets/" + url2);
-        LocalDB.setCurrentPlayingMusic(
-            title: ref
-                    .watch(mixMusicProvider)
-                    .combinationList[musicIndex]
-                    .first!
-                    .musicName +
-                " + " +
-                ref
-                    .watch(mixMusicProvider)
-                    .combinationList[musicIndex]
-                    .second!
-                    .musicName,
-            id: ref.watch(mixMusicProvider).combinationList[musicIndex].id,
-            type: "mixSound");
-        resumeSliderTimmer();
-        print("play");
-      } else {
-        String url1 = ref
-                .watch(mixMusicProvider)
-                .combinationList[musicIndex]
-                .first
-                ?.musicFile ??
-            "";
-        String url2 = ref
-                .watch(mixMusicProvider)
-                .combinationList[musicIndex]
-                .second
-                ?.musicFile ??
-            "";
-        // print("${audioPlayer1.getDuration().then((value) => print("duration value$value"))}");
-        // await audioPlayer1.play(AssetSource(url1));
-        await ins.playAudio(Duration(minutes: 2), "assets/" + url1);
-        // await audioPlayer2.play(AssetSource(url2));
-        await ins.playAudio(Duration(minutes: 2), "assets/" + url2);
-        LocalDB.setCurrentPlayingMusic(
-            title: ref
-                    .watch(mixMusicProvider)
-                    .combinationList[musicIndex]
-                    .first!
-                    .musicName +
-                " + " +
-                ref
-                    .watch(mixMusicProvider)
-                    .combinationList[musicIndex]
-                    .second!
-                    .musicName,
-            id: ref.watch(mixMusicProvider).combinationList[musicIndex].id,
-            type: "mixSound");
-        resumeSliderTimmer();
-        print("play");
-      }
+      String url1 = ref
+              .watch(mixMusicProvider)
+              .combinationList[musicIndex]
+              .first
+              ?.musicFile ??
+          "";
+      String url2 = ref
+              .watch(mixMusicProvider)
+              .combinationList[musicIndex]
+              .second
+              ?.musicFile ??
+          "";
+      // print("${audioPlayer1.getDuration().then((value) => print("duration value$value"))}");
+      // await audioPlayer1.play(AssetSource(url1));
+      await ins.playAudio(Duration(seconds: 120), "assets/" + url1);
+      // await audioPlayer2.play(AssetSource(url2));
+      await ins.playAudio(Duration(seconds: 120), "assets/" + url2);
+      LocalDB.setCurrentPlayingMusic(
+          title: ref
+                  .watch(mixMusicProvider)
+                  .combinationList[musicIndex]
+                  .first!
+                  .musicName +
+              " + " +
+              ref
+                  .watch(mixMusicProvider)
+                  .combinationList[musicIndex]
+                  .second!
+                  .musicName,
+          id: ref.watch(mixMusicProvider).combinationList[musicIndex].id,
+          type: "mixSound");
+      resumeSliderTimmer();
+      print("play");
     }
     if (mounted) {
       setState(() {});
     }
   }
 
-  // playMusic() async {
-  //   String url1 = ref
-  //           .watch(mixMusicProvider)
-  //           .combinationList[musicIndex]
-  //           .first
-  //           ?.musicFile ??
-  //       "";
-  //   String url2 = ref
-  //           .watch(mixMusicProvider)
-  //           .combinationList[musicIndex]
-  //           .second
-  //           ?.musicFile ??
-  //       "";
-  //   // await audioPlayer1.play(AssetSource(url1));
-  //   await ins.playAudio(Duration(minutes: 2), "assets/" + url1);
-  //   // await audioPlayer2.play(AssetSource(url2));
-  //   await ins.playAudio(Duration(minutes: 2), "assets/" + url2);
-  //   if (mounted) {
-  //     setState(() {});
-  //   }
-  // }
-
-  checkMounted() async {
-    if (mounted) {
-      setState(() {});
-      pausePlayMethod();
-    }
-    print("duration2 ${_duration2.inSeconds}  duration${_duration.inSeconds}");
-  }
+  List<MixMusicModel>? playingMusic;
 
   @override
   Widget build(BuildContext context) {
@@ -438,6 +375,7 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
             }
           },
           controller: pageController,
+          physics: NeverScrollableScrollPhysics(),
           itemCount: ref.watch(mixMusicProvider).combinationList.length,
           itemBuilder: (_, index) {
             return SingleChildScrollView(
@@ -611,26 +549,6 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                   SizedBox(height: width * 0.1),
                   if (check == true) ...[
                     Container()
-                    // Padding(
-                    //   padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                    //   child: Row(
-                    //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //     children: [
-                    //       CustomText(
-                    //         text: '${getHumanTimeBySecond(sliderInitial.toInt())}',
-                    //         fontSize: 10,
-                    //         color: blackColor2,
-                    //         fontWeight: FontWeight.w700,
-                    //       ),
-                    //       CustomText(
-                    //         text: '${getHumanTimeBySecond(sliderEnd.toInt())}',
-                    //         fontSize: 10,
-                    //         color: blackColor2,
-                    //         fontWeight: FontWeight.w700,
-                    //       ),
-                    //     ],
-                    //   ),
-                    // ),
                   ] else ...[
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 30.0),
@@ -653,39 +571,6 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                         ],
                       ),
                     ),
-                  ],
-                  if (check == true) ...[
-                    Visibility(
-                      visible: false,
-                      child: SizedBox(
-                        //color: Colors.green,
-                        width: width * .95,
-                        child: SliderTheme(
-                          data: const SliderThemeData(
-                              trackShape: RectangularSliderTrackShape(),
-                              thumbShape: RoundSliderThumbShape(
-                                  enabledThumbRadius: 10)),
-                          child: Slider(
-                              value: 0.0,
-                              min: 0.0,
-                              max: 30000000000000000.0,
-                              divisions: 40000000000000000,
-                              activeColor: primaryPinkColor,
-                              inactiveColor: primaryGreyColor2,
-                              onChanged: (double newValue) async {
-                                print("slider");
-                                // updateSlider(newValue);
-                                // ins.seek(Duration(
-                                //     seconds: (sliderEnd - sliderInitial).toInt()));
-                                // setState(() {});
-                              },
-                              semanticFormatterCallback: (double newValue) {
-                                return '${newValue.round()} dollars';
-                              }),
-                        ),
-                      ),
-                    ),
-                  ] else ...[
                     SizedBox(
                       //color: Colors.green,
                       width: width * .95,
@@ -700,7 +585,7 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                                 : sliderEnd,
                             min: 0.0,
                             max: sliderEnd,
-                            divisions: 350,
+                            divisions: sliderEnd.toInt(),
                             activeColor: primaryPinkColor,
                             inactiveColor: primaryGreyColor2,
                             onChanged: (double newValue) async {
@@ -730,92 +615,50 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                               onPressed: () async {
                                 changeIndex(changeIndex: false);
                                 selectedTime = 0;
-                                setDuration = 0;
+                                setDuration = 120;
                                 check = true;
+
+                                await ins.stop();
+                                String url1 = ref
+                                        .watch(mixMusicProvider)
+                                        .combinationList[musicIndex]
+                                        .first
+                                        ?.musicFile ??
+                                    "";
+                                String url2 = ref
+                                        .watch(mixMusicProvider)
+                                        .combinationList[musicIndex]
+                                        .second
+                                        ?.musicFile ??
+                                    "";
+                                // await audioPlayer1.play(AssetSource(url1));
+                                await ins.playAudio(
+                                    Duration(minutes: 2), "assets/" + url1);
+                                // await audioPlayer2.play(AssetSource(url2));
+                                await ins.playAudio(
+                                    Duration(minutes: 2), "assets/" + url2);
+                                LocalDB.setCurrentPlayingMusic(
+                                    title: ref
+                                            .watch(mixMusicProvider)
+                                            .combinationList[musicIndex]
+                                            .first!
+                                            .musicName +
+                                        " + " +
+                                        ref
+                                            .watch(mixMusicProvider)
+                                            .combinationList[musicIndex]
+                                            .second!
+                                            .musicName,
+                                    id: ref
+                                        .watch(mixMusicProvider)
+                                        .combinationList[musicIndex]
+                                        .id,
+                                    type: "mixSound");
                                 if (mounted) {
-                                  if (check == true) {
-                                    await ins.stop();
-                                    String url1 = ref
-                                            .watch(mixMusicProvider)
-                                            .combinationList[musicIndex]
-                                            .first
-                                            ?.musicFile ??
-                                        "";
-                                    String url2 = ref
-                                            .watch(mixMusicProvider)
-                                            .combinationList[musicIndex]
-                                            .second
-                                            ?.musicFile ??
-                                        "";
-                                    // await audioPlayer1.play(AssetSource(url1));
-                                    await ins.playAudio(
-                                        Duration(hours: 10), "assets/" + url1);
-                                    // await audioPlayer2.play(AssetSource(url2));
-                                    await ins.playAudio(
-                                        Duration(hours: 10), "assets/" + url2);
-                                    LocalDB.setCurrentPlayingMusic(
-                                        title: ref
-                                                .watch(mixMusicProvider)
-                                                .combinationList[musicIndex]
-                                                .first!
-                                                .musicName +
-                                            " + " +
-                                            ref
-                                                .watch(mixMusicProvider)
-                                                .combinationList[musicIndex]
-                                                .second!
-                                                .musicName,
-                                        id: ref
-                                            .watch(mixMusicProvider)
-                                            .combinationList[musicIndex]
-                                            .id,
-                                        type: "mixSound");
-                                    sliderInitial = 0.0;
-                                    sliderEnd = 522222222220.0;
-                                  } else {
-                                    await ins.stop();
-                                    String url1 = ref
-                                            .watch(mixMusicProvider)
-                                            .combinationList[musicIndex]
-                                            .first
-                                            ?.musicFile ??
-                                        "";
-                                    String url2 = ref
-                                            .watch(mixMusicProvider)
-                                            .combinationList[musicIndex]
-                                            .second
-                                            ?.musicFile ??
-                                        "";
-                                    // await audioPlayer1.play(AssetSource(url1));
-                                    await ins.playAudio(
-                                        Duration(minutes: 2), "assets/" + url1);
-                                    // await audioPlayer2.play(AssetSource(url2));
-                                    await ins.playAudio(
-                                        Duration(minutes: 2), "assets/" + url2);
-                                    LocalDB.setCurrentPlayingMusic(
-                                        title: ref
-                                                .watch(mixMusicProvider)
-                                                .combinationList[musicIndex]
-                                                .first!
-                                                .musicName +
-                                            " + " +
-                                            ref
-                                                .watch(mixMusicProvider)
-                                                .combinationList[musicIndex]
-                                                .second!
-                                                .musicName,
-                                        id: ref
-                                            .watch(mixMusicProvider)
-                                            .combinationList[musicIndex]
-                                            .id,
-                                        type: "mixSound");
-                                    if (mounted) {
-                                      setState(() {});
-                                    }
-                                    sliderInitial = 0.0;
-                                    sliderEnd = 120.0;
-                                  }
+                                  setState(() {});
                                 }
+                                sliderInitial = 0.0;
+                                sliderEnd = 120.0;
 
                                 if (mounted) {
                                   setState(() {});
@@ -825,36 +668,6 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                                   svg: left_shift, color: primaryPinkColor)),
                           GestureDetector(
                             onTap: () async {
-                              // if (ins.isPlaying()) {
-                              //   await ins.stop();
-                              //   // await audioPlayer2.pause();
-                              //   pauseSliderTimmer();
-                              // } else {
-                              //   String url1 = ref
-                              //       .watch(mixMusicProvider)
-                              //       .combinationList[musicIndex]
-                              //       .first
-                              //       ?.musicFile ??
-                              //       "";
-                              //   String url2 = ref
-                              //       .watch(mixMusicProvider)
-                              //       .combinationList[musicIndex]
-                              //       .second
-                              //       ?.musicFile ??
-                              //       "";
-                              //   //   await audioPlayer1.play(AssetSource(url1));
-                              //   await ins.playAudio(
-                              //       Duration(minutes: 2), "assets/" + url1);
-                              //   // await audioPlayer2.play(AssetSource(url2));
-                              //   await ins.playAudio(
-                              //       Duration(minutes: 2), "assets/" + url2);
-                              //   resumeSliderTimmer();
-                              // }
-                              // playPouse = !playPouse;
-                              // if (mounted) {
-                              //   setState(() {});
-                              // }
-                              // setState(() {});
                               if (ins.isPlaying()) {
                                 if (mounted) {
                                   playPouse = false;
@@ -873,82 +686,43 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                                 //await audioPlayer.play(AssetSource(url));
                                 print("play");
                                 resumeSliderTimmer();
-                                //  ins.silenceIncomingCalls();
-                                if (check == true) {
-                                  String url1 = ref
-                                          .watch(mixMusicProvider)
-                                          .combinationList[musicIndex]
-                                          .first
-                                          ?.musicFile ??
-                                      "";
-                                  String url2 = ref
-                                          .watch(mixMusicProvider)
-                                          .combinationList[musicIndex]
-                                          .second
-                                          ?.musicFile ??
-                                      "";
-                                  //   await audioPlayer1.play(AssetSource(url1));
-                                  await ins.playAudio(
-                                      Duration(hours: 10), "assets/" + url1);
-                                  // await audioPlayer2.play(AssetSource(url2));
-                                  await ins.playAudio(
-                                      Duration(hours: 10), "assets/" + url2);
-                                  LocalDB.setCurrentPlayingMusic(
-                                      title: ref
-                                              .watch(mixMusicProvider)
-                                              .combinationList[musicIndex]
-                                              .first!
-                                              .musicName +
-                                          " + " +
-                                          ref
-                                              .watch(mixMusicProvider)
-                                              .combinationList[musicIndex]
-                                              .second!
-                                              .musicName,
-                                      id: ref
-                                          .watch(mixMusicProvider)
-                                          .combinationList[musicIndex]
-                                          .id,
-                                      type: "mixSound");
-                                  resumeSliderTimmer();
-                                } else {
-                                  String url1 = ref
-                                          .watch(mixMusicProvider)
-                                          .combinationList[musicIndex]
-                                          .first
-                                          ?.musicFile ??
-                                      "";
-                                  String url2 = ref
-                                          .watch(mixMusicProvider)
-                                          .combinationList[musicIndex]
-                                          .second
-                                          ?.musicFile ??
-                                      "";
-                                  //   await audioPlayer1.play(AssetSource(url1));
-                                  await ins.playAudio(
-                                      Duration(minutes: 2), "assets/" + url1);
-                                  // await audioPlayer2.play(AssetSource(url2));
-                                  await ins.playAudio(
-                                      Duration(minutes: 2), "assets/" + url2);
-                                  LocalDB.setCurrentPlayingMusic(
-                                      title: ref
-                                              .watch(mixMusicProvider)
-                                              .combinationList[musicIndex]
-                                              .first!
-                                              .musicName +
-                                          " + " +
-                                          ref
-                                              .watch(mixMusicProvider)
-                                              .combinationList[musicIndex]
-                                              .second!
-                                              .musicName,
-                                      id: ref
-                                          .watch(mixMusicProvider)
-                                          .combinationList[musicIndex]
-                                          .id,
-                                      type: "mixSound");
-                                  resumeSliderTimmer();
-                                }
+
+                                String url1 = ref
+                                    .watch(mixMusicProvider)
+                                    .combinationList[musicIndex]
+                                    .first
+                                    ?.musicFile ??
+                                    "";
+                                String url2 = ref
+                                    .watch(mixMusicProvider)
+                                    .combinationList[musicIndex]
+                                    .second
+                                    ?.musicFile ??
+                                    "";
+                                //   await audioPlayer1.play(AssetSource(url1));
+                                await ins.playAudio(
+                                    Duration(minutes: 2), "assets/" + url1);
+                                // await audioPlayer2.play(AssetSource(url2));
+                                await ins.playAudio(
+                                    Duration(minutes: 2), "assets/" + url2);
+                                LocalDB.setCurrentPlayingMusic(
+                                    title: ref
+                                        .watch(mixMusicProvider)
+                                        .combinationList[musicIndex]
+                                        .first!
+                                        .musicName +
+                                        " + " +
+                                        ref
+                                            .watch(mixMusicProvider)
+                                            .combinationList[musicIndex]
+                                            .second!
+                                            .musicName,
+                                    id: ref
+                                        .watch(mixMusicProvider)
+                                        .combinationList[musicIndex]
+                                        .id,
+                                    type: "mixSound");
+                                resumeSliderTimmer();
                                 playPouse = !playPouse;
                                 if (mounted) {
                                   setState(() {});
@@ -988,93 +762,51 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                               onPressed: () async {
                                 changeIndex(changeIndex: true);
                                 selectedTime = 0;
-                                setDuration = 0;
+                                setDuration = 120;
                                 check = true;
                                 if (mounted) {
                                   await ins.stop();
-                                  if (check == true) {
-                                    String url1 = ref
-                                            .watch(mixMusicProvider)
-                                            .combinationList[musicIndex]
-                                            .first
-                                            ?.musicFile ??
-                                        "";
-                                    String url2 = ref
-                                            .watch(mixMusicProvider)
-                                            .combinationList[musicIndex]
-                                            .second
-                                            ?.musicFile ??
-                                        "";
-                                    // await audioPlayer1.play(AssetSource(url1));
-                                    await ins.playAudio(
-                                        Duration(hours: 10), "assets/" + url1);
-                                    // await audioPlayer2.play(AssetSource(url2));
-                                    await ins.playAudio(
-                                        Duration(hours: 10), "assets/" + url2);
-                                    LocalDB.setCurrentPlayingMusic(
-                                        title: ref
-                                                .watch(mixMusicProvider)
-                                                .combinationList[musicIndex]
-                                                .first!
-                                                .musicName +
-                                            " + " +
-                                            ref
-                                                .watch(mixMusicProvider)
-                                                .combinationList[musicIndex]
-                                                .second!
-                                                .musicName,
-                                        id: ref
-                                            .watch(mixMusicProvider)
-                                            .combinationList[musicIndex]
-                                            .id,
-                                        type: "mixSound");
-                                    if (mounted) {
-                                      setState(() {});
-                                    }
-                                    sliderInitial = 0.0;
-                                    sliderEnd = 522222222220.0;
-                                  } else {
-                                    String url1 = ref
-                                            .watch(mixMusicProvider)
-                                            .combinationList[musicIndex]
-                                            .first
-                                            ?.musicFile ??
-                                        "";
-                                    String url2 = ref
-                                            .watch(mixMusicProvider)
-                                            .combinationList[musicIndex]
-                                            .second
-                                            ?.musicFile ??
-                                        "";
-                                    // await audioPlayer1.play(AssetSource(url1));
-                                    await ins.playAudio(
-                                        Duration(minutes: 2), "assets/" + url1);
-                                    // await audioPlayer2.play(AssetSource(url2));
-                                    await ins.playAudio(
-                                        Duration(minutes: 2), "assets/" + url2);
-                                    LocalDB.setCurrentPlayingMusic(
-                                        title: ref
-                                                .watch(mixMusicProvider)
-                                                .combinationList[musicIndex]
-                                                .first!
-                                                .musicName +
-                                            " + " +
-                                            ref
-                                                .watch(mixMusicProvider)
-                                                .combinationList[musicIndex]
-                                                .first!
-                                                .musicName,
-                                        id: ref
-                                            .watch(mixMusicProvider)
-                                            .combinationList[musicIndex]
-                                            .id,
-                                        type: "mixSound");
-                                    if (mounted) {
-                                      setState(() {});
-                                    }
-                                    sliderInitial = 0.0;
-                                    sliderEnd = 120.0;
+
+                                  String url1 = ref
+                                      .watch(mixMusicProvider)
+                                      .combinationList[musicIndex]
+                                      .first
+                                      ?.musicFile ??
+                                      "";
+                                  String url2 = ref
+                                      .watch(mixMusicProvider)
+                                      .combinationList[musicIndex]
+                                      .second
+                                      ?.musicFile ??
+                                      "";
+                                  // await audioPlayer1.play(AssetSource(url1));
+                                  await ins.playAudio(
+                                      Duration(minutes: 2), "assets/" + url1);
+                                  // await audioPlayer2.play(AssetSource(url2));
+                                  await ins.playAudio(
+                                      Duration(minutes: 2), "assets/" + url2);
+                                  LocalDB.setCurrentPlayingMusic(
+                                      title: ref
+                                          .watch(mixMusicProvider)
+                                          .combinationList[musicIndex]
+                                          .first!
+                                          .musicName +
+                                          " + " +
+                                          ref
+                                              .watch(mixMusicProvider)
+                                              .combinationList[musicIndex]
+                                              .first!
+                                              .musicName,
+                                      id: ref
+                                          .watch(mixMusicProvider)
+                                          .combinationList[musicIndex]
+                                          .id,
+                                      type: "mixSound");
+                                  if (mounted) {
+                                    setState(() {});
                                   }
+                                  sliderInitial = 0.0;
+                                  sliderEnd = 120.0;
 
                                   // selected timer....
 
@@ -1083,19 +815,7 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                                 if (mounted) {
                                   setState(() {});
                                 }
-                                // changeIndex(changeIndex: true);
-                                // sliderInitial = 0.0;
-                                // selectedTime = 0;
-                                // setDuration = 0;
-                                // check=true;
-                                // if (mounted) {
-                                //   playMusic();
-                                //   sliderInitial = 0.0;
-                                //   sliderEnd = 120.0;
-                                // }
-                                // if (mounted) {
-                                //   setState(() {});
-                                // }
+
                               },
                               icon: const CustomSvg(
                                   svg: right_shift, color: primaryPinkColor)),
@@ -1374,8 +1094,9 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                                     setDuration = selectedTimes[selectedTime];
 
                                     setDuration *= 60;
-                                    setSongDuration(setDuration);
-                                    ins.seek(Duration(seconds: setDuration));
+                                    setSongDuration(
+                                        setDuration == 0 ? 120 : setDuration);
+
                                     print("index 111 $setDuration");
                                     print(
                                         "index 222 ${selectedTimes[selectedTime]}");
@@ -1384,6 +1105,7 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
                                       sliderEnd = 120.0;
                                     } else {
                                       check = false;
+                                      //sliderEnd = 120.0;
                                     }
                                   });
                                   setState(() {});
@@ -1503,26 +1225,32 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
     return "$hoursStr:$minutesStr:$secondsStr";
   }
 
-  Timer? sliderTimer;
-
   void setSongDuration(int setDuration, {double initValue = 0}) {
     sliderInitial = initValue;
     sliderEnd = setDuration.toDouble();
+    ins.seek(Duration(seconds: (setDuration - initValue).toInt()));
     if (sliderTimer != null) {
       sliderTimer!.cancel();
     }
+
     sliderTimer = Timer.periodic(Duration(seconds: 1), (timer) {
-      if (!mounted) {
-        timer.cancel();
-      }
+      print("sliderInitial===========================================dsdsd");
+      sliderInitial++;
+      print(sliderInitial);
+      print(sliderEnd);
 
       if (sliderEnd <= sliderInitial) {
-        timer.cancel();
-        sliderInitial = 0.0;
-        ins.stop();
+        playNext();
+        check=true;
+      }else{
+        if(!mounted){
+          if(!ins.isPlaying()){
+            timer.cancel();
+          }
+        }
       }
-      sliderInitial++;
-      setState(() {});
+
+      if (mounted) setState(() {});
     });
   }
 
@@ -1532,16 +1260,52 @@ class _ListenMixSoundState extends ConsumerState<ListenMixSound>
   }
 
   void pauseSliderTimmer() {
-    print("=========${sliderTimer!.isActive}");
-    print("=========");
     sliderTimer!.cancel();
   }
 
   void resumeSliderTimmer() {
-    if (check == true) {
-      setSongDuration(4554545445545454, initValue: sliderInitial);
-    } else {
-      setSongDuration(sliderEnd.toInt(), initValue: sliderInitial);
+    setSongDuration(sliderEnd.toInt(), initValue: sliderInitial);
+  }
+
+  playNext() async {
+    changeIndex(changeIndex: true);
+    selectedTime = 0;
+    setDuration = 120;
+
+    await ins.stop();
+
+    String url1 =playingMusic![musicIndex]
+        .first
+        ?.musicFile ??
+        "";
+    String url2 = playingMusic![musicIndex]
+        .second
+        ?.musicFile ??
+        "";
+    // await audioPlayer1.play(AssetSource(url1));
+    await ins.playAudio(
+        Duration(minutes: 2), "assets/" + url1);
+    // await audioPlayer2.play(AssetSource(url2));
+    await ins.playAudio(
+        Duration(minutes: 2), "assets/" + url2);
+    LocalDB.setCurrentPlayingMusic(
+        title: playingMusic![musicIndex]
+            .first!
+            .musicName +
+            " + " +
+            playingMusic![musicIndex]
+                .first!
+                .musicName,
+        id: playingMusic![musicIndex]
+            .id,
+        type: "mixSound");
+
+    sliderInitial = 0.0;
+    sliderEnd = 120.0;
+
+    if (mounted) {
+      setState(() {});
     }
   }
+
 }

@@ -41,13 +41,20 @@ class CustomBottomAppBarState extends ConsumerState<CustomBottomAppBar> {
     return Wrap(
       children: [
         Container(
-          decoration: BoxDecoration(boxShadow: [
+          decoration: BoxDecoration(/*boxShadow: [
             BoxShadow(
                 color: Colors.grey.withOpacity(0.1), blurRadius: 6, spreadRadius: 6)
-          ]),
+          ]*/
+
+            border: Border(
+              top: BorderSide(width: 1.0, color: Color(0xff97001A).withOpacity(0.10)),
+
+            ),
+          ),
           child: BottomNavigationBar(
             items: <BottomNavigationBarItem>[
               BottomNavigationBarItem(
+
                   icon: Padding(
                     padding: const EdgeInsets.only(bottom: 7.0),
                     child: Image.asset(
