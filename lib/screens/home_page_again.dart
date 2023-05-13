@@ -64,57 +64,58 @@ class _HomePageAgainPageState extends ConsumerState<HomePageAgain> {
       child: Scaffold(
         //   backgroundColor: secondaryGreenColor,
         body: Container(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(0.0),
-                child: GestureDetector(
-                  onTap: () {},
-                  child: Container(
-                    //  color: primaryWhiteColor,
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(0.0),
+                  child: GestureDetector(
+                    onTap: () {},
+                    child: Container(
+                      //  color: primaryWhiteColor,
 
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: primaryWhiteColor,
-                    ),
-                    child: Image.asset(
-                      "asset/images/Logo.png",
-                      height: height * .10,
-                      width: 350,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: primaryWhiteColor,
+                      ),
+                      child: Image.asset(
+                        "asset/images/Logo.png",
+                        height: height * .10,
+                        width: 350,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              SizedBox(
-                height: 6,
-              ),
-              Container(
-                width: double.infinity,
-                color: primaryPinkColor,
-                height: 2,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  CustomText(
-                    text: "Cue the ",
-                    fontSize: 36,
-                    fontWeight: FontWeight.w600,
-                    color: secondaryBlackColor,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 8.0),
-                    child: Text("calm",
-                        style: GoogleFonts.sacramento(
-                            fontWeight: FontWeight.w400,
-                            fontSize: 64,
-                            color: secondaryBlackColor)),
-                  ),
-                ],
-              ),
-              Flexible(
-                child: Padding(
+                SizedBox(
+                  height: 6,
+                ),
+                Container(
+                  width: double.infinity,
+                  color: primaryPinkColor,
+                  height: 2,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    CustomText(
+                      text: "Cue the ",
+                      fontSize: 36,
+                      fontWeight: FontWeight.w600,
+                      color: secondaryBlackColor,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: Text("calm",
+                          style: GoogleFonts.sacramento(
+                              fontWeight: FontWeight.w400,
+                              fontSize: 64,
+                              color: secondaryBlackColor)),
+                    ),
+                  ],
+                ),
+                Padding(
                   padding: const EdgeInsets.only(left: 28.0, right: 28),
                   child: Container(
                     decoration: BoxDecoration(
@@ -133,389 +134,389 @@ class _HomePageAgainPageState extends ConsumerState<HomePageAgain> {
                     ),
                   ),
                 ),
-              ),
-              SizedBox(height: 20),
-              OutLineButton(
-                height: 55,
-                text: 'Start Playing'.toUpperCase(),
-                textColor: secondaryBlackColor,
-                textFontSize: 24,
-                textFontWeight: FontWeight.w600,
-                borderRadius: 40,
-                onPressed: () {
-                  ref.read(addProvider).changePage(1);
-                },
-                textPaddingVerticalTop: 5,
-                textPaddingHorizontal: 57,
-              ),
-              SizedBox(height: 18),
-              Container(
-                color: secondaryGreenColor,
-                child: ValueListenableBuilder(
-                    valueListenable: Hive.box("homeFav").listenable(),
-                    builder: (context, box, _) {
-                      return Stack(
-                        clipBehavior: Clip.none,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                top: 12.0, left: 0, right: 0, bottom: 10),
-                            child: Container(
-                              alignment: Alignment.center,
-                              color: secondaryGreenColor,
-                              width: double.infinity,
+                SizedBox(height: 20),
+                OutLineButton(
+                  height: 55,
+                  text: 'Start Playing'.toUpperCase(),
+                  textColor: secondaryBlackColor,
+                  textFontSize: 24,
+                  textFontWeight: FontWeight.w600,
+                  borderRadius: 40,
+                  onPressed: () {
+                    ref.read(addProvider).changePage(1);
+                  },
+                  textPaddingVerticalTop: 5,
+                  textPaddingHorizontal: 57,
+                ),
+                SizedBox(height: 18),
+                Container(
+                  color: secondaryGreenColor,
+                  child: ValueListenableBuilder(
+                      valueListenable: Hive.box("homeFav").listenable(),
+                      builder: (context, box, _) {
+                        return Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 12.0, left: 0, right: 0, bottom: 10),
                               child: Container(
-                                // alignment: Alignment.center,
+                                alignment: Alignment.center,
+                                color: secondaryGreenColor,
+                                width: double.infinity,
+                                child: Container(
+                                  // alignment: Alignment.center,
 
-                                color: Colors.white,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(top: 18.0),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      GestureDetector(
-                                          onTap: () {
-                                            buttonCarouselController
-                                                .previousPage(
-                                                    duration: const Duration(
-                                                        milliseconds: 500),
-                                                    curve: Curves.easeIn);
-                                          },
-                                          child: Container(
-                                              color: Colors.transparent,
-                                              child: const Padding(
-                                                padding: EdgeInsets.all(6.0),
-                                                child: CustomSvg(
-                                                    svg: leftDirection),
-                                              ))),
-                                      Expanded(
-                                        child: Container(
-                                          child: CarouselSlider.builder(
-                                            carouselController:
-                                                buttonCarouselController,
-                                            itemCount: dummyText.length,
-                                            itemBuilder:
-                                                (BuildContext context,
-                                                    int itemIndex,
-                                                    int pageViewIndex) {
-                                              fav.add(false);
-
-                                              return Padding(
-                                                padding:
-                                                    const EdgeInsets.only(
-                                                        left: 28,
-                                                        right: 18,
-                                                        top: 20),
-                                                child: Container(
-                                                  color: Colors.transparent,
-                                                  child: Text(
-                                                    "${dummyText[itemIndex].text}",
-                                                    style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      fontSize: 18,
-                                                      color:
-                                                          secondaryBlackColor,
-                                                      height: 1.5,
-                                                    ),
-                                                    maxLines: 5,
-
-                                                    textAlign:
-                                                        TextAlign.start,
-
-                                                    // height: 1.3,
-                                                  ),
-                                                ),
-                                              );
+                                  color: Colors.white,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(top: 18.0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        GestureDetector(
+                                            onTap: () {
+                                              buttonCarouselController
+                                                  .previousPage(
+                                                      duration: const Duration(
+                                                          milliseconds: 500),
+                                                      curve: Curves.easeIn);
                                             },
-                                            options: CarouselOptions(
-                                                // aspectRatio: 2.1,
-                                                viewportFraction: 1,
-                                                enableInfiniteScroll: false,
-                                                onPageChanged:
-                                                    (index, reasons) {
-                                                  setState(() {
-                                                    itemIndex = index;
-                                                  });
-                                                }),
-                                          ),
-                                          // child: CarouselSlider.builder(
-                                          //   unlimitedMode: true,
-                                          //
-                                          //
-                                          //
-                                          //   onSlideChanged: (index) {
-                                          //     print("Slide changed: $index");
-                                          //     itemIndex= index;
-                                          //   },
-                                          //   // onSlideStart: () {
-                                          //   //   print("Slide started");
-                                          //   // },
-                                          //   // onSlideEnd: () {
-                                          //   //   print("Slide ended");
-                                          //   // },
-                                          //   controller: _sliderController,
-                                          //   slideBuilder: (index) {
-                                          //     return    Padding(
-                                          //       padding: const EdgeInsets.only(left: 18.0,right: 10),
-                                          //       child: Container(
-                                          //         alignment: Alignment.center,
-                                          //         // color: colors[index],
-                                          //         child: Text(
-                                          //           dummyText[index].text.toString(),
-                                          //           style: TextStyle(fontSize: 18, color: Colors.black,height:  1.5),
-                                          //         ),
-                                          //       ),
-                                          //     );
-                                          //   },
-                                          //   // slideTransform: CubeTransform(),
-                                          //   // slideIndicator: CircularSlideIndicator(
-                                          //   //   padding: EdgeInsets.only(bottom: 32),
-                                          //   //   indicatorBorderColor: Colors.black,
-                                          //   // ),
-                                          //   itemCount: dummyText.length,
-                                          //   initialPage: itemIndex,
-                                          //   enableAutoSlider: true,
-                                          // ),
-                                        ),
-                                      ),
-                                      GestureDetector(
-                                          onTap: () {
-                                            buttonCarouselController.nextPage(
-                                                duration: const Duration(
-                                                    milliseconds: 500),
-                                                curve: Curves.easeIn);
-                                          },
+                                            child: Container(
+                                                color: Colors.transparent,
+                                                child: const Padding(
+                                                  padding: EdgeInsets.all(6.0),
+                                                  child: CustomSvg(
+                                                      svg: leftDirection),
+                                                ))),
+                                        Expanded(
                                           child: Container(
-                                              color: Colors.transparent,
-                                              child: const Padding(
-                                                padding: EdgeInsets.all(6.0),
-                                                child: CustomSvg(
-                                                    svg: rightDirection),
-                                              ))),
-                                    ],
+                                            child: CarouselSlider.builder(
+                                              carouselController:
+                                                  buttonCarouselController,
+                                              itemCount: dummyText.length,
+                                              itemBuilder:
+                                                  (BuildContext context,
+                                                      int itemIndex,
+                                                      int pageViewIndex) {
+                                                fav.add(false);
+
+                                                return Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 28,
+                                                          right: 18,
+                                                          top: 20),
+                                                  child: Container(
+                                                    color: Colors.transparent,
+                                                    child: Text(
+                                                      "${dummyText[itemIndex].text}",
+                                                      style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        fontSize: 18,
+                                                        color:
+                                                            secondaryBlackColor,
+                                                        height: 1.5,
+                                                      ),
+                                                      maxLines: 5,
+
+                                                      textAlign:
+                                                          TextAlign.start,
+
+                                                      // height: 1.3,
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                              options: CarouselOptions(
+                                                  // aspectRatio: 2.1,
+                                                  viewportFraction: 1,
+                                                  enableInfiniteScroll: false,
+                                                  onPageChanged:
+                                                      (index, reasons) {
+                                                    setState(() {
+                                                      itemIndex = index;
+                                                    });
+                                                  }),
+                                            ),
+                                            // child: CarouselSlider.builder(
+                                            //   unlimitedMode: true,
+                                            //
+                                            //
+                                            //
+                                            //   onSlideChanged: (index) {
+                                            //     print("Slide changed: $index");
+                                            //     itemIndex= index;
+                                            //   },
+                                            //   // onSlideStart: () {
+                                            //   //   print("Slide started");
+                                            //   // },
+                                            //   // onSlideEnd: () {
+                                            //   //   print("Slide ended");
+                                            //   // },
+                                            //   controller: _sliderController,
+                                            //   slideBuilder: (index) {
+                                            //     return    Padding(
+                                            //       padding: const EdgeInsets.only(left: 18.0,right: 10),
+                                            //       child: Container(
+                                            //         alignment: Alignment.center,
+                                            //         // color: colors[index],
+                                            //         child: Text(
+                                            //           dummyText[index].text.toString(),
+                                            //           style: TextStyle(fontSize: 18, color: Colors.black,height:  1.5),
+                                            //         ),
+                                            //       ),
+                                            //     );
+                                            //   },
+                                            //   // slideTransform: CubeTransform(),
+                                            //   // slideIndicator: CircularSlideIndicator(
+                                            //   //   padding: EdgeInsets.only(bottom: 32),
+                                            //   //   indicatorBorderColor: Colors.black,
+                                            //   // ),
+                                            //   itemCount: dummyText.length,
+                                            //   initialPage: itemIndex,
+                                            //   enableAutoSlider: true,
+                                            // ),
+                                          ),
+                                        ),
+                                        GestureDetector(
+                                            onTap: () {
+                                              buttonCarouselController.nextPage(
+                                                  duration: const Duration(
+                                                      milliseconds: 500),
+                                                  curve: Curves.easeIn);
+                                            },
+                                            child: Container(
+                                                color: Colors.transparent,
+                                                child: const Padding(
+                                                  padding: EdgeInsets.all(6.0),
+                                                  child: CustomSvg(
+                                                      svg: rightDirection),
+                                                ))),
+                                      ],
+                                    ),
+                                    // CarouselSlider.builder(
+                                    //   carouselController:
+                                    //   buttonCarouselController,
+                                    //   itemCount: dummyText.length,
+                                    //   itemBuilder:
+                                    //       (BuildContext context,
+                                    //       int itemIndex,
+                                    //       int pageViewIndex) {
+                                    //     fav.add(false);
+                                    //
+                                    //     return Padding(
+                                    //       padding: const EdgeInsets.only(top: 33.0),
+                                    //       child: Container(
+                                    //         color:
+                                    //         Colors.transparent,
+                                    //         child: Text(
+                                    //           "${dummyText[itemIndex].text}",
+                                    //           style: TextStyle(
+                                    //             fontWeight:
+                                    //             FontWeight.w600,
+                                    //             fontSize: 18,
+                                    //             color:
+                                    //             secondaryBlackColor,
+                                    //             // height: 1.4
+                                    //           ),
+                                    //           textAlign:
+                                    //           TextAlign.center,
+                                    //
+                                    //           // height: 1.3,
+                                    //         ),
+                                    //       ),
+                                    //     );
+                                    //   },
+                                    //   options: CarouselOptions(
+                                    //       // aspectRatio: 2.1,
+                                    //       viewportFraction:1,
+                                    //       enableInfiniteScroll:
+                                    //       false,
+                                    //       onPageChanged:
+                                    //           (index, reasons) {
+                                    //         setState(() {
+                                    //           itemIndex = index;
+                                    //         });
+                                    //       }),
+                                    // ),
                                   ),
-                                  // CarouselSlider.builder(
-                                  //   carouselController:
-                                  //   buttonCarouselController,
-                                  //   itemCount: dummyText.length,
-                                  //   itemBuilder:
-                                  //       (BuildContext context,
-                                  //       int itemIndex,
-                                  //       int pageViewIndex) {
-                                  //     fav.add(false);
-                                  //
-                                  //     return Padding(
-                                  //       padding: const EdgeInsets.only(top: 33.0),
-                                  //       child: Container(
-                                  //         color:
-                                  //         Colors.transparent,
-                                  //         child: Text(
-                                  //           "${dummyText[itemIndex].text}",
-                                  //           style: TextStyle(
-                                  //             fontWeight:
-                                  //             FontWeight.w600,
-                                  //             fontSize: 18,
-                                  //             color:
-                                  //             secondaryBlackColor,
-                                  //             // height: 1.4
+                                  // child: SingleChildScrollView(
+                                  //   child: Column(
+                                  //     crossAxisAlignment:
+                                  //     CrossAxisAlignment.end,
+                                  //     children: [
+                                  //       Row(
+                                  //         mainAxisAlignment:
+                                  //         MainAxisAlignment
+                                  //             .spaceBetween,
+                                  //         crossAxisAlignment: CrossAxisAlignment.center,
+                                  //         children: [
+                                  //           GestureDetector(
+                                  //               onTap: () {
+                                  //                 // buttonCarouselController
+                                  //                 //     .previousPage(
+                                  //                 //     duration:
+                                  //                 //     const Duration(
+                                  //                 //         milliseconds:
+                                  //                 //         500),
+                                  //                 //     curve: Curves
+                                  //                 //         .easeIn);
+                                  //               },
+                                  //               child: Container(
+                                  //                   color:
+                                  //                   Colors.transparent,
+                                  //                   child: const Padding(
+                                  //                     padding:
+                                  //                     EdgeInsets.all(
+                                  //                         6.0),
+                                  //                     child: CustomSvg(
+                                  //                         svg:
+                                  //                         leftDirection),
+                                  //                   ))),
+                                  //           Padding(
+                                  //             padding: const EdgeInsets.only(top: 18.0),
+                                  //             child: Container(
+                                  //               child: CarouselSlider.builder(
+                                  //                 unlimitedMode: true,
+                                  //                 controller: _sliderController,
+                                  //                 slideBuilder: (index) {
+                                  //                   return Expanded(
+                                  //                     child: Container(
+                                  //                       alignment: Alignment.center,
+                                  //                       // color: colors[index],
+                                  //                       child: Text(
+                                  //                         dummyText[index].text.toString(),
+                                  //                         style: TextStyle(fontSize: 200, color: Colors.white),
+                                  //                       ),
+                                  //                     ),
+                                  //                   );
+                                  //                 },
+                                  //                 slideTransform: CubeTransform(),
+                                  //                 slideIndicator: CircularSlideIndicator(
+                                  //                   padding: EdgeInsets.only(bottom: 32),
+                                  //                   indicatorBorderColor: Colors.black,
+                                  //                 ),
+                                  //                 itemCount: dummyText.length,
+                                  //                 initialPage: 0,
+                                  //                 enableAutoSlider: true,
+                                  //               ),
+                                  //             ),
+                                  //             // CarouselSlider.builder(
+                                  //             //   carouselController:
+                                  //             //   buttonCarouselController,
+                                  //             //   itemCount: dummyText.length,
+                                  //             //   itemBuilder:
+                                  //             //       (BuildContext context,
+                                  //             //       int itemIndex,
+                                  //             //       int pageViewIndex) {
+                                  //             //     fav.add(false);
+                                  //             //
+                                  //             //     return Padding(
+                                  //             //       padding: const EdgeInsets.only(top: 33.0),
+                                  //             //       child: Container(
+                                  //             //         color:
+                                  //             //         Colors.transparent,
+                                  //             //         child: Text(
+                                  //             //           "${dummyText[itemIndex].text}",
+                                  //             //           style: TextStyle(
+                                  //             //             fontWeight:
+                                  //             //             FontWeight.w600,
+                                  //             //             fontSize: 18,
+                                  //             //             color:
+                                  //             //             secondaryBlackColor,
+                                  //             //             // height: 1.4
+                                  //             //           ),
+                                  //             //           textAlign:
+                                  //             //           TextAlign.center,
+                                  //             //
+                                  //             //           // height: 1.3,
+                                  //             //         ),
+                                  //             //       ),
+                                  //             //     );
+                                  //             //   },
+                                  //             //   options: CarouselOptions(
+                                  //             //       // aspectRatio: 2.1,
+                                  //             //       viewportFraction:1,
+                                  //             //       enableInfiniteScroll:
+                                  //             //       false,
+                                  //             //       onPageChanged:
+                                  //             //           (index, reasons) {
+                                  //             //         setState(() {
+                                  //             //           itemIndex = index;
+                                  //             //         });
+                                  //             //       }),
+                                  //             // ),
                                   //           ),
-                                  //           textAlign:
-                                  //           TextAlign.center,
-                                  //
-                                  //           // height: 1.3,
-                                  //         ),
-                                  //       ),
-                                  //     );
-                                  //   },
-                                  //   options: CarouselOptions(
-                                  //       // aspectRatio: 2.1,
-                                  //       viewportFraction:1,
-                                  //       enableInfiniteScroll:
-                                  //       false,
-                                  //       onPageChanged:
-                                  //           (index, reasons) {
-                                  //         setState(() {
-                                  //           itemIndex = index;
-                                  //         });
-                                  //       }),
+                                  //           GestureDetector(
+                                  //               onTap: () {
+                                  //                 // buttonCarouselController
+                                  //                 //     .nextPage(
+                                  //                 //     duration:
+                                  //                 //     const Duration(
+                                  //                 //         milliseconds:
+                                  //                 //         500),
+                                  //                 //     curve: Curves
+                                  //                 //         .easeIn);
+                                  //               },
+                                  //               child: Container(
+                                  //                   color:
+                                  //                   Colors.transparent,
+                                  //                   child: const Padding(
+                                  //                     padding:
+                                  //                     EdgeInsets.all(
+                                  //                         6.0),
+                                  //                     child: CustomSvg(
+                                  //                         svg:
+                                  //                         rightDirection),
+                                  //                   ))),
+                                  //         ],
+                                  //       )
+                                  //     ],
+                                  //   ),
                                   // ),
                                 ),
-                                // child: SingleChildScrollView(
-                                //   child: Column(
-                                //     crossAxisAlignment:
-                                //     CrossAxisAlignment.end,
-                                //     children: [
-                                //       Row(
-                                //         mainAxisAlignment:
-                                //         MainAxisAlignment
-                                //             .spaceBetween,
-                                //         crossAxisAlignment: CrossAxisAlignment.center,
-                                //         children: [
-                                //           GestureDetector(
-                                //               onTap: () {
-                                //                 // buttonCarouselController
-                                //                 //     .previousPage(
-                                //                 //     duration:
-                                //                 //     const Duration(
-                                //                 //         milliseconds:
-                                //                 //         500),
-                                //                 //     curve: Curves
-                                //                 //         .easeIn);
-                                //               },
-                                //               child: Container(
-                                //                   color:
-                                //                   Colors.transparent,
-                                //                   child: const Padding(
-                                //                     padding:
-                                //                     EdgeInsets.all(
-                                //                         6.0),
-                                //                     child: CustomSvg(
-                                //                         svg:
-                                //                         leftDirection),
-                                //                   ))),
-                                //           Padding(
-                                //             padding: const EdgeInsets.only(top: 18.0),
-                                //             child: Container(
-                                //               child: CarouselSlider.builder(
-                                //                 unlimitedMode: true,
-                                //                 controller: _sliderController,
-                                //                 slideBuilder: (index) {
-                                //                   return Expanded(
-                                //                     child: Container(
-                                //                       alignment: Alignment.center,
-                                //                       // color: colors[index],
-                                //                       child: Text(
-                                //                         dummyText[index].text.toString(),
-                                //                         style: TextStyle(fontSize: 200, color: Colors.white),
-                                //                       ),
-                                //                     ),
-                                //                   );
-                                //                 },
-                                //                 slideTransform: CubeTransform(),
-                                //                 slideIndicator: CircularSlideIndicator(
-                                //                   padding: EdgeInsets.only(bottom: 32),
-                                //                   indicatorBorderColor: Colors.black,
-                                //                 ),
-                                //                 itemCount: dummyText.length,
-                                //                 initialPage: 0,
-                                //                 enableAutoSlider: true,
-                                //               ),
-                                //             ),
-                                //             // CarouselSlider.builder(
-                                //             //   carouselController:
-                                //             //   buttonCarouselController,
-                                //             //   itemCount: dummyText.length,
-                                //             //   itemBuilder:
-                                //             //       (BuildContext context,
-                                //             //       int itemIndex,
-                                //             //       int pageViewIndex) {
-                                //             //     fav.add(false);
-                                //             //
-                                //             //     return Padding(
-                                //             //       padding: const EdgeInsets.only(top: 33.0),
-                                //             //       child: Container(
-                                //             //         color:
-                                //             //         Colors.transparent,
-                                //             //         child: Text(
-                                //             //           "${dummyText[itemIndex].text}",
-                                //             //           style: TextStyle(
-                                //             //             fontWeight:
-                                //             //             FontWeight.w600,
-                                //             //             fontSize: 18,
-                                //             //             color:
-                                //             //             secondaryBlackColor,
-                                //             //             // height: 1.4
-                                //             //           ),
-                                //             //           textAlign:
-                                //             //           TextAlign.center,
-                                //             //
-                                //             //           // height: 1.3,
-                                //             //         ),
-                                //             //       ),
-                                //             //     );
-                                //             //   },
-                                //             //   options: CarouselOptions(
-                                //             //       // aspectRatio: 2.1,
-                                //             //       viewportFraction:1,
-                                //             //       enableInfiniteScroll:
-                                //             //       false,
-                                //             //       onPageChanged:
-                                //             //           (index, reasons) {
-                                //             //         setState(() {
-                                //             //           itemIndex = index;
-                                //             //         });
-                                //             //       }),
-                                //             // ),
-                                //           ),
-                                //           GestureDetector(
-                                //               onTap: () {
-                                //                 // buttonCarouselController
-                                //                 //     .nextPage(
-                                //                 //     duration:
-                                //                 //     const Duration(
-                                //                 //         milliseconds:
-                                //                 //         500),
-                                //                 //     curve: Curves
-                                //                 //         .easeIn);
-                                //               },
-                                //               child: Container(
-                                //                   color:
-                                //                   Colors.transparent,
-                                //                   child: const Padding(
-                                //                     padding:
-                                //                     EdgeInsets.all(
-                                //                         6.0),
-                                //                     child: CustomSvg(
-                                //                         svg:
-                                //                         rightDirection),
-                                //                   ))),
-                                //         ],
-                                //       )
-                                //     ],
-                                //   ),
-                                // ),
                               ),
                             ),
-                          ),
-                          Padding(
-                            padding:
-                                const EdgeInsets.only(right: 18.0, top: 8),
-                            child: Align(
-                              alignment: Alignment.topRight,
-                              // bottom: 185,
-                              child: IconButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      if (box.containsKey(
-                                          dummyText[itemIndex].id)) {
-                                        box.delete(dummyText[itemIndex].id);
-                                      } else {
-                                        box.put(dummyText[itemIndex].id,
-                                            dummyText[itemIndex]);
-                                      }
-                                    });
-                                  },
-                                  icon: Hive.box("homeFav").containsKey(
-                                          dummyText[itemIndex].id)
-                                      ? Icon(
-                                          Icons.favorite,
-                                          size: 40,
-                                          color: primaryPinkColor,
-                                        )
-                                      : Icon(
-                                          Icons.favorite_border,
-                                          size: 40,
-                                          color: primaryPinkColor,
-                                        )),
-                            ),
-                          )
-                        ],
-                      );
-                    }),
-              ),
-            ],
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(right: 18.0, top: 8),
+                              child: Align(
+                                alignment: Alignment.topRight,
+                                // bottom: 185,
+                                child: IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        if (box.containsKey(
+                                            dummyText[itemIndex].id)) {
+                                          box.delete(dummyText[itemIndex].id);
+                                        } else {
+                                          box.put(dummyText[itemIndex].id,
+                                              dummyText[itemIndex]);
+                                        }
+                                      });
+                                    },
+                                    icon: Hive.box("homeFav").containsKey(
+                                            dummyText[itemIndex].id)
+                                        ? Icon(
+                                            Icons.favorite,
+                                            size: 40,
+                                            color: primaryPinkColor,
+                                          )
+                                        : Icon(
+                                            Icons.favorite_border,
+                                            size: 40,
+                                            color: primaryPinkColor,
+                                          )),
+                              ),
+                            )
+                          ],
+                        );
+                      }),
+                ),
+              ],
+            ),
           ),
         ),
       ),

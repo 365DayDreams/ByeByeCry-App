@@ -53,7 +53,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
       await LocalDB().getTimer2().then((value) {
         sliderEnd = int.parse(value == "00" ? "120" : value);
       });
-    if (musicIndex == 3)
+    if (musicIndex == 2)
       await LocalDB().getTimer3().then((value) {
         sliderEnd = int.parse(value == "00" ? "120" : value);
       });
@@ -62,26 +62,34 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
     print(sliderEnd);
   }
 
-  getVol1() async {
-    await LocalDB().getVolume().then((value) {
-      ins.setVolume(double.parse(value) * 0.01);
-      volumePlayer = double.parse(value);
-    });
+
+  getVol() async {
+    if (musicIndex == 0)
+      await LocalDB().getVolume().then((value) {
+        ins.setVolume(double.parse(value) * 0.01);
+        volumePlayer = double.parse(value);
+      });
+    if (musicIndex == 1)
+      await LocalDB().getVolume2().then((value) {
+        ins.setVolume(double.parse(value) * 0.01);
+        volumePlayer = double.parse(value);
+      });
+    if (musicIndex == 2)
+      await LocalDB().getVolume3().then((value) {
+        ins.setVolume(double.parse(value) * 0.01);
+        volumePlayer = double.parse(value);
+      });
+
+    if(mounted){
+      setState(() {
+
+      });
+    }
+
+    print("sliderEnd=======================");
+    print(sliderEnd);
   }
 
-  getVol2() async {
-    await LocalDB().getVolume2().then((value) {
-      ins.setVolume(double.parse(value) * 0.01);
-      volumePlayer = double.parse(value);
-    });
-  }
-
-  getVol3() async {
-    await LocalDB().getVolume3().then((value) {
-      ins.setVolume(double.parse(value) * 0.01);
-      volumePlayer = double.parse(value);
-    });
-  }
 
   List<String> times = [
     "0",
@@ -150,9 +158,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
   void initState() {
     super.initState();
 
-    getVol1();
-    getVol2();
-    getVol3();
+    getVol();
     musicIndex = widget.songIndex;
     initialization();
 
@@ -182,6 +188,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
     if (isOldSong()) {
       resumeSliderTimmer();
     } else {
+      getVol();
       await getTimer();
       ins.stop();
       pausePlayMethod();
@@ -210,7 +217,9 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
   }
 
   pausePlayMethod() async {
+    getVol();
     await getTimer();
+
 
     if (ins.isPlaying()) {
       await ins.stop();
@@ -677,6 +686,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                 "";
 
                             await ins.stop();
+                            getVol();
                             await getTimer();
 
                             if (isLastSong()) {
@@ -753,6 +763,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                   "";
 
                               await ins.stop();
+                              getVol();
                               await getTimer();
                               if (isLastSong()) {
                                 check = true;
@@ -1047,6 +1058,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                   selectedTime = newValue.toInt();
                                   if (selectedTime == 0) {
                                     check = true;
+                                    getVol();
                                     getTimer();
                                   } else {
                                     check = false;
@@ -1095,6 +1107,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
                                 state(() {
                                   check = newValue!;
                                   selectedTime = 0;
+                                  getVol();
                                   getTimer();
                                 });
                               }),
@@ -1576,6 +1589,7 @@ class _PlaylistMixSound2State extends ConsumerState<PlaylistMixSound2>
         "";
 
     await ins.stop();
+    getVol();
     await getTimer();
     if (isLastSong()) {
       check = true;

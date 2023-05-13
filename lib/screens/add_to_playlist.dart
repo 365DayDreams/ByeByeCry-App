@@ -77,6 +77,7 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
   }
 
   clearList(){
+    selectedIndex=0;
     ref.watch(playlistProvider).mixPlayList.clear();
     setState(() {
 
@@ -84,6 +85,7 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
   }
 
   clearByIndex(index){
+    selectedIndex=0;
     ref.watch(playlistProvider).mixPlayList.removeAt(index);
     setState(() {
 
@@ -98,7 +100,10 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
     return Scaffold(
       bottomNavigationBar: InkWell(
         onTap: () {
-          if (ref.watch(playlistProvider).mixPlayList[selectedIndex!].first?.image == null  ){
+          print(selectedTimes);
+          print(currentVolume);
+
+          if (ref.watch(playlistProvider).mixPlayList.isEmpty || ref.watch(playlistProvider).mixPlayList[selectedIndex!].first?.image == null  ){
             Get.snackbar(
                 "PlayList Sound",
                 "Please add your sound",
@@ -108,7 +113,6 @@ class _AddToPlayListPageState extends ConsumerState<AddToPlayListPage> {
                 colorText: Colors.white
             );
           } else {
-
             _showDialog(context);
           }
         },
@@ -542,15 +546,15 @@ margin: EdgeInsets.only(left: 25),
 
                           if (mounted) {
                             LocalDB().setTimer(
-                                (selectedTimes[selectedTime[0]] % 60)
+                                (selectedTimes[selectedTime[0]] * 60)
                                     .toString()
                                     .padLeft(2, "0"));
                             LocalDB().setTimer2(
-                                (selectedTimes[selectedTime[1]] % 60)
+                                (selectedTimes[selectedTime[1]] * 60)
                                     .toString()
                                     .padLeft(2, "0"));
                             LocalDB().setTimer3(
-                                (selectedTimes[selectedTime[2]] % 60)
+                                (selectedTimes[selectedTime[2]] * 60)
                                     .toString()
                                     .padLeft(2, "0"));
 
@@ -661,8 +665,8 @@ margin: EdgeInsets.only(left: 25),
                             child: Slider.adaptive(
                                 value: selectedTime[indexm].toDouble(),
                                 min: 0,
-                                max: 7,
-                                divisions: 7,
+                                max: 6,
+                                divisions: 6,
                                 activeColor: primaryPinkColor,
                                 inactiveColor: primaryGreyColor2,
                                 onChanged: (double newValue) async {
@@ -842,6 +846,7 @@ margin: EdgeInsets.only(left: 25),
         //  audioPlayer.stop();
       }
       sliderInitial++;
+      if (mounted)
       setState(() {});
     });
   }

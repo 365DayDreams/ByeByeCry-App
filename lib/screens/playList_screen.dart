@@ -62,8 +62,6 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
   bool check = false;
   bool playPouse = true;
 
-
-
   @override
   Widget build(BuildContext context) {
     final height = ScreenSize(context).height;
@@ -77,35 +75,32 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
             },
           )
         : Scaffold(
-
             appBar: AppBar(
-
-                leading:
-                deleteShow==true ?
-                Padding(
-                  padding: const EdgeInsets.only(left: 15.0),
-                  child: Container(
-                    height: 20,
-                    width: 20,
-                    margin: const EdgeInsets.all(5.0),
-                    padding: const EdgeInsets.all(2.0),
-                    decoration: const BoxDecoration(
-                        color: primaryPinkColor, shape: BoxShape.circle),
-                    child: IconButton(
-                      iconSize: 15,
-                      icon: const Icon(
-                        Icons.arrow_back_ios,
-                        color: secondaryBlackColor,
-                      ),
-                      onPressed: (){
-                        setState(() {
-                          deleteShow = !deleteShow;
-                        });
-
-                      },
-                    ),
-                  ),
-                ) : Container(),
+                leading: deleteShow == true
+                    ? Padding(
+                        padding: const EdgeInsets.only(left: 15.0),
+                        child: Container(
+                          height: 20,
+                          width: 20,
+                          margin: const EdgeInsets.all(5.0),
+                          padding: const EdgeInsets.all(2.0),
+                          decoration: const BoxDecoration(
+                              color: primaryPinkColor, shape: BoxShape.circle),
+                          child: IconButton(
+                            iconSize: 15,
+                            icon: const Icon(
+                              Icons.arrow_back_ios,
+                              color: secondaryBlackColor,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                deleteShow = !deleteShow;
+                              });
+                            },
+                          ),
+                        ),
+                      )
+                    : Container(),
                 actions: [
                   InkWell(
                     onTap: () {
@@ -130,7 +125,6 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
                 elevation: 0,
                 centerTitle: true,
                 backgroundColor: secondaryPinkColor,
-
                 title: Text(
                   'My Playlist',
                   style: TextStyle(
@@ -159,9 +153,11 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
                           var data = ref
                               .watch(playlistProvider)
                               .mixMixPlaylist[indexdddd];
-                             final height = ScreenSize(context).height;
+                          final height = ScreenSize(context).height;
                           return Container(
-                            color: selectedIndex == indexdddd ? pinkLightColor : null,
+                            color: selectedIndex == indexdddd
+                                ? pinkLightColor
+                                : null,
                             child: InkWell(
                               onTap: () {
                                 setState(() {
@@ -179,16 +175,20 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
                                   if (mounted) {
                                     ref
                                         .read(playlistProvider)
-                                        .setMixPlaylistMusicId(setMixPlaylistId: ref
-                                        .watch(playlistProvider)
-                                        .mixMixPlaylist[indexdddd]
-                                        .title.toString());
+                                        .setMixPlaylistMusicId(
+                                            setMixPlaylistId: ref
+                                                .watch(playlistProvider)
+                                                .mixMixPlaylist[indexdddd]
+                                                .title
+                                                .toString());
                                   }
                                   if (mounted) {
                                     ref.read(addProvider).changePage(1);
                                   }
                                   if (mounted) {
-                                    ref.read(playlistProvider).changePlaying(change: true);
+                                    ref
+                                        .read(playlistProvider)
+                                        .changePlaying(change: true);
                                   }
                                 }
 
@@ -211,10 +211,11 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
                                 }
                               },
                               child: Padding(
-                                padding:
-                                const EdgeInsets.only(left: 20.0, right: 20, top: 5, bottom: 5),
+                                padding: const EdgeInsets.only(
+                                    left: 20.0, right: 20, top: 5, bottom: 5),
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Row(
                                       children: [
@@ -223,12 +224,17 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
                                           width: height * .07,
                                           decoration: const BoxDecoration(
                                               color: primaryPinkColor,
-                                              borderRadius: BorderRadius.all(Radius.circular(10))),
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(10))),
                                           // child: Image.asset("${image}"),
                                         ),
                                         const SizedBox(width: 20),
                                         CustomText(
-                                          text: ref.watch(playlistProvider).mixMixPlaylist[indexdddd].title.toString(),
+                                          text: ref
+                                              .watch(playlistProvider)
+                                              .mixMixPlaylist[indexdddd]
+                                              .title
+                                              .toString(),
                                           fontSize: 18,
                                           fontWeight: FontWeight.w600,
                                         ),
@@ -237,37 +243,49 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
 
                                     deleteShow == true
                                         ? Container(
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: Colors.black.withOpacity(0.05),
-                                      ),
-                                      child: InkWell(
-                                        onTap: () {
-                                          _showDialogdelete(
-                                            context,
-                                            firstMusicName: ref.watch(playlistProvider).mixMixPlaylist[indexdddd].title.toString(),
-                                            id: ref.watch(playlistProvider).mixMixPlaylist[indexdddd].title.toString(),
-                                          );
-                                          print("ID_M__${ref.watch(playlistProvider).mixMixPlaylist[indexdddd].title.toString()}");
-                                        },
-                                        child: Padding(
-                                          padding: EdgeInsets.all(15.0),
-                                          child: CustomSvg(svg: deleteSvg),
-                                        ),
-                                      ),
-                                    )
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: Colors.black
+                                                  .withOpacity(0.05),
+                                            ),
+                                            child: InkWell(
+                                              onTap: () {
+                                                _showDialogdelete(
+                                                  context,
+                                                  firstMusicName: ref
+                                                      .watch(playlistProvider)
+                                                      .mixMixPlaylist[indexdddd]
+                                                      .title
+                                                      .toString(),
+                                                  id: ref
+                                                      .watch(playlistProvider)
+                                                      .mixMixPlaylist[indexdddd]
+                                                      .title
+                                                      .toString(),
+                                                );
+                                                print(
+                                                    "ID_M__${ref.watch(playlistProvider).mixMixPlaylist[indexdddd].title.toString()}");
+                                              },
+                                              child: Padding(
+                                                padding: EdgeInsets.all(15.0),
+                                                child:
+                                                    CustomSvg(svg: deleteSvg),
+                                              ),
+                                            ),
+                                          )
                                         : Container(
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: Colors.black.withOpacity(0.05),
-                                        ),
-                                        child: Padding(
-                                          padding: EdgeInsets.all(15.0),
-                                          child: CustomImage(
-                                            scale: 0.8,
-                                            imageUrl: playButton,
-                                          ),
-                                        )),
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: Colors.black
+                                                  .withOpacity(0.05),
+                                            ),
+                                            child: Padding(
+                                              padding: EdgeInsets.all(15.0),
+                                              child: CustomImage(
+                                                scale: 0.8,
+                                                imageUrl: playButton,
+                                              ),
+                                            )),
 
                                     // Row(
                                     //   children: [
@@ -1047,8 +1065,8 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
                             child: Slider.adaptive(
                                 value: selectedTime.toDouble(),
                                 min: 0,
-                                max: 7,
-                                divisions: 7,
+                                max: 6,
+                                divisions: 6,
                                 activeColor: primaryPinkColor,
                                 inactiveColor: primaryGreyColor2,
                                 onChanged: (double newValue) async {
@@ -1220,10 +1238,8 @@ class _PlayListScreenState extends ConsumerState<PlayListScreen> {
     setSongDuration(sliderEnd.toInt(), initValue: sliderInitial);
   }
 
-
   void _showDialogdelete(BuildContext context,
-      {required String firstMusicName,
-      required String id}) {
+      {required String firstMusicName, required String id}) {
     final width = ScreenSize(context).width;
     showDialog(
       context: context,
